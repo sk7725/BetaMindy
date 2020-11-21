@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group 'sonnicon'
+
+sourceCompatibility = 1.8
+sourceSets.main.java.srcDirs = ["src/"]
+sourceSets.main.resources.srcDirs = ["assets/"]
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation 'com.github.Anuken.Mindustry:core:v115'
+}
+
+
+
+
