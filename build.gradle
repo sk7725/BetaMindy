@@ -17,6 +17,25 @@ dependencies {
     implementation 'com.github.Anuken.Mindustry:core:v115'
 }
 
+task "buildDex" {
+    dependsOn "build"
+    doLast {
 
+        File original = jar.archiveFile.get().asFile
+        File renamed = new File(original.getParent(), "dexed-" + original.name)
+        original.renameTo(renamed)
+
+        exec {
+            workingDir renamed.parent
+
+            String command = "dx --dex --output=\"" + renamed.name + "\" \"" + renamed.name + "\""
+            if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+                commandLine 'cmd', '/c', command
+            } else {
+                commandLine command
+            }
+        }
+    }
+}
 
 
