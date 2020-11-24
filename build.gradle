@@ -27,12 +27,12 @@ task "buildDex" {
 
         exec {
             workingDir renamed.parent
-
-            String command = "dx --dex --output=\"" + renamed.name + "\" \"" + renamed.name + "\""
+		commandLine "echo test"
+            String commandArgs = "--dex --output=\"" + renamed.name + "\" \"" + renamed.name + "\""
             if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-                commandLine 'cmd', '/c', command
+                commandLine 'cmd', '/c', "dx", commandArgs
             } else {
-                commandLine command
+                commandLine "dx", commandArgs
             }
         }
     }
