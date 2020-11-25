@@ -30,7 +30,7 @@ task "buildDex" {
             if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
                 commandLine 'cmd', '/c', "dx --dex --output=\"" + renamed.name + "\" \"" + renamed.name + "\""
             } else {
-                commandLine "dx", "--dex", "--output=\"" + renamed.name + "\"", renamed.name
+                commandLine "dx", "--dex", "--output=" + renamed.name, renamed.name
             }
         }
     }
