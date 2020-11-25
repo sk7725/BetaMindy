@@ -3,12 +3,9 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -28,19 +25,17 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-      
-    - name: Build with Gradle (dex)
+    - name: Build with Gradle
       run: ./gradlew buildDex
-    - name: Upload a Build Artifact
+
+    - name: Upload a Build Artifact (normal)
+      uses: actions/upload-artifact@v2.2.1
+      with:
+        name:  normal
+        path: build/libs/artifact.jar
+
+    - name: Upload a Build Artifact (dexed)
       uses: actions/upload-artifact@v2.2.1
       with:
         name:  dexed
-        path: build/libs/dexed-mindustry-modtemplate.jar
-        
-    - name: Build with Gradle (regular)
-      run: ./gradlew build
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.1
-      with:
-        name:  regular
-        path: build/libs/mindustry-modtemplate.jar
+        path: build/libs/dexed-artifact.jar

@@ -6,11 +6,13 @@ JDK 8.
 
 ### Windows
 Plain Jar: `gradlew build`\
-Dexed Jar: `gradlew buildDex`
+Dexify Plain Jar: `gradlew dexify`\
+Build Plain & Dexify Jar: `gradlew buildDex`
 
 ### *nix
 Plain Jar: `./gradlew build`\
-Dexed Jar: `./gradlew buildDex`
+Dexify Plain Jar: `./gradlew dexify`\
+Build Plain & Dexify Jar: `./gradlew buildDex`
 
 Plain Jar is for JVMs (desktop).\
 Dexed Jar is for ARTs (Android). This requires `dx` on your path (Android build-tools).\
