@@ -26,12 +26,11 @@ task "buildDex" {
         original.renameTo(renamed)
 
         exec {
-            workingDir renamed.parent
-            String commandArgs = "--dex --output=\"" + renamed.name + "\" \"" + renamed.name + "\""
+            workingDir renamed.parent 
             if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-                commandLine 'cmd', '/c', "dx " + commandArgs
+                commandLine 'cmd', '/c', "dx --dex --output=\"" + renamed.name + "\" \"" + renamed.name + "\""
             } else {
-                commandLine "dx", commandArgs
+                commandLine "dx", "--dex", "--output=\"" + renamed.name + "\"", renamed.name
             }
         }
     }
