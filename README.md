@@ -1,5 +1,16 @@
-# Mindustry Mod Template
-A blank template for Mindustry mods with an existing Gradle configuration to compile and dex-ify.
+![Logo](assets/icon-small.png)
+
+[![Discord](https://img.shields.io/discord/704355237246402721.svg)](https://discord.gg/RCCVQFW)
+
+
+# BetaMindy
+A java mod for testing and doing chaotic fun.
+
+## Enjoying
+1. Go to [Actions](https://github.com/sk7725/BetaMindy/actions), and click on the latest workflow, starting with the name "Stable".   
+2. Select the "normal" Artifact (with the box icon), it will download the zip.   
+3. Unzip and paste the `.jar` into your mod folder.   
+4. Enjoy!   
 
 ## Compiling
 JDK 8.
