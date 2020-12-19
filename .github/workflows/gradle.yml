@@ -32,10 +32,10 @@ jobs:
       uses: actions/upload-artifact@v2.2.1
       with:
         name:  normal
-        path: build/libs/artifact.jar
+        path: build/libs/[!dexed-]*.jar
 
     - name: Upload a Build Artifact (dexed)
       uses: actions/upload-artifact@v2.2.1
       with:
-        name:  dexed
-        path: build/libs/dexed-artifact.jar
+        name: dexed
+        path: build/libs/dexed-*.jar

@@ -2,14 +2,15 @@ plugins {
     id 'java'
 }
 
-//todo nice way of fetching from CI/CD
 final buildFilename = "artifact.jar"
 
 group 'sonnicon'
 
 sourceCompatibility = 1.8
-sourceSets.main.java.srcDirs = ["src/"]
-sourceSets.main.resources.srcDirs = ["assets/"]
+sourceSets.main {
+    java.srcDir("src/")
+    resources.srcDir("assets/")
+}
 
 repositories {
     mavenCentral()
@@ -28,10 +29,11 @@ task dexify doLast {
     exec{
         workingDir jar.archiveFile.get().asFile.parent
 
+        def command = ["dx", "--dex", "--output=dexed-$buildFilename", buildFilename]
         if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-            commandLine "cmd", "/c", "dx", "--dex", "--output=dexed-$buildFilename", buildFilename
+            commandLine ("cmd", "/c", *command)
         } else {
-            commandLine "dx", "--dex", "--output=dexed-$buildFilename", buildFilename
+            commandLine (*command)
         }
     }
 }
