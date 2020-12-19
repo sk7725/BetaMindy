@@ -30,7 +30,7 @@ public class BetaMindy extends Mod{
         Vars.enableConsole = true;
 
         if(!Vars.headless){
-            //Partial credits to Project Unity
+            //Partial credits to ProjectUnity
             LoadedMod mod = Vars.mods.locateMod("betamindy");
             Func<String, String> stringf = value -> Core.bundle.get("mod." + value);
 
