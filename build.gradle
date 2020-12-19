@@ -4,7 +4,7 @@ plugins{
 
 group "com.github.sk7725"
 
-sourceCompatibility = 14
+targetCompatibility = 8
 
 sourceSets.main.java.srcDirs = ["src/"]
 sourceSets.main.resources.srcDirs = ["assets/"]
