@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+//todo nice way of fetching from CI/CD
+final buildFilename = "artifact.jar"
+
+group 'sonnicon'
+
+sourceCompatibility = 1.8
+sourceSets.main.java.srcDirs = ["src/"]
+sourceSets.main.resources.srcDirs = ["assets/"]
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation 'com.github.Anuken.Mindustry:core:v115'
+}
+
+jar {
+    archiveName buildFilename
+}
+
+task dexify doLast {
+    exec{
+        workingDir jar.archiveFile.get().asFile.parent
+
+        if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+            commandLine "cmd", "/c", "dx", "--dex", "--output=dexed-$buildFilename", buildFilename
+        } else {
+            commandLine "dx", "--dex", "--output=dexed-$buildFilename", buildFilename
+        }
+    }
+}
+
+task buildDex dependsOn "build", "dexify"
