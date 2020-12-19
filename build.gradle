@@ -29,9 +29,9 @@ task dexify doLast {
         workingDir jar.archiveFile.get().asFile.parent
 
         if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-            commandLine "cmd", "/c", "dx", "--dex", "--output=dexed-$buildFilename", buildFilename
+            commandLine "cmd", "/c", "dx", "--dex", "--min-sdk-version=26", "--output=dexed-$buildFilename", buildFilename
         } else {
-            commandLine "dx", "--dex", "--output=dexed-$buildFilename", buildFilename
+            commandLine "dx", "--dex", "--min-sdk-version=26", "--output=dexed-$buildFilename", buildFilename
         }
     }
 }
