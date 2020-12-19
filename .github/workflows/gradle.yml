@@ -10,10 +10,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 8
+    - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
-        java-version: 8
+        java-version: 1.8
     - name: Setup Android SDK Tools
       uses: android-actions/setup-android@v2.0.1
       env:
@@ -32,10 +32,10 @@ jobs:
       uses: actions/upload-artifact@v2.2.1
       with:
         name:  normal
-        path: build/libs/BetaMindy.jar
+        path: build/libs/artifact.jar
 
     - name: Upload a Build Artifact (dexed)
       uses: actions/upload-artifact@v2.2.1
       with:
         name:  dexed
-        path: build/libs/dexed-BetaMindy.jar
+        path: build/libs/dexed-artifact.jar
