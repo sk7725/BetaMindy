@@ -1,6 +1,6 @@
 ![Logo](assets/icon-small.png)
 
-[![Stars](https://img.shields.io/github/stars/sk7725/BetaMindy?label=Please%20Star%20Me%21&style=social)]() [![Discord](https://img.shields.io/discord/704355237246402721.svg)](https://discord.gg/RCCVQFW)
+[![Discord](https://img.shields.io/discord/704355237246402721.svg)](https://discord.gg/RCCVQFW) [![Language](https://img.shields.io/badge/made%20with-Scratch%202.0-orange)]() [![Stars](https://img.shields.io/github/stars/sk7725/BetaMindy?label=Please%20Star%20Me%21&style=social)]()
 
 
 # BetaMindy
