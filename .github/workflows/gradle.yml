@@ -1,0 +1,41 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Setup Android SDK Tools
+      uses: android-actions/setup-android@v2.0.1
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+    - name: build-tools
+      run: sdkmanager "build-tools;29.0.3"
+    - name: Add Android SDK to PATH
+      run: echo "${ANDROID_HOME}/build-tools/29.0.3" >> $GITHUB_PATH
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew buildDex
+
+    - name: Upload a Build Artifact (normal)
+      uses: actions/upload-artifact@v2.2.1
+      with:
+        name:  normal
+        path: build/libs/artifact.jar
+
+    - name: Upload a Build Artifact (dexed)
+      uses: actions/upload-artifact@v2.2.1
+      with:
+        name:  dexed
+        path: build/libs/dexed-artifact.jar
