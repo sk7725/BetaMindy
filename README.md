@@ -1,6 +1,6 @@
 ![Logo](assets/icon-small.png)
 
-[![Discord](https://img.shields.io/discord/704355237246402721.svg)](https://discord.gg/RCCVQFW)
+[![Stars](https://img.shields.io/github/stars/sk7725/BetaMindy?label=Please%20Star%20Me%21&style=social)]() [![Discord](https://img.shields.io/discord/704355237246402721.svg)](https://discord.gg/RCCVQFW)
 
 
 # BetaMindy
