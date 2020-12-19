@@ -1,3 +1,8 @@
+![Logo](assets/icon-small.png)
+
+[![Discord](https://img.shields.io/discord/704355237246402721.svg)](https://discord.gg/RCCVQFW)
+
+
 # BetaMindy
 A java mod for testing and doing chaotic fun.
 
