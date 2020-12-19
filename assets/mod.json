@@ -1,11 +1,11 @@
 {
-  "name": "modtemplate",
-  "displayName": "Template",
-  "author": "[#8738ff[]]Sonnicon[[]]",
-  "description": "Gradle jar Mindustry mod template",
+  "name": "betamindy",
+  "displayName": "BetaMindy",
+  "author": "[royal]sk7725[]",
+  "description": "My first Java mod, has the same amount of chaotic energy of sk7725/Commandblocks.",
   "version": "0",
-  "main": "sonnicon.modtemplate.ModTemplate",
-  "minGameVersion": "105",
+  "main": "betamindy.BetaMindy",
+  "minGameVersion": "121",
   "dependencies": [],
   "hidden": false
 }
