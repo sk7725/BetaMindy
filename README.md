@@ -1,7 +1,5 @@
 ![Logo](assets/icon-small.png)
 
-[![Download](https://img.shields.io/github/v/release/sk7725/BetaMindy?color=green&include_prereleases&label=DOWNLOAD%20LATEST%20RELEASE&logo=github&logoColor=green&style=for-the-badge)](https://github.com/sk7725/BetaMindy/releases)
-
 [![Java CI with Gradle](https://github.com/sk7725/BetaMindy/workflows/Java%20CI%20with%20Gradle/badge.svg)](https://github.com/sk7725/BetaMindy/actions) [![Discord](https://img.shields.io/discord/704355237246402721.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord)](https://discord.gg/RCCVQFW) [![Language](https://img.shields.io/badge/made%20with-Scratch%202.0-orange)]() [![Stars](https://img.shields.io/github/stars/sk7725/BetaMindy?label=Please%20Star%20Me%21&style=social)]()
 
 
@@ -9,7 +7,8 @@
 A java mod for testing and doing chaotic fun.   
 혼돈의 카오스의 모드.   
 
-## Enjoying
+## Enjoying   
+[![Download](https://img.shields.io/github/v/release/sk7725/BetaMindy?color=green&include_prereleases&label=DOWNLOAD%20LATEST%20RELEASE&logo=github&logoColor=green&style=for-the-badge)](https://github.com/sk7725/BetaMindy/releases)
 ### Releases   
 Go to the releases, some may have a `.jar` attached to it that you can download. If it does not have it, follow the steps below(recommended) or bother me with a new issue so I can attach the compiled mod.   
 After you have the `.jar`, paste it into your mod folder(locate your mod folder in the "open mod folder" of Mindustry).   
