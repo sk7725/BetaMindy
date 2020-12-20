@@ -2,28 +2,29 @@ package betamindy;
 
 import arc.*;
 import arc.func.*;
+import arc.util.Log;
 import mindustry.*;
-import mindustry.mod.*;
-import mindustry.mod.Mods.*;
-
-/*
-import arc.*;
-import arc.func.*;
-import arc.struct.*;
-import arc.util.*;
-import mindustry.*;
-import mindustry.mod.*;
-import mindustry.mod.Mods.*;
-import mindustry.ui.dialogs.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
-import betamindy.content.*;
-import betamindy.gen.*;
-import betamindy.mod.*;
-import betamindy.mod.ContributorList.*;*/
+import mindustry.mod.*;
+import mindustry.mod.Mods.*;
+import betamindy.contents.*;
 
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
+
+    private final ContentList[] mindyContent = {
+        new MindyBlocks()
+    };
+
+    public BetaMindy() {
+        super();
+        MindySounds.load();
+
+        Events.on(DisposeEvent.class, e -> {
+            MindySounds.dispose();
+        });
+    }
 
     @Override
     public void init(){
@@ -43,5 +44,10 @@ public class BetaMindy extends Mod{
 
     @Override
     public void loadContent(){
+        for(ContentList list : mindyContent){
+            list.load();
+
+            Log.info("@: Loaded content list: @", getClass().getSimpleName(), list.getClass().getSimpleName());
+        }
     }
 }
