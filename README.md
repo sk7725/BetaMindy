@@ -7,7 +7,8 @@
 A java mod for testing and doing chaotic fun.   
 혼돈의 카오스의 모드.   
 
-## Enjoying
+## Enjoying   
+[![Download](https://img.shields.io/github/v/release/sk7725/BetaMindy?color=green&include_prereleases&label=DOWNLOAD%20LATEST%20RELEASE&logo=github&logoColor=green&style=for-the-badge)](https://github.com/sk7725/BetaMindy/releases)
 ### Releases   
 Go to the releases, some may have a `.jar` attached to it that you can download. If it does not have it, follow the steps below(recommended) or bother me with a new issue so I can attach the compiled mod.   
 After you have the `.jar`, paste it into your mod folder(locate your mod folder in the "open mod folder" of Mindustry).   
