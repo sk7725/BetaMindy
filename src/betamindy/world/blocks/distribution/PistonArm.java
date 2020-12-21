@@ -17,7 +17,7 @@ public class PistonArm extends Block {
         update = true;
 
         breakable = false;
-        // destructible = false;
+        destructible = false;
         rebuildable = false;
 
         hasShadow = false;
@@ -35,12 +35,17 @@ public class PistonArm extends Block {
         return false;
     }
 
+    @Override
+    public boolean canBreak(Tile tile){
+        return false;
+    }
+
     public class PistonArmBuild extends Building {
         public @Nullable PistonBuild piston;
         @Override
         public void updateTile(){
             //NO MORE BLACKHOLES
-            if(piston == null || !piston.isValid() || piston.arm != this) remove();
+            if(piston == null || !piston.isValid()) tile.remove();
         }
         @Override
         public void draw(){
@@ -60,6 +65,11 @@ public class PistonArm extends Block {
             //For the love of routers, stop snapping off my piston arms EoD
             super.killed();
             if(piston != null && piston.isValid() && !piston.dead()) piston.killed();
+        }
+
+        @Override
+        public boolean canPickup(){
+            return false;
         }
     }
 }

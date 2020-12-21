@@ -6,19 +6,23 @@ import arc.math.*;
 import arc.math.geom.Geometry;
 import arc.util.*;
 import betamindy.contents.MindySounds;
+import mindustry.content.Blocks;
 import mindustry.gen.Building;
+import mindustry.type.Category;
 import mindustry.world.*;
 import betamindy.world.blocks.distribution.PistonArm.*;
+import mindustry.world.blocks.payloads.*;
 
 import static arc.Core.atlas;
 import static mindustry.Vars.tilesize;
 
 public class Piston extends Block {
-    public PistonArm armBlock;
+    public Block armBlock;
     public TextureRegion armRegion, shaftRegion;
     public TextureRegion[] baseRegion = new TextureRegion[4];
     public boolean sticky;
     public Sound pushSound = MindySounds.pistonPush, pullSound = MindySounds.pistonPull;
+    public static final float extendTicks = 8f;
 
     public Piston(String name){
         super(name);
@@ -29,6 +33,8 @@ public class Piston extends Block {
         hasPower = true;
         rotate = true;
         quickRotate = false;
+
+        category = Category.distribution;//TODO: Make own category for place-overs
     }
 
     @Override
@@ -43,39 +49,73 @@ public class Piston extends Block {
 
     public class PistonBuild extends Building {
         public boolean extended;
-        public @Nullable PistonArmBuild arm;
-        public float heat; //takes 8 ticks to extend
+        //public float heat; //takes 8 ticks to extend
+        protected Interval heatTimer = new Interval(1);
+
+        public boolean isIdle(){
+            return heatTimer.check(0, extendTicks);
+        }
 
         public boolean canExtend(){
-            return true;
+            return isIdle() && tile.nearby(rotation) != null;
         }
         public boolean canRetract(){
-            return true;
+            return isIdle() && tile.nearby(rotation) != null;
+        }
+
+        /** Tries to push a single given building*/
+        public void pushBuild(Building tile, int r){
+            Tile e = tile.tile.nearby(r);
+            //if(e.block() != Blocks.air) return;
+
+
+            //tile.pickedUp();
+            int rot = tile.rotation;
+            tile.tile.remove();
+            BuildPayload pay = new BuildPayload(tile);
+            pay.place(e, rot);
+        }
+        public void pullBuild(Building tile, int r){
+            pushBuild(tile, (r + 2) % 4);
         }
 
         /** Tries to push blocks and returns its success*/
         public boolean push(){
+            //TODO: temp
+            if(tile.nearbyBuild(rotation) == null) return true;
+            pushBuild(tile.nearbyBuild(rotation), rotation);
             return true;
         }
         /** Tries to pull blocks and returns its success*/
         public boolean pull(){
+            //TODO: temp
+            if(tile.nearby(rotation) == null || tile.nearby(rotation).nearbyBuild(rotation) == null) return true;
+            if(tile.nearby(rotation).block() == armBlock) tile.nearby(rotation).remove();
+            pullBuild(tile.nearby(rotation).nearbyBuild(rotation), rotation);
             return true;
         }
 
         public void extendArm(){
             extended = push();
-            if(extended) pushSound.at(this);
+            if(extended){
+                heatTimer.reset(0, 0);
+                tile.nearby(rotation).setBlock(armBlock, team, (rotation + 2) % 4);
+                ((PistonArmBuild)tile.nearbyBuild(rotation)).piston = this;
+                pushSound.at(this);
+            }
         }
         public void retract(){
             if(sticky) extended = !pull();
             else extended = false;
-            if(!extended) pullSound.at(this);
+            if(!extended){
+                heatTimer.reset(0, 0);
+                if(tile.nearby(rotation) != null && tile.nearby(rotation).block() == armBlock) tile.nearby(rotation).remove();
+                pullSound.at(this);
+            }
         }
 
         @Override
         public void updateTile(){
-            heat = Mathf.lerpDelta(heat, extended ? 1f : 0f, 0.25f);
-
             if(extended){
                 if(!consValid() && canRetract()) retract();
             }
@@ -86,11 +126,13 @@ public class Piston extends Block {
 
         @Override
         public void draw(){
+            float heat = Math.min(extendTicks, heatTimer.getTime(0)) / extendTicks;
+            if(!extended) heat = 1f - heat;
             if(heat > 0.5f) Draw.rect(shaftRegion, x + heat * Geometry.d4x[rotation] * tilesize, y + heat * Geometry.d4y[rotation] * tilesize, rotation * 90f);
             Draw.rect(armRegion, x + heat * Geometry.d4x[rotation] * tilesize, y + heat * Geometry.d4y[rotation] * tilesize, rotation * 90f);
             Draw.rect(baseRegion[rotation], x, y);
         }
 
-        //TODO: r/w heat & extended
+        //TODO: r/w heatTimer & extended
     }
 }
