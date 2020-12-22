@@ -1,4 +1,4 @@
-package betamindy.contents;
+package betamindy.content;
 
 import arc.*;
 import arc.assets.*;

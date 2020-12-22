@@ -19,6 +19,7 @@ public class PistonArm extends Block {
         breakable = false;
         destructible = false;
         rebuildable = false;
+        targetable = false;
 
         hasShadow = false;
         hasItems = false;
@@ -32,7 +33,7 @@ public class PistonArm extends Block {
 
     @Override
     public boolean isHidden(){
-        return false;
+        return true;
     }
 
     @Override

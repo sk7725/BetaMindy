@@ -2,11 +2,9 @@ package betamindy.world.blocks.distribution;
 
 import arc.audio.Sound;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.math.geom.Geometry;
 import arc.util.*;
-import betamindy.contents.MindySounds;
-import mindustry.content.Blocks;
+import betamindy.content.MindySounds;
 import mindustry.gen.Building;
 import mindustry.type.Category;
 import mindustry.world.*;
