@@ -15,6 +15,7 @@ import static arc.math.Angles.randLenVectors;
 public class MindyFx {
     public static final Effect
         directionalSmoke = new Effect(160f, e -> {
+        Draw.z(Layer.flyingUnit + 0.1f);
         color(Pal.gray);
         alpha(e.fout());
         randLenVectors(e.id, 1, e.fin() * 40f, (x, y) -> Fill.circle(e.x + x, e.y + y, 0.85f + e.fin() * 8.5f));
