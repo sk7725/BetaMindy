@@ -14,6 +14,7 @@ public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
 
     private final ContentList[] mindyContent = {
+        new MindyStatusEffects(),
         new MindyBlocks()
     };
 
@@ -24,6 +25,8 @@ public class BetaMindy extends Mod{
         Events.on(DisposeEvent.class, e -> {
             MindySounds.dispose();
         });
+
+        Core.settings.defaults("slimeeffect", true);
     }
 
     @Override

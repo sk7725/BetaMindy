@@ -61,6 +61,15 @@ public class Piston extends Block {
             return isIdle() && tile.nearby(rotation) != null;
         }
 
+        public boolean canPush(Block block){
+            if(!block.update || !block.synthetic()) return false;
+            if(block instanceof PistonArm) return false;
+            return true;//TODO: unmovable blocks
+        }
+        public boolean canPull(Block block){
+            return canPush(block) && true;//TODO: slippery blocks
+        }
+
         /** Tries to push a single given building*/
         public void pushBuild(Building tile, int r){
             Tile e = tile.tile.nearby(r);

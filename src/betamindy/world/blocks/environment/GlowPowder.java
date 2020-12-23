@@ -20,6 +20,7 @@ public class GlowPowder extends Block {
     public @Nullable StatusEffect status;
     public @Nullable Effect effect;
     public float range = 40f;
+    public float duration = 600f;
     public float effectChance = 0.005f;
 
     public GlowPowder(String name, int shape){
@@ -63,9 +64,7 @@ public class GlowPowder extends Block {
             }
 
             if(status != null){
-                Units.nearby(x, y, range, range, u -> {
-                    u.apply(status, 60f);
-                });
+                Units.nearby(x, y, range, range, u -> u.apply(status, duration));
             }
 
             if(effect != null && Mathf.chance(effectChance)){

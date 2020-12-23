@@ -1,5 +1,6 @@
 package betamindy.content;
 
+import arc.graphics.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
 import mindustry.content.*;
@@ -13,25 +14,26 @@ import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public Block radiation, exoticMatter,
+    public static Block radiation, exoticMatter,
     //pistons
-     piston, stickyPiston;
+     piston, stickyPiston, sporeSlime, sporeSlimeSided;
 
     @Override
     public void load() {
-        //TODO: make fires more worse
         radiation = new GlowPowder("radiation", 0){{
             color1 = Pal.lancerLaser;
             color2 = Pal.heal;
 
-            status = StatusEffects.burning;
+            status = MindyStatusEffects.radiation;
             effect = MindyFx.directionalSmoke;
         }};
 
-        //TODO: new effects
         exoticMatter = new GlowPowder("exotic-matter", 1){{
             color1 = Team.crux.color;
             color2 = Pal.sapBullet;
+
+            status = MindyStatusEffects.controlSwap;
+            duration = 3000f;
         }};
 
         piston = new Piston("piston"){{
@@ -45,6 +47,20 @@ public class MindyBlocks implements ContentList {
             consumes.power(1f);
             requirements(Category.distribution, with(Items.sporePod, 10, Items.graphite, 15, Items.silicon, 10, Items.titanium, 15));
             sticky = true;
+        }};
+
+        sporeSlime = new SlimeBlock("spore-slime", 0){{
+            health = 40;
+            requirements(Category.distribution, with(Items.sporePod, 6));
+
+            color = Color.valueOf("9E78DC");
+        }};
+
+        sporeSlimeSided = new SidedSlimeBlock("spore-slime-sided", 0){{
+            health = 120;
+            requirements(Category.distribution, with(Items.sporePod, 3, Items.lead, 3));
+
+            color = Color.valueOf("9E78DC");
         }};
     }
 }
