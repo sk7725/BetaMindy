@@ -7,6 +7,7 @@ import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.*;
 import mindustry.gen.*;
+import mindustry.world.meta.BlockGroup;
 
 import static arc.Core.atlas;
 
@@ -20,7 +21,6 @@ public class SlimeBlock extends Block {
         update = true;
         solid = true;
         rotate = false;
-        category = Category.distribution;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class SlimeBlock extends Block {
         public void draw(){
             if(Core.settings.getBool("animatedshields") && Core.settings.getBool("slimeeffect")){
                 Draw.rect(coreRegion, x, y);
-                Draw.z(Layer.shields);
+                Draw.z(Layer.shields + 0.0001f);
                 Draw.color(color);
                 Fill.square(x, y, 4f);
                 Draw.reset();

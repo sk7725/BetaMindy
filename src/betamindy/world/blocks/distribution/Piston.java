@@ -10,6 +10,7 @@ import mindustry.type.Category;
 import mindustry.world.*;
 import betamindy.world.blocks.distribution.PistonArm.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.meta.BlockGroup;
 
 import static arc.Core.atlas;
 import static mindustry.Vars.tilesize;
@@ -32,7 +33,7 @@ public class Piston extends Block {
         rotate = true;
         quickRotate = false;
 
-        category = Category.distribution;//TODO: Make own category for place-overs
+        group = BlockGroup.transportation;//TODO: Make own category for place-overs
     }
 
     @Override

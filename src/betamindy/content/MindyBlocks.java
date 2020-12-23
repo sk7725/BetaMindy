@@ -3,6 +3,7 @@ package betamindy.content;
 import arc.graphics.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
+import betamindy.world.blocks.power.AccelBlock;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.Team;
@@ -16,7 +17,7 @@ public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter,
     //pistons
-     piston, stickyPiston, sporeSlime, sporeSlimeSided;
+     piston, stickyPiston, sporeSlime, sporeSlimeSided, accel;
 
     @Override
     public void load() {
@@ -61,6 +62,11 @@ public class MindyBlocks implements ContentList {
             requirements(Category.distribution, with(Items.sporePod, 3, Items.lead, 3));
 
             color = Color.valueOf("9E78DC");
+        }};
+
+        accel = new AccelBlock("accel"){{
+            health = 150;
+            requirements(Category.power, with(Items.titanium, 25, Items.silicon, 20, Items.plastanium, 3));
         }};
     }
 }
