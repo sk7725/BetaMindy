@@ -54,17 +54,17 @@ public class GlowPowder extends Block {
     }
 
     public class GlowPowderBuild extends Building{
-        /**Ticks before it goes away. Negative number to disable entirely*/
+        /**Seconds before it goes away. Negative number to disable entirely*/
         public float lifetime = -1f;
         @Override
         public void updateTile(){
             if(lifetime >= 0f){
-                lifetime -= delta();
+                lifetime -= delta() / 60f;
                 if(lifetime <= 0f) tile.removeNet();
             }
 
             if(status != null){
-                Units.nearby(x, y, range, range, u -> u.apply(status, duration));
+                Units.nearby(x - range / 2f, y - range / 2f, range, range, u -> u.apply(status, duration));
             }
 
             if(effect != null && Mathf.chance(effectChance)){
@@ -77,10 +77,10 @@ public class GlowPowder extends Block {
             Draw.z(Layer.bullet - 0.0001f);
             Draw.color(color1, color2, Mathf.absin((float)Time.time + 7f * id, 16f, 1f));
 
-            float scl = (lifetime < -0.5f) ? 1f : Mathf.clamp(lifetime / 120f);
+            float scl = (lifetime < -0.5f) ? 1f : Mathf.clamp(lifetime / 2f);
 
             for(int i = 0; i < Mathf.randomSeed(id + 10) * 6 + 4; i++){
-                if(shape == 0) Fill.circle(x + Mathf.randomSeed(id + i) * 10f - 5f, y + Mathf.randomSeed(id + i + 1) * 10f - 5f, Mathf.randomSeed(id + i + 2) * 3f);
+                if(shape == 0) Fill.circle(x + Mathf.randomSeed(id + i) * 10f - 5f, y + Mathf.randomSeed(id + i + 1) * 10f - 5f, Mathf.randomSeed(id + i + 2) * 3f * scl);
                 else Fill.square(x + Mathf.randomSeed(id + i) * 10f - 5f, y + Mathf.randomSeed(id + i + 1) * 10f - 5f, Mathf.randomSeed(id + i + 2) * 3f * scl);
             }
         }
