@@ -5,13 +5,11 @@ import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
-import mindustry.content.*;
 import mindustry.content.Fx;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.logic.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
@@ -54,6 +52,7 @@ public class PayloadTurret extends Turret {
         stats.add(Stat.damage, "@", Core.bundle.format("stat.dphealth", damage * maxDamagePercent * tilesize / range));//dmg/health*range
     }
 
+    @SuppressWarnings("unchecked")
     public class PayloadTurretBuild<T extends Payload> extends TurretBuild{
         public @Nullable T payload;
 

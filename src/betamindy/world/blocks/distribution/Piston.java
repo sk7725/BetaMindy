@@ -1,16 +1,15 @@
 package betamindy.world.blocks.distribution;
 
-import arc.audio.Sound;
+import arc.audio.*;
 import arc.graphics.g2d.*;
-import arc.math.geom.Geometry;
+import arc.math.geom.*;
 import arc.util.*;
-import betamindy.content.MindySounds;
-import mindustry.gen.Building;
-import mindustry.type.Category;
+import betamindy.content.*;
+import mindustry.gen.*;
 import mindustry.world.*;
 import betamindy.world.blocks.distribution.PistonArm.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
 import static mindustry.Vars.tilesize;

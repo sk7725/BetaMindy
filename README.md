@@ -30,7 +30,7 @@ Releases를 클릭하고, 최신 버전에 달린 `.jar`를 다운로드하세�
 4. 끝!   
 
 ## Compiling
-JDK 8.
+Install JDK 14 or higher.
 
 ### Windows
 Plain Jar: `gradlew build`\

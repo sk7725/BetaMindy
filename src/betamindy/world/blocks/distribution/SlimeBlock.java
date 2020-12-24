@@ -3,13 +3,11 @@ package betamindy.world.blocks.distribution;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import mindustry.graphics.Layer;
-import mindustry.type.Category;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.gen.*;
-import mindustry.world.meta.BlockGroup;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class SlimeBlock extends Block {
     public int slimeType;
