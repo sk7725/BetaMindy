@@ -15,6 +15,7 @@ public class BetaMindy extends Mod{
 
     private final ContentList[] mindyContent = {
         new MindyStatusEffects(),
+        new MindyBullets(),
         new MindyBlocks()
     };
 

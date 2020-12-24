@@ -1,6 +1,7 @@
 package betamindy.content;
 
 import arc.graphics.*;
+import betamindy.world.blocks.defense.turrets.PayloadTurret;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.power.AccelBlock;
@@ -17,7 +18,9 @@ public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter,
     //pistons
-     piston, stickyPiston, sporeSlime, sporeSlimeSided, accel;
+     piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
+    //defense
+     payCannon;
 
     @Override
     public void load() {
@@ -67,6 +70,12 @@ public class MindyBlocks implements ContentList {
         accel = new AccelBlock("accel"){{
             health = 150;
             requirements(Category.power, with(Items.titanium, 25, Items.silicon, 20, Items.plastanium, 3));
+        }};
+
+        payCannon = new PayloadTurret("payload-cannon"){{
+            health = 2050;
+            size = 5;
+            requirements(Category.turret, with(Items.copper, 510, Items.titanium, 250, Items.silicon, 450, Items.plastanium, 230));
         }};
     }
 }
