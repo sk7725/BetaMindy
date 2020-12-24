@@ -8,3 +8,5 @@
 /bin/
 
 *.temp
+.project
+.classpath
