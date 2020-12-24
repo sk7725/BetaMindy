@@ -9,6 +9,9 @@ final buildFilename = "BetaMindy.jar"
 group 'com.github.sk7725'
 version = "1.0-SNAPSHOT"
 
+targetCompatibility = 8
+sourceCompatibility = 15
+
 sourceSets.main {
     java.srcDirs([ "src/" ])
     resources.srcDirs([ "assets/" ])
@@ -21,6 +24,7 @@ repositories {
 
 dependencies {
     implementation 'com.github.Anuken.Mindustry:core:v121.4'
+    annotationProcessor 'com.github.Anuken:jabel:34e4c172e65b3928cd9eabe1993654ea79c409cd'
 }
 
 jar {
@@ -28,7 +32,7 @@ jar {
 }
 
 task dexify doLast {
-    exec{
+    exec {
         workingDir jar.archiveFile.get().asFile.parent
 
         if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
@@ -42,14 +46,12 @@ task dexify doLast {
 task buildDex dependsOn "build", "dexify"
 
 tasks.withType(JavaCompile){
-        targetCompatibility = 8
-        sourceCompatibility = 14
-        options.encoding("UTF-8")
-        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-            options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
-        }
-
-        doFirst{
-            options.compilerArgs = options.compilerArgs.findAll{ it != '--enable-preview' }
-        }
+    options.encoding("UTF-8")
+    if(JavaVersion.current() != JavaVersion.VERSION_1_8){
+        options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
     }
+
+    doFirst{
+        options.compilerArgs = options.compilerArgs.findAll{ it != '--enable-preview' }
+    }
+}

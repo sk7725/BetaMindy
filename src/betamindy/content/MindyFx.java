@@ -3,15 +3,12 @@ package betamindy.content;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
-import arc.util.*;
-import mindustry.*;
 import mindustry.entities.*;
-import mindustry.game.Team;
+import mindustry.game.*;
 import mindustry.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
-import static arc.math.Angles.randLenVectors;
+import static arc.math.Angles.*;
 
 public class MindyFx {
     public static final Effect

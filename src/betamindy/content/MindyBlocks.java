@@ -1,18 +1,18 @@
 package betamindy.content;
 
 import arc.graphics.*;
-import betamindy.world.blocks.defense.turrets.PayloadTurret;
+import betamindy.world.blocks.defense.turrets.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
-import betamindy.world.blocks.power.AccelBlock;
+import betamindy.world.blocks.power.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.game.Team;
-import mindustry.graphics.Pal;
+import mindustry.game.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
-import static mindustry.type.ItemStack.with;
+import static mindustry.type.ItemStack.*;
 
 public class MindyBlocks implements ContentList {
     //environment

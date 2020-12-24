@@ -1,13 +1,13 @@
 package betamindy.content;
 
-import arc.math.Mathf;
-import arc.util.Time;
-import mindustry.content.Fx;
-import mindustry.ctype.ContentList;
-import mindustry.entities.units.WeaponMount;
-import mindustry.gen.Unit;
-import mindustry.graphics.Pal;
-import mindustry.type.StatusEffect;
+import arc.math.*;
+import arc.util.*;
+import mindustry.content.*;
+import mindustry.ctype.*;
+import mindustry.entities.units.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
 
 public class MindyStatusEffects implements ContentList {
     public static StatusEffect radiation, controlSwap;

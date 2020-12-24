@@ -1,4 +1,10 @@
 /.gradle/
+/.settings/
+
 /.idea/
+/.vscode/
+
 /build/
+/bin/
+
 *.temp
