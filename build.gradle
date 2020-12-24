@@ -1,18 +1,15 @@
 plugins {
     id 'java'
-    id 'java-library'
 }
 
 //todo nice way of fetching from CI/CD
 final buildFilename = "BetaMindy.jar"
 
 group 'com.github.sk7725'
-version = "1.0-SNAPSHOT"
 
-sourceSets.main {
-    java.srcDirs([ "src/" ])
-    resources.srcDirs([ "assets/" ])
-}
+sourceCompatibility = 1.8
+sourceSets.main.java.srcDirs = ["src/"]
+sourceSets.main.resources.srcDirs = ["assets/"]
 
 repositories {
     mavenCentral()
@@ -40,16 +37,3 @@ task dexify doLast {
 }
 
 task buildDex dependsOn "build", "dexify"
-
-tasks.withType(JavaCompile){
-        targetCompatibility = 8
-        sourceCompatibility = 14
-        options.encoding("UTF-8")
-        if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-            options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
-        }
-
-        doFirst{
-            options.compilerArgs = options.compilerArgs.findAll{ it != '--enable-preview' }
-        }
-    }

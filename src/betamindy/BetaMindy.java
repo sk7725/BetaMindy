@@ -14,6 +14,7 @@ public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
 
     private final ContentList[] mindyContent = {
+        new OverWriter(),
         new MindyStatusEffects(),
         new MindyBullets(),
         new MindyBlocks()

@@ -8,6 +8,7 @@ import betamindy.world.blocks.power.AccelBlock;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.Team;
+import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -75,6 +76,17 @@ public class MindyBlocks implements ContentList {
         payCannon = new PayloadTurret("payload-cannon"){{
             health = 2050;
             size = 5;
+            recoilAmount = 7f;
+            range = 315f;
+            shootShake = 2f;
+            shootSound = Sounds.shootBig;
+            shootEffect = MindyFx.cannonShoot;
+            smokeEffect = Fx.shootBigSmoke2;
+            safeRange = 140f;
+            reloadTime = 90f;
+            rotateSpeed = 3f;
+            payloadOffset = 7f;
+            consumes.power(3.75f);
             requirements(Category.turret, with(Items.copper, 510, Items.titanium, 250, Items.silicon, 450, Items.plastanium, 230));
         }};
     }
