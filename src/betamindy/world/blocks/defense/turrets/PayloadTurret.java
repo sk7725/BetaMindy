@@ -34,10 +34,12 @@ public class PayloadTurret extends Turret {
     public final BulletType shootType = MindyBullets.payBullet;
     /** Payload draw offset */
     public float payloadOffset = 15f;
+    /** Payload fire offset */
+    public float payloadShootOffset = 15f;
     /** Payload draw scale */
     public float payloadScale = 0.8f;
 
-    public Effect acceptEffect = Fx.select;
+    public Effect acceptEffect = MindyFx.cannonAccept;
 
     public PayloadTurret(String name){
         super(name);
@@ -104,7 +106,7 @@ public class PayloadTurret extends Turret {
 
         @Override
         protected void bullet(BulletType type, float angle){
-            tr.trns(rotation, payloadOffset + 2f, Mathf.range(xRand));
+            tr.trns(rotation, payloadShootOffset, Mathf.range(xRand));
             float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
             type.create(this, team, x + tr.x, y + tr.y, angle, -1f, 1f, lifeScl, payload);

@@ -7,16 +7,18 @@ import arc.audio.*;
 import mindustry.*;
 
 public class MindySounds {
-    public static Sound pistonPush, pistonPull;
+    public static Sound pistonPush, pistonPull, presentbells;
 
     public static void load() {
         pistonPush = loadSound("pistonpush");
         pistonPull = loadSound("pistonpull");
+        presentbells = loadSound("presentbells");
     }
 
     public static void dispose() {
         pistonPush = disposeSound("pistonpush");
         pistonPull = disposeSound("pistonpull");
+        presentbells = disposeSound("presentbells");
     }
 
     protected static Sound loadSound(String soundName) {

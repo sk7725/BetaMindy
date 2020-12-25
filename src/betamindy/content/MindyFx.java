@@ -42,5 +42,12 @@ public class MindyFx {
         randLenVectors(e.id, 16, 8f + 20f * e.finpow(), e.rotation, 130f, (x, y) -> {
             lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fin() * 5f + 1f);
         });
+    }),
+
+    cannonAccept = new Effect(18f, e -> {
+        randLenVectors(e.id, 8, 4f + e.fin() * 12f, (x, y) -> {
+            Draw.color(Pal.engine, Color.gray, e.fin());
+            Fill.square(e.x + x, e.y + y, 1f + e.fout() * 2.5f, 45f);
+        });
     });
 }

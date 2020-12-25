@@ -17,7 +17,7 @@ import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public static Block radiation, exoticMatter,
+    public static Block radiation, exoticMatter, present,
     //pistons
      piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
     //defense
@@ -39,6 +39,10 @@ public class MindyBlocks implements ContentList {
 
             status = MindyStatusEffects.controlSwap;
             duration = 3000f;
+        }};
+
+        present = new PresentBox("present"){{
+            requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
         }};
 
         piston = new Piston("piston"){{
@@ -84,8 +88,9 @@ public class MindyBlocks implements ContentList {
             smokeEffect = Fx.shootBigSmoke2;
             safeRange = 140f;
             reloadTime = 90f;
-            rotateSpeed = 3f;
+            rotateSpeed = 1.8f;
             payloadOffset = 7f;
+            payloadShootOffset = 8f;
             consumes.power(3.75f);
             requirements(Category.turret, with(Items.copper, 510, Items.titanium, 250, Items.silicon, 450, Items.plastanium, 230));
         }};
