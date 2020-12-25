@@ -115,14 +115,16 @@ public class PayloadBullet extends ArtilleryBulletType {
         else {
             //Fx.dynamicExplosion.at(tile, bp.block().size / 1.3f);
             healthDamage(bp.build.block.health * owner.damage * 0.65f, b);
-            try{
-                @Nullable Tile temptile = tile.tile;
-                tile.tile = tileon;
-                tile.onDestroyed();
-                tile.tile = temptile;
-            }
-            catch(Exception ignore){
-                print(ignore.toString());
+            if(tileon != null){
+                try{
+                    //@Nullable Tile temptile = tile.tile;
+                    tile.tile = tileon;
+                    tile.onDestroyed();
+                    //tile.tile = temptile;
+                }
+                catch(Exception ignore){
+                    print(ignore.toString());
+                }
             }
         }
     }
