@@ -113,9 +113,17 @@ public class PayloadBullet extends ArtilleryBulletType {
             healthDamage(bp.build.block.health * owner.damage * damageP, b);
         }
         else {
-            Fx.dynamicExplosion.at(tile, bp.block().size / 1.3f);
+            //Fx.dynamicExplosion.at(tile, bp.block().size / 1.3f);
             healthDamage(bp.build.block.health * owner.damage * 0.65f, b);
-            //TODO: make blocks with power/flammability/explosives explode violently(use Damage.explosion?)
+            try{
+                @Nullable Tile temptile = tile.tile;
+                tile.tile = tileon;
+                tile.onDestroyed();
+                tile.tile = temptile;
+            }
+            catch(Exception ignore){
+                print(ignore.toString());
+            }
         }
     }
 

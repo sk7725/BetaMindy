@@ -45,7 +45,7 @@ public class PayloadTurret extends Turret {
         super(name);
 
         targetAir = false;
-        outputsPayload = false;
+        outputsPayload = true;//needs to be true to accept payloads, is this intended?
         outputFacing = false;
         sync = true;
     }
@@ -151,7 +151,6 @@ public class PayloadTurret extends Turret {
             if(team == Vars.player.team()) Drawf.dashCircle(x, y, safeRange, Pal.heal);
         }
 
-        //TODO: why does it not accept directly from factories?
         @Override
         public boolean acceptPayload(Building source, Payload pay){
             return payload == null;

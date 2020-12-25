@@ -131,7 +131,7 @@ public class PresentBox extends Block {
                 }
             }
             else{
-                drawLid(x, y, rotation, 1f, Layer.block);
+                drawLid(x, y, 0f, 1f, Layer.block);
             }
         }
 
