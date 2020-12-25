@@ -1,22 +1,27 @@
 package betamindy.world.blocks.environment;
 
+//import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
+import arc.math.*;
+//import arc.math.geom.Vec2;
+import arc.scene.*;
+import arc.scene.ui.layout.*;
+//import arc.util.Align;
 import arc.util.io.*;
 import betamindy.content.MindySounds;
-import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.entities.Effect;
+import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.Cicon;
+import mindustry.ui.fragments.*;
 import mindustry.world.*;
 
-import java.util.Locale;
-
+import static mindustry.Vars.*;
 import static arc.Core.atlas;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.*;
@@ -31,6 +36,8 @@ public class PresentBox extends Block {
     public TextureRegion baseRegion, boxRegion, ribbonRegion, ribbonRegionBack, ribbonRegionBase, topRegion;
     public Effect openEffect = Fx.none, naughtyEffect = Fx.explosion;
     public Sound openSound = MindySounds.presentbells, naughtySound = Sounds.bang;
+
+    //private final CustomBlockInventoryFragment invFrag = new CustomBlockInventoryFragment();
 
     public PresentBox(String name){
         super(name);
@@ -47,7 +54,7 @@ public class PresentBox extends Block {
             entity.open = true;
             boolean naughty = item == naughtyItem;
             entity.items.add(item, naughty ? naughtyItemCount : itemCount);
-            if(!Vars.headless){
+            if(!headless){
                 if(naughty){
                     naughtySound.at(entity);
                     naughtyEffect.at(entity);
@@ -77,6 +84,7 @@ public class PresentBox extends Block {
         public boolean open;
 
         private float heat = 0;
+        //protected int itemHas = 0;
 
         @Override
         public Building create(Block block, Team team){
@@ -90,26 +98,45 @@ public class PresentBox extends Block {
         public void updateTile(){
             super.updateTile();
             if(open) heat = Mathf.lerpDelta(heat, 1f, 0.05f);
+            if(open && timer(timerDump, dumpTime)) dump();
+
+            /*if(invFrag.visible && timer.get(1, 6)){
+                itemHas = 0;
+                items.each((item, amount) -> itemHas++);
+            }*/
+        }
+
+        @Override
+        public void deselect(){
+            //if(!headless) invFrag.hide();
+            super.deselect();
         }
 
         @Override
         public void draw(){
             if(open){
                 Draw.rect(baseRegion, x, y);
+                if(items.any()){
+                    TextureRegion icon = items.first().icon(Cicon.small);
+                    for(int i = 0; i < items.total() * 5 / itemCapacity; i++){
+                        Draw.rect(icon, x + Mathf.randomSeed(id + i) * 3f - 1.5f, y + Mathf.randomSeed(id + i + 10) * 3f - 1.5f, Draw.scl * Draw.xscl * 16f, Draw.scl * Draw.yscl * 15f);
+                    }
+                }
                 Draw.color(color1);
                 Draw.rect(boxRegion, x, y);
                 Draw.reset();
+
                 if(heat < 0.99f){
-                    drawLid(x + heat * 15f * Mathf.sign(id % 2 == 0), y + heat * ( 0.7f - heat) * 26f, heat * 360f * Mathf.randomSeed(id), 1 - heat);
+                    drawLid(x + heat * 15f * Mathf.sign(id % 2 == 0), y + heat * ( 0.7f - heat) * 26f, heat * 360f * Mathf.randomSeed(id), 1 - heat, Layer.turret + 1f);
                 }
             }
             else{
-                drawLid(x, y, rotation, 1f);
+                drawLid(x, y, rotation, 1f, Layer.block);
             }
         }
 
-        public void drawLid(float x, float y, float rotation, float alpha){
-            Draw.z(Layer.turret + 1f);
+        public void drawLid(float x, float y, float rotation, float alpha, float layer){
+            Draw.z(layer);
             Draw.color(color1, alpha);
             Draw.rect(topRegion, x, y, rotation);
             Draw.color(color2, alpha);
@@ -131,7 +158,7 @@ public class PresentBox extends Block {
                 //Vars.control.input.frag.inv.showFor(this);
                 return false;
             }
-            Item item = (Vars.player.name.toLowerCase().startsWith("glen") || Mathf.chance(naughtyChance)) ? naughtyItem : Vars.content.items().random(naughtyItem);
+            Item item = (player.name.toLowerCase().startsWith("glen") || Mathf.chance(naughtyChance)) ? naughtyItem : content.items().random(naughtyItem);
             configure(item);
             return false;
         }
@@ -141,6 +168,7 @@ public class PresentBox extends Block {
             super.read(read, revision);
 
             open = read.bool();
+            if(open) heat = 1f;
         }
 
         @Override
@@ -149,5 +177,65 @@ public class PresentBox extends Block {
 
             write.bool(open);
         }
+
+        @Override
+        public void buildConfiguration(Table table){
+            //invFrag.build(table.parent);
+            /*if(invFrag.isShown()){
+                invFrag.hide();
+                control.input.frag.config.hideConfig();
+                return;
+            }*/
+            //invFrag.showFor(this);
+        }
+
+        @Override
+        public void updateTableAlign(Table table){
+            /*
+            float pos = Core.input.mouseScreen(x, y - size * 4 - 1).y;
+            Vec2 relative = Core.input.mouseScreen(x, y + size * 4);
+
+            table.setPosition(relative.x, Math.min(pos, (float)(relative.y - Math.ceil((float)itemHas / 3f) * 48f - 4f)), Align.top);*/
+
+            super.updateTableAlign(table);
+            //if(!invFrag.isShown() && control.input.frag.config.getSelectedTile() == this && items.any()) invFrag.showFor(this);
+        }
+
+        @Override
+        public void drawConfigure(){
+        }
     }
+
+    /*
+    //credits to younggam
+    class CustomBlockInventoryFragment extends BlockInventoryFragment {
+        private boolean built = false;
+        private boolean visible = false;
+
+        public boolean isBuilt(){
+            return built;
+        }
+
+        public boolean isShown(){
+            return visible;
+        }
+
+        @Override
+        public void showFor(Building t){
+            visible = true;
+            super.showFor(t);
+        }
+
+        @Override
+        public void hide(){
+            visible = false;
+            super.hide();
+        }
+
+        @Override
+        public void build(Group parent){
+            built = true;
+            super.build(parent);
+        }
+    }*/
 }
