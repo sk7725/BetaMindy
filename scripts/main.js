@@ -8,7 +8,7 @@ if(!Vars.headless){
       }
 
       var mod = Vars.mods.locateMod("beta-mindy-r");
-      mod.meta.displayName = "[gray]Beta[lightgray]Mindy[][]";
+      mod.meta.displayName = "[gray]Beta[lightgray]Mindy[] (disabled)[]";
       mod.meta.description = "$download.text";
     });
   });
