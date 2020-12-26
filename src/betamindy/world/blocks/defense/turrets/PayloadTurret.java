@@ -31,13 +31,13 @@ public class PayloadTurret extends Turret {
     public float maxDamagePercent = 0.5f;
     /** Maximum range the fired payload does not lose health, note that area damage will still scale inside this range */
     public float safeRange = range * 0.3f;
-    public final BulletType shootType = MindyBullets.payBullet;
-    /** Payload draw offset */
-    public float payloadOffset = 15f;
-    /** Payload fire offset */
+    public BulletType shootType = MindyBullets.payBullet;
+    /** Payload draw offset, draw scale */
+    public float payloadOffset = 15f,  payloadScale = 0.8f;
+    /** Payload fire offset*/
     public float payloadShootOffset = 15f;
-    /** Payload draw scale */
-    public float payloadScale = 0.8f;
+    /** Maximum accepted payload size */
+    public float maxPaySize = 5.5f;
 
     public Effect acceptEffect = MindyFx.cannonAccept;
 
@@ -153,7 +153,7 @@ public class PayloadTurret extends Turret {
 
         @Override
         public boolean acceptPayload(Building source, Payload pay){
-            return payload == null;
+            return payload == null && pay.size() / tilesize <= maxPaySize;
         }
 
         @Override

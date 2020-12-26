@@ -12,6 +12,7 @@ import betamindy.content.*;
 
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
+    public static SettingAdder settingAdder = new SettingAdder();
 
     private final ContentList[] mindyContent = {
         new OverWriter(),
@@ -28,7 +29,10 @@ public class BetaMindy extends Mod{
             MindySounds.dispose();
         });
 
-        Core.settings.defaults("slimeeffect", true);
+        Core.settings.defaults("slimeeffect", true, "correctview", false);
+        Events.on(ClientLoadEvent.class, e -> {
+            settingAdder.init();
+        });
     }
 
     @Override

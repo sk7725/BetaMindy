@@ -21,7 +21,7 @@ public class MindyBlocks implements ContentList {
     //pistons
      piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
     //defense
-     payCannon;
+     payCannon, payCatapult;
 
     @Override
     public void load() {
@@ -92,7 +92,30 @@ public class MindyBlocks implements ContentList {
             payloadOffset = 7f;
             payloadShootOffset = 8f;
             consumes.power(3.75f);
-            requirements(Category.turret, with(Items.copper, 510, Items.titanium, 250, Items.silicon, 450, Items.plastanium, 230));
+            requirements(Category.turret, with(Items.copper, 1000, Items.titanium, 750, Items.silicon, 450, Items.plastanium, 330));
+        }};
+
+        payCatapult = new PayloadTurret("payload-catapult"){{
+            health = 3190;
+            size = 7;
+            recoilAmount = 9f;
+            range = 520f;
+            shootShake = 4f;
+            shootSound = Sounds.plasmaboom;
+            shootEffect = MindyFx.cannonShoot2;
+            smokeEffect = Fx.shootBigSmoke2;
+            damage = 2.3f;
+            maxDamagePercent = 0.75f;
+            safeRange = 190f;
+            reloadTime = 150f;
+            rotateSpeed = 1.3f;
+            payloadOffset = 12f;
+            payloadShootOffset = 13f;
+            payloadScale = 0.85f;
+            maxPaySize = 14.5f; //I'm not adding a T3. ...definitely. ...definitely? ...definitely.
+            consumes.power(7.25f);
+            shootType = MindyBullets.payBulletBig;
+            requirements(Category.turret, with(Items.copper, 1500, Items.titanium, 900, Items.silicon, 650, Items.plastanium, 390, Items.phaseFabric, 180, Items.surgeAlloy, 165));
         }};
     }
 }

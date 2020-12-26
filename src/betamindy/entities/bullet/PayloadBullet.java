@@ -1,5 +1,7 @@
 package betamindy.entities.bullet;
 
+import arc.Core;
+import arc.Events;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
@@ -10,6 +12,7 @@ import mindustry.core.*;
 import mindustry.entities.Damage;
 import mindustry.entities.EntityGroup;
 import mindustry.entities.bullet.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -19,9 +22,10 @@ import mindustry.world.blocks.payloads.*;
 
 public class PayloadBullet extends ArtilleryBulletType {
     public float altitude = 40f;
+    protected boolean correctView;
 
-    public PayloadBullet(){
-        super();
+    public PayloadBullet(float speed){
+        super(speed, 1f);
         collidesAir = false;
         collidesGround = false;
         collides = false;
@@ -30,10 +34,18 @@ public class PayloadBullet extends ArtilleryBulletType {
         absorbable = false;
         reflectable = false;
         drawSize = 80f;
-        lifetime = 90f;
-        trailSize = 6f;
-        splashDamageRadius = 30f;
-        despawnEffect = Fx.none;
+    }
+
+    public PayloadBullet(){
+        this(1f);
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        Events.run(Trigger.update, () -> {
+           correctView = Core.settings.getBool("correctview");
+        });
     }
 
     @Override
@@ -46,22 +58,41 @@ public class PayloadBullet extends ArtilleryBulletType {
         if(b.data instanceof BuildPayload){
             BuildPayload bp = (BuildPayload)b.data;
             icon = bp.build.block.icon(Cicon.full);
-            rotation = Mathf.lerp(rotation, (int)((rotation + 45f) / 90f) * 90f, b.fin());
+            if(bp.build.block.rotate) rotation = Mathf.lerp(rotation, (int)((rotation + 45f) / 90f) * 90f, b.fin());
+            else rotation = Mathf.lerp((rotation + 45f) % 90f - 45f, 0f, b.fin());
         }
         else if(b.data instanceof UnitPayload){
             UnitPayload up = (UnitPayload)b.data;
             icon = up.unit.type().icon(Cicon.full);
+            rotation -= 90f;
         }
         else return;
 
+        if(correctView) drawNew(b, icon, rotation);
+        else drawOriginal(b, icon, rotation);
+    }
 
+    public void drawOriginal(Bullet b, TextureRegion icon, float rotation){
         Draw.color(Pal.shadow);
-        Draw.rect(icon, b.x, b.y, rotation - 90f);
+        Draw.rect(icon, b.x, b.y, rotation);
 
         float offset = b.fin() * (1 - b.fin()) * altitude * b.lifetime / lifetime;
         Draw.color();
         Draw.z(Layer.flyingUnit);
-        Draw.rect(icon, b.x + offset, b.y + offset, rotation - 90f);
+        Draw.rect(icon, b.x + offset, b.y + offset, rotation);
+
+        Draw.reset();
+    }
+
+    public void drawNew(Bullet b, TextureRegion icon, float rotation){
+        Draw.color(Pal.shadow);
+        float offset = b.fin() * (1 - b.fin()) * altitude * b.lifetime / lifetime;
+        Draw.rect(icon, b.x - offset, b.y - offset, rotation);
+
+        float sizeScl = offset * 0.02f + 1f;
+        Draw.color();
+        Draw.z(Layer.flyingUnit);
+        Draw.rect(icon, b.x, b.y, icon.width * Draw.scl * Draw.xscl * sizeScl, icon.height * Draw.scl * Draw.yscl * sizeScl,rotation);
 
         Draw.reset();
     }
@@ -69,8 +100,11 @@ public class PayloadBullet extends ArtilleryBulletType {
     @Override
     public void update(Bullet b){
         if(b.timer(0, (3 + b.fslope() * 2f) * trailMult)){
-            float offset = b.fin() * (1 - b.fin()) * altitude * b.lifetime / lifetime;
-            trailEffect.at(b.x + offset, b.y + offset, b.fslope() * trailSize, b.team.color);
+            if(!correctView){
+                float offset = b.fin() * (1 - b.fin()) * altitude * b.lifetime / lifetime;
+                trailEffect.at(b.x + offset, b.y + offset, b.fslope() * trailSize, b.team.color);
+            }
+            else trailEffect.at(b.x, b.y, b.fslope() * trailSize, b.team.color);
         }
     }
 
