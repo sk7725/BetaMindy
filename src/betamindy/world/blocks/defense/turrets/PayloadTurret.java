@@ -37,7 +37,7 @@ public class PayloadTurret extends Turret {
     /** Payload fire offset*/
     public float payloadShootOffset = 15f;
     /** Maximum accepted payload size */
-    public float maxPaySize = 5.5f;
+    public float maxPaySize = 4.5f;
 
     public Effect acceptEffect = MindyFx.cannonAccept;
 
@@ -87,14 +87,18 @@ public class PayloadTurret extends Turret {
             return Core.atlas.find("error");
         }
 
+        public float rotationOffset(){
+            return (payload instanceof BuildPayload) && ((BuildPayload)payload).block().rotate ? 0f : -90f;
+        }
+
         @Override
         public void draw(){
             super.draw();
             if(payload != null) {
                 TextureRegion payIcon = payloadIcon();
                 tr2.trns(rotation, -recoil + payloadOffset);
-                Draw.color(team.color, Color.white, payheat);
-                Draw.rect(payIcon, x + tr2.x, y + tr2.y, payIcon.width * Draw.scl * Draw.xscl * payloadScale * payheat, payIcon.height * Draw.scl * Draw.yscl * payloadScale * payheat, rotation - 90);
+                Draw.mixcol(team.color, 1f - payheat);
+                Draw.rect(payIcon, x + tr2.x, y + tr2.y, payIcon.width * Draw.scl * Draw.xscl * payloadScale * payheat, payIcon.height * Draw.scl * Draw.yscl * payloadScale * payheat, rotation + rotationOffset());
                 Draw.reset();
             }
         }

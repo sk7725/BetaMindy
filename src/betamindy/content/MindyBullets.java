@@ -10,7 +10,7 @@ public class MindyBullets implements ContentList {
     public static BulletType payBullet, payBulletBig;
     @Override
     public void load(){
-        payBullet = new PayloadBullet(){{
+        payBullet = new PayloadBullet(1.6f){{
             hitEffect = Fx.mineBig;
             despawnEffect = Fx.none;
             hitColor = Pal.engine;
@@ -20,7 +20,7 @@ public class MindyBullets implements ContentList {
             splashDamageRadius = 30f;
         }};
 
-        payBulletBig = new PayloadBullet(2.6f){{
+        payBulletBig = new PayloadBullet(3.2f){{
             hitEffect = Fx.mineHuge;
             despawnEffect = MindyFx.payShock;
             hitColor = Pal.lancerLaser;

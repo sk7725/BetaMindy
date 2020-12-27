@@ -4,7 +4,8 @@ import arc.graphics.*;
 import betamindy.world.blocks.defense.turrets.PayloadTurret;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
-import betamindy.world.blocks.power.AccelBlock;
+import betamindy.world.blocks.power.*;
+import betamindy.world.blocks.temporary.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.Team;
@@ -20,8 +21,8 @@ public class MindyBlocks implements ContentList {
     public static Block radiation, exoticMatter, present,
     //pistons
      piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
-    //defense
-     payCannon, payCatapult;
+    //payloads
+     payCannon, payCatapult, blockWorkshop, blockPacker, blockUnpacker;
 
     @Override
     public void load() {
@@ -87,7 +88,7 @@ public class MindyBlocks implements ContentList {
             shootEffect = MindyFx.cannonShoot;
             smokeEffect = Fx.shootBigSmoke2;
             safeRange = 140f;
-            reloadTime = 90f;
+            reloadTime = 120f;
             rotateSpeed = 1.8f;
             payloadOffset = 7f;
             payloadShootOffset = 8f;
@@ -107,15 +108,42 @@ public class MindyBlocks implements ContentList {
             damage = 2.3f;
             maxDamagePercent = 0.75f;
             safeRange = 190f;
-            reloadTime = 150f;
+            reloadTime = 250f;
             rotateSpeed = 1.3f;
-            payloadOffset = 12f;
-            payloadShootOffset = 13f;
+            payloadOffset = 7.5f;
+            payloadShootOffset = 7f;
             payloadScale = 0.85f;
             maxPaySize = 14.5f; //I'm not adding a T3. ...definitely. ...definitely? ...definitely.
             consumes.power(7.25f);
             shootType = MindyBullets.payBulletBig;
             requirements(Category.turret, with(Items.copper, 1500, Items.titanium, 900, Items.silicon, 650, Items.plastanium, 390, Items.phaseFabric, 180, Items.surgeAlloy, 165));
+        }};
+
+        blockWorkshop = new BetterBlockForge("block-workshop"){{
+            health = 80;
+            size = 5;
+            minBlockSize = 3;
+            maxBlockSize = 4;
+            buildSpeed = 0.2f;
+            consumes.power(3.25f);
+            consumes.liquid(Liquids.cryofluid, 1f);
+            requirements(Category.production, with(Items.thorium, 160, Items.phaseFabric, 60, Items.surgeAlloy, 45));
+        }};
+
+        blockPacker = new BetterBlockLoader("block-packer"){{
+            health = 80;
+            size = 5;
+            maxBlockSize = 4;
+            consumes.power(3.25f);
+            requirements(Category.production, with(Items.thorium, 160, Items.plastanium, 65, Items.phaseFabric, 30));
+        }};
+
+        blockUnpacker = new BetterBlockUnloader("block-unpacker"){{
+            health = 80;
+            size = 5;
+            maxBlockSize = 4;
+            consumes.power(3.25f);
+            requirements(Category.production, with(Items.thorium, 160, Items.plastanium, 30, Items.phaseFabric, 65));
         }};
     }
 }
