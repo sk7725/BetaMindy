@@ -125,6 +125,7 @@ public class MindyBlocks implements ContentList {
             minBlockSize = 3;
             maxBlockSize = 4;
             buildSpeed = 0.2f;
+            liquidCapacity = 120f;
             consumes.power(3.25f);
             consumes.liquid(Liquids.cryofluid, 1f);
             requirements(Category.production, with(Items.thorium, 160, Items.phaseFabric, 60, Items.surgeAlloy, 45));
