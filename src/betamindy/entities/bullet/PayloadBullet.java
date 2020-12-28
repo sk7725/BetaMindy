@@ -14,6 +14,7 @@ import mindustry.entities.EntityGroup;
 import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.*;
@@ -73,8 +74,7 @@ public class PayloadBullet extends ArtilleryBulletType {
     }
 
     public void drawOriginal(Bullet b, TextureRegion icon, float rotation){
-        Draw.color(Pal.shadow);
-        Draw.rect(icon, b.x, b.y, rotation);
+        drawShadow(icon, b.x, b.y, 0, rotation);
 
         float offset = b.fin() * (1 - b.fin()) * altitude * b.lifetime / lifetime;
         Draw.color();
@@ -85,9 +85,8 @@ public class PayloadBullet extends ArtilleryBulletType {
     }
 
     public void drawNew(Bullet b, TextureRegion icon, float rotation){
-        Draw.color(Pal.shadow);
         float offset = b.fin() * (1 - b.fin()) * altitude * b.lifetime / lifetime;
-        Draw.rect(icon, b.x - offset, b.y - offset, rotation);
+        drawShadow(icon, b.x, b.y, offset, rotation);
 
         float sizeScl = offset * 0.02f + 1f;
         Draw.color();
@@ -95,6 +94,12 @@ public class PayloadBullet extends ArtilleryBulletType {
         Draw.rect(icon, b.x, b.y, icon.width * Draw.scl * Draw.xscl * sizeScl, icon.height * Draw.scl * Draw.yscl * sizeScl,rotation);
 
         Draw.reset();
+    }
+
+    public void drawShadow(Bullet b, TextureRegion icon, float offset, float rotation){
+        Draw.color(Pal.shadow);
+        Draw.z(Layer.darkness);
+        Draw.rect(icon, b.x - offset, b.y - offset, rotation);
     }
 
     @Override
