@@ -2,9 +2,7 @@ plugins {
     id 'java'
 }
 
-final buildFilename = "artifact.jar"
-final minAPI = 26
-group 'sonnicon'
+group pGroup
 
 sourceSets.main {
     java.srcDir("src/")
@@ -17,30 +15,31 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.Anuken.Mindustry:core:v121.4'
+    implementation "com.github.Anuken.Mindustry:core:$pMindustryVersion"
 }
 
 jar {
-    archiveName buildFilename
+    archiveFileName.set pArtifactFilename
 }
 
 task dexify(type: Jar) {
-    archiveName "dexed-$buildFilename"
+    archiveName "dexed-$pArtifactFilename"
 
-    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, buildFilename),
+    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, pArtifactFilename),
                dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
     doFirst {
         exec {
             workingDir dexedArtifact.parent
-            def command = ["d8", "--min-api", minAPI, "--output", dexedArtifact, jarArtifact]
+            def command = ["d8", "--min-api", pMinApi, "--output", dexedArtifact, jarArtifact]
             if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows'))
                 commandLine("cmd", "/c", *command)
             else
                 commandLine(*command)
+
         }
     }
 
-    from( zipTree(jarArtifact), zipTree(dexedArtifact))
+    from(zipTree(jarArtifact), zipTree(dexedArtifact))
 }
 
 task buildDex dependsOn "build", "dexify"
