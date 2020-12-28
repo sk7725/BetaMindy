@@ -5,6 +5,7 @@ import betamindy.world.blocks.defense.turrets.PayloadTurret;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.power.*;
+import betamindy.world.blocks.production.PayloadDeconstructor;
 import betamindy.world.blocks.temporary.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
@@ -22,7 +23,7 @@ public class MindyBlocks implements ContentList {
     //pistons
      piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
     //payloads
-     payCannon, payCatapult, blockWorkshop, blockPacker, blockUnpacker;
+     payCannon, payCatapult, blockWorkshop, blockPacker, blockUnpacker, payDeconstructor, payDestroyer;
 
     @Override
     public void load() {
@@ -90,6 +91,7 @@ public class MindyBlocks implements ContentList {
             safeRange = 140f;
             reloadTime = 120f;
             rotateSpeed = 1.8f;
+            maxPaySize = 3.5f;
             payloadOffset = 7f;
             payloadShootOffset = 8f;
             consumes.power(3.75f);
@@ -145,6 +147,24 @@ public class MindyBlocks implements ContentList {
             maxBlockSize = 4;
             consumes.power(3.25f);
             requirements(Category.production, with(Items.thorium, 160, Items.plastanium, 30, Items.phaseFabric, 65));
+        }};
+
+        payDeconstructor = new PayloadDeconstructor("payload-deconstructor"){{
+            health = 40;
+            size = 3;
+            itemCapacity = 300;
+            consumes.power(1f);
+            requirements(Category.crafting, with(Items.copper, 50, Items.titanium, 25, Items.silicon, 25));
+        }};
+
+        payDestroyer = new PayloadDeconstructor("payload-destroyer"){{
+            health = 80;
+            size = 5;
+            maxPaySize = 4.5f;
+            buildSpeed = 0.75f;
+            itemCapacity = 500;
+            consumes.power(1.8f);
+            requirements(Category.crafting, with(Items.copper, 100, Items.titanium, 95, Items.silicon, 65));
         }};
     }
 }

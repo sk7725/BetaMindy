@@ -88,5 +88,12 @@ public class MindyFx {
         color(Color.white, Pal.lancerLaser, e.fin());
         stroke(e.fout() * 7f);
         Lines.poly(e.x, e.y, 12, 26f * e.fin());
-    }).layer(Layer.debris);
+    }).layer(Layer.debris),
+
+    breakPayload = new Effect(18f, e -> {
+        randLenVectors(e.id, 12, e.rotation + e.fin() * 7f, (x, y) -> {
+            color(Pal.remove, Color.gray, e.fin());
+            Fill.square(e.x + x, e.y + y, e.fout() * 2.5f, 45f);
+        });
+    });
 }
