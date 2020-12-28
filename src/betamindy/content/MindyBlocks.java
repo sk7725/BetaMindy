@@ -1,29 +1,36 @@
 package betamindy.content;
 
 import arc.graphics.*;
-import betamindy.world.blocks.defense.turrets.PayloadTurret;
+import arc.graphics.g2d.TextureRegion;
+import arc.struct.*;
+import betamindy.graphics.Drawm;
+import betamindy.world.blocks.defense.turrets.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.power.*;
-import betamindy.world.blocks.production.PayloadDeconstructor;
+import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.temporary.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.game.Team;
+import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.storage.*;
+import mindustry.world.meta.*;
 
 import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter, present,
-    //pistons
-     piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
     //payloads
-     payCannon, payCatapult, blockWorkshop, blockPacker, blockUnpacker, payDeconstructor, payDestroyer;
+    payCannon, payCatapult, blockWorkshop, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
+    //pistons
+    piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
+    //effect
+    silo;
 
     @Override
     public void load() {
@@ -41,42 +48,6 @@ public class MindyBlocks implements ContentList {
 
             status = MindyStatusEffects.controlSwap;
             duration = 3000f;
-        }};
-
-        present = new PresentBox("present"){{
-            requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
-        }};
-
-        piston = new Piston("piston"){{
-            health = 200;
-            consumes.power(1f);
-            requirements(Category.distribution, with(Items.graphite, 25, Items.silicon, 10, Items.titanium, 15));
-        }};
-
-        stickyPiston = new Piston("piston-sticky"){{
-            health = 200;
-            consumes.power(1f);
-            requirements(Category.distribution, with(Items.sporePod, 10, Items.graphite, 15, Items.silicon, 10, Items.titanium, 15));
-            sticky = true;
-        }};
-
-        sporeSlime = new SlimeBlock("spore-slime", 0){{
-            health = 40;
-            requirements(Category.distribution, with(Items.sporePod, 6));
-
-            color = Color.valueOf("9E78DC");
-        }};
-
-        sporeSlimeSided = new SidedSlimeBlock("spore-slime-sided", 0){{
-            health = 120;
-            requirements(Category.distribution, with(Items.sporePod, 3, Items.lead, 3));
-
-            color = Color.valueOf("9E78DC");
-        }};
-
-        accel = new AccelBlock("accel"){{
-            health = 150;
-            requirements(Category.power, with(Items.titanium, 25, Items.silicon, 20, Items.plastanium, 3));
         }};
 
         payCannon = new PayloadTurret("payload-cannon"){{
@@ -130,7 +101,7 @@ public class MindyBlocks implements ContentList {
             liquidCapacity = 120f;
             consumes.power(3.25f);
             consumes.liquid(Liquids.cryofluid, 1f);
-            requirements(Category.production, with(Items.thorium, 160, Items.phaseFabric, 60, Items.surgeAlloy, 45));
+            requirements(Category.crafting, with(Items.thorium, 160, Items.phaseFabric, 60, Items.surgeAlloy, 45));
         }};
 
         blockPacker = new BetterBlockLoader("block-packer"){{
@@ -138,7 +109,7 @@ public class MindyBlocks implements ContentList {
             size = 5;
             maxBlockSize = 4;
             consumes.power(3.25f);
-            requirements(Category.production, with(Items.thorium, 160, Items.plastanium, 65, Items.phaseFabric, 30));
+            requirements(Category.distribution, with(Items.thorium, 160, Items.plastanium, 65, Items.phaseFabric, 30));
         }};
 
         blockUnpacker = new BetterBlockUnloader("block-unpacker"){{
@@ -146,25 +117,96 @@ public class MindyBlocks implements ContentList {
             size = 5;
             maxBlockSize = 4;
             consumes.power(3.25f);
-            requirements(Category.production, with(Items.thorium, 160, Items.plastanium, 30, Items.phaseFabric, 65));
+            requirements(Category.distribution, with(Items.thorium, 160, Items.plastanium, 30, Items.phaseFabric, 65));
         }};
 
         payDeconstructor = new PayloadDeconstructor("payload-deconstructor"){{
-            health = 40;
+            health = 80;
             size = 3;
-            itemCapacity = 300;
+            itemCapacity = 400;
             consumes.power(1f);
             requirements(Category.crafting, with(Items.copper, 50, Items.titanium, 25, Items.silicon, 25));
         }};
 
         payDestroyer = new PayloadDeconstructor("payload-destroyer"){{
-            health = 80;
+            health = 120;
             size = 5;
-            maxPaySize = 4.5f;
+            maxPaySize = 4f;
             buildSpeed = 0.75f;
-            itemCapacity = 500;
+            itemCapacity = 800;
+            refundMultiplier = 1.75f;
             consumes.power(1.8f);
             requirements(Category.crafting, with(Items.copper, 100, Items.titanium, 95, Items.silicon, 65));
+        }};
+
+        payEradicator = new PayloadDeconstructor("payload-eradicator"){{
+            health = 250;
+            size = 7;
+            maxPaySize = 10f;
+            buildSpeed = 0.8f;
+            itemCapacity = 1500;
+            refundMultiplier = 2f;
+            consumes.power(2.35f);
+            consumes.liquid(Liquids.water, 0.8f);
+            requirements(Category.crafting, with(Items.copper, 200, Items.titanium, 130, Items.silicon, 115, Items.phaseFabric, 35));
+        }};
+
+        piston = new Piston("piston"){{
+            health = 200;
+            consumes.power(1f);
+            requirements(Category.distribution, with(Items.graphite, 25, Items.silicon, 10, Items.titanium, 15));
+        }};
+
+        stickyPiston = new Piston("piston-sticky"){{
+            health = 200;
+            consumes.power(1f);
+            requirements(Category.distribution, with(Items.sporePod, 10, Items.graphite, 15, Items.silicon, 10, Items.titanium, 15));
+            sticky = true;
+        }};
+
+        sporeSlime = new SlimeBlock("spore-slime", 0){{
+            health = 40;
+            requirements(Category.distribution, with(Items.sporePod, 6));
+
+            color = Color.valueOf("9E78DC");
+        }};
+
+        sporeSlimeSided = new SidedSlimeBlock("spore-slime-sided", 0){{
+            health = 120;
+            requirements(Category.distribution, with(Items.sporePod, 3, Items.lead, 3));
+
+            color = Color.valueOf("9E78DC");
+        }};
+
+        accel = new AccelBlock("accel"){{
+            health = 150;
+            requirements(Category.power, with(Items.titanium, 25, Items.silicon, 20, Items.plastanium, 3));
+        }};
+
+        silo = new StorageBlock("silo"){
+            public TextureRegion iconRegion;
+
+            @Override
+            public void load(){
+                iconRegion = Drawm.generateTeamRegion(this);
+                super.load();
+            }
+
+            @Override
+            public TextureRegion[] icons(){
+                return new TextureRegion[]{region, iconRegion};
+            }
+
+            {
+                size = 4;
+                itemCapacity = 2500;
+                flags = EnumSet.of(BlockFlag.storage);
+                requirements(Category.effect, with(Items.titanium, 400, Items.thorium, 250, Items.plastanium, 200, Items.phaseFabric, 50));
+            }
+        };
+
+        present = new PresentBox("present"){{
+            requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
         }};
     }
 }

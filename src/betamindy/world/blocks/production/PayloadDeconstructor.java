@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -15,10 +16,16 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.ItemStack;
+import mindustry.type.UnitType;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
+import mindustry.world.blocks.units.*;
+import mindustry.world.consumers.ConsumeType;
 import mindustry.world.meta.Stat;
+
+import java.util.Arrays;
 
 public class PayloadDeconstructor extends PayloadAcceptor {
     /** The additional refundmultiplier multiplied to the refundmultiplier of the map. Note that the final refund multiplier will not exceed 1, unless the map's refund is already over 1. */
@@ -28,7 +35,10 @@ public class PayloadDeconstructor extends PayloadAcceptor {
     public Color deconstructColor = Pal.remove;
     public Effect finishEffect = Fx.none;
 
-    public final ItemStack defaultStack = new ItemStack(Items.scrap, 25);
+    public final ItemStack[] defaultStack = {new ItemStack(Items.scrap, 25)};
+    public ObjectMap<UnitType, ItemStack[]> unitCosts = new ObjectMap<UnitType, ItemStack[]>(33);
+    public UnitFactory[] factories;
+    public Reconstructor[] recons;
 
     public PayloadDeconstructor(String name){
         super(name);
@@ -62,6 +72,71 @@ public class PayloadDeconstructor extends PayloadAcceptor {
         return new TextureRegion[]{region, topRegion};
     }
 
+    @Override
+    public void init(){
+        super.init();
+
+        Seq<UnitFactory> facs = new Seq<UnitFactory>();
+        Seq<Reconstructor> recs = new Seq<Reconstructor>();
+        Vars.content.blocks().each((Block b) -> {
+            if(b instanceof UnitFactory) facs.add((UnitFactory)b);
+            else if(b instanceof Reconstructor) recs.add((Reconstructor)b);
+        });
+        factories = facs.toArray(UnitFactory.class);
+        recons = recs.toArray(Reconstructor.class);
+        print("InitCost start!");
+        Vars.content.units().each(this::initCost);
+    }
+
+    public void print(String pain){
+        Vars.mods.getScripts().log("BetaMindy", pain);
+    }
+
+    public void initCost(UnitType u){
+        unitCosts.put(u, calcCost(u));
+    }
+
+    public ItemStack[] mergeArray(ItemStack[] first, ItemStack[] second){
+        ItemStack[] both = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, both, first.length, second.length);
+        return both;
+    }
+
+    /** Recursively generates a buildCost for units */
+    public ItemStack[] calcCost(UnitType u){
+        boolean t1 = true;
+        for(Reconstructor b : recons){
+            UnitType[] r =  b.upgrades.find(u0 -> u0[1] == u);
+            if(r != null){
+                t1 = false;
+                ItemStack[] cost = calcCost(r[0]);
+                if(b.consumes.has(ConsumeType.item)){
+                    return mergeArray(cost, b.consumes.getItem().items);
+                }
+                else return cost;
+            }
+        }
+
+        if(t1){
+            for(UnitFactory b : factories){
+                for(UnitFactory.UnitPlan plan : b.plans){
+                    if(plan.unit == u) return plan.requirements;
+                }
+            }
+        }
+        return defaultStack;
+    }
+
+    public ItemStack[] payloadCost(Payload pay){
+        if(pay instanceof BuildPayload){
+            return ((BuildPayload)pay).block().requirements;
+        }
+        else if(pay instanceof UnitPayload){
+            return unitCosts.get(((UnitPayload)pay).unit.type);
+        }
+        return defaultStack;
+    }
+
     public class PayloadDeconBuild<T extends Payload> extends PayloadAcceptorBuild<T> {
         public float progress, time, heat;
         //public int lastRot = 0;
@@ -74,7 +149,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
             if(payload instanceof BuildPayload){
                 return ((BuildPayload)payload).block().buildCost;
             }
-            else return payload.size() * 9f;
+            else return payload.size() * 18f;
         }
 
         @Override
@@ -87,8 +162,10 @@ public class PayloadDeconstructor extends PayloadAcceptor {
                 if(progress >= totalProgress()){
                     consume();
                     finishEffect.at(this, payload.size());
-                    //TODO: PAIN, use code snippet below
-                    items.add(defaultStack.item, (int)(defaultStack.amount * realMultiplier()));
+                    ItemStack[] costs = payloadCost(payload);
+                    for(ItemStack stack : costs){
+                        items.add(stack.item, (int)(stack.amount * realMultiplier()));
+                    }
                     payload = null;
                     progress = 0f;
                 }

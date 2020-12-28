@@ -139,8 +139,9 @@ public class PayloadBullet extends ArtilleryBulletType {
             float damageP = owner.maxDamagePercent * dist / (owner.range * owner.blockRangeMultiplier);
             //print("DamageP: " + damageP);
             int rot = (int)((b.rotation() + 45f) / 90f) % 4;
-            if(dist > owner.safeRange) tile.damage(damageP * bp.build.health);
+
             bp.place(tileon, rot);
+            if(dist > owner.safeRange && tileon.build != null) tileon.build.damage(damageP * bp.build.health);
 
             Fx.unitDrop.at(tile);
             Fx.placeBlock.at(tileon.drawx(), tileon.drawy(), tileon.block().size);

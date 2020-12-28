@@ -2,6 +2,7 @@ package betamindy.content;
 
 import arc.func.Cons;
 import mindustry.ctype.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -20,14 +21,17 @@ public class OverWriter implements ContentList{
 
         forceOverWrite(blockForge, (Block t) -> {
             t.buildVisibility = BuildVisibility.shown;
+            t.category = Category.crafting;
         });
 
         forceOverWrite(blockLoader, (Block t) -> {
             t.buildVisibility = BuildVisibility.shown;
+            t.category = Category.distribution;
         });
 
         forceOverWrite(blockUnloader, (Block t) -> {
             t.buildVisibility = BuildVisibility.shown;
+            t.category = Category.distribution;
         });
 
         //endregion
