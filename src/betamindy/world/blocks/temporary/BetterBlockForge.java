@@ -1,5 +1,6 @@
 package betamindy.world.blocks.temporary;
 
+import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -18,6 +19,7 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.Stat;
 
 import static mindustry.Vars.*;
 
@@ -48,6 +50,13 @@ public class BetterBlockForge extends PayloadAcceptor{
     @Override
     public TextureRegion[] icons(){
         return new TextureRegion[]{region, outRegion};
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.output, "@x@ ~ @x@", minBlockSize, minBlockSize, maxBlockSize, maxBlockSize);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter, present,
     //payloads
-    payCannon, payCatapult, blockWorkshop, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
+    payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
     piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
     //effect
@@ -97,11 +97,23 @@ public class MindyBlocks implements ContentList {
             size = 5;
             minBlockSize = 3;
             maxBlockSize = 4;
-            buildSpeed = 0.2f;
+            buildSpeed = 0.4f;
             liquidCapacity = 120f;
             consumes.power(3.25f);
-            consumes.liquid(Liquids.cryofluid, 1f);
-            requirements(Category.crafting, with(Items.thorium, 160, Items.phaseFabric, 60, Items.surgeAlloy, 45));
+            consumes.liquid(Liquids.water, 1f);
+            requirements(Category.crafting, with(Items.thorium, 360, Items.phaseFabric, 120, Items.surgeAlloy, 60));
+        }};
+
+        blockFactory = new ConfigBlockForge("block-factory"){{
+            health = 240;
+            size = 7;
+            minBlockSize = 1;
+            maxBlockSize = 6;
+            buildSpeed = 0.6f;
+            liquidCapacity = 180f;
+            consumes.power(4.75f);
+            consumes.liquid(Liquids.cryofluid, 1.5f);
+            requirements(Category.crafting, with(Items.thorium, 640, Items.silicon, 120, Items.plastanium, 320, Items.phaseFabric, 460, Items.surgeAlloy, 480));
         }};
 
         blockPacker = new BetterBlockLoader("block-packer"){{
@@ -109,7 +121,7 @@ public class MindyBlocks implements ContentList {
             size = 5;
             maxBlockSize = 4;
             consumes.power(3.25f);
-            requirements(Category.distribution, with(Items.thorium, 160, Items.plastanium, 65, Items.phaseFabric, 30));
+            requirements(Category.distribution, with(Items.thorium, 360, Items.plastanium, 100, Items.phaseFabric, 80));
         }};
 
         blockUnpacker = new BetterBlockUnloader("block-unpacker"){{
@@ -117,7 +129,7 @@ public class MindyBlocks implements ContentList {
             size = 5;
             maxBlockSize = 4;
             consumes.power(3.25f);
-            requirements(Category.distribution, with(Items.thorium, 160, Items.plastanium, 30, Items.phaseFabric, 65));
+            requirements(Category.distribution, with(Items.thorium, 360, Items.plastanium, 80, Items.phaseFabric, 100));
         }};
 
         payDeconstructor = new PayloadDeconstructor("payload-deconstructor"){{
@@ -125,7 +137,7 @@ public class MindyBlocks implements ContentList {
             size = 3;
             itemCapacity = 400;
             consumes.power(1f);
-            requirements(Category.crafting, with(Items.copper, 50, Items.titanium, 25, Items.silicon, 25));
+            requirements(Category.crafting, with(Items.copper, 100, Items.titanium, 50, Items.silicon, 25));
         }};
 
         payDestroyer = new PayloadDeconstructor("payload-destroyer"){{
@@ -136,7 +148,7 @@ public class MindyBlocks implements ContentList {
             itemCapacity = 800;
             refundMultiplier = 1.75f;
             consumes.power(1.8f);
-            requirements(Category.crafting, with(Items.copper, 100, Items.titanium, 95, Items.silicon, 65));
+            requirements(Category.crafting, with(Items.copper, 360, Items.titanium, 95, Items.silicon, 65));
         }};
 
         payEradicator = new PayloadDeconstructor("payload-eradicator"){{
@@ -148,7 +160,7 @@ public class MindyBlocks implements ContentList {
             refundMultiplier = 2f;
             consumes.power(2.35f);
             consumes.liquid(Liquids.water, 0.8f);
-            requirements(Category.crafting, with(Items.copper, 200, Items.titanium, 130, Items.silicon, 115, Items.phaseFabric, 35));
+            requirements(Category.crafting, with(Items.copper, 610, Items.titanium, 130, Items.silicon, 115, Items.phaseFabric, 35));
         }};
 
         piston = new Piston("piston"){{
