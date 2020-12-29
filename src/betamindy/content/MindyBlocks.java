@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.*;
 import betamindy.graphics.Drawm;
+import betamindy.world.blocks.defense.TeamWall;
 import betamindy.world.blocks.defense.turrets.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
@@ -30,7 +31,9 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
     //effect
-    silo;
+    silo, warehouse,
+    //walls
+    teamWall;
 
     @Override
     public void load() {
@@ -213,12 +216,39 @@ public class MindyBlocks implements ContentList {
                 size = 4;
                 itemCapacity = 2500;
                 flags = EnumSet.of(BlockFlag.storage);
-                requirements(Category.effect, with(Items.titanium, 400, Items.thorium, 250, Items.plastanium, 200, Items.phaseFabric, 50));
+                requirements(Category.effect, with(Items.titanium, 400, Items.thorium, 250, Items.plastanium, 200, Items.phaseFabric, 100));
+            }
+        };
+
+        warehouse = new StorageBlock("warehouse"){
+            public TextureRegion iconRegion;
+
+            @Override
+            public void load(){
+                iconRegion = Drawm.generateTeamRegion(this);
+                super.load();
+            }
+
+            @Override
+            public TextureRegion[] icons(){
+                return new TextureRegion[]{region, iconRegion};
+            }
+
+            {
+                size = 5;
+                itemCapacity = 7000;
+                flags = EnumSet.of(BlockFlag.storage);
+                requirements(Category.effect, with(Items.titanium, 600, Items.thorium, 500, Items.plastanium, 450, Items.phaseFabric, 150, Items.surgeAlloy, 100));
             }
         };
 
         present = new PresentBox("present"){{
             requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
+        }};
+
+        teamWall = new TeamWall("team-wall"){{
+            health = 360;
+            requirements(Category.defense, with(Items.titanium, 6, Items.graphite, 6, Items.silicon, 12));
         }};
     }
 }
