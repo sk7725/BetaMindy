@@ -16,7 +16,7 @@ public class TeamWall extends Wall {
 
     public Interval delay = new Interval(1);
     protected Team cached = Team.derelict, cached1 = Team.derelict;
-    public final float waitBetween = 240f;
+    public final float waitBetween = 360f;
 
     public TeamWall(String name){
         super(name);
