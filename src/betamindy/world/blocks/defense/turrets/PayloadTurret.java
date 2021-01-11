@@ -4,18 +4,19 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.ObjectSet;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
 import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.content.Fx;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.Cicon;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
@@ -32,6 +33,7 @@ public class PayloadTurret extends Turret {
     /** Maximum range the fired payload does not lose health, note that area damage will still scale inside this range */
     public float safeRange = range * 0.3f;
     public BulletType shootType = MindyBullets.payBullet;
+    public BulletType homingShootType = MindyBullets.homingPay;
     /** Payload draw offset, draw scale */
     public float payloadOffset = 15f,  payloadScale = 0.8f;
     /** Payload fire offset*/
@@ -41,6 +43,8 @@ public class PayloadTurret extends Turret {
 
     public Effect acceptEffect = MindyFx.cannonAccept;
 
+    protected ObjectSet<Block> homingBlocks = new ObjectSet<Block>(2);
+
     public PayloadTurret(String name){
         super(name);
 
@@ -48,6 +52,12 @@ public class PayloadTurret extends Turret {
         outputsPayload = true;//needs to be true to accept payloads, is this intended?
         outputFacing = false;
         sync = true;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        homingBlocks.addAll(MindyBlocks.siliconWall, MindyBlocks.siliconWallLarge);
     }
 
     @Override
@@ -110,6 +120,7 @@ public class PayloadTurret extends Turret {
 
         @Override
         protected void bullet(BulletType type, float angle){
+            if((payload instanceof BuildPayload) && homingBlocks.contains(((BuildPayload)payload).block())) type = homingShootType;
             tr.trns(rotation, payloadShootOffset, Mathf.range(xRand));
             float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 

@@ -1,10 +1,10 @@
 package betamindy.content;
 
 import arc.graphics.*;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.g2d.*;
 import arc.struct.*;
-import betamindy.graphics.Drawm;
-import betamindy.world.blocks.defense.TeamWall;
+import betamindy.graphics.*;
+import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
@@ -18,6 +18,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
@@ -33,7 +34,9 @@ public class MindyBlocks implements ContentList {
     //effect
     silo, warehouse,
     //walls
-    teamWall;
+    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, teamWall,
+    //drills
+    drillMini, drillMega;
 
     @Override
     public void load() {
@@ -92,6 +95,7 @@ public class MindyBlocks implements ContentList {
             maxPaySize = 14.5f; //I'm not adding a T3. ...definitely. ...definitely? ...definitely.
             consumes.power(7.25f);
             shootType = MindyBullets.payBulletBig;
+            homingShootType = MindyBullets.homingPayBig;
             requirements(Category.turret, with(Items.copper, 1500, Items.titanium, 900, Items.silicon, 650, Items.plastanium, 390, Items.phaseFabric, 180, Items.surgeAlloy, 165));
         }};
 
@@ -246,9 +250,111 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
         }};
 
+        leadWall = new Wall("lead-wall"){{
+            health = 360;
+            requirements(Category.defense, with(Items.lead, 6));
+        }};
+        leadWallLarge = new Wall("lead-wall-large"){{
+            health = 1440;
+            size = 2;
+            requirements(Category.defense, with(Items.lead, 24));
+        }};
+
+        metaglassWall = new ShardWall("metaglass-wall"){{
+            shard = MindyBullets.glassPiece;
+            amount = 5;
+            inaccuracy = 36f;
+            health = 380;
+            requirements(Category.defense, with(Items.graphite, 3, Items.metaglass, 5));
+        }};
+        metaglassWallLarge = new ShardWall("metaglass-wall-large"){{
+            shard = MindyBullets.glassPieceBig;
+            amount = 8;
+            inaccuracy = 24f;
+            health = 1520;
+            size = 2;
+            distRand = 6.5f;
+            requirements(Category.defense, with(Items.graphite, 12, Items.metaglass, 20));
+        }};
+
+        siliconWall = new Wall("silicon-wall"){{
+            health = 370;
+            insulated = true;
+            requirements(Category.defense, with(Items.copper, 2, Items.silicon, 5));
+        }};
+        siliconWallLarge = new Wall("silicon-wall-large"){{
+            health = 1480;
+            insulated = true;
+            size = 2;
+            requirements(Category.defense, with(Items.copper, 8, Items.silicon, 20));
+        }};
+
+        coalWall = new IgniteWall("coal-wall"){{
+            health = 240;
+            baseExplosiveness = 3f;
+            variants = 2;
+            requirements(Category.defense, with(Items.coal, 6));
+        }};
+        coalWallLarge = new IgniteWall("coal-wall-large"){{
+            health = 960;
+            baseExplosiveness = 12f;
+            size = 2;
+            variants = 2;
+            requirements(Category.defense, with(Items.coal, 24));
+        }};
+
+        pyraWall = new ShardWall("pyra-wall"){{
+            shard = Bullets.fireball;
+            amount = 6;
+            health = 490;
+            requirements(Category.defense, with(Items.pyratite, 6));
+        }};
+        pyraWallLarge = new ShardWall("pyra-wall-large"){{
+            shard = Bullets.fireball;
+            amount = 24;
+            health = 1960;
+            size = 2;
+            distRand = 4.5f;
+            requirements(Category.defense, with(Items.pyratite, 24));
+        }};
+
+        blastWall = new Wall("blast-wall"){{
+            health = 510;
+            baseExplosiveness = 12.5f;
+            requirements(Category.defense, with(Items.coal, 2, Items.blastCompound, 8));
+        }};
+        blastWallLarge = new Wall("blast-wall-large"){{
+            health = 2040;
+            baseExplosiveness = 50f;
+            size = 2;
+            requirements(Category.defense, with(Items.coal, 8, Items.blastCompound, 32));
+        }};
+
         teamWall = new TeamWall("team-wall"){{
             health = 360;
             requirements(Category.defense, with(Items.titanium, 6, Items.graphite, 6, Items.silicon, 12));
+        }};
+
+        drillMini = new DrillTurret("drill-mini"){{
+            range = 50f;
+            itemCapacity = 25;
+            hasPower = true;
+            consumes.power(1f);
+            requirements(Category.production, with(Items.copper, 15, Items.lead, 15, Items.graphite, 25, Items.titanium, 10, Items.silicon, 15));
+        }};
+
+        drillMega = new DrillTurret("drill-mega"){{
+            size = 3;
+            range = 120f;
+            itemCapacity = 50;
+            mineSpeed = 3.5f;
+            minDrillTier = 1;
+            maxDrillTier = 5;
+            hasPower = true;
+            laserWidth = 1.1f;
+            laserOffset = 6f;
+            consumes.power(9.6f);
+            requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, Items.surgeAlloy, 15));
         }};
     }
 }

@@ -4,6 +4,7 @@ import arc.audio.Sound;
 import arc.graphics.g2d.*;
 import arc.math.geom.Geometry;
 import arc.util.*;
+import betamindy.BetaMindy;
 import betamindy.content.MindySounds;
 import mindustry.gen.Building;
 import mindustry.type.Category;
@@ -16,11 +17,14 @@ import static arc.Core.atlas;
 import static mindustry.Vars.tilesize;
 
 public class Piston extends Block {
+    public boolean sticky;
+    public int maxBlocks = 16;
+
     public Block armBlock;
     public TextureRegion armRegion, shaftRegion;
     public TextureRegion[] baseRegion = new TextureRegion[4];
-    public boolean sticky;
     public Sound pushSound = MindySounds.pistonPush, pullSound = MindySounds.pistonPull;
+
     public static final float extendTicks = 8f;
 
     public Piston(String name){
@@ -62,6 +66,7 @@ public class Piston extends Block {
             return isIdle() && tile.nearby(rotation) != null;
         }
 
+        /*
         public boolean canPush(Block block){
             if(!block.update || !block.synthetic()) return false;
             if(block instanceof PistonArm) return false;
@@ -71,7 +76,7 @@ public class Piston extends Block {
             return canPush(block) && true;//TODO: slippery blocks
         }
 
-        /** Tries to push a single given building*/
+        /* Tries to push a single given building
         public void pushBuild(Building tile, int r){
             Tile e = tile.tile.nearby(r);
             //if(e.block() != Blocks.air) return;
@@ -86,20 +91,19 @@ public class Piston extends Block {
         public void pullBuild(Building tile, int r){
             pushBuild(tile, (r + 2) % 4);
         }
+        */
 
         /** Tries to push blocks and returns its success*/
         public boolean push(){
-            //TODO: temp
             if(tile.nearbyBuild(rotation) == null) return true;
-            pushBuild(tile.nearbyBuild(rotation), rotation);
-            return true;
+            return BetaMindy.pushUtil.pushBlock(tile.nearbyBuild(rotation), rotation, maxBlocks);
         }
         /** Tries to pull blocks and returns its success*/
         public boolean pull(){
             //TODO: temp
             if(tile.nearby(rotation) == null || tile.nearby(rotation).nearbyBuild(rotation) == null) return true;
             if(tile.nearby(rotation).block() == armBlock) tile.nearby(rotation).remove();
-            pullBuild(tile.nearby(rotation).nearbyBuild(rotation), rotation);
+            //pullBuild(tile.nearby(rotation).nearbyBuild(rotation), rotation);
             return true;
         }
 

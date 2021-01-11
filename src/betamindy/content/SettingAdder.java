@@ -9,7 +9,12 @@ public class SettingAdder {
     }
 
     public void init(){
+        boolean tmp = Core.settings.getBool("uiscalechanged", false);
+        Core.settings.put("uiscalechanged", false);
+
         addGraphicSetting("slimeeffect");
         addGraphicSetting("correctview");
+
+        Core.settings.put("uiscalechanged", tmp);
     }
 }

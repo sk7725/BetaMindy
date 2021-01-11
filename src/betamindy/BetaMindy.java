@@ -3,6 +3,7 @@ package betamindy;
 import arc.*;
 import arc.func.*;
 import arc.util.Log;
+import betamindy.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
@@ -13,6 +14,7 @@ import betamindy.content.*;
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static SettingAdder settingAdder = new SettingAdder();
+    public static XeloUtil pushUtil = new XeloUtil();
 
     private final ContentList[] mindyContent = {
         new OverWriter(),
@@ -24,6 +26,7 @@ public class BetaMindy extends Mod{
     public BetaMindy() {
         super();
         MindySounds.load();
+        pushUtil.init();
 
         Events.on(DisposeEvent.class, e -> {
             MindySounds.dispose();

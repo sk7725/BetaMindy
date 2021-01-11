@@ -95,5 +95,19 @@ public class MindyFx {
             color(Pal.remove, Color.gray, e.fin());
             Fill.square(e.x + x, e.y + y, e.fout() * 2.5f, 45f);
         });
+    }),
+
+    glassPoof = new Effect(30f, e -> {
+        color(Color.white);
+        randLenVectors(e.id, 3, e.fin() * 6f, (x, y) -> {
+            Drawf.tri(e.x + x, e.y + y, 3f * e.fout(), 3f * e.fout(), Mathf.randomSeed(e.id, 360f));
+        });
+    }),
+
+    glassPoofBig = new Effect(30f, e -> {
+        color(Color.white);
+        randLenVectors(e.id, 4, e.fin() * 9f, (x, y) -> {
+            Drawf.tri(e.x + x, e.y + y, 5f * e.fout(), 5f * e.fout(), Mathf.randomSeed(e.id, 360f));
+        });
     });
 }
