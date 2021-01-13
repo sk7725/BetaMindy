@@ -1,11 +1,13 @@
 package betamindy.world.blocks.distribution;
 
 import arc.audio.Sound;
+import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.Geometry;
 import arc.util.*;
 import betamindy.BetaMindy;
 import betamindy.content.MindySounds;
+import mindustry.content.Blocks;
 import mindustry.gen.Building;
 import mindustry.type.Category;
 import mindustry.world.*;
@@ -26,6 +28,8 @@ public class Piston extends Block {
     public Sound pushSound = MindySounds.pistonPush, pullSound = MindySounds.pistonPull;
 
     public static final float extendTicks = 8f;
+    public final Boolf<Building> pushBool = b -> !(b.block == Blocks.thoriumWall || b.block == Blocks.thoriumWallLarge);
+    public final Boolf<Building> stickBool = b -> !(b.block == Blocks.phaseWall || b.block == Blocks.phaseWallLarge);
 
     public Piston(String name){
         super(name);
@@ -95,15 +99,19 @@ public class Piston extends Block {
 
         /** Tries to push blocks and returns its success*/
         public boolean push(){
-            if(tile.nearbyBuild(rotation) == null) return true;
-            return BetaMindy.pushUtil.pushBlock(tile.nearbyBuild(rotation), rotation, maxBlocks);
+            if(tile.nearby(rotation) == null) return false;
+            if(tile.nearbyBuild(rotation) == null) return tile.nearby(rotation).block() == Blocks.air;
+            if(!pushBool.get(tile.nearbyBuild(rotation))) return false;
+            return BetaMindy.pushUtil.pushBlock(tile.nearbyBuild(rotation), rotation, maxBlocks, b -> (b != this && pushBool.get(b)), stickBool);
         }
         /** Tries to pull blocks and returns its success*/
         public boolean pull(){
-            //TODO: temp
             if(tile.nearby(rotation) == null || tile.nearby(rotation).nearbyBuild(rotation) == null) return true;
             if(tile.nearby(rotation).block() == armBlock) tile.nearby(rotation).remove();
-            //pullBuild(tile.nearby(rotation).nearbyBuild(rotation), rotation);
+            Building pullb = tile.nearby(rotation).nearbyBuild(rotation);
+            if(!stickBool.get(pullb) || !pushBool.get(pullb)) return true;
+            //does not care if it actually succeeds to push
+            BetaMindy.pushUtil.pushBlock(pullb, (rotation + 2) % 4, maxBlocks, b -> (b != this && pushBool.get(b)), stickBool);
             return true;
         }
 

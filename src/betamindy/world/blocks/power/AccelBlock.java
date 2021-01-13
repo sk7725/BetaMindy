@@ -74,7 +74,7 @@ public class AccelBlock extends PowerBlock {
             else{
                 lastpower = wasMoved(rotation % 2);
                 ballTimer.reset(powercheckid, 0);
-                return lastpower ? powerProduction : 0f;
+                return !ballTimer.check(ballid, 9f) ? powerProduction : 0f;
             }
         }
 

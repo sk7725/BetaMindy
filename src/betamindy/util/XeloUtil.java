@@ -1,11 +1,11 @@
 package betamindy.util;
 
-import arc.func.Boolf;
+import arc.func.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.Seq;
+import arc.struct.*;
 import arc.util.*;
-import betamindy.world.blocks.distribution.PistonArm;
+import betamindy.world.blocks.distribution.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.gen.*;
@@ -43,7 +43,13 @@ public class XeloUtil {
 
     /** returns whether a building is allowed to be pushed. */
     public boolean pushable(Building build){
-        if(build.dead || (build.block instanceof CoreBlock) || (build.block instanceof PistonArm)) return false;
+        if(build.dead || (build.block instanceof CoreBlock) || (build.block instanceof PistonArm) || ((build.block instanceof Piston) && ((Piston.PistonBuild)build).extended)) return false;
+        return true;
+    }
+
+    /** returns whether a building is allowed to be sticked. */
+    public boolean stickable(Building build){
+        if(!pushable(build)) return false;
         return true;
     }
 
@@ -123,31 +129,70 @@ public class XeloUtil {
      * @param root the building to be scanned from
      * @param direction number from 0-4 same direction as the block rotation to push the building in.
      * @param max max number of blocks to scan
-     * @param bool boolf consumer as a custom selection criteria.
+     * @param bool boolf consumer as a custom selection criteria for pushing.
+     * @param bool2 boolf consumer as a custom selection criteria for sticking.
      */
 
-    public @Nullable Seq<Building> _getAllContacted(Building root, int direction, int max, Boolf<Building> bool){
+    public @Nullable Seq<Building> _getAllContacted(Building root, int direction, int max, Boolf<Building> bool, Boolf<Building> bool2){
         PriorityQueue<Building> queue = new PriorityQueue<Building>(10, (a, b)->{//require ordering to be projection of the block's leading edge along push direction.
             return Math.round(project(a, direction) - project(b, direction));
         });
         queue.add(root);
         Seq<Building> contacts = new Seq<Building>();
+        boolean dirty = false;
         while(!queue.isEmpty() && contacts.size <= max){
             Building next = queue.poll();
             contacts.add(next);
             Point2 tangent = d4((direction + 1) % 4);
             Point2 o = origins[next.block.size-1][direction];
-            for(int i=0; i < next.block.size; i++){ // iterate over forward edge.
-                Tile t = next.tile.nearby(o.x + tangent.x * i + d4(direction).x,o.y + tangent.y * i+ d4(direction).y);
-                Building b = t.build;
-                if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
-                if(!pushable(b) || !bool.get(b)){
-                    return null; // if a single block cannot be pushed then the entire group cannot be pushed from the root.
+            if(next.block instanceof SlimeBlock){
+                // if sticky, iterate over all 4 edges, but for 3 sides, ignore non-sticky blocks
+                // iterate over forward edge.
+                for(int i=0; i < next.block.size; i++){
+                    Tile t = next.tile.nearby(o.x + tangent.x * i + d4(direction).x,o.y + tangent.y * i+ d4(direction).y);
+                    Building b = t.build;
+                    if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
+                    if(!pushable(b) || !bool.get(b)){
+                        return null; // if a single block cannot be pushed then the entire group cannot be pushed from the root.
+                    }
+                    queue.add(b);
                 }
-                queue.add(b);
+                for(int k=0; k < 3; k++){
+                    // iterate over a side edge
+                    int td = (direction + k + 1) % 4;
+                    tangent = d4((td + 1) % 4);
+                    o = origins[next.block.size-1][td];
+                    for(int i=0; i < next.block.size; i++){
+                        Tile t = next.tile.nearby(o.x + tangent.x * i + d4(td).x,o.y + tangent.y * i+ d4(td).y);
+                        Building b = t.build;
+                        if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
+                        if(!stickable(b) || !bool2.get(b) || !bool.get(b)){
+                            continue; // ignore blocks that refuse to stick.
+                        }
+                        // contacts is not ordered; sort at the end
+                        if(k == 1) dirty = true;
+                        queue.add(b);
+
+                    }
+                }
+            }
+            else{
+                // iterate over forward edge.
+                for(int i=0; i < next.block.size; i++){
+                    Tile t = next.tile.nearby(o.x + tangent.x * i + d4(direction).x,o.y + tangent.y * i+ d4(direction).y);
+                    Building b = t.build;
+                    if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
+                    if(!pushable(b) || !bool.get(b)){
+                        return null; // if a single block cannot be pushed then the entire group cannot be pushed from the root.
+                    }
+                    queue.add(b);
+                }
             }
         }
         if(contacts.size<=max){
+            if(dirty){
+                contacts.sort((a, b) -> Math.round(project(a, direction) - project(b, direction)));
+            }
             return contacts;
         }else{
             return null;
@@ -155,14 +200,14 @@ public class XeloUtil {
     }
 
     /** pushes a single building and pushes all blocks behind the pushed block., unlike the previous. */
-    public boolean pushBlock(Building build, int direction, int maxBlocks){
-        @Nullable Seq<Building> pushing = _getAllContacted(build, direction, maxBlocks, b -> true);
+    public boolean pushBlock(Building build, int direction, int maxBlocks, Boolf<Building> boolPush, Boolf<Building> boolStick){
+        @Nullable Seq<Building> pushing = _getAllContacted(build, direction, maxBlocks, boolPush, boolStick);
         if(pushing == null){
             return false;
         }
         //scan in reverse
         for(int i = pushing.size - 1; i >= 0; i--){
-            if(!canPush(pushing.get(i),direction)){
+            if(!canPush(pushing.get(i), direction)){
                 return false;
             }
         }
