@@ -16,6 +16,7 @@ import java.util.PriorityQueue;
 
 import static arc.math.geom.Geometry.d4;
 
+//credit to xelo, modified by me
 public class XeloUtil {
     public Point2[][] origins = new Point2[16][4];
 
@@ -36,7 +37,7 @@ public class XeloUtil {
                     }
                 }
                 origins[size-1][side] = new Point2(ogx, ogy);
-                print(ogx + "," + ogy);
+                //print(ogx + "," + ogy);
             }
         }
     }
@@ -146,7 +147,6 @@ public class XeloUtil {
             Point2 tangent = d4((direction + 1) % 4);
             Point2 o = origins[next.block.size-1][direction];
             if(next.block instanceof SlimeBlock){
-                // if sticky, iterate over all 4 edges, but for 3 sides, ignore non-sticky blocks
                 // iterate over forward edge.
                 for(int i=0; i < next.block.size; i++){
                     Tile t = next.tile.nearby(o.x + tangent.x * i + d4(direction).x,o.y + tangent.y * i+ d4(direction).y);
@@ -157,22 +157,44 @@ public class XeloUtil {
                     }
                     queue.add(b);
                 }
-                for(int k=0; k < 3; k++){
-                    // iterate over a side edge
-                    int td = (direction + k + 1) % 4;
-                    tangent = d4((td + 1) % 4);
-                    o = origins[next.block.size-1][td];
-                    for(int i=0; i < next.block.size; i++){
-                        Tile t = next.tile.nearby(o.x + tangent.x * i + d4(td).x,o.y + tangent.y * i+ d4(td).y);
-                        Building b = t.build;
-                        if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
-                        if(!stickable(b) || !bool2.get(b) || !bool.get(b)){
-                            continue; // ignore blocks that refuse to stick.
+                if(next.block instanceof SidedSlimeBlock){
+                    // if sided, do the sticky on one side
+                    int td = next.rotation;
+                    if(td != direction){
+                        tangent = d4((td + 1) % 4);
+                        o = origins[next.block.size-1][td];
+                        for(int i=0; i < next.block.size; i++){
+                            Tile t = next.tile.nearby(o.x + tangent.x * i + d4(td).x,o.y + tangent.y * i+ d4(td).y);
+                            Building b = t.build;
+                            if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
+                            if(!stickable(b) || !bool2.get(b) || !bool.get(b)){
+                                continue; // ignore blocks that refuse to stick.
+                            }
+                            // contacts is not ordered; sort at the end
+                            if(td == (direction + 2) % 4) dirty = true;
+                            queue.add(b);
                         }
-                        // contacts is not ordered; sort at the end
-                        if(k == 1) dirty = true;
-                        queue.add(b);
+                    }
+                }
+                else{
+                    // if sticky, iterate over all 4 edges, but for 3 sides, ignore non-sticky blocks
+                    for(int k=0; k < 3; k++){
+                        // iterate over a side edge
+                        int td = (direction + k + 1) % 4;
+                        tangent = d4((td + 1) % 4);
+                        o = origins[next.block.size-1][td];
+                        for(int i=0; i < next.block.size; i++){
+                            Tile t = next.tile.nearby(o.x + tangent.x * i + d4(td).x,o.y + tangent.y * i+ d4(td).y);
+                            Building b = t.build;
+                            if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
+                            if(!stickable(b) || !bool2.get(b) || !bool.get(b)){
+                                continue; // ignore blocks that refuse to stick.
+                            }
+                            // contacts is not ordered; sort at the end
+                            if(k == 1) dirty = true;
+                            queue.add(b);
 
+                        }
                     }
                 }
             }
