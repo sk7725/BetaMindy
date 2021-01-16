@@ -3,8 +3,11 @@ package betamindy.world.blocks.distribution;
 import arc.audio.Sound;
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.util.*;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import betamindy.BetaMindy;
 import betamindy.content.MindySounds;
 import mindustry.content.Blocks;
@@ -74,10 +77,10 @@ public class Piston extends Block {
         public boolean canPush(Block block){
             if(!block.update || !block.synthetic()) return false;
             if(block instanceof PistonArm) return false;
-            return true;//TODO: unmovable blocks
+            return true;
         }
         public boolean canPull(Block block){
-            return canPush(block) && true;//TODO: slippery blocks
+            return canPush(block) && true;
         }
 
         /* Tries to push a single given building
@@ -153,6 +156,18 @@ public class Piston extends Block {
             Draw.rect(baseRegion[rotation], x, y);
         }
 
-        //TODO: r/w heatTimer & extended
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read);
+            extended = read.bool();
+            heatTimer.reset(0, (float)read.b());
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.bool(extended);
+            write.b((byte)Mathf.clamp(heatTimer.getTime(0), 0, 8));
+        }
     }
 }
