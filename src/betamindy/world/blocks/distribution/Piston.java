@@ -3,20 +3,21 @@ package betamindy.world.blocks.distribution;
 import arc.audio.Sound;
 import arc.func.*;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
-import arc.math.geom.Geometry;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import betamindy.BetaMindy;
-import betamindy.content.MindySounds;
-import mindustry.content.Blocks;
-import mindustry.gen.Building;
+import arc.util.io.*;
+import betamindy.*;
+import betamindy.content.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.gen.*;
 import mindustry.type.Category;
 import mindustry.world.*;
 import betamindy.world.blocks.distribution.PistonArm.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
 import static mindustry.Vars.tilesize;
@@ -122,6 +123,7 @@ public class Piston extends Block {
             extended = push();
             if(extended){
                 heatTimer.reset(0, 0);
+                BetaMindy.pushUtil._pushUnits(this, rotation);
                 tile.nearby(rotation).setBlock(armBlock, team, (rotation + 2) % 4);
                 ((PistonArmBuild)tile.nearbyBuild(rotation)).piston = this;
                 pushSound.at(this);
@@ -169,5 +171,38 @@ public class Piston extends Block {
             write.bool(extended);
             write.b((byte)Mathf.clamp(heatTimer.getTime(0), 0, 8));
         }
+
+        /*
+        @Override
+        public Seq<Building> getPowerConnections(Seq<Building> out){
+            out.clear();
+            if(power == null) return out;
+
+            //the facing block will not be added to the piston's graph
+            for(Building other : proximity){
+                if(other != null && other.power != null
+                        && !(block.consumesPower && other.block.consumesPower && !block.outputsPower && !other.block.outputsPower) && tile.nearbyBuild(rotation) != other
+                        && !power.links.contains(other.pos())){
+                    out.add(other);
+                }
+            }
+
+            for(int i = 0; i < power.links.size; i++){
+                Tile link = Vars.world.tile(power.links.get(i));
+                if(link != null && link.build != null && link.build.power != null) out.add(link.build);
+            }
+            return out;
+        }
+        //TODO: override conductsTo (I hope)
+        @Override
+        public void onProximityUpdate(){
+            super.onProximityUpdate();
+            //remove this piston from the other's proximities
+            if(tile.nearbyBuild(rotation) != null){
+                Building other = tile.nearbyBuild(rotation);
+                other.proximity.remove(self(), true);
+                proximity.remove(other, true);
+            }
+        }*/
     }
 }

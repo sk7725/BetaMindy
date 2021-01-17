@@ -8,8 +8,10 @@ import arc.util.*;
 import betamindy.world.blocks.distribution.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.entities.Units;
 import mindustry.gen.*;
 import mindustry.world.*;
+import mindustry.world.blocks.ControlBlock;
 import mindustry.world.blocks.storage.*;
 
 import java.util.PriorityQueue;
@@ -93,10 +95,36 @@ public class XeloUtil {
     }
 
     /**
-     * pushes a single building. if obstructed does not push multiple tiles. returns false if its blocked, otherwise true. used as a subtorutine for the function that actually does push all obstructed tiles.
-     * @param build the building to be pushed. DO NOT CALL FROM WITHIN THE BUILDING.
+     * pushes units in front of a a single building.
+     * @param build the building to be pushed.
      * @param direction number from 0-4 same direction as the block rotation to push the building in.
      */
+    public void _pushUnits(Building build, int direction){
+        float ox = d4(direction).x * (build.block.size * 4f + 4f);
+        float oy = d4(direction).y * (build.block.size * 4f + 4f);
+        //grouded units don't experience impulses anyway
+        //boolean bouncy = ((build.block instanceof SlimeBlock) && (!build.block.rotate || build.rotation == direction));
+        if(direction % 2 == 0){
+            //tall rectangle
+            float dr = d4(direction).x;
+            Units.nearby(build.x + ox - 4f, build.y + oy - build.block.size * 4f, 8f, build.block.size * 8f, u -> {
+                if(!u.isFlying() && u.x >= build.x + ox - 4f && u.x <= build.x + ox + 4f){
+                    u.move(build.x + dr * (3.8f + build.block.size * 4f + 8f) - u.x, 0f);
+                    //if(bouncy) u.impulse(dr * 40f, 0f);
+                }
+            });
+        }
+        else{
+            //wide rectangle
+            float dr = d4(direction).y;
+            Units.nearby(build.x + ox - build.block.size * 4f, build.y + oy - 4f, build.block.size * 8f, 8f, u -> {
+                if(!u.isFlying() && u.y >= build.y + oy - 4f && u.y <= build.y + oy + 4f){
+                    u.move(0f, build.y + dr * (3.8f + build.block.size * 4f + 8f) - u.y);
+                    //if(bouncy) u.impulse(0f, dr * 40f);
+                }
+            });
+        }
+    }
 
     /*algorithm:
         scan forward tiles for blockage
@@ -104,18 +132,30 @@ public class XeloUtil {
         remove building
         readd building.
     */
+    /**
+     * pushes a single building. if obstructed does not push multiple tiles. returns false if its blocked, otherwise true. used as a subtorutine for the function that actually does push all obstructed tiles.
+     * @param build the building to be pushed. DO NOT CALL FROM WITHIN THE BUILDING.
+     * @param direction number from 0-4 same direction as the block rotation to push the building in.
+     */
     public boolean _pushSingle(Building build, int direction){
         direction = direction % 4;
         //don't move the core. >:(  BAD BAD BAD BAD
         if(build.block instanceof CoreBlock){return false;}
         int bx = build.tile.x;
         int by = build.tile.y;
+
+
+        //Player control = (build instanceof ControlBlock) ? ((ControlBlock) build).unit().getPlayer() : null;
         build.tile.remove();
+        /*
         //scan forward tiles for blockage
         if(!Build.validPlace(build.block, build.team, bx+d4(direction).x, by+d4(direction).y, build.rotation, false)){
             Vars.world.tile(bx,by).setBlock(build.block, build.team, build.rotation, () -> build);
             return false;
-        }
+        }*/
+
+        //move units
+        _pushUnits(build, direction);
 
         Vars.world.tile(bx+d4(direction).x, by+d4(direction).y).setBlock(build.block, build.team, build.rotation, () -> build);
         return true;

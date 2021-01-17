@@ -19,7 +19,7 @@ public class AccelBlock extends PowerBlock {
     public TextureRegion[] baseRegion = new TextureRegion[2];
     public TextureRegion ballRegion;
     public final float ballTicks = 8f;
-    public float powerProduction = 8f;
+    public float powerProduction = 2f;
 
     public AccelBlock(String name){
         super(name);
