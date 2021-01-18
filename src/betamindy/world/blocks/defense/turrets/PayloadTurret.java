@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.struct.ObjectSet;
 import arc.util.*;
 import arc.util.io.*;
+import betamindy.BetaMindy;
 import betamindy.content.*;
 import mindustry.Vars;
 import mindustry.content.*;
@@ -209,14 +210,16 @@ public class PayloadTurret extends Turret {
         public void write(Writes write){
             super.write(write);
 
-            Payload.write(payload, write);
+            if(mobile) BetaMindy.mobileUtil.writePayload(payload, write);
+            else Payload.write(payload, write);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
-            payload = Payload.read(read);
+            if(mobile) payload = BetaMindy.mobileUtil.readPayload(read);
+            else payload = Payload.read(read);
         }
 
         public void drawPayload(){

@@ -15,6 +15,7 @@ public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
+    public static MobileFunctions mobileUtil = new MobileFunctions();
 
     private final ContentList[] mindyContent = {
         new OverWriter(),
@@ -27,6 +28,7 @@ public class BetaMindy extends Mod{
         super();
         MindySounds.load();
         pushUtil.init();
+        if(Vars.mobile) mobileUtil.init();
 
         Events.on(DisposeEvent.class, e -> {
             MindySounds.dispose();
