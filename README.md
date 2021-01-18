@@ -12,14 +12,14 @@ Check planned features/known bugs in the [Trello](https://trello.com/b/AiElGCt1/
 ## Enjoying   
 [![Download](https://img.shields.io/github/v/release/sk7725/BetaMindy?color=green&include_prereleases&label=DOWNLOAD%20LATEST%20RELEASE&logo=github&logoColor=green&style=for-the-badge)](https://github.com/sk7725/BetaMindy/releases)
 ### Releases   
-Go to the releases, some may have a `.jar` attached to it that you can download. If it does not have it, follow the steps below(recommended) or bother me with a new issue so I can attach the compiled mod.   
-After you have the `.jar`, paste it into your mod folder(locate your mod folder in the "open mod folder" of Mindustry).   
+Go to the releases, the latest release will have a `BetaMindy.jar` attached to it that you can download. For Android users, download the latest `dexed-BetaMindy.jar` instead, although it will be fore infrequent, only attached to major releases. If it does not have it, follow the steps below(recommended) or bother me with a new issue so I can attach the compiled mod.   
+After you have the `BetaMindy.jar`, paste it into your mod folder(locate your mod folder in the "open mod folder" of Mindustry).   
 
-Releases를 클릭하고, 최신 버전에 달린 `.jar`를 다운로드하세요. 원하는 버전에 `.jar`가 첨부되어 있지 않다면, 아래의 과정을 따르거나 새로운 Issue로 `.jar`를 달아달라고 저를 괴롭히세요.   
-`.jar`를 다운로드 한 후, 모드 디렉토리(민더스트리에서 모드 파일 열기로 확인 가능)에 옮기세요.   
+Releases를 클릭하고, 최신 버전에 달린 `BetaMindy.jar`를 다운로드하세요. 안드로이드는 `dexed-BetaMindy.jar`를 다운로드하세요(PC 버전보다 업데이트가 뜸합니다). 원하는 버전에 `BetaMindy.jar`가 첨부되어 있지 않다면, 아래의 과정을 따르거나 새로운 Issue로 `.jar`를 달아달라고 저를 괴롭히세요.   
+`BetaMindy.jar`를 다운로드 한 후, 모드 디렉토리(민더스트리에서 모드 파일 열기로 확인 가능)에 옮기세요.   
 
-Перейдите в релизы. К некоторым из них могут быть прикреплены `.jar` файлы, которые необходимо скачать. Если их нет, то следуйте шагам ниже (рекомендуется), или же побеспокойте меня, открыв новое issue, чтобы я прикрепил скомпилированную версию.
-После того, как у вас есть `.jar` файл, переместите его в вашу папку с модификациями (найдите её с помощью кнопки "Открыть папку с модификациями" в игре).
+Перейдите в релизы. К некоторым из них могут быть прикреплены `BetaMindy.jar` файлы, которые необходимо скачать. Если их нет, то следуйте шагам ниже (рекомендуется), или же побеспокойте меня, открыв новое issue, чтобы я прикрепил скомпилированную версию.
+После того, как у вас есть `BetaMindy.jar` файл, переместите его в вашу папку с модификациями (найдите её с помощью кнопки "Открыть папку с модификациями" в игре).
 
 ### Actions   
 [EN]:
