@@ -2,14 +2,14 @@ plugins {
     id 'java'
 }
 
-//todo nice way of fetching from CI/CD
-final buildFilename = "BetaMindy.jar"
-
-group 'com.github.sk7725'
+group pGroup
 
 sourceCompatibility = 1.8
-sourceSets.main.java.srcDirs = ["src/"]
-sourceSets.main.resources.srcDirs = ["assets/"]
+sourceSets.main {
+    java.srcDir("src/")
+    resources.srcDir("assets/")
+}
+
 
 repositories {
     mavenCentral()
@@ -17,23 +17,31 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.Anuken.Mindustry:core:v122.1'
+    implementation "com.github.Anuken.Mindustry:core:$pMindustryVersion"
 }
 
 jar {
-    archiveName buildFilename
+    archiveFileName.set pArtifactFilename
 }
 
-task dexify doLast {
-    exec{
-        workingDir jar.archiveFile.get().asFile.parent
+task dexify(type: Jar) {
+    archiveName "dexed-$pArtifactFilename"
 
-        if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-            commandLine "cmd", "/c", "dx", "--dex", "--min-sdk-version=26", "--output=dexed-$buildFilename", "--no-optimize", buildFilename
-        } else {
-            commandLine "dx", "--dex", "--min-sdk-version=26", "--output=dexed-$buildFilename", "--no-optimize", buildFilename
+    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, pArtifactFilename),
+               dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
+    doFirst {
+        exec {
+            workingDir dexedArtifact.parent
+            def command = ["d8", "--min-api", pMinApi, "--output", dexedArtifact, jarArtifact]
+            if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows'))
+                commandLine("cmd", "/c", *command)
+            else
+                commandLine(*command)
+
         }
     }
+
+    from(zipTree(jarArtifact), zipTree(dexedArtifact))
 }
 
 task buildDex dependsOn "build", "dexify"

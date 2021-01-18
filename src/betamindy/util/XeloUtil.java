@@ -190,6 +190,7 @@ public class XeloUtil {
                 // iterate over forward edge.
                 for(int i=0; i < next.block.size; i++){
                     Tile t = next.tile.nearby(o.x + tangent.x * i + d4(direction).x,o.y + tangent.y * i+ d4(direction).y);
+                    if(t == null) return null;
                     Building b = t.build;
                     if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
                     if(!pushable(b) || !bool.get(b)){
@@ -205,6 +206,7 @@ public class XeloUtil {
                         o = origins[next.block.size-1][td];
                         for(int i=0; i < next.block.size; i++){
                             Tile t = next.tile.nearby(o.x + tangent.x * i + d4(td).x,o.y + tangent.y * i+ d4(td).y);
+                            if(t == null) continue;
                             Building b = t.build;
                             if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
                             if(!stickable(b) || !bool2.get(b) || !bool.get(b)){
@@ -225,6 +227,7 @@ public class XeloUtil {
                         o = origins[next.block.size-1][td];
                         for(int i=0; i < next.block.size; i++){
                             Tile t = next.tile.nearby(o.x + tangent.x * i + d4(td).x,o.y + tangent.y * i+ d4(td).y);
+                            if(t == null) continue;
                             Building b = t.build;
                             if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
                             if(!stickable(b) || !bool2.get(b) || !bool.get(b)){
@@ -242,6 +245,7 @@ public class XeloUtil {
                 // iterate over forward edge.
                 for(int i=0; i < next.block.size; i++){
                     Tile t = next.tile.nearby(o.x + tangent.x * i + d4(direction).x,o.y + tangent.y * i+ d4(direction).y);
+                    if(t == null) return null;
                     Building b = t.build;
                     if(b == null || queue.contains(b)|| contacts.contains(b)){continue;}
                     if(!pushable(b) || !bool.get(b)){

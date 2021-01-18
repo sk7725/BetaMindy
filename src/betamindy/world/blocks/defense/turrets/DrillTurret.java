@@ -208,6 +208,15 @@ public class DrillTurret extends BaseTurret {
             return last;
         }
 
+        @Override
+        public void removeFromProximity(){
+            //reset when pushed
+            targetItem = null;
+            targetID = -1;
+            mineTile = null;
+            super.removeFromProximity();
+        }
+
         public void targetMine(Building core){
             if(core == null) return;
 
