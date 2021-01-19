@@ -84,7 +84,6 @@ public class DrillTurret extends BaseTurret {
             reMap();
         }
 
-        //TODO: reMap when pushed
         public void reMap(){
             proxOres = new Seq<Tile>();
             proxItems = new Seq<Item>();

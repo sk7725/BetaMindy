@@ -9,7 +9,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 
 //exists to provide functions that are not public in the Mobile version, for some reason.
-//TODO: remove if the cat has answered
+
 public class MobileFunctions {
     public int payloadUnit, payloadBlock;
     public void init() {

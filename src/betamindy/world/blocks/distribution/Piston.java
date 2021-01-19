@@ -193,7 +193,7 @@ public class Piston extends Block {
             }
             return out;
         }
-        //TODO: override conductsTo (I hope)
+        //TODO: override conductsTo in the next Mindustry build(122.1++)
         @Override
         public void onProximityUpdate(){
             super.onProximityUpdate();

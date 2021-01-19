@@ -30,7 +30,7 @@ public class MindyBlocks implements ContentList {
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, sporeSlime, sporeSlimeSided, accel,
+    piston, stickyPiston, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner,
     //effect
     silo, warehouse,
     //walls
@@ -197,9 +197,25 @@ public class MindyBlocks implements ContentList {
             color = Color.valueOf("9E78DC");
         }};
 
+        surgeSlime = new SlimeBlock("surge-slime", 0){{
+            health = 120;
+            requirements(Category.distribution, with(Items.sporePod, 3, Items.surgeAlloy, 3));
+            hasPower = true;
+            outputsPower = true;
+            consumesPower = false;
+
+            color = Color.valueOf("F3E979");
+        }};
+
         accel = new AccelBlock("accel"){{
             health = 150;
-            requirements(Category.power, with(Items.titanium, 25, Items.silicon, 20, Items.plastanium, 3));
+            requirements(Category.power, with(Items.lead, 25, Items.silicon, 20, Items.plastanium, 3));
+        }};
+
+        cloner = new BlockCloner("cloner"){{
+            hasPower = true;
+            consumes.power(0.6f);
+            requirements(Category.crafting, with(Items.titanium, 30, Items.silicon, 35, Items.phaseFabric, 8));
         }};
 
         silo = new StorageBlock("silo"){

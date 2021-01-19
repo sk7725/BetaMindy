@@ -46,6 +46,20 @@ public class Drawm {
         Draw.reset();
     }
 
+    public static void constructLineless(float x, float y, TextureRegion region, float rotation, float progress, float speed, float time, Color color){
+        Shaders.build.region = region;
+        Shaders.build.progress = progress;
+        Shaders.build.color.set(color);
+        Shaders.build.color.a = speed;
+        Shaders.build.time = -time / 20f;
+
+        Draw.shader(Shaders.build);
+        Draw.rect(region, x, y, rotation);
+        Draw.shader();
+
+        Draw.reset();
+    }
+
     /** Generates all team regions and returns the sharded team region for icon. */
     public static @Nullable TextureRegion generateTeamRegion(Block b){
         TextureRegion shardTeamTop = null;
