@@ -11,6 +11,7 @@ import betamindy.graphics.Drawm;
 import mindustry.Vars;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.ui.*;
@@ -188,6 +189,14 @@ public class BlockCloner extends Block {
         public void read(Reads read, byte revision){
             super.read(read, revision);
             progress = read.f();
+        }
+
+        @Override
+        public Object senseObject(LAccess sensor) {
+            switch(sensor){
+                case config: return recipe;
+                default: return super.senseObject(sensor);
+            }
         }
     }
 }
