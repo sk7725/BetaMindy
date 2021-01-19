@@ -13,6 +13,7 @@ public class SettingAdder {
         Core.settings.put("uiscalechanged", false);
 
         addGraphicSetting("slimeeffect");
+        addGraphicSetting("accelballs");
         addGraphicSetting("correctview");
 
         Core.settings.put("uiscalechanged", tmp);

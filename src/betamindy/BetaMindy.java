@@ -13,6 +13,7 @@ import betamindy.content.*;
 
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
+    public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
     public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
@@ -34,7 +35,7 @@ public class BetaMindy extends Mod{
             MindySounds.dispose();
         });
 
-        Core.settings.defaults("slimeeffect", true, "correctview", false);
+        Core.settings.defaults("slimeeffect", true, "correctview", false, "accelballs", true);
         Events.on(ClientLoadEvent.class, e -> {
             settingAdder.init();
         });
@@ -44,16 +45,18 @@ public class BetaMindy extends Mod{
     public void init(){
         Vars.enableConsole = true;
 
+        LoadedMod mod = Vars.mods.locateMod("betamindy");
         if(!Vars.headless){
             //Partial credits to ProjectUnity
-            LoadedMod mod = Vars.mods.locateMod("betamindy");
+
             Func<String, String> stringf = value -> Core.bundle.get("mod." + value);
 
             mod.meta.displayName = stringf.get(mod.meta.name + ".name");
             mod.meta.description = stringf.get(mod.meta.name + ".description");
-            mod.meta.version = mod.meta.version + "\n" + stringf.get(mod.meta.name + ".short");
+
             mod.meta.author = "[royal]" + mod.meta.author + "[]";
         }
+        mod.meta.version = mod.meta.version + "\n" + shortName;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package betamindy.world.blocks.power;
 
+import arc.Core;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.Geometry;
@@ -51,9 +52,12 @@ public class AccelBlock extends PowerBlock {
         @Override
         public void draw(){
             Draw.rect(baseRegion[rotation % 2], x, y);
-            int back = lastback ? 2 : 0;
-            float off = Mathf.clamp((ballTicks - ballTimer.getTime(ballid)) / ballTicks);
-            Draw.rect(ballRegion, x + Geometry.d4x[rotation % 2 + back] * 3f * off, y + Geometry.d4y[rotation % 2 + back] * 3f * off);
+            if(Core.settings.getBool("accelballs")){
+                int back = lastback ? 2 : 0;
+                float off = Mathf.clamp((ballTicks - ballTimer.getTime(ballid)) / ballTicks);
+                Draw.rect(ballRegion, x + Geometry.d4x[rotation % 2 + back] * 3f * off, y + Geometry.d4y[rotation % 2 + back] * 3f * off);
+            }
+            else Draw.rect(ballRegion, x, y);
         }
 
         public boolean wasMoved(int n){
