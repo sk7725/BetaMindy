@@ -35,7 +35,9 @@ public class Piston extends Block {
     public final Boolf<Building> pushBool = b -> !(b.block == Blocks.thoriumWall || b.block == Blocks.thoriumWallLarge);
     public final Boolf<Building> stickBool = b -> !(b.block == Blocks.phaseWall || b.block == Blocks.phaseWallLarge);
 
-    public Piston(String name){
+    public String armSprite, baseSprite;
+
+    public Piston(String name, String arm, String base){
         super(name);
         armBlock = new PistonArm(this);
 
@@ -46,15 +48,24 @@ public class Piston extends Block {
         quickRotate = false;
 
         group = BlockGroup.transportation;//TODO: Make own category for place-overs
+
+        armSprite = arm;
+        baseSprite = base;
+    }
+
+    public Piston(String name){
+        this(name, "", "");
+        armSprite = this.name + "-arm";
+        baseSprite = this.name;
     }
 
     @Override
     public void load(){
         super.load();
-        armRegion = atlas.find(name + "-arm");
+        armRegion = atlas.find(armSprite);
         shaftRegion = atlas.find(name + "-shaft", "betamindy-piston-shaft");
         for(int i = 0; i<4; i++){
-            baseRegion[i] = atlas.find(name + "-" + i, "betamindy-piston-" + i);
+            baseRegion[i] = atlas.find(baseSprite + "-" + i, "betamindy-piston-" + i);
         }
     }
 

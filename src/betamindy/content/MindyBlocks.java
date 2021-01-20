@@ -30,7 +30,7 @@ public class MindyBlocks implements ContentList {
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner,
+    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner,
     //effect
     silo, warehouse,
     //walls
@@ -181,6 +181,23 @@ public class MindyBlocks implements ContentList {
             consumes.power(1f);
             requirements(Category.distribution, with(Items.sporePod, 10, Items.graphite, 15, Items.silicon, 10, Items.titanium, 15));
             sticky = true;
+        }};
+
+        pistonInfi = new Piston("piston-infi", "betamindy-piston-arm", "betamindy-pistoninf"){{
+            health = 200;
+            consumes.power(1f);
+            requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
+
+            maxBlocks = 512;
+        }};
+
+        stickyPistonInfi = new Piston("piston-sticky-infi", "betamindy-piston-sticky-arm", "betamindy-pistoninf"){{
+            health = 200;
+            consumes.power(1f);
+            requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
+            sticky = true;
+
+            maxBlocks = 512;
         }};
 
         sporeSlime = new SlimeBlock("spore-slime", 0){{

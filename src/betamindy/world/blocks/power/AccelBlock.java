@@ -5,11 +5,8 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.Geometry;
 import arc.struct.*;
-import arc.util.*;
 import arc.util.io.*;
-import mindustry.game.Team;
 import mindustry.gen.*;
-import mindustry.type.Category;
 import mindustry.world.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
@@ -19,7 +16,7 @@ import static arc.Core.atlas;
 public class AccelBlock extends PowerBlock {
     public TextureRegion[] baseRegion = new TextureRegion[2];
     public TextureRegion ballRegion;
-    public final float ballTicks = 8f;
+    public final float duration = 9f;
     public float powerProduction = 2f;
 
     public AccelBlock(String name){
@@ -44,42 +41,38 @@ public class AccelBlock extends PowerBlock {
     }
 
     public class AccelBuild extends Building {
-        public Interval ballTimer = new Interval(2);
-        public final int ballid = 0, powercheckid = 1;
+        public float heat = 0f;
         public int prev = 0;
-        private boolean lastback, lastpower;
+        private boolean lastback;
 
         @Override
         public void draw(){
             Draw.rect(baseRegion[rotation % 2], x, y);
             if(Core.settings.getBool("accelballs")){
                 int back = lastback ? 2 : 0;
-                float off = Mathf.clamp((ballTicks - ballTimer.getTime(ballid)) / ballTicks);
+                float off = Mathf.clamp(heat / duration);
                 Draw.rect(ballRegion, x + Geometry.d4x[rotation % 2 + back] * 3f * off, y + Geometry.d4y[rotation % 2 + back] * 3f * off);
             }
             else Draw.rect(ballRegion, x, y);
         }
 
-        public boolean wasMoved(int n){
-            int current = (n == 0) ? tile.x : tile.y;
-            if(prev == current) return false;
-            else{
+        @Override
+        public void updateTile() {
+            super.updateTile();
+            if(heat > 0f) heat -= delta();
+
+            int current = (rotation % 2 == 0) ? tile.x : tile.y;
+            if(prev != current){
                 lastback = prev < current;
                 prev = current;
 
-                ballTimer.reset(ballid, 0);
-                return true;
+                heat = duration;
             }
         }
 
         @Override
         public float getPowerProduction(){
-            if(ballTimer.getTime(powercheckid) <= 0f) return lastpower ? powerProduction : 0f;
-            else{
-                lastpower = wasMoved(rotation % 2);
-                ballTimer.reset(powercheckid, 0);
-                return !ballTimer.check(ballid, 9f) ? powerProduction : 0f;
-            }
+            return heat > 0.001f ? powerProduction : 0f;
         }
 
         @Override
@@ -102,8 +95,7 @@ public class AccelBlock extends PowerBlock {
         public void placed(){
             super.placed();
             initPos(tile, rotation % 2 == 0);
-            ballTimer.reset(ballid, ballTicks + 1f);
-            ballTimer.reset(powercheckid, 1f);
+            heat = 0f;
         }
     }
 }

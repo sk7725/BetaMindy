@@ -36,6 +36,7 @@ public class BlockCloner extends Block {
         rotate = true;
         quickRotate = false;
         hasItems = true;
+        sync = true;
 
         consumes.add(new ConsumeItemDynamic((ClonerBuild e) -> e.recipe != null ? e.recipe.requirements : ItemStack.empty));
     }
