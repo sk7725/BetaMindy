@@ -7,7 +7,7 @@
 A java mod for testing and doing chaotic fun.   
 혼돈의 카오스의 모드.   
 Java мод для тестирования и хаотичного веселья.   
-Check planned features/known bugs in the [Trello](https://trello.com/b/AiElGCt1/betamindy) before suggesting contents/improvemts or submitting bugs!   
+Check planned features/known bugs in the [Trello](https://trello.com/b/AiElGCt1) before suggesting contents/improvemts or submitting bugs!   
 
 ## Enjoying   
 [![Download](https://img.shields.io/github/v/release/sk7725/BetaMindy?color=green&include_prereleases&label=DOWNLOAD%20LATEST%20RELEASE&logo=github&logoColor=green&style=for-the-badge)](https://github.com/sk7725/BetaMindy/releases)
