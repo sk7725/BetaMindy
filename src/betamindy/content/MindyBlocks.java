@@ -10,7 +10,6 @@ import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.power.*;
 import betamindy.world.blocks.production.*;
-import betamindy.world.blocks.temporary.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.*;
@@ -19,6 +18,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.experimental.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
@@ -99,7 +99,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, with(Items.copper, 1500, Items.titanium, 900, Items.silicon, 650, Items.plastanium, 390, Items.phaseFabric, 180, Items.surgeAlloy, 165));
         }};
 
-        blockWorkshop = new BetterBlockForge("block-workshop"){{
+        blockWorkshop = new BlockForge("block-workshop"){{
             health = 80;
             size = 5;
             minBlockSize = 3;
@@ -123,7 +123,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, with(Items.thorium, 640, Items.silicon, 120, Items.plastanium, 320, Items.phaseFabric, 460, Items.surgeAlloy, 480));
         }};
 
-        blockPacker = new BetterBlockLoader("block-packer"){{
+        blockPacker = new BlockLoader("block-packer"){{
             health = 80;
             size = 5;
             maxBlockSize = 4;
@@ -131,7 +131,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.distribution, with(Items.thorium, 360, Items.plastanium, 100, Items.phaseFabric, 80));
         }};
 
-        blockUnpacker = new BetterBlockUnloader("block-unpacker"){{
+        blockUnpacker = new BlockUnloader("block-unpacker"){{
             health = 80;
             size = 5;
             maxBlockSize = 4;

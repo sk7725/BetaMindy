@@ -36,6 +36,7 @@ public class Piston extends Block {
     public final Boolf<Building> stickBool = b -> !(b.block == Blocks.phaseWall || b.block == Blocks.phaseWallLarge);
 
     public String armSprite, baseSprite;
+    public float pushVolume = 0.4f;
 
     public Piston(String name, String arm, String base){
         super(name);
@@ -137,7 +138,7 @@ public class Piston extends Block {
                 BetaMindy.pushUtil._pushUnits(this, rotation);
                 tile.nearby(rotation).setBlock(armBlock, team, (rotation + 2) % 4);
                 ((PistonArmBuild)tile.nearbyBuild(rotation)).piston = this;
-                pushSound.at(this);
+                pushSound.at(x, y, 1f, pushVolume);
             }
         }
         public void retract(){
@@ -146,7 +147,7 @@ public class Piston extends Block {
             if(!extended){
                 heatTimer.reset(0, 0);
                 if(tile.nearby(rotation) != null && tile.nearby(rotation).block() == armBlock) tile.nearby(rotation).remove();
-                pullSound.at(this);
+                pullSound.at(x, y, 1f, pushVolume);
             }
         }
 
@@ -183,37 +184,9 @@ public class Piston extends Block {
             write.b((byte)Mathf.clamp(heatTimer.getTime(0), 0, 8));
         }
 
-        /*
         @Override
-        public Seq<Building> getPowerConnections(Seq<Building> out){
-            out.clear();
-            if(power == null) return out;
-
-            //the facing block will not be added to the piston's graph
-            for(Building other : proximity){
-                if(other != null && other.power != null
-                        && !(block.consumesPower && other.block.consumesPower && !block.outputsPower && !other.block.outputsPower) && tile.nearbyBuild(rotation) != other
-                        && !power.links.contains(other.pos())){
-                    out.add(other);
-                }
-            }
-
-            for(int i = 0; i < power.links.size; i++){
-                Tile link = Vars.world.tile(power.links.get(i));
-                if(link != null && link.build != null && link.build.power != null) out.add(link.build);
-            }
-            return out;
+        public boolean conductsTo(Building other){
+            return tile.nearbyBuild(rotation) != other && super.conductsTo(other);
         }
-        //TODO: override conductsTo in the next Mindustry build(122.1++)
-        @Override
-        public void onProximityUpdate(){
-            super.onProximityUpdate();
-            //remove this piston from the other's proximities
-            if(tile.nearbyBuild(rotation) != null){
-                Building other = tile.nearbyBuild(rotation);
-                other.proximity.remove(self(), true);
-                proximity.remove(other, true);
-            }
-        }*/
     }
 }

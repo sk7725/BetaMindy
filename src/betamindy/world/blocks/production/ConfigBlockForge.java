@@ -2,13 +2,13 @@ package betamindy.world.blocks.production;
 
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import betamindy.world.blocks.temporary.*;
 import mindustry.Vars;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.experimental.*;
 
-public class ConfigBlockForge extends BetterBlockForge {
+public class ConfigBlockForge extends BlockForge {
     protected int[] minSizes = {1, 3, 5};
     protected int[] maxSizes = {2, 4, 6};
     public ConfigBlockForge(String name){
