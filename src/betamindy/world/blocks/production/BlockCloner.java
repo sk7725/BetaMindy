@@ -1,6 +1,5 @@
 package betamindy.world.blocks.production;
 
-import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -8,6 +7,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.graphics.Drawm;
+import betamindy.world.blocks.payloads.*;
 import mindustry.Vars;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -16,10 +16,12 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 
 import static arc.Core.atlas;
 import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class BlockCloner extends Block {
     public Color color = Pal.lancerLaser;
@@ -62,8 +64,15 @@ public class BlockCloner extends Block {
         super.drawPlace(x, y, rotation, valid);
         int br = (rotation + 2) % 4;
         Lines.stroke(1f);
+
         Draw.color(Pal.accent, Mathf.absin(Time.globalTime, 2f, 1f));
-        Lines.square((x + Geometry.d4x(rotation)) * tilesize + offset, (y + Geometry.d4y(rotation)) * tilesize + offset, tilesize / 2f);
+        Tile t = world.tile(x, y);
+        if(t != null) t = t.nearby(rotation);
+        if(t != null && t.build != null && t.block().size > maxSize && t.block().outputsPayload){
+            Lines.square(t.build.x, t.build.y, t.block().size * tilesize / 2f);
+        }
+        else Lines.square((x + Geometry.d4x(rotation)) * tilesize + offset, (y + Geometry.d4y(rotation)) * tilesize + offset, tilesize / 2f);
+
         Draw.color(color, Mathf.absin(Time.globalTime, 2f, 1f));
         Lines.square((x + Geometry.d4x(br)) * tilesize + offset, (y + Geometry.d4y(br)) * tilesize + offset, tilesize / 2f);
         Draw.color();
@@ -73,35 +82,90 @@ public class BlockCloner extends Block {
         public float progress, heat, time;
         public @Nullable Block recipe, prev;
         public int recipeRot = 0;
+        public Object recipeCon = null;
+        public boolean parseFront = false;
+
+        public Tile destTile(){
+            return destTile(recipe.size, (rotation + 2) % 4);
+        }
+
+        public Tile destTile(int size){
+            return destTile(size, (rotation + 2) % 4);
+        }
+
+        public Tile destTile(int size, int dir){
+            if(size <= 1) return tile.nearby(dir);
+            else if(size % 2 == 1){
+                int o = size / 2 + 1;
+                return tile.nearby(o * Geometry.d4x(dir), o * Geometry.d4y(dir));
+            }
+            else{
+                int o = size / 2 + 1;
+                return tile.nearby(o * Geometry.d4x(dir) + RBuild.evenOffsets[dir][0], o * Geometry.d4y(dir) + RBuild.evenOffsets[dir][1]);
+            }
+        }
 
         @Override
-        public void onProximityUpdate() {
+        public void onProximityUpdate(){
             super.onProximityUpdate();
+            parseFront = false;
+
             Tile t = tile.nearby(rotation);
             if(t == null) recipe = null;
             else{
                 if(t.block() == null) recipe = null;
-                if(!obstructed(t.block()) && t.block().size <= maxSize){
+                else if(t.block().size > maxSize && t.block().outputsPayload && t.build != null){
+                    parseFront = true;
+                }
+                else if(!obstructed(t.block()) && t.block().size <= maxSize){
                     recipe = t.block();
-                    if(recipe.rotate && t.build != null) recipeRot = t.build.rotation;
-                    else recipeRot = 0;
+                    if(t.build != null){
+                        recipeRot = (recipe.rotate) ? t.build.rotation : 0;
+                    }
                 }
                 else recipe = null;
             }
             if(recipe == null){
                 recipeRot = 0;
+                recipeCon = null;
             }
             //Log.info(recipe == null ? "null" : recipe.name);
+        }
+
+        public void peekPayload(){
+            Tile t = tile.nearby(rotation);
+            if(t == null || t.block() == null) recipe = null;
+            else{
+                if(t.build != null && t.build.getPayload() != null && (t.build.getPayload() instanceof BuildPayload)){
+                    BuildPayload p = (BuildPayload) t.build.getPayload();
+                    if(!obstructed(p.block())){
+                        recipe = p.block();
+                        recipeRot = (recipe.rotate) ? t.build.rotation : 0; //default to the carrier's rotation
+                        recipeCon = p.build.config();
+                    }
+                    else{
+                        recipe = null;
+                    }
+                }
+                else{
+                    recipe = null;
+                }
+            }
+            if(recipe == null){
+                recipeRot = 0;
+                recipeCon = null;
+            }
         }
 
         @Override
         public void update() {
             super.update();
+            if(parseFront) peekPayload();
             boolean produce = recipe != null && consValid();
             if(produce){
                 progress += edelta();
                 if(progress >= constructTime()){
-                    if(placeBlock(tile.nearby((rotation + 2) % 4))) consume();
+                    placeBlock(destTile());
                     progress = 0f;
                 }
             }
@@ -121,14 +185,25 @@ public class BlockCloner extends Block {
         }
 
         public boolean obstructed(Block b){
-            Tile t = tile.nearby((rotation + 2) % 4);
+            Tile t = destTile(b.size);
             if(t == null) return true;
             return !Build.validPlace(b, team, t.x, t.y, recipeRot, true);
         }
 
         public boolean placeBlock(@Nullable Tile t){
             if(obstructed(recipe) || t == null) return false;
-            Vars.world.tile(t.x, t.y).setBlock(recipe, team, recipeRot);
+            consume();
+            t.setBlock(recipe, team, recipeRot);
+            if(t.build != null && !Vars.net.client()){
+                if(parseFront){
+                    if(recipeCon != null) t.build.configureAny(recipeCon);
+                }
+                else{
+                    recipeCon = tile.nearbyBuild(rotation).config();
+                    if(recipeCon != null) t.build.configureAny(recipeCon);
+                    recipeCon = null;
+                }
+            }
             return true;
         }
 
@@ -154,15 +229,23 @@ public class BlockCloner extends Block {
                 Draw.z(Layer.blockOver);
                 Draw.blend(Blending.additive);
                 Draw.color(color, Mathf.absin(2f, 1f));
-                float dx = x + Geometry.d4x((rotation + 2) % 4) * tilesize;
-                float dy = y + Geometry.d4y((rotation + 2) % 4) * tilesize;
+
+                int dir = (rotation + 2) % 4;
+                float dx = x + (Geometry.d4x(dir) * (1 + (recipe.size >> 1))) * tilesize;
+                float dy = y + (Geometry.d4y(dir) * (1 + (recipe.size >> 1))) * tilesize;
+                if(recipe.size % 2 == 0){
+                    dx += RBuild.evenOffsets[dir][0] * tilesize + 4f;
+                    dy += RBuild.evenOffsets[dir][1] * tilesize + 4f;
+                }
                 Draw.rect(recipe.icon(Cicon.full), dx, dy, recipeRot * 90f);
                 Draw.blend();
                 Draw.reset();
 
                 if(heat > 0.001f){
+                    float finalDx = dx;
+                    float finalDy = dy;
                     Draw.draw(Layer.blockOver, () -> {
-                        Drawm.constructLineless(dx, dy, recipe.icon(Cicon.full), recipeRot * 90f, progress / constructTime(), heat, time, color);
+                        Drawm.constructLineless(finalDx, finalDy, recipe.icon(Cicon.full), recipeRot * 90f, progress / constructTime(), heat, time, color);
                     });
                 }
             }
@@ -173,8 +256,16 @@ public class BlockCloner extends Block {
             super.drawSelect();
             int br = (rotation + 2) % 4;
             Lines.stroke(1f);
+
             Draw.color(Pal.accent, Mathf.absin(Time.time, 2f, 1f));
-            Lines.square(x + Geometry.d4x(rotation) * tilesize, y + Geometry.d4y(rotation) * tilesize, tilesize / 2f);
+            if(parseFront){
+                Tile t = tile.nearby(rotation);
+                if(t != null && t.build != null){
+                    Lines.square(t.build.x, t.build.y, t.block().size * tilesize / 2f);
+                }
+            }
+            else Lines.square(x + Geometry.d4x(rotation) * tilesize, y + Geometry.d4y(rotation) * tilesize, tilesize / 2f);
+
             Draw.color(color, Mathf.absin(Time.time, 2f, 1f));
             Lines.square(x + Geometry.d4x(br) * tilesize, y + Geometry.d4y(br) * tilesize, tilesize / 2f);
             Draw.color();

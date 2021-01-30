@@ -1,7 +1,8 @@
 package betamindy.content;
 
-import arc.math.Mathf;
-import arc.util.Time;
+import arc.math.*;
+import arc.util.*;
+import betamindy.graphics.Pal2;
 import mindustry.content.Fx;
 import mindustry.ctype.ContentList;
 import mindustry.entities.units.WeaponMount;
@@ -10,7 +11,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap;
+    public static StatusEffect radiation, controlSwap, booster;
 
     public void load(){
         radiation = new StatusEffect("radiation"){
@@ -40,5 +41,24 @@ public class MindyStatusEffects implements ContentList {
             effectChance = 0.4f;
             speedMultiplier = -1f;
         }};
+
+        booster = new StatusEffect("booster"){
+            @Override
+            public void update(Unit unit, float time){
+                if(Mathf.chanceDelta(effectChance)){
+                    Tmp.v1.rnd(unit.type.hitSize /2f);
+                    effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, unit.rotation);
+                }
+                //TODO: remove on next build
+                Tmp.v1.trns(unit.rotation, Time.delta * unit.type.speed * 6.5f);
+                unit.move(Tmp.v1.x, Tmp.v1.y);
+            }
+
+            {
+                color = Pal2.boostColor;
+                effect = MindyFx.boostFire;
+                speedMultiplier = 1.55f;
+            }
+        };
     }
 }

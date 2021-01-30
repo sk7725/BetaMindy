@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import betamindy.graphics.Pal2;
 import mindustry.*;
 import mindustry.entities.*;
 import mindustry.game.Team;
@@ -109,5 +110,18 @@ public class MindyFx {
         randLenVectors(e.id, 4, e.fin() * 9f, (x, y) -> {
             Drawf.tri(e.x + x, e.y + y, 5f * e.fout(), 5f * e.fout(), Mathf.randomSeed(e.id, 360f));
         });
+    }),
+
+    boostBlock = new Effect(20, e -> {
+        color(Pal2.boostColor);
+        stroke(e.fout() * 4f);
+        Lines.square(e.x, e.y, e.fin() * 11.5f);
+    }),
+
+    boostFire = new Effect(50, e -> {
+        float len = e.finpow() * 22f;
+        float ang = e.rotation + 180f + Mathf.randomSeedRange(e.id, 30f);
+        Draw.color(Pal2.boostColor, Pal.lightOrange, e.fin());
+        Fill.circle(e.x + Angles.trnsx(ang, len), e.y + Angles.trnsy(ang, len), 2f * e.fout());
     });
 }

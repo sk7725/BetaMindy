@@ -10,6 +10,7 @@ import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.power.*;
 import betamindy.world.blocks.production.*;
+import betamindy.world.blocks.units.BoostPad;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.*;
@@ -30,13 +31,15 @@ public class MindyBlocks implements ContentList {
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner,
+    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner,
     //effect
     silo, warehouse,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, teamWall,
     //drills
-    drillMini, drillMega;
+    drillMini, drillMega,
+    //units
+    boostPad;
 
     @Override
     public void load() {
@@ -232,7 +235,13 @@ public class MindyBlocks implements ContentList {
         cloner = new BlockCloner("cloner"){{
             hasPower = true;
             consumes.power(0.6f);
-            requirements(Category.crafting, with(Items.titanium, 30, Items.silicon, 35, Items.phaseFabric, 8));
+            requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.phaseFabric, 8));
+        }};
+
+        spinner = new Spinner("spinner"){{
+            hasPower = true;
+            consumes.power(0.3f);
+            requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.plastanium, 8));
         }};
 
         silo = new StorageBlock("silo"){
@@ -388,6 +397,11 @@ public class MindyBlocks implements ContentList {
             laserOffset = 6f;
             consumes.power(9.6f);
             requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, Items.surgeAlloy, 15));
+        }};
+
+        boostPad = new BoostPad("boostpad"){{
+            size = 2;
+            requirements(Category.units, with(Items.lead, 24, Items.silicon, 10, Items.phaseFabric, 30));
         }};
     }
 }

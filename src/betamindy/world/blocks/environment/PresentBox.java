@@ -6,7 +6,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 //import arc.math.geom.Vec2;
-import arc.scene.*;
 import arc.scene.ui.layout.*;
 //import arc.util.Align;
 import arc.util.io.*;
@@ -18,7 +17,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.Cicon;
-import mindustry.ui.fragments.*;
 import mindustry.world.*;
 
 import static mindustry.Vars.*;
@@ -35,7 +33,7 @@ public class PresentBox extends Block {
     public Item naughtyItem = coal;
     public TextureRegion baseRegion, boxRegion, ribbonRegion, ribbonRegionBack, ribbonRegionBase, topRegion;
     public Effect openEffect = Fx.none, naughtyEffect = Fx.explosion;
-    public Sound openSound = MindySounds.presentbells, naughtySound = Sounds.bang;
+    public Sound openSound = MindySounds.presentBells, naughtySound = Sounds.bang;
 
     //private final CustomBlockInventoryFragment invFrag = new CustomBlockInventoryFragment();
 
