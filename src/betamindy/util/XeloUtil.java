@@ -6,6 +6,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.world.blocks.distribution.*;
+import betamindy.world.blocks.logic.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.Units;
@@ -158,6 +159,8 @@ public class XeloUtil {
         _pushUnits(build, direction);
 
         Vars.world.tile(bx+d4(direction).x, by+d4(direction).y).setBlock(build.block, build.team, build.rotation, () -> build);
+
+        if(build instanceof PushReact) ((PushReact)build).pushed(direction);
         return true;
     }
 

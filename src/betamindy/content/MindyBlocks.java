@@ -8,6 +8,7 @@ import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
+import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.power.*;
 import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.units.BoostPad;
@@ -39,7 +40,9 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega,
     //units
-    boostPad;
+    boostPad,
+    //logic
+    linkPin;
 
     @Override
     public void load() {
@@ -402,6 +405,10 @@ public class MindyBlocks implements ContentList {
         boostPad = new BoostPad("boostpad"){{
             size = 2;
             requirements(Category.units, with(Items.lead, 24, Items.silicon, 10, Items.phaseFabric, 30));
+        }};
+
+        linkPin = new LinkPinner("linkpin"){{
+            requirements(Category.logic, with( Items.graphite, 30,Items.silicon, 15, Items.metaglass, 30));
         }};
     }
 }
