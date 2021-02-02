@@ -132,7 +132,7 @@ public class LinkPinner extends Block {
 
         public void pushed(int dir){
             if(link != null && enabled && link.links.any()){
-                link.links.forEach(l -> {
+                link.links.each(l -> {
                     l.x += Geometry.d4x(dir);
                     l.y += Geometry.d4y(dir);
                 });
