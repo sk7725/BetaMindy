@@ -31,5 +31,5 @@ jobs:
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v2.2.1
       with:
-        name:  artifact
+        name: betamindy in a box
         path: build/libs/[!raw-]*.jar
