@@ -4,11 +4,11 @@ import arc.graphics.Color;
 import betamindy.entities.bullet.*;
 import mindustry.content.Fx;
 import mindustry.ctype.ContentList;
-import mindustry.entities.bullet.BulletType;
+import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
 
 public class MindyBullets implements ContentList {
-    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig;
+    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar;
     @Override
     public void load(){
         payBullet = new PayloadBullet(1.6f){{
@@ -81,6 +81,48 @@ public class MindyBullets implements ContentList {
             width = 8f; height = 8f;
 
             despawnEffect = Fx.none;
+        }};
+
+        smallStar = new BasicBulletType(3f, 60f, "betamindy-starsmall"){{
+            frontColor = Color.white;
+            backColor = Color.white;
+            pierce = true;
+            pierceCap = 10;
+            hitEffect = Fx.none;
+            despawnEffect = Fx.mineBig;
+            lifetime = 80f;
+            width = 16f;
+            height = 16f;
+            spin = 0.05f;
+        }};
+
+        bigStar = new FallingStar(2f, 360f){{
+            splashDamageRadius = 60f;
+            splashDamage = 360f;
+            inaccuracy = 26f;
+            fragBullet = smallStar;
+            fragBullets = 7;
+
+            trailEffect = Fx.none;
+            hitShake = 3f;
+            size = 250f;
+            fallTime = 270f;
+        }};
+
+        biggerStar = new FallingStar(1.7f, 360f){{
+            splashDamageRadius = 90f;
+            splashDamage = 500f;
+            inaccuracy = 20f;
+            fragBullet = smallStar;
+            fragBullets = 15;
+            fragShots = 3;
+
+            trailEffect = Fx.none;
+            hitShake = 4f;
+            size = 400f;
+            fallTime = 650f;
+
+            shiny = true;
         }};
     }
 }

@@ -18,17 +18,17 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.Anuken.Mindustry:core:v123"
+    implementation "com.github.Anuken.Mindustry:core:v124"
 }
 
 jar {
-    archiveFileName.set pArtifactFilename
+    archiveFileName.set "raw-$pArtifactFilename"
 }
 
 task dexify(type: Jar) {
-    archiveName "dexed-$pArtifactFilename"
+    archiveName "$pArtifactFilename"
 
-    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, pArtifactFilename),
+    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, "raw-$pArtifactFilename"),
                dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
     doFirst {
         exec {

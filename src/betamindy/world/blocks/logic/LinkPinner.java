@@ -94,7 +94,7 @@ public class LinkPinner extends Block {
         @Override
         public void updateTile(){
             if(link != null && changed){
-                link.updateCode();
+                link.updateCode(link.code);
                 changed = false;
             }
 

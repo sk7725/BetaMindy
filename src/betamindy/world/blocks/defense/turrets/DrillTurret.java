@@ -43,6 +43,7 @@ public class DrillTurret extends BaseTurret {
 
         sync = true;
         hasItems = true;
+        outlineIcon = true;
     }
 
     @Override

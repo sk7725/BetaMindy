@@ -121,7 +121,21 @@ public class MindyFx {
     boostFire = new Effect(50, e -> {
         float len = e.finpow() * 22f;
         float ang = e.rotation + 180f + Mathf.randomSeedRange(e.id, 30f);
-        Draw.color(Pal2.boostColor, Pal.lightOrange, e.fin());
+        color(Pal2.boostColor, Pal.lightOrange, e.fin());
         Fill.circle(e.x + Angles.trnsx(ang, len), e.y + Angles.trnsy(ang, len), 2f * e.fout());
-    });
+    }),
+
+    starPoof = new Effect(50f, e -> {
+        float rot = (e.data == null) ? 0f : (float)e.data;
+        color(Color.white, e.fout());
+
+        Draw.rect("betamindy-star", e.x, e.y, Draw.scl * Draw.xscl * e.rotation * (1f + e.fin() * 0.5f), Draw.scl * Draw.yscl * e.rotation * (1f + e.fin() * 0.5f), rot);
+    }),
+
+    starFade = new Effect(30f, e -> {
+        float rot = (e.data == null) ? 0f : (float)e.data;
+        color(Tmp.c1.set(e.color).shiftHue(Time.globalTime * 1.2f), e.fout() * 0.8f);
+
+        rect("betamindy-star", e.x, e.y, scl * xscl * e.rotation, scl * yscl * e.rotation, rot);
+    }).layer(Layer.space - 0.02f);
 }

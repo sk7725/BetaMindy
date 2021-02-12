@@ -6,6 +6,7 @@ import arc.struct.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
+import betamindy.world.blocks.defense.turrets.pattern.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.logic.*;
@@ -42,7 +43,9 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad,
     //logic
-    linkPin;
+    linkPin,
+    //turrets
+    hopeBringer;
 
     @Override
     public void load() {
@@ -397,7 +400,7 @@ public class MindyBlocks implements ContentList {
             maxDrillTier = 5;
             hasPower = true;
             laserWidth = 1.1f;
-            laserOffset = 6f;
+            laserOffset = 11f;
             consumes.power(9.6f);
             requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, Items.surgeAlloy, 15));
         }};
@@ -409,6 +412,16 @@ public class MindyBlocks implements ContentList {
 
         linkPin = new LinkPinner("linkpin"){{
             requirements(Category.logic, with( Items.graphite, 30,Items.silicon, 15, Items.metaglass, 30));
+        }};
+
+        hopeBringer = new MultiTurret("hopebringer"){{
+            size = 9;
+            health = 9999;
+            powerUse = 90f;
+            range = 600f;
+
+            patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
+            requirements(Category.turret, with( Items.surgeAlloy, 9999));//TODO
         }};
     }
 }

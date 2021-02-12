@@ -49,15 +49,15 @@ public class MindyStatusEffects implements ContentList {
                     Tmp.v1.rnd(unit.type.hitSize /2f);
                     effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, unit.rotation);
                 }
-                //TODO: remove on next build
-                Tmp.v1.trns(unit.rotation, Time.delta * unit.type.speed * 6.5f);
-                unit.move(Tmp.v1.x, Tmp.v1.y);
+
+                //Tmp.v1.trns(unit.rotation(), Time.delta * unit.type.speed * 1.75f * unit.mass());
+                //unit.impulseNet(Tmp.v1);
             }
 
             {
                 color = Pal2.boostColor;
                 effect = MindyFx.boostFire;
-                speedMultiplier = 1.55f;
+                speedMultiplier = 2.75f;
             }
         };
     }
