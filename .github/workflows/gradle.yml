@@ -28,7 +28,13 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew buildDex
 
-    - name: Upload build artifact
+    - name: Upload a Build Artifact (normal)
+      uses: actions/upload-artifact@v2.2.1
+      with:
+        name:  normal
+        path: build/libs/[!dexed-]*.jar
+
+    - name: Upload a Build Artifact (dexed)
       uses: actions/upload-artifact@v2.2.1
       with:
         name: dexed
