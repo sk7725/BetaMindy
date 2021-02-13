@@ -12,38 +12,39 @@ import mindustry.world.blocks.payloads.*;
 
 public class MobileFunctions {
     public int payloadUnit, payloadBlock;
+
     public void init() {
         payloadUnit = Payload.payloadUnit;
         payloadBlock = Payload.payloadBlock;
     }
 
-    public void writePayload(@Nullable Payload payload, Writes write){
-        if(payload == null){
+    public void writePayload(@Nullable Payload payload, Writes write) {
+        if (payload == null) {
             write.bool(false);
-        }else{
+        } else {
             write.bool(true);
             payload.write(write);
         }
     }
 
     @Nullable
-    public <T extends Payload> T readPayload(Reads read){
+    public <T extends Payload> T readPayload(Reads read) {
         boolean exists = read.bool();
-        if(!exists) return null;
+        if (!exists) return null;
 
         byte type = read.b();
-        if(type == payloadBlock){
+        if (type == payloadBlock) {
             Block block = Vars.content.block(read.s());
             BuildPayload payload = new BuildPayload(block, Team.derelict);
             byte version = read.b();
             payload.build.readAll(read, version);
-            return (T)payload;
-        }else if(type == payloadUnit){
+            return (T) payload;
+        } else if (type == payloadUnit) {
             byte id = read.b();
-            if(EntityMapping.map(id) == null) throw new RuntimeException("No type with ID " + id + " found.");
-            Unit unit = (Unit)EntityMapping.map(id).get();
+            if (EntityMapping.map(id) == null) throw new RuntimeException("No type with ID " + id + " found.");
+            Unit unit = (Unit) EntityMapping.map(id).get();
             unit.read(read);
-            return (T)new UnitPayload(unit);
+            return (T) new UnitPayload(unit);
         }
         throw new IllegalArgumentException("Unknown payload type: " + type);
     }

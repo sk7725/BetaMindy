@@ -10,13 +10,13 @@ import static mindustry.content.Blocks.*;
 
 //Credits to younggam
 @SuppressWarnings("unchecked")
-public class OverWriter implements ContentList{
-    public <T extends UnlockableContent> void forceOverWrite(UnlockableContent target, Cons<T> setter){
-        setter.get((T)target);
+public class OverWriter implements ContentList {
+    public <T extends UnlockableContent> void forceOverWrite(UnlockableContent target, Cons<T> setter) {
+        setter.get((T) target);
     }
 
     @Override
-    public void load(){
+    public void load() {
         //region contents
 
         forceOverWrite(blockForge, (Block t) -> {

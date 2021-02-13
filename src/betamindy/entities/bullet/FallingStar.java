@@ -11,13 +11,13 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 
-public class FallingStar extends ArtilleryBulletType{
+public class FallingStar extends ArtilleryBulletType {
     public float size = 180f;
     public int fragShots = 1;
     public boolean shiny = false;
     public float fallTime = 180f;
 
-    public FallingStar(float speed, float damage){
+    public FallingStar(float speed, float damage) {
         super(speed, damage, "betamindy-star");
         frontColor = Color.valueOf("ffbbbb");
         hitEffect = MindyFx.starPoof;
@@ -50,8 +50,8 @@ public class FallingStar extends ArtilleryBulletType{
 
         Draw.z(Layer.space - 0.01f); //I hope this does not do the sk to the light shader
 
-        if(shiny){
-            if(Time.globalTime % 20f <= 10f){
+        if (shiny) {
+            if (Time.globalTime % 20f <= 10f) {
                 Draw.color(Tmp.c1.set(frontColor).shiftHue(Time.globalTime * 1.2f), Mathf.clamp(b.fin() * 2f) * 0.3f);
                 Fill.circle(x, y, size * (0.25f + 0.2f * b.fout()));
                 Fill.circle(x, y, size * (0.20f + 0.2f * b.fout()));
@@ -60,7 +60,7 @@ public class FallingStar extends ArtilleryBulletType{
         }
 
         Draw.color(Tmp.c1.set(frontColor).shiftHue(Time.globalTime * 1.2f));
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             x = b.x + xoff * b.fout() * (1f + i * 0.2f);
             y = b.y + yoff * b.fout() * (1f + i * 0.2f);
             Draw.alpha(Mathf.clamp(b.fin() * 2f) * (4f - i) / 4f);
@@ -70,24 +70,24 @@ public class FallingStar extends ArtilleryBulletType{
     }
 
     @Override
-    public void hit(Bullet b, float x, float y){
+    public void hit(Bullet b, float x, float y) {
         b.hit = true;
         hitEffect.at(x, y, size, hitColor, Mathf.randomSeed(b.id) * 360f);
         hitSound.at(x, y, hitSoundPitch, hitSoundVolume);
 
         Effect.shake(hitShake, hitShake, b);
 
-        if(fragBullet != null){
-            for(int i = 0; i < fragBullets; i++){
-                for(int j = 0; j < fragShots; j++){
+        if (fragBullet != null) {
+            for (int i = 0; i < fragBullets; i++) {
+                for (int j = 0; j < fragShots; j++) {
                     float len = 4f;
-                    float a = b.rotation() + 360f * ((float)i / fragBullets) + 120f * ((float)j / fragBullets);
+                    float a = b.rotation() + 360f * ((float) i / fragBullets) + 120f * ((float) j / fragBullets);
                     fragBullet.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, 1f + 0.3f * j, 1f);
                 }
             }
         }
 
-        if(splashDamageRadius > 0 && !b.absorbed){
+        if (splashDamageRadius > 0 && !b.absorbed) {
             Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), true, true);
         }
     }

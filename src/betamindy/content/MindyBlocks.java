@@ -49,7 +49,7 @@ public class MindyBlocks implements ContentList {
 
     @Override
     public void load() {
-        radiation = new GlowPowder("radiation", 0){{
+        radiation = new GlowPowder("radiation", 0) {{
             color1 = Pal.lancerLaser;
             color2 = Pal.heal;
 
@@ -57,7 +57,7 @@ public class MindyBlocks implements ContentList {
             effect = MindyFx.directionalSmoke;
         }};
 
-        exoticMatter = new GlowPowder("exotic-matter", 1){{
+        exoticMatter = new GlowPowder("exotic-matter", 1) {{
             color1 = Team.crux.color;
             color2 = Pal.sapBullet;
 
@@ -65,7 +65,7 @@ public class MindyBlocks implements ContentList {
             duration = 3000f;
         }};
 
-        payCannon = new PayloadTurret("payload-cannon"){{
+        payCannon = new PayloadTurret("payload-cannon") {{
             health = 2050;
             size = 5;
             recoilAmount = 7f;
@@ -84,7 +84,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, with(Items.copper, 1000, Items.titanium, 750, Items.silicon, 450, Items.plastanium, 330));
         }};
 
-        payCatapult = new PayloadTurret("payload-catapult"){{
+        payCatapult = new PayloadTurret("payload-catapult") {{
             health = 3190;
             size = 7;
             recoilAmount = 9f;
@@ -108,7 +108,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, with(Items.copper, 1500, Items.titanium, 900, Items.silicon, 650, Items.plastanium, 390, Items.phaseFabric, 180, Items.surgeAlloy, 165));
         }};
 
-        blockWorkshop = new BlockForge("block-workshop"){{
+        blockWorkshop = new BlockForge("block-workshop") {{
             health = 80;
             size = 5;
             minBlockSize = 3;
@@ -120,7 +120,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, with(Items.thorium, 360, Items.phaseFabric, 120, Items.surgeAlloy, 60));
         }};
 
-        blockFactory = new ConfigBlockForge("block-factory"){{
+        blockFactory = new ConfigBlockForge("block-factory") {{
             health = 240;
             size = 7;
             minBlockSize = 1;
@@ -132,7 +132,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, with(Items.thorium, 640, Items.silicon, 120, Items.plastanium, 320, Items.phaseFabric, 460, Items.surgeAlloy, 480));
         }};
 
-        blockPacker = new BlockLoader("block-packer"){{
+        blockPacker = new BlockLoader("block-packer") {{
             health = 80;
             size = 5;
             maxBlockSize = 4;
@@ -140,7 +140,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.distribution, with(Items.thorium, 360, Items.plastanium, 100, Items.phaseFabric, 80));
         }};
 
-        blockUnpacker = new BlockUnloader("block-unpacker"){{
+        blockUnpacker = new BlockUnloader("block-unpacker") {{
             health = 80;
             size = 5;
             maxBlockSize = 4;
@@ -148,7 +148,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.distribution, with(Items.thorium, 360, Items.plastanium, 80, Items.phaseFabric, 100));
         }};
 
-        payDeconstructor = new PayloadDeconstructor("payload-deconstructor"){{
+        payDeconstructor = new PayloadDeconstructor("payload-deconstructor") {{
             health = 80;
             size = 3;
             itemCapacity = 400;
@@ -156,7 +156,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, with(Items.copper, 100, Items.titanium, 50, Items.silicon, 25));
         }};
 
-        payDestroyer = new PayloadDeconstructor("payload-destroyer"){{
+        payDestroyer = new PayloadDeconstructor("payload-destroyer") {{
             health = 120;
             size = 5;
             maxPaySize = 4f;
@@ -167,7 +167,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, with(Items.copper, 360, Items.titanium, 95, Items.silicon, 65));
         }};
 
-        payEradicator = new PayloadDeconstructor("payload-eradicator"){{
+        payEradicator = new PayloadDeconstructor("payload-eradicator") {{
             health = 250;
             size = 7;
             maxPaySize = 10f;
@@ -179,20 +179,20 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, with(Items.copper, 610, Items.titanium, 130, Items.silicon, 115, Items.phaseFabric, 35));
         }};
 
-        piston = new Piston("piston"){{
+        piston = new Piston("piston") {{
             health = 200;
             consumes.power(1f);
             requirements(Category.distribution, with(Items.graphite, 25, Items.silicon, 10, Items.titanium, 15));
         }};
 
-        stickyPiston = new Piston("piston-sticky"){{
+        stickyPiston = new Piston("piston-sticky") {{
             health = 200;
             consumes.power(1f);
             requirements(Category.distribution, with(Items.sporePod, 10, Items.graphite, 15, Items.silicon, 10, Items.titanium, 15));
             sticky = true;
         }};
 
-        pistonInfi = new Piston("piston-infi", "betamindy-piston-arm", "betamindy-pistoninf"){{
+        pistonInfi = new Piston("piston-infi", "betamindy-piston-arm", "betamindy-pistoninf") {{
             health = 200;
             consumes.power(1f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
@@ -200,7 +200,7 @@ public class MindyBlocks implements ContentList {
             maxBlocks = 512;
         }};
 
-        stickyPistonInfi = new Piston("piston-sticky-infi", "betamindy-piston-sticky-arm", "betamindy-pistoninf"){{
+        stickyPistonInfi = new Piston("piston-sticky-infi", "betamindy-piston-sticky-arm", "betamindy-pistoninf") {{
             health = 200;
             consumes.power(1f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
@@ -209,21 +209,21 @@ public class MindyBlocks implements ContentList {
             maxBlocks = 512;
         }};
 
-        sporeSlime = new SlimeBlock("spore-slime", 0){{
+        sporeSlime = new SlimeBlock("spore-slime", 0) {{
             health = 40;
             requirements(Category.distribution, with(Items.sporePod, 6));
 
             color = Color.valueOf("9E78DC");
         }};
 
-        sporeSlimeSided = new SidedSlimeBlock("spore-slime-sided", 0){{
+        sporeSlimeSided = new SidedSlimeBlock("spore-slime-sided", 0) {{
             health = 120;
             requirements(Category.distribution, with(Items.sporePod, 3, Items.lead, 3));
 
             color = Color.valueOf("9E78DC");
         }};
 
-        surgeSlime = new SlimeBlock("surge-slime", 0){{
+        surgeSlime = new SlimeBlock("surge-slime", 0) {{
             health = 120;
             requirements(Category.distribution, with(Items.sporePod, 3, Items.surgeAlloy, 3));
             hasPower = true;
@@ -233,34 +233,34 @@ public class MindyBlocks implements ContentList {
             color = Color.valueOf("F3E979");
         }};
 
-        accel = new AccelBlock("accel"){{
+        accel = new AccelBlock("accel") {{
             health = 150;
             requirements(Category.power, with(Items.lead, 25, Items.silicon, 20, Items.plastanium, 3));
         }};
 
-        cloner = new BlockCloner("cloner"){{
+        cloner = new BlockCloner("cloner") {{
             hasPower = true;
             consumes.power(0.6f);
             requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.phaseFabric, 8));
         }};
 
-        spinner = new Spinner("spinner"){{
+        spinner = new Spinner("spinner") {{
             hasPower = true;
             consumes.power(0.3f);
             requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.plastanium, 8));
         }};
 
-        silo = new StorageBlock("silo"){
+        silo = new StorageBlock("silo") {
             public TextureRegion iconRegion;
 
             @Override
-            public void load(){
+            public void load() {
                 iconRegion = Drawm.generateTeamRegion(this);
                 super.load();
             }
 
             @Override
-            public TextureRegion[] icons(){
+            public TextureRegion[] icons() {
                 return new TextureRegion[]{region, iconRegion};
             }
 
@@ -272,17 +272,17 @@ public class MindyBlocks implements ContentList {
             }
         };
 
-        warehouse = new StorageBlock("warehouse"){
+        warehouse = new StorageBlock("warehouse") {
             public TextureRegion iconRegion;
 
             @Override
-            public void load(){
+            public void load() {
                 iconRegion = Drawm.generateTeamRegion(this);
                 super.load();
             }
 
             @Override
-            public TextureRegion[] icons(){
+            public TextureRegion[] icons() {
                 return new TextureRegion[]{region, iconRegion};
             }
 
@@ -294,28 +294,28 @@ public class MindyBlocks implements ContentList {
             }
         };
 
-        present = new PresentBox("present"){{
+        present = new PresentBox("present") {{
             requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
         }};
 
-        leadWall = new Wall("lead-wall"){{
+        leadWall = new Wall("lead-wall") {{
             health = 360;
             requirements(Category.defense, with(Items.lead, 6));
         }};
-        leadWallLarge = new Wall("lead-wall-large"){{
+        leadWallLarge = new Wall("lead-wall-large") {{
             health = 1440;
             size = 2;
             requirements(Category.defense, with(Items.lead, 24));
         }};
 
-        metaglassWall = new ShardWall("metaglass-wall"){{
+        metaglassWall = new ShardWall("metaglass-wall") {{
             shard = MindyBullets.glassPiece;
             amount = 5;
             inaccuracy = 36f;
             health = 380;
             requirements(Category.defense, with(Items.graphite, 3, Items.metaglass, 5));
         }};
-        metaglassWallLarge = new ShardWall("metaglass-wall-large"){{
+        metaglassWallLarge = new ShardWall("metaglass-wall-large") {{
             shard = MindyBullets.glassPieceBig;
             amount = 8;
             inaccuracy = 24f;
@@ -325,25 +325,25 @@ public class MindyBlocks implements ContentList {
             requirements(Category.defense, with(Items.graphite, 12, Items.metaglass, 20));
         }};
 
-        siliconWall = new Wall("silicon-wall"){{
+        siliconWall = new Wall("silicon-wall") {{
             health = 370;
             insulated = true;
             requirements(Category.defense, with(Items.copper, 2, Items.silicon, 5));
         }};
-        siliconWallLarge = new Wall("silicon-wall-large"){{
+        siliconWallLarge = new Wall("silicon-wall-large") {{
             health = 1480;
             insulated = true;
             size = 2;
             requirements(Category.defense, with(Items.copper, 8, Items.silicon, 20));
         }};
 
-        coalWall = new IgniteWall("coal-wall"){{
+        coalWall = new IgniteWall("coal-wall") {{
             health = 240;
             baseExplosiveness = 3f;
             variants = 2;
             requirements(Category.defense, with(Items.coal, 6));
         }};
-        coalWallLarge = new IgniteWall("coal-wall-large"){{
+        coalWallLarge = new IgniteWall("coal-wall-large") {{
             health = 960;
             baseExplosiveness = 12f;
             size = 2;
@@ -351,13 +351,13 @@ public class MindyBlocks implements ContentList {
             requirements(Category.defense, with(Items.coal, 24));
         }};
 
-        pyraWall = new ShardWall("pyra-wall"){{
+        pyraWall = new ShardWall("pyra-wall") {{
             shard = Bullets.fireball;
             amount = 6;
             health = 490;
             requirements(Category.defense, with(Items.pyratite, 6));
         }};
-        pyraWallLarge = new ShardWall("pyra-wall-large"){{
+        pyraWallLarge = new ShardWall("pyra-wall-large") {{
             shard = Bullets.fireball;
             amount = 24;
             health = 1960;
@@ -366,24 +366,24 @@ public class MindyBlocks implements ContentList {
             requirements(Category.defense, with(Items.pyratite, 24));
         }};
 
-        blastWall = new Wall("blast-wall"){{
+        blastWall = new Wall("blast-wall") {{
             health = 510;
             baseExplosiveness = 12.5f;
             requirements(Category.defense, with(Items.coal, 2, Items.blastCompound, 8));
         }};
-        blastWallLarge = new Wall("blast-wall-large"){{
+        blastWallLarge = new Wall("blast-wall-large") {{
             health = 2040;
             baseExplosiveness = 50f;
             size = 2;
             requirements(Category.defense, with(Items.coal, 8, Items.blastCompound, 32));
         }};
 
-        teamWall = new TeamWall("team-wall"){{
+        teamWall = new TeamWall("team-wall") {{
             health = 360;
             requirements(Category.defense, with(Items.titanium, 6, Items.graphite, 6, Items.silicon, 12));
         }};
 
-        drillMini = new DrillTurret("drill-mini"){{
+        drillMini = new DrillTurret("drill-mini") {{
             range = 50f;
             itemCapacity = 25;
             hasPower = true;
@@ -391,7 +391,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.production, with(Items.copper, 15, Items.lead, 15, Items.graphite, 25, Items.titanium, 10, Items.silicon, 15));
         }};
 
-        drillMega = new DrillTurret("drill-mega"){{
+        drillMega = new DrillTurret("drill-mega") {{
             size = 3;
             range = 120f;
             itemCapacity = 50;
@@ -405,23 +405,28 @@ public class MindyBlocks implements ContentList {
             requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, Items.surgeAlloy, 15));
         }};
 
-        boostPad = new BoostPad("boostpad"){{
+        boostPad = new BoostPad("boostpad") {{
             size = 2;
             requirements(Category.units, with(Items.lead, 24, Items.silicon, 10, Items.phaseFabric, 30));
         }};
 
-        linkPin = new LinkPinner("linkpin"){{
-            requirements(Category.logic, with( Items.graphite, 30,Items.silicon, 15, Items.metaglass, 30));
+        linkPin = new LinkPinner("linkpin") {{
+            requirements(Category.logic, with(Items.graphite, 30, Items.silicon, 15, Items.metaglass, 30));
         }};
 
-        hopeBringer = new MultiTurret("hopebringer"){{
+        hopeBringer = new MultiTurret("hopebringer") {{
             size = 9;
             health = 9999;
             powerUse = 90f;
             range = 600f;
 
-            patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
-            requirements(Category.turret, with( Items.surgeAlloy, 9999));//TODO
+            patterns = new TurretPattern[]{
+                    Patterns.starBlazing,
+                    Patterns.starBlazing,
+                    Patterns.chaosBuster,
+                    Patterns.starBlazing
+            };
+            requirements(Category.turret, with(Items.surgeAlloy, 9999));//TODO
         }};
     }
 }

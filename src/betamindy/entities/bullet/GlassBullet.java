@@ -18,7 +18,7 @@ public class GlassBullet extends BulletType {
 
     public TextureRegion[] regions;
 
-    public GlassBullet(float speed, float damage, String bulletSprite, int variants){
+    public GlassBullet(float speed, float damage, String bulletSprite, int variants) {
         super(speed, damage);
         this.sprite = bulletSprite;
         this.variants = variants;
@@ -28,18 +28,18 @@ public class GlassBullet extends BulletType {
         drag = 0.1f;
     }
 
-    public GlassBullet(float speed, float damage, String bulletSprite){
+    public GlassBullet(float speed, float damage, String bulletSprite) {
         this(speed, damage, bulletSprite, 5);
     }
 
-    public GlassBullet(String bulletSprite){
+    public GlassBullet(String bulletSprite) {
         this(1f, 1f, bulletSprite, 5);
     }
 
     @Override
     public void load() {
         regions = new TextureRegion[variants];
-        for(int i = 0; i < variants; i++) regions[i] = Core.atlas.find(sprite + "-" + i);
+        for (int i = 0; i < variants; i++) regions[i] = Core.atlas.find(sprite + "-" + i);
     }
 
     @Override

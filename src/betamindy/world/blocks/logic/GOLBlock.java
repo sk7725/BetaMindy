@@ -4,7 +4,7 @@ import mindustry.gen.Building;
 import mindustry.world.*;
 
 public class GOLBlock extends Block {
-    public GOLBlock(String name){
+    public GOLBlock(String name) {
         super(name);
     }
 

@@ -9,7 +9,8 @@ import betamindy.world.blocks.distribution.Piston.*;
 
 public class PistonArm extends Block {
     public Piston pistonBlock;
-    public PistonArm(Piston piston){
+
+    public PistonArm(Piston piston) {
         super(piston.name + "-arm");
         pistonBlock = piston;
 
@@ -32,44 +33,49 @@ public class PistonArm extends Block {
     }
 
     @Override
-    public boolean isHidden(){
+    public boolean isHidden() {
         return true;
     }
 
     @Override
-    public boolean canBreak(Tile tile){
+    public boolean canBreak(Tile tile) {
         return false;
     }
 
     public class PistonArmBuild extends Building {
-        public @Nullable PistonBuild piston;
+        public @Nullable
+        PistonBuild piston;
+
         @Override
-        public void updateTile(){
+        public void updateTile() {
             //NO MORE BLACKHOLES
-            if(piston == null || !piston.isValid()) tile.remove();
+            if (piston == null || !piston.isValid()) tile.remove();
         }
+
         @Override
-        public void draw(){
+        public void draw() {
             //does not draw
         }
+
         @Override
-        public void display(Table table){
+        public void display(Table table) {
         }
 
         @Override
-        public void damage(float damage){
-            if(dead()) return;
-            if(piston != null && piston.isValid() && !piston.dead()) piston.damage(damage);
+        public void damage(float damage) {
+            if (dead()) return;
+            if (piston != null && piston.isValid() && !piston.dead()) piston.damage(damage);
         }
+
         @Override
-        public void killed(){
+        public void killed() {
             //For the love of routers, stop snapping off my piston arms EoD
             super.killed();
-            if(piston != null && piston.isValid() && !piston.dead()) piston.killed();
+            if (piston != null && piston.isValid() && !piston.dead()) piston.killed();
         }
 
         @Override
-        public boolean canPickup(){
+        public boolean canPickup() {
             return false;
         }
     }

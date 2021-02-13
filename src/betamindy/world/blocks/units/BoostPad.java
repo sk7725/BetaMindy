@@ -20,7 +20,7 @@ public class BoostPad extends Block {
     public Sound boostSound = MindySounds.boost;
     public Effect boostEffect = MindyFx.boostBlock;
 
-    public BoostPad(String name){
+    public BoostPad(String name) {
         super(name);
 
         update = true;
@@ -30,7 +30,7 @@ public class BoostPad extends Block {
     @Override
     public void load() {
         super.load();
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             animRegion[i] = atlas.find(name + "-" + i);
         }
     }
@@ -39,19 +39,19 @@ public class BoostPad extends Block {
         float heat = 0f;
 
         @Override
-        public void draw(){
-            Draw.rect(animRegion[((int)Time.time % 160) / animSpeed], x, y);
+        public void draw() {
+            Draw.rect(animRegion[((int) Time.time % 160) / animSpeed], x, y);
         }
 
         @Override
         public void updateTile() {
             super.updateTile();
-            if(heat > 0f) heat -= delta();
+            if (heat > 0f) heat -= delta();
             Units.nearby(team, x - 2f - size * tilesize / 2f, y - 2f - size * tilesize / 2f, size * tilesize + 4f, size * tilesize + 2f, this::boostUnit);
         }
 
         public void boostUnit(Unit unit) {
-            if(heat <= 0f){
+            if (heat <= 0f) {
                 boostSound.at(this);
                 boostEffect.at(this);
                 heat = cooldown;

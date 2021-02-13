@@ -25,28 +25,42 @@ import mindustry.world.meta.*;
 import static mindustry.Vars.*;
 
 public class PayloadTurret extends Turret {
-    /** Base damage multiplier */
+    /**
+     * Base damage multiplier
+     */
     public float damage = 1.3f;
-    /** Range multiplier for block payloads. Unused. */
+    /**
+     * Range multiplier for block payloads. Unused.
+     */
     public float blockRangeMultiplier = 1f;
-    /** Percentage of health that gets converted to area damage at max range */
+    /**
+     * Percentage of health that gets converted to area damage at max range
+     */
     public float maxDamagePercent = 0.5f;
-    /** Maximum range the fired payload does not lose health, note that area damage will still scale inside this range */
+    /**
+     * Maximum range the fired payload does not lose health, note that area damage will still scale inside this range
+     */
     public float safeRange = range * 0.3f;
     public BulletType shootType = MindyBullets.payBullet;
     public BulletType homingShootType = MindyBullets.homingPay;
-    /** Payload draw offset, draw scale */
-    public float payloadOffset = 15f,  payloadScale = 0.8f;
-    /** Payload fire offset*/
+    /**
+     * Payload draw offset, draw scale
+     */
+    public float payloadOffset = 15f, payloadScale = 0.8f;
+    /**
+     * Payload fire offset
+     */
     public float payloadShootOffset = 15f;
-    /** Maximum accepted payload size */
+    /**
+     * Maximum accepted payload size
+     */
     public float maxPaySize = 4.5f;
 
     public Effect acceptEffect = MindyFx.cannonAccept;
 
     protected ObjectSet<Block> homingBlocks = new ObjectSet<Block>(2);
 
-    public PayloadTurret(String name){
+    public PayloadTurret(String name) {
         super(name);
 
         targetAir = false;
@@ -56,56 +70,56 @@ public class PayloadTurret extends Turret {
     }
 
     @Override
-    public void init(){
+    public void init() {
         super.init();
         homingBlocks.addAll(MindyBlocks.siliconWall, MindyBlocks.siliconWallLarge);
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
         Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.placing);
         //Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range * blockRangeMultiplier, Pal.accentBack);
         Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, safeRange, Pal.heal);
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         super.setStats();
 
         //stats.add(Stat.shootRange, "@", Core.bundle.format("stat.blockrange", blockRangeMultiplier));
         stats.add(Stat.damage, "@", Core.bundle.format("stat.dphealth", damage * maxDamagePercent * tilesize / range));//dmg/health*range
     }
 
-    public class PayloadTurretBuild<T extends Payload> extends TurretBuild{
-        public @Nullable T payload;
+    public class PayloadTurretBuild<T extends Payload> extends TurretBuild {
+        public @Nullable
+        T payload;
         protected float payheat;
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             unit.ammo(Mathf.num(payload != null) * unit.type().ammoCapacity);
             payheat = Mathf.lerpDelta(payheat, 1f, 0.1f);
 
             super.updateTile();
         }
 
-        public TextureRegion payloadIcon(){
-            if(payload instanceof BuildPayload){
-                return ((BuildPayload)payload).build.block.icon(Cicon.full);
-            }
-            else if(payload instanceof UnitPayload){
-                return ((UnitPayload)payload).unit.type().icon(Cicon.full);
+        public TextureRegion payloadIcon() {
+            if (payload instanceof BuildPayload) {
+                return ((BuildPayload) payload).build.block.icon(Cicon.full);
+            } else if (payload instanceof UnitPayload) {
+                return ((UnitPayload) payload).unit.type().icon(Cicon.full);
             }
             return Core.atlas.find("error");
         }
 
-        public float rotationOffset(){
-            return (payload instanceof BuildPayload) && ((BuildPayload)payload).block().rotate ? 0f : -90f;
+        public float rotationOffset() {
+            return (payload instanceof BuildPayload) && ((BuildPayload) payload).block().rotate ? 0f : -90f;
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             super.draw();
-            if(payload != null) {
+            if (payload != null) {
                 TextureRegion payIcon = payloadIcon();
                 tr2.trns(rotation, -recoil + payloadOffset);
                 Draw.mixcol(team.color, 1f - payheat);
@@ -115,13 +129,14 @@ public class PayloadTurret extends Turret {
         }
 
         @Override
-        protected void updateShooting(){
-            if(payload != null) super.updateShooting();
+        protected void updateShooting() {
+            if (payload != null) super.updateShooting();
         }
 
         @Override
-        protected void bullet(BulletType type, float angle){
-            if((payload instanceof BuildPayload) && homingBlocks.contains(((BuildPayload)payload).block())) type = homingShootType;
+        protected void bullet(BulletType type, float angle) {
+            if ((payload instanceof BuildPayload) && homingBlocks.contains(((BuildPayload) payload).block()))
+                type = homingShootType;
             tr.trns(rotation, payloadShootOffset, Mathf.range(xRand));
             float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
@@ -131,50 +146,53 @@ public class PayloadTurret extends Turret {
 
 
         @Override
-        public double sense(LAccess sensor){
-            switch(sensor){
-                case ammo: return Mathf.num(payload != null);
-                case ammoCapacity: return 1;
-                default: return super.sense(sensor);
+        public double sense(LAccess sensor) {
+            switch (sensor) {
+                case ammo:
+                    return Mathf.num(payload != null);
+                case ammoCapacity:
+                    return 1;
+                default:
+                    return super.sense(sensor);
             }
         }
 
         @Override
-        public BulletType useAmmo(){
+        public BulletType useAmmo() {
             //nothing used directly
             return shootType;
         }
 
         @Override
-        public boolean hasAmmo(){
+        public boolean hasAmmo() {
             //you can always rotate, but never shoot if there's no payload
             return true;
         }
 
         @Override
-        public BulletType peekAmmo(){
+        public BulletType peekAmmo() {
             return shootType;
         }
 
-        public float realRange(){
+        public float realRange() {
             return range;
             //return payload == null || (payload instanceof UnitPayload) ? range : blockRangeMultiplier * range;
         }
 
         @Override
-        public void drawSelect(){
+        public void drawSelect() {
             Drawf.dashCircle(x, y, realRange(), team.color);
-            if(team == Vars.player.team()) Drawf.dashCircle(x, y, safeRange, Pal.heal);
+            if (team == Vars.player.team()) Drawf.dashCircle(x, y, safeRange, Pal.heal);
         }
 
         @Override
-        public boolean acceptPayload(Building source, Payload pay){
+        public boolean acceptPayload(Building source, Payload pay) {
             return payload == null && pay.size() / tilesize <= maxPaySize;
         }
 
         @Override
-        public void handlePayload(Building source, Payload pay){
-            payload = (T)pay;
+        public void handlePayload(Building source, Payload pay) {
+            payload = (T) pay;
             Tmp.v1.set(source).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
             acceptEffect.at(Tmp.v1.x + x, Tmp.v1.y + y);
             payheat = 0f;
@@ -183,50 +201,50 @@ public class PayloadTurret extends Turret {
         }
 
         @Override
-        public Payload getPayload(){
+        public Payload getPayload() {
             return payload;
         }
 
         @Override
-        public Payload takePayload(){
+        public Payload takePayload() {
             T t = payload;
             payload = null;
             return t;
         }
 
         @Override
-        public void onRemoved(){
+        public void onRemoved() {
             super.onRemoved();
-            if(payload != null) payload.dump();
+            if (payload != null) payload.dump();
         }
 
-        public void updatePayload(float r){
-            if(payload != null){
+        public void updatePayload(float r) {
+            if (payload != null) {
                 payload.set(x, y, r);
             }
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
 
-            if(mobile) BetaMindy.mobileUtil.writePayload(payload, write);
+            if (mobile) BetaMindy.mobileUtil.writePayload(payload, write);
             else Payload.write(payload, write);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
 
-            if(mobile) payload = BetaMindy.mobileUtil.readPayload(read);
+            if (mobile) payload = BetaMindy.mobileUtil.readPayload(read);
             else payload = Payload.read(read);
         }
 
-        public void drawPayload(){
+        public void drawPayload() {
         }
 
         @Override
-        public boolean canPickup(){
+        public boolean canPickup() {
             return false;
         }
     }

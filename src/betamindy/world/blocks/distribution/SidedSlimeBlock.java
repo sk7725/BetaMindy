@@ -16,7 +16,7 @@ public class SidedSlimeBlock extends SlimeBlock {
     public TextureRegion coreRegion;
     //public static final Pattern pattern = Pattern.compile(".*(?=-[^-]+)");
 
-    public SidedSlimeBlock(String name, int stype){
+    public SidedSlimeBlock(String name, int stype) {
         super(name, stype);
 
         rotate = true;
@@ -24,13 +24,13 @@ public class SidedSlimeBlock extends SlimeBlock {
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         baseRegion[0] = region;
-        for(int i = 1; i<4; i++){
+        for (int i = 1; i < 4; i++) {
             baseRegion[i] = atlas.find(name + "-" + i);
         }
-        for(int i = 0; i<4; i++){
+        for (int i = 0; i < 4; i++) {
             slabRegion[i] = atlas.find(name + "-slab-" + i, "betamindy-slab-" + i);
         }
 
@@ -43,18 +43,17 @@ public class SidedSlimeBlock extends SlimeBlock {
         coreRegion = atlas.find(name + "-core");
     }
 
-    public class SidedSlimeBuild extends SlimeBuild{
+    public class SidedSlimeBuild extends SlimeBuild {
         @Override
-        public void draw(){
-            if(Core.settings.getBool("animatedshields") && Core.settings.getBool("slimeeffect")){
+        public void draw() {
+            if (Core.settings.getBool("animatedshields") && Core.settings.getBool("slimeeffect")) {
                 Draw.rect(coreRegion, x, y);
                 Draw.rect(slabRegion[rotation], x, y);
                 Draw.z(Layer.shields + 0.0001f);
                 Draw.color(color);
                 Fill.rect(x + Geometry.d4x[rotation] * 2f, y + Geometry.d4y[rotation] * 2f, rotation % 2 == 0 ? 4f : 8f, rotation % 2 == 0 ? 8f : 4f);
                 Draw.reset();
-            }
-            else Draw.rect(baseRegion[rotation], x, y);
+            } else Draw.rect(baseRegion[rotation], x, y);
         }
     }
 }

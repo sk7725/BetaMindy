@@ -1,6 +1,7 @@
 package betamindy.world.blocks.environment;
 
 //import arc.Core;
+
 import arc.audio.Sound;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -37,7 +38,7 @@ public class PresentBox extends Block {
 
     //private final CustomBlockInventoryFragment invFrag = new CustomBlockInventoryFragment();
 
-    public PresentBox(String name){
+    public PresentBox(String name) {
         super(name);
 
         solid = true;
@@ -52,13 +53,12 @@ public class PresentBox extends Block {
             entity.open = true;
             boolean naughty = item == naughtyItem;
             entity.items.add(item, naughty ? naughtyItemCount : itemCount);
-            if(!headless){
-                if(naughty){
+            if (!headless) {
+                if (naughty) {
                     naughtySound.at(entity);
                     naughtyEffect.at(entity);
                     Effect.shake(size, 3f, entity);
-                }
-                else{
+                } else {
                     openSound.at(entity);
                     openEffect.at(entity);
                 }
@@ -67,7 +67,7 @@ public class PresentBox extends Block {
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         baseRegion = atlas.find(name + "-base", "betamindy-present-base");
         boxRegion = atlas.find(name + "-box", "betamindy-present-box");
@@ -85,18 +85,18 @@ public class PresentBox extends Block {
         //protected int itemHas = 0;
 
         @Override
-        public Building create(Block block, Team team){
+        public Building create(Block block, Team team) {
             Building result = super.create(block, team);
-            ((PresentBuild)result).color1 = (team != null && team != Team.derelict && Mathf.chance(0.5f)) ? team.color : colors[Mathf.random(colors.length - 1)];
-            ((PresentBuild)result).color2 = colors[Mathf.random(colors.length - 1)];
+            ((PresentBuild) result).color1 = (team != null && team != Team.derelict && Mathf.chance(0.5f)) ? team.color : colors[Mathf.random(colors.length - 1)];
+            ((PresentBuild) result).color2 = colors[Mathf.random(colors.length - 1)];
             return result;
         }
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             super.updateTile();
-            if(open) heat = Mathf.lerpDelta(heat, 1f, 0.05f);
-            if(open && timer(timerDump, dumpTime)) dump();
+            if (open) heat = Mathf.lerpDelta(heat, 1f, 0.05f);
+            if (open && timer(timerDump, dumpTime)) dump();
 
             /*if(invFrag.visible && timer.get(1, 6)){
                 itemHas = 0;
@@ -105,18 +105,18 @@ public class PresentBox extends Block {
         }
 
         @Override
-        public void deselect(){
+        public void deselect() {
             //if(!headless) invFrag.hide();
             super.deselect();
         }
 
         @Override
-        public void draw(){
-            if(open){
+        public void draw() {
+            if (open) {
                 Draw.rect(baseRegion, x, y);
-                if(items.any()){
+                if (items.any()) {
                     TextureRegion icon = items.first().icon(Cicon.small);
-                    for(int i = 0; i < items.total() * 5 / itemCapacity; i++){
+                    for (int i = 0; i < items.total() * 5 / itemCapacity; i++) {
                         Draw.rect(icon, x + Mathf.randomSeed(id + i) * 3f - 1.5f, y + Mathf.randomSeed(id + i + 10) * 3f - 1.5f, Draw.scl * Draw.xscl * 16f, Draw.scl * Draw.yscl * 15f);
                     }
                 }
@@ -124,16 +124,15 @@ public class PresentBox extends Block {
                 Draw.rect(boxRegion, x, y);
                 Draw.reset();
 
-                if(heat < 0.99f){
-                    drawLid(x + heat * 15f * Mathf.sign(id % 2 == 0), y + heat * ( 0.7f - heat) * 26f, heat * 360f * Mathf.randomSeed(id), 1 - heat, Layer.turret + 1f);
+                if (heat < 0.99f) {
+                    drawLid(x + heat * 15f * Mathf.sign(id % 2 == 0), y + heat * (0.7f - heat) * 26f, heat * 360f * Mathf.randomSeed(id), 1 - heat, Layer.turret + 1f);
                 }
-            }
-            else{
+            } else {
                 drawLid(x, y, 0f, 1f, Layer.block);
             }
         }
 
-        public void drawLid(float x, float y, float rotation, float alpha, float layer){
+        public void drawLid(float x, float y, float rotation, float alpha, float layer) {
             Draw.z(layer);
             Draw.color(color1, alpha);
             Draw.rect(topRegion, x, y, rotation);
@@ -151,8 +150,8 @@ public class PresentBox extends Block {
         }
 
         @Override
-        public boolean configTapped(){
-            if(open){
+        public boolean configTapped() {
+            if (open) {
                 //Vars.control.input.frag.inv.showFor(this);
                 return false;
             }
@@ -162,22 +161,22 @@ public class PresentBox extends Block {
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
 
             open = read.bool();
-            if(open) heat = 1f;
+            if (open) heat = 1f;
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
 
             write.bool(open);
         }
 
         @Override
-        public void buildConfiguration(Table table){
+        public void buildConfiguration(Table table) {
             //invFrag.build(table.parent);
             /*if(invFrag.isShown()){
                 invFrag.hide();
@@ -188,7 +187,7 @@ public class PresentBox extends Block {
         }
 
         @Override
-        public void updateTableAlign(Table table){
+        public void updateTableAlign(Table table) {
             /*
             float pos = Core.input.mouseScreen(x, y - size * 4 - 1).y;
             Vec2 relative = Core.input.mouseScreen(x, y + size * 4);
@@ -200,7 +199,7 @@ public class PresentBox extends Block {
         }
 
         @Override
-        public void drawConfigure(){
+        public void drawConfigure() {
         }
     }
 

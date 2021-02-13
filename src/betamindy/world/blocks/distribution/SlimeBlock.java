@@ -17,7 +17,8 @@ public class SlimeBlock extends Block {
     public Color color;
     public TextureRegion coreRegion, topRegion;
     public boolean useTopRegion = false;
-    public SlimeBlock(String name, int stype){
+
+    public SlimeBlock(String name, int stype) {
         super(name);
         slimeType = stype;
         update = true;
@@ -26,16 +27,16 @@ public class SlimeBlock extends Block {
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         coreRegion = atlas.find(name + "-core");
-        if(useTopRegion) topRegion = atlas.find(name + "-top");
+        if (useTopRegion) topRegion = atlas.find(name + "-top");
     }
 
     @Override
     public void setBars() {
         super.setBars();
-        if(hasPower){
+        if (hasPower) {
             bars.add("power", (SlimeBuild entity) -> new Bar(() ->
                     Core.bundle.get("bar.power"),
                     () -> Pal.powerBar,
@@ -45,19 +46,18 @@ public class SlimeBlock extends Block {
 
     public class SlimeBuild extends Building {
         @Override
-        public void draw(){
-            if(Core.settings.getBool("animatedshields") && Core.settings.getBool("slimeeffect")){
+        public void draw() {
+            if (Core.settings.getBool("animatedshields") && Core.settings.getBool("slimeeffect")) {
                 Draw.rect(coreRegion, x, y);
                 Draw.z(Layer.shields + 0.0001f);
                 Draw.color(color);
                 Fill.square(x, y, 4f);
-                if(useTopRegion){
+                if (useTopRegion) {
                     Draw.color();
                     Draw.rect(topRegion, x, y);
                 }
                 Draw.reset();
-            }
-            else super.draw();
+            } else super.draw();
         }
     }
 }

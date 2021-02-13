@@ -9,9 +9,10 @@ import mindustry.graphics.*;
 
 public class MindyBullets implements ContentList {
     public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar;
+
     @Override
-    public void load(){
-        payBullet = new PayloadBullet(1.6f){{
+    public void load() {
+        payBullet = new PayloadBullet(1.6f) {{
             hitEffect = Fx.mineBig;
             despawnEffect = Fx.none;
             hitColor = Pal.engine;
@@ -21,7 +22,7 @@ public class MindyBullets implements ContentList {
             splashDamageRadius = 30f;
         }};
 
-        payBulletBig = new PayloadBullet(3.2f){{
+        payBulletBig = new PayloadBullet(3.2f) {{
             hitEffect = Fx.mineHuge;
             despawnEffect = MindyFx.payShock;
             hitColor = Pal.lancerLaser;
@@ -33,7 +34,7 @@ public class MindyBullets implements ContentList {
             trailEffect = MindyFx.hyperTrail;
         }};
 
-        homingPay = new HomingPayloadBullet(1.6f){{
+        homingPay = new HomingPayloadBullet(1.6f) {{
             hitEffect = Fx.mineBig;
             despawnEffect = Fx.none;
             hitColor = Pal.engine;
@@ -46,7 +47,7 @@ public class MindyBullets implements ContentList {
             homingRange = 120f;
         }};
 
-        homingPayBig = new HomingPayloadBullet(3.2f){{
+        homingPayBig = new HomingPayloadBullet(3.2f) {{
             hitEffect = Fx.mineHuge;
             despawnEffect = MindyFx.payShock;
             hitColor = Pal.lancerLaser;
@@ -61,29 +62,31 @@ public class MindyBullets implements ContentList {
             homingRange = 120f;
         }};
 
-        glassPiece = new GlassBullet(4f, 30f, "betamindy-glass"){{
+        glassPiece = new GlassBullet(4f, 30f, "betamindy-glass") {{
             trailColor = Color.white;
             trailParam = 0.8f;
             trailChance = 0.04f;
             lifetime = 45f;
             hitEffect = Fx.none;
-            width = 6f; height = 6f;
+            width = 6f;
+            height = 6f;
 
             despawnEffect = Fx.none;
         }};
 
-        glassPieceBig = new GlassBullet(5f, 65f, "betamindy-glassbig"){{
+        glassPieceBig = new GlassBullet(5f, 65f, "betamindy-glassbig") {{
             trailColor = Color.white;
             trailParam = 1.8f;
             trailChance = 0.04f;
             lifetime = 50f;
             hitEffect = Fx.none;
-            width = 8f; height = 8f;
+            width = 8f;
+            height = 8f;
 
             despawnEffect = Fx.none;
         }};
 
-        smallStar = new BasicBulletType(3f, 60f, "betamindy-starsmall"){{
+        smallStar = new BasicBulletType(3f, 60f, "betamindy-starsmall") {{
             frontColor = Color.white;
             backColor = Color.white;
             pierce = true;
@@ -96,7 +99,7 @@ public class MindyBullets implements ContentList {
             spin = 0.05f;
         }};
 
-        bigStar = new FallingStar(2f, 360f){{
+        bigStar = new FallingStar(2f, 360f) {{
             splashDamageRadius = 60f;
             splashDamage = 360f;
             inaccuracy = 26f;
@@ -109,7 +112,7 @@ public class MindyBullets implements ContentList {
             fallTime = 270f;
         }};
 
-        biggerStar = new FallingStar(1.7f, 360f){{
+        biggerStar = new FallingStar(1.7f, 360f) {{
             splashDamageRadius = 90f;
             splashDamage = 500f;
             inaccuracy = 20f;

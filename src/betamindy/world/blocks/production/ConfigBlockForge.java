@@ -11,26 +11,28 @@ import mindustry.world.blocks.experimental.*;
 public class ConfigBlockForge extends BlockForge {
     protected int[] minSizes = {1, 3, 5};
     protected int[] maxSizes = {2, 4, 6};
-    public ConfigBlockForge(String name){
+
+    public ConfigBlockForge(String name) {
         super(name);
         minBlockSize = 1;
     }
 
     @Override
-    public void init(){
+    public void init() {
         super.init();
         maxSizes[2] = maxBlockSize;
     }
 
-    public class ConfigForgeBuild extends BlockForgeBuild{
+    public class ConfigForgeBuild extends BlockForgeBuild {
         private int selection = 0;
+
         @Override
-        public void buildConfiguration(Table table){
-            if(recipe != null) selection = recipe.size <= 2 ? 0 : (recipe.size <= 4 ? 1 : 2);
+        public void buildConfiguration(Table table) {
+            if (recipe != null) selection = recipe.size <= 2 ? 0 : (recipe.size <= 4 ? 1 : 2);
             rebuild(table);
         }
 
-        public void rebuild(Table table){
+        public void rebuild(Table table) {
             table.clearChildren();
             table.top();
             table.table(t -> {

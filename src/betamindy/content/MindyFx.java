@@ -19,7 +19,7 @@ import static arc.math.Angles.randLenVectors;
 
 public class MindyFx {
     public static final Effect
-    directionalSmoke = new Effect(160f, e -> {
+            directionalSmoke = new Effect(160f, e -> {
         Draw.z(Layer.flyingUnit + 0.1f);
         color(Pal.gray);
         alpha(e.fout());
@@ -56,7 +56,7 @@ public class MindyFx {
 
         color(Pal.lancerLaser);
 
-        for(int i : Mathf.signs){
+        for (int i : Mathf.signs) {
             Drawf.tri(e.x, e.y, 12f * e.fout(), 95f, e.rotation + 90f * i);
             Drawf.tri(e.x, e.y, 12f * e.fout(), 60f, e.rotation + 20f * i);
             Drawf.tri(e.x, e.y, 8f * e.fout(), 40f, e.rotation + 155f * i);
@@ -126,14 +126,14 @@ public class MindyFx {
     }),
 
     starPoof = new Effect(50f, e -> {
-        float rot = (e.data == null) ? 0f : (float)e.data;
+        float rot = (e.data == null) ? 0f : (float) e.data;
         color(Color.white, e.fout());
 
         Draw.rect("betamindy-star", e.x, e.y, Draw.scl * Draw.xscl * e.rotation * (1f + e.fin() * 0.5f), Draw.scl * Draw.yscl * e.rotation * (1f + e.fin() * 0.5f), rot);
     }),
 
     starFade = new Effect(30f, e -> {
-        float rot = (e.data == null) ? 0f : (float)e.data;
+        float rot = (e.data == null) ? 0f : (float) e.data;
         color(Tmp.c1.set(e.color).shiftHue(Time.globalTime * 1.2f), e.fout() * 0.8f);
 
         rect("betamindy-star", e.x, e.y, scl * xscl * e.rotation, scl * yscl * e.rotation, rot);

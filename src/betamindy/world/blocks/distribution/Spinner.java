@@ -39,7 +39,7 @@ public class Spinner extends Block {
 
     public final int[][] evenOffsets = {{-1, -1}, {0, -1}, {0, 0}, {-1, 0}};
 
-    public Spinner(String name){
+    public Spinner(String name) {
         super(name);
 
         update = true;
@@ -62,17 +62,18 @@ public class Spinner extends Block {
         laser = atlas.find(name + "-laser", "betamindy-spinner-laser");
         laserEnd = atlas.find(name + "-laser-end", "betamindy-spinner-laser-end");
         altIcon = atlas.find(name + "-alt");
-        for(int i = 0; i < 2; i++){
+        for (int i = 0; i < 2; i++) {
             sideRegions[i] = atlas.find(name + "-" + i);
-            for(int j = 0; j < 2; j++){
+            for (int j = 0; j < 2; j++) {
                 sideRegions2[i][j] = atlas.find(name + "-side-" + (j * 2 + i));
             }
         }
     }
 
     @Override
-    public void drawRequestConfig(BuildPlan req, Eachable<BuildPlan> list){
-        if(req.config != null && (boolean)req.config) Draw.rect(altIcon, req.drawx(), req.drawy(), req.rotation * 90f);
+    public void drawRequestConfig(BuildPlan req, Eachable<BuildPlan> list) {
+        if (req.config != null && (boolean) req.config)
+            Draw.rect(altIcon, req.drawx(), req.drawy(), req.rotation * 90f);
     }
 
     @Override
@@ -87,36 +88,41 @@ public class Spinner extends Block {
     public class SpinnerBuild extends Building {
         public boolean ccw = false; //counter clockwise
 
-        /** Below are only valid when spinning is true */
+        /**
+         * Below are only valid when spinning is true
+         */
         public boolean spinning = false, looped = false;
         public float spin = 0f; //0 ~ 4 * spinTime
         public byte offset = 0; //-7 ~ 8 hopefully
-        public @Nullable BuildPayload payload;
+        public @Nullable
+        BuildPayload payload;
         //public float lifetime = 0f;
 
-        /** Below are only valid if multiBuild is true */
+        /**
+         * Below are only valid if multiBuild is true
+         */
         protected boolean multiBuild = false; //has more blocks stuck to this things
         protected Seq<RBuild> mbuilds = new Seq<RBuild>();
 
         @Override
         public void updateTile() {
-            if(spinning){
+            if (spinning) {
                 spin += delta();
-                if(spin >= spinTime) looped = true;
-                if(!consValid()){
-                    if(checkDrop()){
+                if (spin >= spinTime) looped = true;
+                if (!consValid()) {
+                    if (checkDrop()) {
                         //it is almost 90 degrees, in its dropping window
-                        if(payload == null) spinning = false; //nothing to drop; drop nothing
-                        else{
+                        if (payload == null) spinning = false; //nothing to drop; drop nothing
+                        else {
                             int dir = Mathf.round(spin / spinTime) * Mathf.sign(ccw) + rotation + payload.build.rotation;
                             Tile t = destTile(tile, dir, offset, payload.block().size);
                             //TODO: grab blocks from payload blocks if possible
-                            if(t != null && RBuild.validPlace(payload.block(), t.x, t.y)){ //if it can be dropped
+                            if (t != null && RBuild.validPlace(payload.block(), t.x, t.y)) { //if it can be dropped
                                 //try dropping what it has
                                 payload.place(t, dir);
                                 payload = null;
                                 spinning = false;
-                                if(multiBuild){
+                                if (multiBuild) {
                                     multiBuild = false;
                                     int newr = Mathf.mod(Mathf.round(spin / spinTime) * Mathf.sign(ccw), 4);
                                     RBuild.placeAll(mbuilds, tile.nearby((newr + rotation) % 4), newr);
@@ -126,10 +132,9 @@ public class Spinner extends Block {
                         }
                     }
                 }
-            }
-            else{
+            } else {
                 //idle
-                if(consValid()){
+                if (consValid()) {
                     //try grabbing the front block
                     grabPayload();
                     spinning = true;
@@ -141,78 +146,73 @@ public class Spinner extends Block {
             super.updateTile();
         }
 
-        public Tile destTile(Tile origin, int dir, int off, int bsize){
+        public Tile destTile(Tile origin, int dir, int off, int bsize) {
             dir = dir % 4;
-            if(dir < 0) dir += 4;
-            if(bsize % 2 == 0){
-                if(dir % 2 == 0){
+            if (dir < 0) dir += 4;
+            if (bsize % 2 == 0) {
+                if (dir % 2 == 0) {
                     //y is offset
                     return origin.nearby(Geometry.d4x(dir) * (1 + bsize / 2) + evenOffsets[dir][0], off * Geometry.d4x(dir) + evenOffsets[dir][1]);
-                }
-                else{
+                } else {
                     //x is offset
                     return origin.nearby(-off * Geometry.d4y(dir) + evenOffsets[dir][0], Geometry.d4y(dir) * (1 + bsize / 2) + evenOffsets[dir][1]);
                 }
-            }
-            else{
-                if(dir % 2 == 0){
+            } else {
+                if (dir % 2 == 0) {
                     //y is offset
                     return origin.nearby(Geometry.d4x(dir) * (1 + bsize / 2), off * Geometry.d4x(dir));
-                }
-                else{
+                } else {
                     //x is offset
                     return origin.nearby(-off * Geometry.d4y(dir), Geometry.d4y(dir) * (1 + bsize / 2));
                 }
             }
         }
 
-        public void grabPayload(){
+        public void grabPayload() {
             payload = null;
-            if(tile.nearby(rotation) == null || tile.nearbyBuild(rotation) == null) return;
+            if (tile.nearby(rotation) == null || tile.nearbyBuild(rotation) == null) return;
             Building b = tile.nearbyBuild(rotation);
-            if(b.canPickup()){
-                if(b.block instanceof SlimeBlock){
+            if (b.canPickup()) {
+                if (b.block instanceof SlimeBlock) {
                     multiBuild = RBuild.pickup(mbuilds, b, rotation, maxBlocks, other -> (other != this && stickBool.get(other)));
-                    if(!multiBuild) return;
+                    if (!multiBuild) return;
                 }
 
-                if(rotation % 2 == 0){
+                if (rotation % 2 == 0) {
                     //y is the offset
-                    offset = (byte)(b.tileY() - tileY());
-                    if(b.block.size % 2 == 0) offset -= evenOffsets[rotation][1];
-                }
-                else{
+                    offset = (byte) (b.tileY() - tileY());
+                    if (b.block.size % 2 == 0) offset -= evenOffsets[rotation][1];
+                } else {
                     //x is the offset
-                    offset = (byte)(b.tileX() - tileX());
-                    if(b.block.size % 2 == 0) offset -= evenOffsets[rotation][0];
+                    offset = (byte) (b.tileX() - tileX());
+                    if (b.block.size % 2 == 0) offset -= evenOffsets[rotation][0];
                 }
                 b.tile.remove();
                 payload = new BuildPayload(b);
             }
         }
 
-        public float rawAngle(){
+        public float rawAngle() {
             return (spinning) ? spin / spinTime * 90f : 0f;
         }
 
-        public float angle(){
+        public float angle() {
             return rawAngle() * Mathf.sign(ccw) + rotation * 90f;
         }
 
-        public boolean checkDrop(){
+        public boolean checkDrop() {
             return spinning && looped && spin % spinTime <= 2f;
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(baseRegion, x, y);
             Draw.rect(sideRegions[Mathf.num(ccw)], x, y);
             Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f);
 
-            if(!spinning || spin % spinTime < 0.0001f){
+            if (!spinning || spin % spinTime < 0.0001f) {
                 Draw.rect(topRegion, x, y);
-            }
-            else{
+            } else {
                 float r = (spin % spinTime) / spinTime * 90f;
                 Draw.rect(topRegion, x, y, r * Mathf.sign(ccw));
                 Draw.alpha(r / 90f);
@@ -220,21 +220,21 @@ public class Spinner extends Block {
                 Draw.alpha(1f);
             }
 
-            if(spinning && payload != null){
+            if (spinning && payload != null) {
                 drawLaser();
                 drawPay();
-                if(multiBuild) RBuild.drawAll(mbuilds, x, y, angle(), rawAngle() * Mathf.sign(ccw));
+                if (multiBuild) RBuild.drawAll(mbuilds, x, y, angle(), rawAngle() * Mathf.sign(ccw));
             }
         }
 
-        public void drawLaser(){
+        public void drawLaser() {
             //TODO: payload block io graphical extension
             Draw.z(Layer.blockOver + 0.15f);
             Tmp.v2.trns(angle(), tilesize);
             Drawf.laser(team, laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
         }
 
-        public void drawPay(){
+        public void drawPay() {
             Draw.z(Layer.blockOver + 0.09f);
             Tmp.v1.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle());
             Drawf.shadow(x + Tmp.v1.x, y + Tmp.v1.y, tilesize * payload.block().size * 2f);
@@ -243,30 +243,30 @@ public class Spinner extends Block {
         }
 
         @Override
-        public boolean configTapped(){
-            if(spinning) return false;
+        public boolean configTapped() {
+            if (spinning) return false;
             configure(!ccw);
             Sounds.click.at(this);
             return false;
         }
 
         @Override
-        public Boolean config(){
+        public Boolean config() {
             return ccw;
         }
 
         @Override
-        public boolean conductsTo(Building other){
+        public boolean conductsTo(Building other) {
             return tile.nearbyBuild(rotation) != other && super.conductsTo(other);
         }
 
         @Override
-        public void drawSelect(){
+        public void drawSelect() {
             super.drawSelect();
             Lines.stroke(1f);
             Draw.color(Pal.accent, Mathf.absin(Time.time, 2f, 1f));
             Lines.square(x + Geometry.d4x(rotation) * tilesize, y + Geometry.d4y(rotation) * tilesize, tilesize / 2f);
-            if(spinning){
+            if (spinning) {
                 Draw.color(drawColor, Mathf.absin(Time.time, 2f, 0.3f) + 0.7f);
                 Lines.lineAngle(x, y, angle(), tilesize);
             }
@@ -274,19 +274,19 @@ public class Spinner extends Block {
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
 
             ccw = read.bool();
             spinning = read.bool();
-            if(spinning){
-                spin = (float)read.b();
-                if(spin >= spinTime) looped = true;
+            if (spinning) {
+                spin = (float) read.b();
+                if (spin >= spinTime) looped = true;
                 offset = read.b();
-                if(mobile) payload = BetaMindy.mobileUtil.readPayload(read);
+                if (mobile) payload = BetaMindy.mobileUtil.readPayload(read);
                 else payload = Payload.read(read);
 
-                if(payload != null && (payload.block() instanceof SlimeBlock)){
+                if (payload != null && (payload.block() instanceof SlimeBlock)) {
                     multiBuild = true;
                     //TODO
                 }
@@ -294,18 +294,18 @@ public class Spinner extends Block {
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
 
             write.bool(ccw);
             write.bool(spinning);
-            if(spinning){
-                write.b((byte)(spin % (spinTime * 4f)));
+            if (spinning) {
+                write.b((byte) (spin % (spinTime * 4f)));
                 write.b(offset);
-                if(mobile) BetaMindy.mobileUtil.writePayload(payload, write);
+                if (mobile) BetaMindy.mobileUtil.writePayload(payload, write);
                 else Payload.write(payload, write);
 
-                if(multiBuild){
+                if (multiBuild) {
 
                 }
             }

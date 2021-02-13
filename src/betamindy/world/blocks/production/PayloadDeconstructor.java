@@ -28,7 +28,9 @@ import mindustry.world.meta.Stat;
 import java.util.Arrays;
 
 public class PayloadDeconstructor extends PayloadAcceptor {
-    /** The additional refundmultiplier multiplied to the refundmultiplier of the map. Note that the final refund multiplier will not exceed 1, unless the map's refund is already over 1. */
+    /**
+     * The additional refundmultiplier multiplied to the refundmultiplier of the map. Note that the final refund multiplier will not exceed 1, unless the map's refund is already over 1.
+     */
     public float refundMultiplier = 1.5f;
     public float buildSpeed = 0.6f;
     public float maxPaySize = 2.5f;
@@ -40,7 +42,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
     public UnitFactory[] factories;
     public Reconstructor[] recons;
 
-    public PayloadDeconstructor(String name){
+    public PayloadDeconstructor(String name) {
         super(name);
 
         solid = true;
@@ -50,37 +52,38 @@ public class PayloadDeconstructor extends PayloadAcceptor {
         hasItems = true;
     }
 
-    public float realMultiplier(){
-        if(Vars.state.rules.deconstructRefundMultiplier > 1f) return Vars.state.rules.deconstructRefundMultiplier * refundMultiplier;
+    public float realMultiplier() {
+        if (Vars.state.rules.deconstructRefundMultiplier > 1f)
+            return Vars.state.rules.deconstructRefundMultiplier * refundMultiplier;
         return Math.min(1f, Vars.state.rules.deconstructRefundMultiplier * refundMultiplier);
     }
 
     @Override
-    public void setBars(){
+    public void setBars() {
         super.setBars();
 
         bars.add("progress", (PayloadDeconBuild entity) -> new Bar("bar.progress", Pal.ammo, entity::fraction));
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         super.setStats();
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{region, topRegion};
     }
 
     @Override
-    public void init(){
+    public void init() {
         super.init();
 
         Seq<UnitFactory> facs = new Seq<UnitFactory>();
         Seq<Reconstructor> recs = new Seq<Reconstructor>();
         Vars.content.blocks().each((Block b) -> {
-            if(b instanceof UnitFactory) facs.add((UnitFactory)b);
-            else if(b instanceof Reconstructor) recs.add((Reconstructor)b);
+            if (b instanceof UnitFactory) facs.add((UnitFactory) b);
+            else if (b instanceof Reconstructor) recs.add((Reconstructor) b);
         });
         factories = facs.toArray(UnitFactory.class);
         recons = recs.toArray(Reconstructor.class);
@@ -88,51 +91,51 @@ public class PayloadDeconstructor extends PayloadAcceptor {
         Vars.content.units().each(this::initCost);
     }
 
-    public void print(String pain){
+    public void print(String pain) {
         Vars.mods.getScripts().log("BetaMindy", pain);
     }
 
-    public void initCost(UnitType u){
+    public void initCost(UnitType u) {
         unitCosts.put(u, calcCost(u));
     }
 
-    public ItemStack[] mergeArray(ItemStack[] first, ItemStack[] second){
+    public ItemStack[] mergeArray(ItemStack[] first, ItemStack[] second) {
         ItemStack[] both = Arrays.copyOf(first, first.length + second.length);
         System.arraycopy(second, 0, both, first.length, second.length);
         return both;
     }
 
-    /** Recursively generates a buildCost for units */
-    public ItemStack[] calcCost(UnitType u){
+    /**
+     * Recursively generates a buildCost for units
+     */
+    public ItemStack[] calcCost(UnitType u) {
         boolean t1 = true;
-        for(Reconstructor b : recons){
-            UnitType[] r =  b.upgrades.find(u0 -> u0[1] == u);
-            if(r != null){
+        for (Reconstructor b : recons) {
+            UnitType[] r = b.upgrades.find(u0 -> u0[1] == u);
+            if (r != null) {
                 t1 = false;
                 ItemStack[] cost = calcCost(r[0]);
-                if(b.consumes.has(ConsumeType.item)){
+                if (b.consumes.has(ConsumeType.item)) {
                     return mergeArray(cost, b.consumes.getItem().items);
-                }
-                else return cost;
+                } else return cost;
             }
         }
 
-        if(t1){
-            for(UnitFactory b : factories){
-                for(UnitFactory.UnitPlan plan : b.plans){
-                    if(plan.unit == u) return plan.requirements;
+        if (t1) {
+            for (UnitFactory b : factories) {
+                for (UnitFactory.UnitPlan plan : b.plans) {
+                    if (plan.unit == u) return plan.requirements;
                 }
             }
         }
         return defaultStack;
     }
 
-    public ItemStack[] payloadCost(Payload pay){
-        if(pay instanceof BuildPayload){
-            return ((BuildPayload)pay).block().requirements;
-        }
-        else if(pay instanceof UnitPayload){
-            return unitCosts.get(((UnitPayload)pay).unit.type);
+    public ItemStack[] payloadCost(Payload pay) {
+        if (pay instanceof BuildPayload) {
+            return ((BuildPayload) pay).block().requirements;
+        } else if (pay instanceof UnitPayload) {
+            return unitCosts.get(((UnitPayload) pay).unit.type);
         }
         return defaultStack;
     }
@@ -141,30 +144,29 @@ public class PayloadDeconstructor extends PayloadAcceptor {
         public float progress, time, heat;
         //public int lastRot = 0;
 
-        public float fraction(){
+        public float fraction() {
             return payload == null ? 0f : progress / totalProgress();
         }
 
-        public float totalProgress(){
-            if(payload instanceof BuildPayload){
-                return ((BuildPayload)payload).block().buildCost;
-            }
-            else return payload.size() * 18f;
+        public float totalProgress() {
+            if (payload instanceof BuildPayload) {
+                return ((BuildPayload) payload).block().buildCost;
+            } else return payload.size() * 18f;
         }
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             boolean produce = payload != null && moveInPayload() && consValid() && items.total() < itemCapacity;
 
-            if(produce){
+            if (produce) {
                 progress += buildSpeed * edelta();
 
-                if(progress >= totalProgress()){
+                if (progress >= totalProgress()) {
                     consume();
                     finishEffect.at(this, payload.size());
                     ItemStack[] costs = payloadCost(payload);
-                    for(ItemStack stack : costs){
-                        items.add(stack.item, (int)(stack.amount * realMultiplier()));
+                    for (ItemStack stack : costs) {
+                        items.add(stack.item, (int) (stack.amount * realMultiplier()));
                     }
                     payload = null;
                     progress = 0f;
@@ -174,7 +176,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
             heat = Mathf.lerpDelta(heat, Mathf.num(produce), 0.3f);
             time += heat * edelta();
 
-            if(timer.get(timerDump, dumpTime)) dump();
+            if (timer.get(timerDump, dumpTime)) dump();
         }
 
         /*public void deconstruct(Unit builder, @Nullable Building core, float amount){
@@ -224,27 +226,27 @@ public class PayloadDeconstructor extends PayloadAcceptor {
         }*/
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(region, x, y);
 
             //draw input
-            for(int i = 0; i < 4; i++){
-                if(blends(i)){
+            for (int i = 0; i < 4; i++) {
+                if (blends(i)) {
                     Draw.rect(inRegion, x, y, (i * 90) - 180);
                 }
             }
 
-            if(constructing() && hasArrived()){
+            if (constructing() && hasArrived()) {
                 Draw.draw(Layer.blockOver, () -> {
                     float constructTime = totalProgress();
                     Drawm.construct(this, payloadIcon(), payRotation - 90f, 1f - progress / constructTime, heat, time, deconstructColor);
                 });
-            }else{
+            } else {
                 Draw.z(Layer.blockOver);
                 //payRotation = rotdeg();
 
                 drawPayload();
-                if(heat > 0.001f){
+                if (heat > 0.001f) {
                     Draw.draw(Layer.blockOver, () -> {
                         //aesthetics
                         Drawm.construct(this, Core.atlas.white(), 0f, 0f, heat, time, deconstructColor);
@@ -256,49 +258,49 @@ public class PayloadDeconstructor extends PayloadAcceptor {
             Draw.rect(topRegion, x, y);
         }
 
-        public TextureRegion payloadIcon(){
-            if(payload instanceof BuildPayload){
-                return ((BuildPayload)payload).build.block.icon(Cicon.full);
-            }
-            else if(payload instanceof UnitPayload){
-                return ((UnitPayload)payload).unit.type().icon(Cicon.full);
+        public TextureRegion payloadIcon() {
+            if (payload instanceof BuildPayload) {
+                return ((BuildPayload) payload).build.block.icon(Cicon.full);
+            } else if (payload instanceof UnitPayload) {
+                return ((UnitPayload) payload).unit.type().icon(Cicon.full);
             }
             return Core.atlas.find("error");
         }
 
         @Override
-        public boolean shouldConsume(){
+        public boolean shouldConsume() {
             return constructing();
         }
 
-        public boolean constructing(){
+        public boolean constructing() {
             return payload != null;
         }
 
         @Override
-        public boolean acceptPayload(Building source, Payload payload){
+        public boolean acceptPayload(Building source, Payload payload) {
             return super.acceptPayload(source, payload) && payload.size() / Vars.tilesize <= maxPaySize;
         }
 
         @Override
-        public @Nullable Payload takePayload(){
+        public @Nullable
+        Payload takePayload() {
             return null;
         }
 
         @Override
-        public void onRemoved(){
+        public void onRemoved() {
             payload = null;
             super.onRemoved();
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.f(progress);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             progress = read.f();
         }

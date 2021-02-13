@@ -27,7 +27,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 
 public class Drawm {
-    public static void construct(Building t, TextureRegion region, float rotation, float progress, float speed, float time, Color color){
+    public static void construct(Building t, TextureRegion region, float rotation, float progress, float speed, float time, Color color) {
         Shaders.build.region = region;
         Shaders.build.progress = progress;
         Shaders.build.color.set(color);
@@ -46,7 +46,7 @@ public class Drawm {
         Draw.reset();
     }
 
-    public static void constructLineless(float x, float y, TextureRegion region, float rotation, float progress, float speed, float time, Color color){
+    public static void constructLineless(float x, float y, TextureRegion region, float rotation, float progress, float speed, float time, Color color) {
         Shaders.build.region = region;
         Shaders.build.progress = progress;
         Shaders.build.color.set(color);
@@ -60,26 +60,29 @@ public class Drawm {
         Draw.reset();
     }
 
-    /** Generates all team regions and returns the sharded team region for icon. */
-    public static @Nullable TextureRegion generateTeamRegion(Block b){
+    /**
+     * Generates all team regions and returns the sharded team region for icon.
+     */
+    public static @Nullable
+    TextureRegion generateTeamRegion(Block b) {
         TextureRegion shardTeamTop = null;
         PixmapRegion teamr = Core.atlas.getPixmap(b.name + "-team");
 
-        for(Team team : Team.all){
-            if(team.hasPalette){
+        for (Team team : Team.all) {
+            if (team.hasPalette) {
                 Pixmap out = new Pixmap(teamr.width, teamr.height);
                 Color pixel = new Color();
-                for(int x = 0; x < teamr.width; x++){
-                    for(int y = 0; y < teamr.height; y++){
+                for (int x = 0; x < teamr.width; x++) {
+                    for (int y = 0; y < teamr.height; y++) {
                         int color = teamr.getPixel(x, y);
                         int index = color == 0xffffffff ? 0 : color == 0xdcc6c6ff ? 1 : color == 0x9d7f7fff ? 2 : -1;
                         out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
                     }
                 }
-                Texture texture  = new Texture(new PixmapTextureData(out, null, true, false, true));
+                Texture texture = new Texture(new PixmapTextureData(out, null, true, false, true));
                 TextureRegion res = Core.atlas.addRegion(b.name + "-team-" + team.name, new TextureRegion(texture));
 
-                if(team == Team.sharded){
+                if (team == Team.sharded) {
                     shardTeamTop = res;
                 }
             }

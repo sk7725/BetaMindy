@@ -32,13 +32,15 @@ public class DrillTurret extends BaseTurret {
     public Sound shootSound = Sounds.minebeam;
     public float shootSoundVolume = 0.9f;
 
-    /** Drill tiers, inclusive */
+    /**
+     * Drill tiers, inclusive
+     */
     public int minDrillTier = 0, maxDrillTier = 3;
     public float mineSpeed = 0.75f;
     public float laserOffset = 4f, shootCone = 6f;
 
 
-    public DrillTurret(String name){
+    public DrillTurret(String name) {
         super(name);
 
         sync = true;
@@ -47,54 +49,56 @@ public class DrillTurret extends BaseTurret {
     }
 
     @Override
-    public TextureRegion[] icons(){
+    public TextureRegion[] icons() {
         return new TextureRegion[]{baseRegion, region};
     }
 
     @Override
-    public void load(){
+    public void load() {
         super.load();
         baseRegion = Core.atlas.find(name + "-base", "block-" + size);
         laser = Core.atlas.find(name + "-laser", "minelaser");
         laserEnd = Core.atlas.find(name + "-laser-end", "minelaser-end");
     }
 
-    public boolean canDrill(Floor f){
+    public boolean canDrill(Floor f) {
         return f.itemDrop != null && f.itemDrop.hardness >= minDrillTier && f.itemDrop.hardness <= maxDrillTier;
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         super.setStats();
 
         stats.addPercent(Stat.mineSpeed, mineSpeed);
-        stats.add(Stat.mineTier, new BlockFilterValue(b -> (b instanceof Floor) && canDrill((Floor)b)));
+        stats.add(Stat.mineTier, new BlockFilterValue(b -> (b instanceof Floor) && canDrill((Floor) b)));
     }
 
     public class DrillTurretBuild extends BaseTurretBuild {
-        public @Nullable Tile mineTile, ore;
-        public @Nullable Item targetItem;
+        public @Nullable
+        Tile mineTile, ore;
+        public @Nullable
+        Item targetItem;
         public float mineTimer = 0f, coolant = 1f;
         protected Seq<Tile> proxOres;
         protected Seq<Item> proxItems;
         protected int targetID = -1;
 
         @Override
-        public void created(){
+        public void created() {
             super.created();
             reMap();
         }
 
-        public void reMap(){
+        public void reMap() {
             proxOres = new Seq<Tile>();
             proxItems = new Seq<Item>();
             ObjectSet<Item> tempItems = new ObjectSet<Item>();
 
-            Geometry.circle(tile.x, tile.y, (int)(range / tilesize + 0.5f), (x, y) -> {
+            Geometry.circle(tile.x, tile.y, (int) (range / tilesize + 0.5f), (x, y) -> {
                 Tile other = world.tile(x, y);
-                if(other != null && other.drop() != null){
+                if (other != null && other.drop() != null) {
                     Item drop = other.drop();
-                    if(!tempItems.contains(drop)){
+                    if (!tempItems.contains(drop)) {
                         tempItems.add(drop);
                         proxItems.add(drop);
                         proxOres.add(other);
@@ -103,28 +107,28 @@ public class DrillTurret extends BaseTurret {
             });
         }
 
-        public void reFind(int i){
+        public void reFind(int i) {
             Item item = proxItems.get(i);
 
-            Geometry.circle(tile.x, tile.y, (int)(range / tilesize + 0.5f), (x, y) -> {
+            Geometry.circle(tile.x, tile.y, (int) (range / tilesize + 0.5f), (x, y) -> {
                 Tile other = world.tile(x, y);
-                if(other != null && other.drop() != null && other.drop() == item && other.block() == Blocks.air){
+                if (other != null && other.drop() != null && other.drop() == item && other.block() == Blocks.air) {
                     proxOres.set(i, other);
                 }
             });
         }
 
-        public boolean canMine(Item item){
+        public boolean canMine(Item item) {
             return item.hardness >= minDrillTier && item.hardness <= maxDrillTier && items.get(item) < itemCapacity;
         }
 
         @Override
-        public float efficiency(){
+        public float efficiency() {
             return super.efficiency() * coolant;
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             Draw.rect(baseRegion, x, y);
             Drawf.shadow(region, x - (size / 2f), y - (size / 2f), rotation - 90);
             Draw.rect(region, x, y, rotation - 90);
@@ -133,19 +137,19 @@ public class DrillTurret extends BaseTurret {
         }
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             Building core = state.teams.closestCore(x, y, team);
 
             //target ore
             targetMine(core);
-            if(core == null || mineTile == null || !consValid() || !Angles.within(rotation, angleTo(mineTile), shootCone) || items.get(mineTile.drop()) >= itemCapacity){
+            if (core == null || mineTile == null || !consValid() || !Angles.within(rotation, angleTo(mineTile), shootCone) || items.get(mineTile.drop()) >= itemCapacity) {
                 mineTile = null;
                 mineTimer = 0f;
             }
 
-            if(mineTile != null){
+            if (mineTile != null) {
                 //consume coolant
-                if(acceptCoolant){
+                if (acceptCoolant) {
                     float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
 
                     Liquid liquid = liquids.current();
@@ -154,7 +158,7 @@ public class DrillTurret extends BaseTurret {
 
                     liquids.remove(liquid, used);
 
-                    if(Mathf.chance(0.06 * used)){
+                    if (Mathf.chance(0.06 * used)) {
                         coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
                     }
 
@@ -165,14 +169,15 @@ public class DrillTurret extends BaseTurret {
                 Item item = mineTile.drop();
                 mineTimer += Time.delta * mineSpeed * efficiency();
 
-                if(Mathf.chance(0.06 * Time.delta)){
+                if (Mathf.chance(0.06 * Time.delta)) {
                     Fx.pulverizeSmall.at(mineTile.worldx() + Mathf.range(tilesize / 2f), mineTile.worldy() + Mathf.range(tilesize / 2f), 0f, item.color);
                 }
 
-                if(mineTimer >= 50f + item.hardness * 15f){
+                if (mineTimer >= 50f + item.hardness * 15f) {
                     mineTimer = 0;
 
-                    if(state.rules.sector != null && team() == state.rules.defaultTeam) state.rules.sector.info.handleProduction(item, 1);
+                    if (state.rules.sector != null && team() == state.rules.defaultTeam)
+                        state.rules.sector.info.handleProduction(item, 1);
 
                     //items are synced anyways
                     InputHandler.transferItemTo(null, item, 1,
@@ -181,25 +186,26 @@ public class DrillTurret extends BaseTurret {
                             this);
                 }
 
-                if(!headless){
+                if (!headless) {
                     control.sound.loop(shootSound, this, shootSoundVolume);
                 }
             }
 
-            if(timer.get(timerDump, dumpTime)) dump();
+            if (timer.get(timerDump, dumpTime)) dump();
         }
 
-        public @Nullable Item iterateMap(Building core){
-            if(proxOres == null || !proxOres.any()) return null;
+        public @Nullable
+        Item iterateMap(Building core) {
+            if (proxOres == null || !proxOres.any()) return null;
             Item last = null;
             targetID = -1;
-            for(int i = 0; i < proxOres.size; i++){
-                if(canMine(proxItems.get(i)) && (last == null || last.lowPriority || core.items.get(last) > core.items.get(proxItems.get(i)))){
-                    if(proxOres.get(i).block() != Blocks.air){
+            for (int i = 0; i < proxOres.size; i++) {
+                if (canMine(proxItems.get(i)) && (last == null || last.lowPriority || core.items.get(last) > core.items.get(proxItems.get(i)))) {
+                    if (proxOres.get(i).block() != Blocks.air) {
                         //try to relocate its ore
                         reFind(i);
                         //if it fails, ignore the ore
-                        if(proxOres.get(i).block() != Blocks.air) continue;
+                        if (proxOres.get(i).block() != Blocks.air) continue;
                     }
                     last = proxItems.get(i);
                     targetID = i;
@@ -209,7 +215,7 @@ public class DrillTurret extends BaseTurret {
         }
 
         @Override
-        public void removeFromProximity(){
+        public void removeFromProximity() {
             //reset when pushed
             targetItem = null;
             targetID = -1;
@@ -217,30 +223,29 @@ public class DrillTurret extends BaseTurret {
             super.removeFromProximity();
         }
 
-        public void targetMine(Building core){
-            if(core == null) return;
+        public void targetMine(Building core) {
+            if (core == null) return;
 
-            if(timer.get(timerTarget, retargetTime) || targetItem == null){
+            if (timer.get(timerTarget, retargetTime) || targetItem == null) {
                 targetItem = iterateMap(core);
             }
 
             //if inventory is full, do not mine.
-            if(targetItem == null || items.get(targetItem) >= itemCapacity){
+            if (targetItem == null || items.get(targetItem) >= itemCapacity) {
                 mineTile = null;
-            }
-            else{
-                if(consValid() && timer.get(timerTarget, 60) && targetItem != null && targetID > -1){
+            } else {
+                if (consValid() && timer.get(timerTarget, 60) && targetItem != null && targetID > -1) {
                     ore = proxOres.get(targetID);
                 }
 
-                if(ore != null && consValid()){
+                if (ore != null && consValid()) {
                     float dest = angleTo(ore);
                     rotation = Angles.moveToward(rotation, dest, rotateSpeed * edelta());
-                    if(Angles.within(rotation, dest, shootCone)){
+                    if (Angles.within(rotation, dest, shootCone)) {
                         mineTile = ore;
                     }
-                    if(ore.block() != Blocks.air){
-                        if(targetID > -1) reFind(targetID);
+                    if (ore.block() != Blocks.air) {
+                        if (targetID > -1) reFind(targetID);
                         targetItem = null;
                         targetID = -1;
                         mineTile = null;
@@ -249,8 +254,8 @@ public class DrillTurret extends BaseTurret {
             }
         }
 
-        public void drawMine(){
-            if(mineTile == null) return;
+        public void drawMine() {
+            if (mineTile == null) return;
             float focusLen = laserOffset / 2f + Mathf.absin(Time.time, 1.1f, 0.5f);
             float swingScl = 12f, swingMag = tilesize / 8f;
             float flashScl = 0.3f;
@@ -271,22 +276,22 @@ public class DrillTurret extends BaseTurret {
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
 
             write.f(rotation);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
 
             rotation = read.f();
         }
 
         @Override
-        public void drawSelect(){
-            if(mineTile != null){
+        public void drawSelect() {
+            if (mineTile != null) {
                 Lines.stroke(1f, Pal.accent);
                 Lines.poly(mineTile.worldx(), mineTile.worldy(), 4, tilesize / 2f * Mathf.sqrt2, Time.time);
                 Draw.color();

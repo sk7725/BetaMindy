@@ -8,7 +8,12 @@ import mindustry.*;
 
 public class MindySounds {
     public static Sound pistonPush, pistonPull, presentBells, boost;
-    public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound"};
+    public static final String[] soundFiles = {
+            "pistonpush",
+            "pistonpull",
+            "presentbells",
+            "boostsound"
+    };
     private static int num = 0;
 
     public static void load() {
@@ -36,7 +41,7 @@ public class MindySounds {
     }
 
     protected static Sound loadSound(String soundName) {
-        if(!Vars.headless) {
+        if (!Vars.headless) {
             String name = "sounds/" + soundName;
             String path = name + ".ogg";
 
@@ -52,11 +57,11 @@ public class MindySounds {
     }
 
     protected static Sound disposeSound(String soundName) {
-        if(!Vars.headless) {
+        if (!Vars.headless) {
             String name = "sounds/" + soundName;
             String path = name + ".ogg";
 
-            if(Core.assets.isLoaded(path, Sound.class)) {
+            if (Core.assets.isLoaded(path, Sound.class)) {
                 Core.assets.unload(path);
             }
         }

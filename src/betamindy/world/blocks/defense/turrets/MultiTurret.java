@@ -25,13 +25,13 @@ public class MultiTurret extends Turret {
     public TurretPattern[] patterns;
     public float powerUse = 1f;
 
-    public MultiTurret(String name){
+    public MultiTurret(String name) {
         super(name);
         hasPower = true;
         shootSound = Sounds.none;
 
         config(Integer.class, (MultiTurretBuild build, Integer i) -> {
-            if(i != build.mode && build.shouldTurn() && i >= 0 && i < 4){
+            if (i != build.mode && build.shouldTurn() && i >= 0 && i < 4) {
                 build.mode = i;
                 build.pattern().select();
                 build.selectHeat = 30f;
@@ -40,7 +40,7 @@ public class MultiTurret extends Turret {
     }
 
     @Override
-    public void init(){
+    public void init() {
         consumes.powerCond(powerUse, TurretBuild::isActive);
         super.init();
     }
@@ -49,88 +49,94 @@ public class MultiTurret extends Turret {
         public int mode = 0; //0 ~ 3, top left down right
         public float selectHeat = 0f;
 
-        public TurretPattern pattern(){
+        public TurretPattern pattern() {
             return patterns[mode];
         }
 
-        public BulletType shootType(){
+        public BulletType shootType() {
             return pattern().shootType();
         }
 
-        public float reloadTime(){
+        public float reloadTime() {
             return pattern().reloadTime();
         }
 
         @Override
-        protected void updateShooting(){
-            if(reload >= reloadTime()){
+        protected void updateShooting() {
+            if (reload >= reloadTime()) {
                 BulletType type = peekAmmo();
 
-                if(!pattern().override) shoot(type);
+                if (!pattern().override) shoot(type);
                 pattern().shoot(type, this);
 
                 reload = 0f;
-            }else{
+            } else {
                 reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
             }
         }
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             unit.ammo(power.status * unit.type().ammoCapacity);
-            if(selectHeat >= 0.1f) selectHeat -= delta();
+            if (selectHeat >= 0.1f) selectHeat -= delta();
 
             super.updateTile();
 
-            if(unit != null && unit().isPlayer() && unit().getPlayer() == player) playerControl();
+            if (unit != null && unit().isPlayer() && unit().getPlayer() == player) playerControl();
         }
 
-        public void playerControl(){
+        public void playerControl() {
             //clientside
-            if(!shouldTurn()) return;
+            if (!shouldTurn()) return;
 
             int input = wasd();
-            if(input == -1) return;
-            if(input != mode) configure(input);
+            if (input == -1) return;
+            if (input != mode) configure(input);
         }
 
-        public int wasd(){
+        public int wasd() {
             float ya = Core.input.axis(Binding.move_y);
             float xa = Core.input.axis(Binding.move_x);
-            if(Math.abs(ya) > 0.2f){
-                if(ya > 0) return 0;
+            if (Math.abs(ya) > 0.2f) {
+                if (ya > 0) return 0;
                 return 2;
             }
-            if(Math.abs(xa) > 0.2f){
-                if(xa > 0) return 3;
+            if (Math.abs(xa) > 0.2f) {
+                if (xa > 0) return 3;
                 return 1;
             }
             return -1;
         }
 
         @Override
-        public double sense(LAccess sensor){
-            switch(sensor){
-                case ammo: return power.status;
-                case ammoCapacity: return 1;
-                case config: return mode;
-                default: return super.sense(sensor);
+        public double sense(LAccess sensor) {
+            switch (sensor) {
+                case ammo:
+                    return power.status;
+                case ammoCapacity:
+                    return 1;
+                case config:
+                    return mode;
+                default:
+                    return super.sense(sensor);
             }
         }
 
         @Override
         public Object senseObject(LAccess sensor) {
-            switch(sensor){
-                case config: return noSensed; //senseObject takes priority over sense unless it is a noSensed
-                default: return super.senseObject(sensor);
+            switch (sensor) {
+                case config:
+                    return noSensed; //senseObject takes priority over sense unless it is a noSensed
+                default:
+                    return super.senseObject(sensor);
             }
         }
 
         @Override
-        public void control(LAccess type, double p1, double p2, double p3, double p4){
-            if(type == LAccess.configure){
-                int input = (int)p1;
-                if(Vars.net.client() || !shouldTurn() || input < 0 || input >= 4 || input == mode || selectHeat > 0.2f){
+        public void control(LAccess type, double p1, double p2, double p3, double p4) {
+            if (type == LAccess.configure) {
+                int input = (int) p1;
+                if (Vars.net.client() || !shouldTurn() || input < 0 || input >= 4 || input == mode || selectHeat > 0.2f) {
                     return;
                 }
 
@@ -139,53 +145,53 @@ public class MultiTurret extends Turret {
         }
 
         @Override
-        public BulletType useAmmo(){
+        public BulletType useAmmo() {
             //nothing used directly
             return shootType();
         }
 
         @Override
-        public boolean hasAmmo(){
+        public boolean hasAmmo() {
             //you can always rotate, but never shoot if there's no power
             return true;
         }
 
         @Override
-        public BulletType peekAmmo(){
+        public BulletType peekAmmo() {
             return shootType();
         }
 
         @Override
-        public boolean shouldTurn(){
+        public boolean shouldTurn() {
             return super.shouldTurn() && !pattern().charging();
         }
 
         //helper methods
 
-        public void doRecoil(){
+        public void doRecoil() {
             recoil = recoilAmount;
         }
 
-        public void settr(){
+        public void settr() {
             tr.trns(rotation, shootLength, Mathf.range(xRand));
         }
 
-        public void doBullet(BulletType type, float rotation){
+        public void doBullet(BulletType type, float rotation) {
             bullet(type, rotation);
         }
 
-        public void playSound(Sound sound){
+        public void playSound(Sound sound) {
             sound.at(x + tr.x, y + tr.y, 1);
         }
 
-        public void playEffect(Effect e){
+        public void playEffect(Effect e) {
             e.at(x + tr.x, y + tr.y, rotation);
         }
 
         //draw start
 
-        public void drawArrow(float alpha){
-            for(int i = 0; i < 4; i++){
+        public void drawArrow(float alpha) {
+            for (int i = 0; i < 4; i++) {
                 float len = size * tilesize / 2f + 8f + Mathf.absin(Time.globalTime, 8f, 3f);
 
                 Tmp.v2.trns(i * 90f + 90f, len);
@@ -206,25 +212,25 @@ public class MultiTurret extends Turret {
         }
 
         @Override
-        public void draw(){
+        public void draw() {
             super.draw();
             //TODO: draw cool stuff
-            if(selectHeat > 0.1f) drawArrow(selectHeat / 30f);
+            if (selectHeat > 0.1f) drawArrow(selectHeat / 30f);
         }
 
         @Override
-        public Object config(){
+        public Object config() {
             return mode;
         }
 
         @Override
-        public void write(Writes write){
+        public void write(Writes write) {
             super.write(write);
             write.b(mode);
         }
 
         @Override
-        public void read(Reads read, byte revision){
+        public void read(Reads read, byte revision) {
             super.read(read, revision);
             mode = read.b();
         }
