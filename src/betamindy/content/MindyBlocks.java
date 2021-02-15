@@ -45,7 +45,11 @@ public class MindyBlocks implements ContentList {
     //logic
     linkPin,
     //turrets
-    hopeBringer;
+    hopeBringer,
+    //buttons
+    buttonpad, buttonpadbig, button, buttonbig,
+    //tnt
+    mynamite, mynamitelarge;
 
     @Override
     public void load() {
@@ -421,7 +425,50 @@ public class MindyBlocks implements ContentList {
             range = 600f;
 
             patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
-            requirements(Category.turret, with( Items.surgeAlloy, 9999));//TODO
+            requirements(Category.turret, with(Items.surgeAlloy, 9999));//TODO
         }};
+
+        buttonpad = new ButtonPad("buttonpad"){{
+            requirements(Category.power, with(Items.titanium, 10, Items.silicon, 15));
+            health = 300;
+        }};
+
+        buttonpadbig = new ButtonPad("buttonpadbig"){{
+            requirements(Category.power, with(Items.titanium, 50, Items.silicon, 50));
+            size = 2;
+            health = 1200;
+        }};
+
+        button = new ButtonTap("button"){{
+            requirements(Category.power, with(Items.titanium, 5, Items.silicon, 25));
+            health = 150;
+        }};
+
+        buttonbig = new ButtonTap("buttonbig"){{
+            requirements(Category.power, with(Items.titanium, 25, Items.silicon, 100));
+            health = 700;
+            size = 2;
+        }};
+
+        mynamite = new Mynamite("mynamite"){{
+            requirements(Category.production, with(Items.lead, 10, Items.silicon, 20, Items.blastCompound, 25));
+            health = 60;
+            mineRadius = 2;
+            tier = 2;
+
+            consumes.power(0.1f);
+        }};
+
+        mynamitelarge = new Mynamite("mynamitelarge"){{
+            requirements(Category.production, with(Items.thorium, 45, Items.blastCompound, 100));
+            health = 60;
+            size = 2;
+            mineRadius = 5;
+            tier = 4;
+            baseAmount = 3;
+
+            consumes.power(0.4f);
+        }};
+
     }
 }

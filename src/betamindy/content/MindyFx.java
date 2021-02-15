@@ -137,5 +137,11 @@ public class MindyFx {
         color(Tmp.c1.set(e.color).shiftHue(Time.globalTime * 1.2f), e.fout() * 0.8f);
 
         rect("betamindy-star", e.x, e.y, scl * xscl * e.rotation, scl * yscl * e.rotation, rot);
-    }).layer(Layer.space - 0.02f);
+    }).layer(Layer.space - 0.02f),
+
+    smokeRise = new Effect(150, 150, e -> {
+        Draw.color(Color.gray, Pal.darkishGray.cpy().a(0), e.fin());
+        float size = 7 + e.fin()*8;
+        Draw.rect("circle", e.x+e.fin()*26, e.y+e.fin() * 30, size, size);
+    });
 }
