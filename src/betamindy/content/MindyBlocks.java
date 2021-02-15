@@ -47,9 +47,9 @@ public class MindyBlocks implements ContentList {
     //turrets
     hopeBringer,
     //buttons
-    buttonpad, buttonpadbig, button, buttonbig,
+    pressurePad, pressurePadLarge, button, buttonLarge,
     //tnt
-    mynamite, mynamitelarge;
+    mynamite, mynamiteLarge;
 
     @Override
     public void load() {
@@ -428,26 +428,26 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, with(Items.surgeAlloy, 9999));//TODO
         }};
 
-        buttonpad = new ButtonPad("buttonpad"){{
-            requirements(Category.power, with(Items.titanium, 10, Items.silicon, 15));
-            health = 300;
+        button = new ButtonTap("button"){{
+            requirements(Category.power, with(Items.graphite, 5, Items.silicon, 25));
+            health = 40;
         }};
 
-        buttonpadbig = new ButtonPad("buttonpadbig"){{
+        buttonLarge = new ButtonTap("button-large"){{
+            requirements(Category.power, with(Items.graphite, 25, Items.silicon, 100));
+            health = 160;
+            size = 2;
+        }};
+
+        pressurePad = new ButtonPad("buttonpad"){{
+            requirements(Category.power, with(Items.titanium, 10, Items.silicon, 15));
+            health = 100;
+        }};
+
+        pressurePadLarge = new ButtonPad("buttonpad-large"){{
             requirements(Category.power, with(Items.titanium, 50, Items.silicon, 50));
             size = 2;
-            health = 1200;
-        }};
-
-        button = new ButtonTap("button"){{
-            requirements(Category.power, with(Items.titanium, 5, Items.silicon, 25));
-            health = 150;
-        }};
-
-        buttonbig = new ButtonTap("buttonbig"){{
-            requirements(Category.power, with(Items.titanium, 25, Items.silicon, 100));
-            health = 700;
-            size = 2;
+            health = 400;
         }};
 
         mynamite = new Mynamite("mynamite"){{
@@ -459,7 +459,7 @@ public class MindyBlocks implements ContentList {
             consumes.power(0.1f);
         }};
 
-        mynamitelarge = new Mynamite("mynamitelarge"){{
+        mynamiteLarge = new Mynamite("mynamite-large"){{
             requirements(Category.production, with(Items.thorium, 45, Items.blastCompound, 100));
             health = 60;
             size = 2;

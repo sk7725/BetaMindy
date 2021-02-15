@@ -49,7 +49,7 @@ public class MindyStatusEffects implements ContentList {
                     Tmp.v1.rnd(unit.type.hitSize /2f);
                     effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, unit.rotation);
                 }
-
+                //TODO dragMultiplier = 0f;
                 //Tmp.v1.trns(unit.rotation(), Time.delta * unit.type.speed * 1.75f * unit.mass());
                 //unit.impulseNet(Tmp.v1);
             }

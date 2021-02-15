@@ -67,6 +67,7 @@ public class DrillTurret extends BaseTurret {
     public void setStats(){
         super.setStats();
 
+        stats.add(Stat.range, range / tilesize, StatUnit.blocks);
         stats.addPercent(Stat.mineSpeed, mineSpeed);
         stats.add(Stat.mineTier, new BlockFilterValue(b -> (b instanceof Floor) && canDrill((Floor)b)));
     }
