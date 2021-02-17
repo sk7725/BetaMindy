@@ -39,17 +39,15 @@ public class MindyBlocks implements ContentList {
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, teamWall,
     //drills
-    drillMini, drillMega,
+    drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad,
+    boostPad, repairTurret,
     //logic
     linkPin,
     //turrets
     hopeBringer,
-    //buttons
-    pressurePad, pressurePadLarge, button, buttonLarge,
-    //tnt
-    mynamite, mynamiteLarge;
+    //power
+    pressurePad, pressurePadLarge, button, buttonLarge;
 
     @Override
     public void load() {
@@ -407,6 +405,14 @@ public class MindyBlocks implements ContentList {
             laserOffset = 11f;
             consumes.power(9.6f);
             requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, Items.surgeAlloy, 15));
+        }};
+
+        repairTurret = new RepairTurret("repair-turret"){{
+            size = 3;
+            repairRadius = 100f;
+            powerUse = 3f;
+            repairSpeed = 0.95f;
+            requirements(Category.units, with(Items.lead, 50, Items.copper, 65, Items.silicon, 50, Items.plastanium, 25, Items.phaseFabric, 15));
         }};
 
         boostPad = new BoostPad("boostpad"){{
