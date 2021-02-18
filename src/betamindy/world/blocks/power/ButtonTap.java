@@ -17,7 +17,7 @@ import javax.naming.InterruptedNamingException;
 import static arc.Core.atlas;
 
 //gk Tkr rkfdjvgodigksp enlwlfurh
-//TODO kill shar
+//TODO heal shar
 public class ButtonTap extends PowerBlock {
     public float tapTime = 16f;
     public float powerProduction = 2 * 60f;
@@ -44,7 +44,7 @@ public class ButtonTap extends PowerBlock {
         @Override
         public void draw() {
             super.draw();
-            Draw.rect(atlas.find(name + (heat > 0.001f ? "-trig":"")), tile.drawx(), tile.drawy());//어떤 약을 빠셨나요 그것이 궁금합니다 4
+            Draw.rect(atlas.find(name + (heat > 0.001f ? "-trig":"")), x, y);//어떤 약을 빠셨나요 그것이 궁금합니다 4
         }
 
         @Override
@@ -63,7 +63,7 @@ public class ButtonTap extends PowerBlock {
         public boolean configTapped(){
             if(tapped) return false;
 
-            //어떤 약을 빠셨나요 그것이 궁금합니다
+            //어떤 약을 빠셨나요 그것이 궁금합니다 // 샤로인요
             configure(getPowerProduction());
             heat = tapTime;
             return false;

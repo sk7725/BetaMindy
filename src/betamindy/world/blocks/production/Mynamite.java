@@ -4,7 +4,6 @@ import arc.Core;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import arc.util.io.*;
-import betamindy.world.blocks.defense.turrets.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -33,6 +32,7 @@ public class Mynamite extends Block {
     public float damage = 600f;
     public float damageRadius = 4 * 8f;
     public int baseAmount = 0;
+    public boolean canClick = true;
 
     public Mynamite(String name){
         super(name);
@@ -69,11 +69,8 @@ public class Mynamite extends Block {
         super.setStats();
 
         stats.add(Stat.range, mineRadius, StatUnit.blocks);
-        stats.add(Stat.drillTier, table -> {
-            new BlockFilterValue(b -> b instanceof Floor && ((Floor) b).itemDrop != null && ((Floor) b).itemDrop.hardness <= tier && ((Floor) b).itemDrop.hardness >= minTier).display(table.left());
-            //table.row();
-            //table.add(Core.bundle.format("stat.drillradius", mineRadius)).left();
-        });
+        stats.add(Stat.drillTier, table ->
+            new BlockFilterValue(b -> b instanceof Floor && ((Floor) b).itemDrop != null && ((Floor) b).itemDrop.hardness <= tier && ((Floor) b).itemDrop.hardness >= minTier).display(table.left()));
     }
 
     @Override
@@ -110,9 +107,11 @@ public class Mynamite extends Block {
 
         @Override
         public boolean configTapped(){
-            if(lit) return false;
-            //이건 config 써야하겠다
-            configure(true);
+            if(canClick) {
+                if (lit) return false;
+                //이건 config 써야하겠다
+                configure(true);
+            }
             return false;
         }
 

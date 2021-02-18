@@ -448,12 +448,17 @@ public class MindyBlocks implements ContentList {
         pressurePad = new ButtonPad("buttonpad"){{
             requirements(Category.power, with(Items.titanium, 10, Items.silicon, 15));
             health = 100;
+
+            basicPowerProduction = 1;
         }};
 
         pressurePadLarge = new ButtonPad("buttonpad-large"){{
             requirements(Category.power, with(Items.titanium, 50, Items.silicon, 50));
             size = 2;
             health = 400;
+
+            basicPowerProduction = 3;
+            detectAir = true;
         }};
 
         mynamite = new Mynamite("mynamite"){{
@@ -472,6 +477,7 @@ public class MindyBlocks implements ContentList {
             mineRadius = 5;
             tier = 4;
             baseAmount = 3;
+            canClick = false;
 
             consumes.power(0.4f);
         }};
