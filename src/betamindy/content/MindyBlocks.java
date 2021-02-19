@@ -410,8 +410,8 @@ public class MindyBlocks implements ContentList {
         repairTurret = new RepairTurret("repair-turret"){{
             size = 3;
             repairRadius = 100f;
-            powerUse = 3f;
-            repairSpeed = 0.95f;
+            powerUse = 4f;
+            repairSpeed = 10.5f;
             requirements(Category.units, with(Items.lead, 50, Items.copper, 65, Items.silicon, 50, Items.plastanium, 25, Items.phaseFabric, 15));
         }};
 
@@ -437,19 +437,21 @@ public class MindyBlocks implements ContentList {
         button = new ButtonTap("button"){{
             requirements(Category.power, with(Items.graphite, 5, Items.silicon, 25));
             health = 40;
+            powerProduction = 1f;
         }};
 
         buttonLarge = new ButtonTap("button-large"){{
             requirements(Category.power, with(Items.graphite, 25, Items.silicon, 100));
             health = 160;
             size = 2;
+            powerProduction = 2f;
         }};
 
         pressurePad = new ButtonPad("buttonpad"){{
             requirements(Category.power, with(Items.titanium, 10, Items.silicon, 15));
             health = 100;
 
-            basicPowerProduction = 1;
+            basicPowerProduction = 1f;
         }};
 
         pressurePadLarge = new ButtonPad("buttonpad-large"){{
@@ -457,29 +459,33 @@ public class MindyBlocks implements ContentList {
             size = 2;
             health = 400;
 
-            basicPowerProduction = 3;
+            basicPowerProduction = 2f;
             detectAir = true;
         }};
 
         mynamite = new Mynamite("mynamite"){{
-            requirements(Category.production, with(Items.lead, 10, Items.silicon, 20, Items.blastCompound, 25));
             health = 60;
             mineRadius = 2;
             tier = 2;
 
             consumes.power(0.1f);
+            requirements(Category.production, with(Items.lead, 10, Items.silicon, 20, Items.blastCompound, 25));
         }};
 
         mynamiteLarge = new Mynamite("mynamite-large"){{
-            requirements(Category.production, with(Items.thorium, 45, Items.blastCompound, 100));
             health = 60;
             size = 2;
             mineRadius = 5;
-            tier = 4;
+            tier = 6;
+            minTier = 2;
             baseAmount = 3;
             canClick = false;
 
+            smokeChance = 0.15f;
+            fireEffect = Fx.burning;
+
             consumes.power(0.4f);
+            requirements(Category.production, with(Items.thorium, 45, Items.blastCompound, 100));
         }};
 
     }

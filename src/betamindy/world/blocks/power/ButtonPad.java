@@ -12,24 +12,33 @@ import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
+import static mindustry.Vars.tilesize;
 
 public class ButtonPad extends PowerBlock {
     public float pushTime = 16f;
     public float basicPowerProduction = 2f;
     public boolean detectAir = false;
+    public TextureRegion trigRegion;
 
     public ButtonPad(String name){
         super(name);
-        quickRotate = false;
+        rotate = false;
         consumesPower = false;
         outputsPower = true;
         targetable = false;
         solid = false;
         sync = true;
         expanded = true;
-        group = BlockGroup.transportation;
+        group = BlockGroup.power;
+        noUpdateDisabled = false;
 
         flags = EnumSet.of(BlockFlag.generator);
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        trigRegion = atlas.find(name + "-trig");
     }
 
     @Override
@@ -46,7 +55,7 @@ public class ButtonPad extends PowerBlock {
             bars.add("power", (ButtonPadBuild entity) -> new Bar(
                 () -> Core.bundle.format("bar.poweroutput", entity.getPowerProduction() * 60 * entity.timeScale()),
                 () -> Pal.powerBar,
-                () -> entity.heat/pushTime)
+                () -> entity.heat / pushTime)
             );
         }
     }
@@ -58,23 +67,24 @@ public class ButtonPad extends PowerBlock {
         @Override
         public void draw() {
             super.draw();
-            Draw.rect(atlas.find(name + (heat > 0.001f ? "-trig":"")), x, y);
+            Draw.rect(heat > 0.001f ? trigRegion : region, x, y);
         }
 
         @Override
         public void updateTile(){
             super.updateTile();
 
-            if(heat >= 0.001f) heat -= edelta();
+            if(heat >= 0f) heat -= delta();
 
-            if(detectAir) Units.nearby(x, y, size, size, this::unitOn);
+            if(detectAir && enabled) Units.nearby(x - size * tilesize / 2f, y - size * tilesize / 2f, size * tilesize, size * tilesize, this::unitOn);
         }
 
         @Override
         public void unitOn(Unit unit){
-            powerProduction = basicPowerProduction * (unit.hitSize * 1.4f - 8);
+            if(!enabled) return;
+            powerProduction = basicPowerProduction * (unit.hitSize * 1.2f - 8); //TODO: figure out how to deal with multiple units on one pad
 
-            if(heat <= 0.001) Sounds.place.at(x, y, 1.2f);
+            if(heat < 0.001f) Sounds.place.at(x, y, 1.2f / size);
             heat = pushTime;
         }
 
@@ -91,8 +101,11 @@ public class ButtonPad extends PowerBlock {
 
         @Override
         public double sense(LAccess sensor){
-            if(sensor == LAccess.heat) return heat;
-            return super.sense(sensor);
+            switch(sensor){
+                case heat: return heat / pushTime;
+                case enabled: return heat > 0.001f ? 1 : 0;
+                default: return super.sense(sensor);
+            }
         }
     }
 }

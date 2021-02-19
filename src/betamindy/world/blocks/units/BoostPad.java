@@ -57,7 +57,7 @@ public class BoostPad extends Block {
                 heat = cooldown;
             }
 
-            unit.impulseNet(Tmp.v1.trns(unit.rotation, unit.mass() * 25f));
+            unit.impulseNet(Tmp.v1.trns(unit.rotation, unit.mass() * 10f));
             unit.apply(status, duration);
         }
     }

@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import arc.util.io.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -22,17 +23,22 @@ import mindustry.Vars;
 import betamindy.content.*;
 import mindustry.world.meta.values.BlockFilterValue;
 
+import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
 public class Mynamite extends Block {
     public int tier = 0, minTier = 0;
-    public TextureRegion topRegion;
     public float fuseTime = 140f;
     public int mineRadius = 2;
-    public float damage = 600f;
-    public float damageRadius = 4 * 8f;
+    public float damage = 600f, damageRadius = 4 * 8f;
     public int baseAmount = 0;
     public boolean canClick = true;
+
+    public TextureRegion topRegion;
+
+    public Effect smokeEffect = MindyFx.smokeRise;
+    public Effect fireEffect = Fx.none;
+    public float smokeChance = 0.08f, fireChance = 0.12f;
 
     public Mynamite(String name){
         super(name);
@@ -62,6 +68,12 @@ public class Mynamite extends Block {
     public void load(){
         super.load();
         topRegion = Core.atlas.find(this.name + "-top");
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        configurable = canClick;
     }
 
     @Override
@@ -118,7 +130,8 @@ public class Mynamite extends Block {
         public void updateTile(){
             if(lit){
                 heat -= delta();
-                if(Mathf.chance(0.08f)) MindyFx.smokeRise.at(x, y);
+                if(Mathf.chance(smokeChance)) smokeEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
+                if(fireEffect != Fx.none && Mathf.chance(fireChance)) fireEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
                 if(heat <= 0f) kill();
             }
             else if(consValid() || tile.floor().attributes.get(Attribute.heat) > 0.01) light();
