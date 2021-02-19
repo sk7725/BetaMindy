@@ -2,7 +2,7 @@ package betamindy.world.blocks.production;
 
 import arc.Core;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
+import arc.math.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -23,7 +23,6 @@ import mindustry.Vars;
 import betamindy.content.*;
 import mindustry.world.meta.values.BlockFilterValue;
 
-import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
 public class Mynamite extends Block {

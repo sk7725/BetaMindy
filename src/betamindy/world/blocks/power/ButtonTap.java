@@ -1,18 +1,12 @@
 package betamindy.world.blocks.power;
 
 import arc.graphics.g2d.*;
-import arc.struct.EnumSet;
-import arc.struct.Seq;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import betamindy.world.blocks.production.*;
-import mindustry.gen.Building;
-import mindustry.gen.Sounds;
-import mindustry.gen.Unit;
+import arc.struct.*;
+import arc.util.io.*;
+import mindustry.gen.*;
 import mindustry.logic.*;
 import mindustry.world.blocks.power.PowerBlock;
-import mindustry.world.meta.BlockFlag;
-import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
 

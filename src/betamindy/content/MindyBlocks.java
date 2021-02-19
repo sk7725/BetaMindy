@@ -33,7 +33,7 @@ public class MindyBlocks implements ContentList {
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner,
+    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, bumper, accel, cloner, spinner,
     //effect
     silo, warehouse,
     //walls
@@ -235,6 +235,15 @@ public class MindyBlocks implements ContentList {
             color = Color.valueOf("F3E979");
         }};
 
+        bumper = new Bumper("bumper", 0){{
+            health = 300;
+            requirements(Category.units, with(Items.plastanium, 30));
+            size = 2;
+            bumpSpeedLimit = 15;
+            chanceDeflect = 50;
+            color = Color.valueOf("68DD74");
+        }};
+
         accel = new AccelBlock("accel"){{
             health = 150;
             requirements(Category.power, with(Items.lead, 25, Items.silicon, 20, Items.plastanium, 3));
@@ -304,6 +313,7 @@ public class MindyBlocks implements ContentList {
             health = 360;
             requirements(Category.defense, with(Items.lead, 6));
         }};
+
         leadWallLarge = new Wall("lead-wall-large"){{
             health = 1440;
             size = 2;
@@ -317,6 +327,7 @@ public class MindyBlocks implements ContentList {
             health = 380;
             requirements(Category.defense, with(Items.graphite, 3, Items.metaglass, 5));
         }};
+
         metaglassWallLarge = new ShardWall("metaglass-wall-large"){{
             shard = MindyBullets.glassPieceBig;
             amount = 8;

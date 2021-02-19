@@ -55,8 +55,8 @@ public class ButtonPad extends PowerBlock {
             bars.add("power", (ButtonPadBuild entity) -> new Bar(
                 () -> Core.bundle.format("bar.poweroutput", entity.getPowerProduction() * 60 * entity.timeScale()),
                 () -> Pal.powerBar,
-                () -> entity.heat / pushTime)
-            );
+                () -> entity.heat / pushTime
+            ));
         }
     }
 
