@@ -12,7 +12,7 @@ import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.power.*;
 import betamindy.world.blocks.production.*;
-import betamindy.world.blocks.units.BoostPad;
+import betamindy.world.blocks.units.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.*;
@@ -33,7 +33,7 @@ public class MindyBlocks implements ContentList {
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, bumper, accel, cloner, spinner,
+    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner,
     //effect
     silo, warehouse,
     //walls
@@ -41,7 +41,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret,
+    boostPad, repairTurret, bumper, bumperPlus,
     //logic
     linkPin,
     //turrets
@@ -233,15 +233,6 @@ public class MindyBlocks implements ContentList {
             consumesPower = false;
 
             color = Color.valueOf("F3E979");
-        }};
-
-        bumper = new Bumper("bumper", 0){{
-            health = 300;
-            requirements(Category.units, with(Items.plastanium, 30));
-            size = 2;
-            bumpSpeedLimit = 15;
-            chanceDeflect = 50;
-            color = Color.valueOf("68DD74");
         }};
 
         accel = new AccelBlock("accel"){{
@@ -499,5 +490,21 @@ public class MindyBlocks implements ContentList {
             requirements(Category.production, with(Items.thorium, 45, Items.blastCompound, 100));
         }};
 
+        bumper = new Bumper("bumper"){{
+            health = 300;
+            requirements(Category.units, with(Items.lead, 30, Items.graphite, 15, Items.metaglass, 15));
+            size = 2;
+            bumpSpeedLimit = 5f;
+            chanceDeflect = 10f;
+        }};
+
+        bumperPlus = new Bumper("bumper-plus"){{
+            health = 600;
+            requirements(Category.units, with(Items.lead, 30, Items.plastanium, 15, Items.phaseFabric, 15));
+            size = 2;
+            bumpSpeedLimit = 14f;
+            bumpScl = 1.5f;
+            chanceDeflect = 50f;
+        }};
     }
 }
