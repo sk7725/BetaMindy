@@ -1,6 +1,6 @@
 package betamindy.content;
 
-import arc.Core;
+import arc.*;
 import mindustry.*;
 
 public class SettingAdder {
