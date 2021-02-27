@@ -12,7 +12,7 @@ import mindustry.logic.*;
 import static mindustry.Vars.*;
 
 public class BumperBlue extends Bumper {
-    public float reflateTime = 180f;
+    public float reflateTime = 240f;
     public float animTime = 30f;
     public Effect deflateEffect = Fx.absorb; //TODO
 
@@ -40,7 +40,7 @@ public class BumperBlue extends Bumper {
             if(!open) super.updateTile();
             else{
                 progress += edelta();
-                if(progress >= reflateTime){
+                if(progress >= reflateTime && !Units.anyEntities(tile)){
                     open = false;
                     pathfinder.updateTile(tile());
                     heat = bumpTime;
@@ -58,9 +58,9 @@ public class BumperBlue extends Bumper {
         public void draw(){
             if(open){
                 float scl = (progress - (reflateTime - animTime)) / animTime;
-                if(scl > 0.01f) drawFloat(scl);
+                if(scl > 0.01f) drawFloat(Mathf.clamp(scl));
                 else{
-                    Draw.z(Layer.block - 0.99f); //block shadow is block - 1
+                    Draw.z(Layer.block - 0.5f); //block shadow is block - 1
                     Drawf.shadow(x, y, (size * tilesize) * 0.7f);
                     Draw.z(Layer.blockOver);
                     Draw.rect(topRegion, x, y);

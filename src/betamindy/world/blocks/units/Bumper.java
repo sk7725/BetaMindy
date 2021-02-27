@@ -99,7 +99,7 @@ public class Bumper extends Wall {
         }
 
         public void drawFloat(float scl){
-            Draw.z(Layer.block - 0.99f); //block shadow is block - 1
+            Draw.z(Layer.block - 0.5f); //block shadow is block - 1
             Drawf.shadow(x, y, (size * tilesize + 1f) * scl);
             Draw.z(Layer.blockOver + scl - 1f);
             Draw.rect(region, x, y, Draw.scl * Draw.xscl * size * 32f * scl, Draw.scl * Draw.yscl * size * 32f * scl);
