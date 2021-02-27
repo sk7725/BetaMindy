@@ -7,6 +7,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.blocks.defense.*;
 
 import static arc.Core.atlas;
@@ -14,11 +15,11 @@ import static mindustry.Vars.tilesize;
 
 public class Bumper extends Wall {
     public float hitSize = tilesize * 1.1f;
-    public final Rect rect = new Rect(), rect2 = new Rect();
+    public final Rect rect = new Rect();
 
     public float bumpTime = 16f;
-    public float bumpScl = 0.8f;
-    public float bumpSpeedLimit = 5f;
+    public float bumpScl = 0.5f;
+    public float bumpSpeedLimit = 4f;
 
     public Sound bumpSound = Sounds.artillery;
 
@@ -30,6 +31,8 @@ public class Bumper extends Wall {
         update = true;
         solid = true;
         deflectSound = Sounds.artillery;
+        hasShadow = false;
+        noUpdateDisabled = false;
     }
 
     @Override
@@ -52,36 +55,38 @@ public class Bumper extends Wall {
         public float heat = 0f;
 
         public void unitPush(Unit unit){
-            //Log.info(1);
+            //TODO better collision
             if(heat < 0.001f) bumpSound.at(x, y);
 
             heat = bumpTime;
 
             float penX = Math.abs(x - unit.x), penY = Math.abs(y - unit.y);
 
+            //TODO if unit is stuck in bumper *then* activate below / alternatively use a statusEffect?
+            /*
             Vec2 position = Geometry.raycastRect(
                 unit.x - unit.vel.x * Time.delta,
                 unit.y - unit.vel.y * Time.delta,
                 unit.x + unit.vel.x * Time.delta,
                 unit.y + unit.vel.y * Time.delta,
-                rect.setSize(size * hitSize + rect2.width * 2 + rect2.height * 2).setCenter(x, y)
+                rect.setSize(size * hitSize).setCenter(x, y)
             );
 
-            if(position != null) unit.set(position.x, position.y);
+            if(position != null) unit.set(position.x, position.y);*/
+            unit.move(-unit.vel.x * 1.1f, -unit.vel.y * 1.1f);
 
 
             if(penX > penY) unit.vel.x *= -1;
             else unit.vel.y *= -1;
 
             if(unit.vel.len() < bumpSpeedLimit){
-                Vec2 avec = new Vec2(unit.x - x,unit.y - y);
-                avec.scl(bumpScl,bumpScl);
-                unit.vel.add(avec.x * Time.delta,avec.y * Time.delta);
+                Tmp.v2.set(unit.x - x,unit.y - y);
+                Tmp.v2.scl(bumpScl,bumpScl);
+                unit.vel.add(Tmp.v2.x, Tmp.v2.y);
             }
         }
 
         public void updateTile(){
-            super.updateTile();
             Units.nearby(x - size * hitSize / 2, y - size * hitSize / 2, hitSize * size, hitSize * size, this::unitPush);
 
             if(heat > 0f) heat -= delta();
@@ -89,7 +94,14 @@ public class Bumper extends Wall {
 
         @Override
         public void draw(){
-            float scl = 1f + Mathf.clamp(heat / bumpTime) * 0.3f;
+            float scl = 1f + Mathf.clamp(heat / bumpTime) * 0.2f;
+            drawFloat(scl);
+        }
+
+        public void drawFloat(float scl){
+            Draw.z(Layer.block - 0.99f); //block shadow is block - 1
+            Drawf.shadow(x, y, (size * tilesize + 1f) * scl);
+            Draw.z(Layer.blockOver + scl - 1f);
             Draw.rect(region, x, y, Draw.scl * Draw.xscl * size * 32f * scl, Draw.scl * Draw.yscl * size * 32f * scl);
             Draw.rect(topRegion, x, y);
         }

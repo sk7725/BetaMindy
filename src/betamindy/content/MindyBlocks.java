@@ -41,7 +41,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue,
     //logic
     linkPin,
     //turrets
@@ -494,7 +494,13 @@ public class MindyBlocks implements ContentList {
             health = 300;
             requirements(Category.units, with(Items.lead, 30, Items.graphite, 15, Items.metaglass, 15));
             size = 2;
-            bumpSpeedLimit = 5f;
+            chanceDeflect = 10f;
+        }};
+
+        bumperBlue = new BumperBlue("bumper-blue"){{
+            health = 300;
+            requirements(Category.units, with(Items.copper, 30, Items.graphite, 10, Items.metaglass, 10));
+            size = 2;
             chanceDeflect = 10f;
         }};
 
@@ -502,8 +508,8 @@ public class MindyBlocks implements ContentList {
             health = 600;
             requirements(Category.units, with(Items.lead, 30, Items.plastanium, 15, Items.phaseFabric, 15));
             size = 2;
-            bumpSpeedLimit = 14f;
-            bumpScl = 1.5f;
+            bumpSpeedLimit = 8f;
+            bumpScl = 0.8f;
             chanceDeflect = 50f;
         }};
     }
