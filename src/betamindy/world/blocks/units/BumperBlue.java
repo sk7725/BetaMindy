@@ -40,7 +40,8 @@ public class BumperBlue extends Bumper {
             if(!open) super.updateTile();
             else{
                 progress += edelta();
-                if(progress >= reflateTime && !Units.anyEntities(tile)){
+                if(progress >= reflateTime - animTime && Units.anyEntities(tile)) progress = reflateTime - animTime - 10f;
+                if(progress >= reflateTime){
                     open = false;
                     pathfinder.updateTile(tile());
                     heat = bumpTime;
@@ -60,8 +61,8 @@ public class BumperBlue extends Bumper {
                 float scl = (progress - (reflateTime - animTime)) / animTime;
                 if(scl > 0.01f) drawFloat(Mathf.clamp(scl));
                 else{
-                    Draw.z(Layer.block - 0.5f); //block shadow is block - 1
-                    Drawf.shadow(x, y, (size * tilesize) * 0.7f);
+                    Draw.z(Layer.block - 0.99f); //block shadow is block - 1
+                    Drawf.shadow(x, y, (size * 32f) * 0.7f);
                     Draw.z(Layer.blockOver);
                     Draw.rect(topRegion, x, y);
                 }
