@@ -21,6 +21,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.experimental.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
@@ -29,7 +30,7 @@ import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public static Block radiation, exoticMatter, present,
+    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno,
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
@@ -65,6 +66,32 @@ public class MindyBlocks implements ContentList {
 
             status = MindyStatusEffects.controlSwap;
             duration = 3000f;
+        }};
+
+        asphalt = new Floor("asphalt"){{
+            variants = 3;
+            speedMultiplier = 1.7f;
+            dragMultiplier = 0.3f;
+        }};
+
+        blueice = new Floor("blueice"){{
+            variants = 3;
+            dragMultiplier = 0.00001f;
+
+            attributes.set(Attribute.water, 0.9f);
+        }};
+
+        ohno = new Floor("ohno"){{
+            variants = 2;
+            speedMultiplier = -1f;
+
+            damageTaken = 10f;
+            walkEffect = Fx.breakBlock;
+            attributes.set(Attribute.light, 69420f / 5.4f);
+
+            lightRadius = 16f;
+            lightColor = Color.red;
+            emitLight = true;
         }};
 
         payCannon = new PayloadTurret("payload-cannon"){{

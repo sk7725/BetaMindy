@@ -139,9 +139,15 @@ public class MindyFx {
         rect("betamindy-star", e.x, e.y, scl * xscl * e.rotation, scl * yscl * e.rotation, rot);
     }).layer(Layer.space - 0.02f),
 
-    smokeRise = new Effect(150, 150, e -> {
-        Draw.color(Color.gray, Pal.darkishGray.cpy().a(0), e.fin());
+    smokeRise = new Effect(150f, 150f, e -> {
+        color(Color.gray, Pal.darkishGray.cpy().a(0), e.fin());
         float size = 7 + e.fin()*8;
-        Draw.rect("circle", e.x+e.fin()*26, e.y+e.fin() * 30, size, size);
-    });
+        rect("circle", e.x+e.fin()*26, e.y+e.fin() * 30, size, size);
+    }),
+
+    blueBumperBonk = new Effect(25f, 60f, e -> {
+        color(Color.white, e.fout());
+        Tmp.v1.trns(e.rotation, e.finpow() * 20f);
+        rect("betamindy-bumper-blue", e.x + Tmp.v1.x, e.y + Tmp.v1.y);
+    }).layer(Layer.blockOver - 0.01f);
 }

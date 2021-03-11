@@ -3,6 +3,7 @@ package betamindy.world.blocks.units;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.io.*;
+import betamindy.content.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -14,7 +15,7 @@ import static mindustry.Vars.*;
 public class BumperBlue extends Bumper {
     public float reflateTime = 240f;
     public float animTime = 30f;
-    public Effect deflateEffect = Fx.absorb; //TODO
+    public Effect deflateEffect = MindyFx.blueBumperBonk;
 
     public BumperBlue(String name){
         super(name);
@@ -22,6 +23,7 @@ public class BumperBlue extends Bumper {
         solid = false;
         solidifes = true;
         canOverdrive = true;
+        ignoreHeat = true;
     }
 
     public class BumperBlueBuild extends BumperBuild {
@@ -29,8 +31,12 @@ public class BumperBlue extends Bumper {
         public float progress = 0f;
 
         public void deflate(){
+            deflate(0f);
+        }
+
+        public void deflate(float r){
             open = true;
-            deflateEffect.at(this);
+            deflateEffect.at(this, r);
             progress = 0f;
             pathfinder.updateTile(tile());
         }
@@ -52,7 +58,7 @@ public class BumperBlue extends Bumper {
         @Override
         public void unitPush(Unit unit){
             super.unitPush(unit);
-            if(!open) deflate();
+            if(!open) deflate(Angles.angle(unit.x, unit.y, x, y));
         }
 
         @Override
@@ -62,7 +68,7 @@ public class BumperBlue extends Bumper {
                 if(scl > 0.01f) drawFloat(Mathf.clamp(scl));
                 else{
                     Draw.z(Layer.block - 0.99f); //block shadow is block - 1
-                    Drawf.shadow(x, y, (size * 32f) * 0.7f);
+                    Drawf.shadow(x, y, (size * 16f + 1f) * 0.7f);
                     Draw.z(Layer.blockOver);
                     Draw.rect(topRegion, x, y);
                 }

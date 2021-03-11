@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import arc.math.geom.*;
 import arc.util.*;
+import betamindy.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -21,7 +22,9 @@ public class Bumper extends Wall {
     public float bumpScl = 0.5f;
     public float bumpSpeedLimit = 4f;
 
-    public Sound bumpSound = Sounds.artillery;
+    public Sound bumpSound = MindySounds.boing;
+    /** If heat should be disregarded when playing a sound. Used for blue bumper types. */
+    public boolean ignoreHeat = false;
 
     public TextureRegion topRegion;
 
@@ -30,7 +33,7 @@ public class Bumper extends Wall {
 
         update = true;
         solid = true;
-        deflectSound = Sounds.artillery;
+        deflectSound = MindySounds.boing;
         hasShadow = false;
         noUpdateDisabled = false;
     }
@@ -55,14 +58,12 @@ public class Bumper extends Wall {
         public float heat = 0f;
 
         public void unitPush(Unit unit){
-            //TODO better collision
-            if(heat < 0.001f) bumpSound.at(x, y);
+            if(heat < 0.001f || ignoreHeat) bumpSound.at(x, y);
 
             heat = bumpTime;
 
             float penX = Math.abs(x - unit.x), penY = Math.abs(y - unit.y);
 
-            //TODO if unit is stuck in bumper *then* activate below / alternatively use a statusEffect?
             /*
             Vec2 position = Geometry.raycastRect(
                 unit.x - unit.vel.x * Time.delta,
@@ -73,7 +74,7 @@ public class Bumper extends Wall {
             );
 
             if(position != null) unit.set(position.x, position.y);*/
-            unit.move(-unit.vel.x * 1.1f, -unit.vel.y * 1.1f);
+            unit.move(-unit.vel.x, -unit.vel.y);
 
 
             if(penX > penY) unit.vel.x *= -1;
@@ -100,7 +101,7 @@ public class Bumper extends Wall {
 
         public void drawFloat(float scl){
             Draw.z(Layer.block - 0.99f); //block shadow is block - 1
-            Drawf.shadow(x, y, (size * 32f + 1f) * scl);
+            Drawf.shadow(x, y, (size * 16f + 1f) * Math.max(scl, 0.7f));
             Draw.z(Layer.blockOver + scl - 1f);
             Draw.rect(region, x, y, Draw.scl * Draw.xscl * size * 32f * scl, Draw.scl * Draw.yscl * size * 32f * scl);
             Draw.rect(topRegion, x, y);

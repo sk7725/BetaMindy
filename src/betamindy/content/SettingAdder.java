@@ -7,11 +7,15 @@ public class SettingAdder {
     public void addGraphicSetting(String key){
         Vars.ui.settings.graphics.checkPref(key, Core.settings.getBool(key));
     }
+    public void addGameSetting(String key){
+        Vars.ui.settings.game.checkPref(key, Core.settings.getBool(key));
+    }
 
     public void init(){
         boolean tmp = Core.settings.getBool("uiscalechanged", false);
         Core.settings.put("uiscalechanged", false);
 
+        addGameSetting("nonmoddedservers");
         addGraphicSetting("slimeeffect");
         addGraphicSetting("accelballs");
         addGraphicSetting("correctview");
