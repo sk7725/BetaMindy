@@ -24,7 +24,8 @@ public class BetaMindy extends Mod{
         new OverWriter(),
         new MindyStatusEffects(),
         new MindyBullets(),
-        new MindyBlocks()
+        new MindyBlocks(),
+        new MindyTechTree()
     };
 
     public BetaMindy() {
