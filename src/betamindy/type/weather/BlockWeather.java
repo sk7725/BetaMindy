@@ -29,7 +29,7 @@ public class BlockWeather extends ParticleWeather {
     public Block block = Blocks.router;
     public Team blockTeam = Team.derelict;
     public Effect blockEffect = Fx.explosion;
-    public float blockDamageRad = 3 * 8f, blockDamage = 5 * block.size * block.size;
+    public float blockDamageRad = 3 * 8f, blockDamage = 5 * block.size * block.size, blockChance = 0.2f, blockChangeDelay = 3f;
     public int rands = 0;
     public boolean randomBlock = false;
 
@@ -85,20 +85,21 @@ public class BlockWeather extends ParticleWeather {
             y += Tmp.r1.y;
 
             Block block1 = block;
-            if(randomBlock && Time.time % 60f == 0) {
+            if(randomBlock) {
                 try {
-                    if(block1 instanceof ConstructBlock || !block1.hasBuilding()) return;
-                    block1 = Vars.content.blocks().get(Mathf.random(Vars.content.blocks().size - 1));
+                    Block temp = Vars.content.blocks().get(Mathf.random(Vars.content.blocks().size - 1));
+                    if(temp instanceof ConstructBlock || !temp.hasBuilding()) return;
+                    block1 = temp;
                 } catch (Throwable e) {
                     arc.util.Log.warn("@", e);
                 }
             }
             try{
-                Time.run(60f * 2, () -> rands = Mathf.random(Vars.content.blocks().size - 1));
+                rands = Mathf.random(Vars.content.blocks().size - 1);
 
-                if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2) && Mathf.randomBoolean((x + y) / 200)){
-                    x = Mathf.random(0, world.tiles.width);
-                    y = Mathf.random(0, world.tiles.height);
+                if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2) && Mathf.randomBoolean(blockChance)){
+                    x = Mathf.random(1, world.tiles.width - 1);
+                    y = Mathf.random(1, world.tiles.height - 1);
                     if(world.build((int)x, (int)y) == null && world.tile((int)x, (int)y) != null) {
                         world.tile((int)x, (int)y).setNet(block1, blockTeam, Mathf.random(0, 3));
                     } else {
@@ -113,42 +114,6 @@ public class BlockWeather extends ParticleWeather {
         }
     }
 
-
-    @Override
-    public void drawOver(WeatherState state){
-
-        float windx, windy;
-        if(useWindVector){
-            float speed = baseSpeed * state.intensity;
-            windx = state.windVector.x * speed;
-            windy = state.windVector.y * speed;
-        }else{
-            windx = this.xspeed;
-            windy = this.yspeed;
-        }
-
-        if(drawNoise){
-            if(noise == null){
-                noise = Core.assets.get("sprites/" + noisePath + ".png", Texture.class);
-                noise.setWrap(Texture.TextureWrap.repeat);
-                noise.setFilter(Texture.TextureFilter.linear);
-            }
-
-            float sspeed = 1f, sscl = 1f, salpha = 1f, offset = 0f;
-            Color col = Tmp.c1.set(noiseColor);
-            for(int i = 0; i < noiseLayers; i++){
-                drawNoise(noise, noiseColor, noiseScale * sscl, state.opacity * salpha * opacityMultiplier, sspeed * (useWindVector ? 1f : baseSpeed), state.intensity, windx, windy, offset);
-                sspeed *= noiseLayerSpeedM;
-                salpha *= noiseLayerAlphaM;
-                sscl *= noiseLayerSclM;
-                offset += 0.29f;
-                col.mul(noiseLayerColorM);
-            }
-        }
-        if(drawParticles){
-            drawParticles(region, color, sizeMin, sizeMax, density, state.intensity, state.opacity, windx, windy, minAlpha, maxAlpha, sinSclMin, sinSclMax, sinMagMin, sinMagMax); //ahhhhhhhh
-        }
-    }
     @Override
     public void drawParticles(TextureRegion region, Color color,
                               float sizeMin, float sizeMax,
@@ -162,12 +127,13 @@ public class BlockWeather extends ParticleWeather {
         Core.camera.bounds(Tmp.r2);
         int total = (int)(Tmp.r1.area() / density * intensity);
         Draw.color(color, opacity);
-        TextureRegion region1 = region;
-        Block block1 = Vars.content.blocks().get(rands);
         if(randomBlock) {
             try {
-                if(block1 instanceof ConstructBlock || !block1.hasBuilding()) return;
-                if(Core.atlas.find(block1.name) != Core.atlas.find("error")) region1 = block1.icon(Cicon.medium);
+                Block temp = block;
+                if(Time.time % 60f < blockChangeDelay) temp = Vars.content.blocks().get(Mathf.random(Vars.content.blocks().size - 1));
+                if((temp instanceof ConstructBlock || !temp.hasBuilding()) && Core.atlas.find(temp.name) == Core.atlas.find("error")) return;
+                block = temp;
+                region = block.icon(Cicon.medium);
             } catch (Throwable e) {
                 arc.util.Log.warn("@", e);
             }
@@ -192,7 +158,7 @@ public class BlockWeather extends ParticleWeather {
             if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2)){
                 Draw.alpha(alpha * opacity);
                 try{
-                    Draw.rect(region1 , x, y, size, size, Time.time * 4f);
+                    Draw.rect(region, x, y, size, size, Time.time * 4f);
                 } catch(Throwable e) {
                     Log.warn("@", e);
                 }
