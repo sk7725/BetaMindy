@@ -25,7 +25,8 @@ public class BetaMindy extends Mod{
         new MindyStatusEffects(),
         new MindyBullets(),
         new MindyBlocks(),
-        new MindyTechTree()
+        new MindyTechTree(),
+        new MindyWeathers()
     };
 
     public BetaMindy() {
