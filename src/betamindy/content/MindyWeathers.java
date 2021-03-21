@@ -13,7 +13,8 @@ public class MindyWeathers implements ContentList {
     @Override
     public void load() {
         routerWeather = new BlockWeather("routerWeather"){{
-            particleRegion = "particle";
+            blockChance *= 2.5f;
+
             sizeMax = 13f;
             sizeMin = 2.6f;
             density = 1200f;

@@ -1,5 +1,6 @@
 package betamindy.content;
 
+import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -10,12 +11,15 @@ import mindustry.*;
 import mindustry.entities.*;
 import mindustry.game.Team;
 import mindustry.graphics.*;
+import mindustry.ui.Cicon;
+import mindustry.world.Block;
 
 import static arc.graphics.g2d.Draw.*;
 //I do not want my fills and lines fighting, so no wildcad imports
 import static arc.graphics.g2d.Lines.lineAngle;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
+import static mindustry.Vars.renderer;
 
 public class MindyFx {
     public static final Effect
@@ -149,5 +153,21 @@ public class MindyFx {
         color(Color.white, e.fout());
         Tmp.v1.trns(e.rotation, e.finpow() * 20f);
         rect("betamindy-bumper-blue", e.x + Tmp.v1.x, e.y + Tmp.v1.y);
-    }).layer(Layer.blockOver - 0.01f);
+    }).layer(Layer.blockOver - 0.01f),
+
+    blockFalling = new Effect(60 * 8f, e -> {
+        if(!(e.data instanceof Block)) return;
+        float size = 8 * ((Block)e.data).size * (1 + e.fout());
+        Draw.alpha(e.fin());
+
+        float xoff = (Mathf.randomSeed(e.id + 1) - 0.5f) * (Core.graphics.getWidth() / renderer.minScale());
+        float yoff = (Mathf.randomSeed(e.id + 2) + 0.5f) * (Core.graphics.getHeight() / renderer.minScale());
+        float x = e.x + xoff * e.fout() * 2.4f;
+        float y = e.y + yoff * e.fout() * 2.4f;
+
+        Draw.color(Pal.darkerGray);
+        Draw.rect(((Block)e.data).icon(Cicon.medium), x, y - 4 * 8 * e.fout(), size, size, Time.time * 4f);
+        Draw.color();
+        Draw.rect(((Block)e.data).icon(Cicon.medium), x, y, size, size, Time.time * 4f);
+    });
 }
