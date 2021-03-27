@@ -10,6 +10,7 @@ import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
+import betamindy.*;
 import betamindy.content.MindyFx;
 import mindustry.Vars;
 import mindustry.content.Blocks;
@@ -24,6 +25,7 @@ import mindustry.type.weather.ParticleWeather;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
 import mindustry.world.blocks.ConstructBlock;
+import mindustry.world.blocks.storage.*;
 
 import static mindustry.Vars.*;
 
@@ -33,6 +35,8 @@ public class BlockWeather extends ParticleWeather {
     public Effect blockEffect = Fx.explosion, blockFallingEffect = MindyFx.blockFalling;
     public float blockDamageRad = 3 * 8f, blockDamage = 50 * block.size * block.size, blockChance = 0.2f, blockChangeDelay = 3f;
     public boolean randomBlock = false;
+
+    //private Block tempBlock = Blocks.router;
 
     public BlockWeather(String name) {
         super(name);
@@ -87,7 +91,7 @@ public class BlockWeather extends ParticleWeather {
             Block block1 = block;
             if(randomBlock) {
                 Block temp = Vars.content.blocks().get(Mathf.random(Vars.content.blocks().size - 1));
-                if(temp instanceof ConstructBlock || !temp.hasBuilding()) return;
+                if(temp instanceof ConstructBlock || !temp.hasBuilding() || temp.isHidden() || temp instanceof CoreBlock) return;
                 block1 = temp;
             }
             if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2) && Mathf.randomBoolean(blockChance * state.intensity)){
@@ -104,11 +108,24 @@ public class BlockWeather extends ParticleWeather {
                         Damage.damage(x1 * 8, y1 * 8, blockDamageRad, blockDamage * state.intensity);
                     }
 
-                    Effect.shake(state.intensity * block2.size * block2.size, 10f,x1 * 8, y1 * 8);
+                    Effect.shake(Math.min(10f, state.intensity * block2.size), 10f,x1 * 8, y1 * 8);
                     blockEffect.at(x1 * 8, y1 * 8, Mathf.random(360f));
                 });
             }
         }
+    }
+
+    public Block rollBlock(){
+        return rollBlock((int)Mathf.random() * 255);
+    }
+
+    public Block rollBlock(int seed){
+        int rand = (int)(Mathf.randomSeed(seed) * BetaMindy.visibleBlockList.size);
+        return BetaMindy.visibleBlockList.get(rand);
+    }
+
+    public TextureRegion rollIcon(int seed){
+        return rollBlock(seed).icon(Cicon.full);
     }
 
     @Override
@@ -124,17 +141,6 @@ public class BlockWeather extends ParticleWeather {
         Core.camera.bounds(Tmp.r2);
         int total = (int)(Tmp.r1.area() / density * intensity);
         Draw.color(color, opacity);
-        if(randomBlock) {
-            Block temp = block;
-            if(Time.time % (60f * blockChangeDelay) <= 1) {
-                Log.info(Time.time % 60f);
-                int rand = Mathf.random(Vars.content.blocks().size - 1);
-                temp = Vars.content.blocks().get(rand);
-            }
-            if((temp instanceof ConstructBlock || !temp.hasBuilding()) || temp.icon(Cicon.medium) == Core.atlas.find("error")) return;
-            block = temp;
-            region = block.icon(Cicon.medium);
-        }
         for(int i = 0; i < total; i++){
             float scl = rand.random(0.5f, 1f);
             float scl2 = rand.random(0.5f, 1f);
@@ -154,7 +160,7 @@ public class BlockWeather extends ParticleWeather {
 
             if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2)){
                 Draw.alpha(alpha * opacity);
-                Draw.rect(region, x, y, size, size, Time.time * 4f);
+                Draw.rect(randomBlock ? rollIcon(i) : region, x, y, size, size, Time.time * 4f);
             }
         }
     }

@@ -42,7 +42,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan,
     //logic
     linkPin,
     //turrets
@@ -432,7 +432,7 @@ public class MindyBlocks implements ContentList {
             hasPower = true;
             laserWidth = 1.1f;
             laserOffset = 11f;
-            consumes.power(9.6f);
+            consumes.power(7.6f);
             requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, Items.surgeAlloy, 15));
         }};
 
@@ -448,6 +448,10 @@ public class MindyBlocks implements ContentList {
             size = 2;
             requirements(Category.units, with(Items.lead, 24, Items.silicon, 10, Items.phaseFabric, 30));
         }};
+
+        //frostPad = new FrostPad("frostpad"){
+
+        //}
 
         linkPin = new LinkPinner("linkpin"){{
             requirements(Category.logic, with( Items.graphite, 30,Items.silicon, 15, Items.metaglass, 30));
@@ -538,6 +542,12 @@ public class MindyBlocks implements ContentList {
             bumpSpeedLimit = 8f;
             bumpScl = 0.8f;
             chanceDeflect = 50f;
+        }};
+
+        fan = new UnitFan("fan"){{
+            size = 2;
+            consumes.power(1.5f);
+            requirements(Category.units, with(Items.titanium, 50, Items.silicon, 25, Items.metaglass, 30));
         }};
     }
 }

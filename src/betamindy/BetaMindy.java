@@ -2,6 +2,7 @@ package betamindy;
 
 import arc.*;
 import arc.func.*;
+import arc.struct.*;
 import arc.util.Log;
 import betamindy.util.*;
 import mindustry.*;
@@ -11,6 +12,9 @@ import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import betamindy.content.*;
 import mindustry.net.*;
+import mindustry.ui.*;
+import mindustry.world.*;
+import mindustry.world.blocks.*;
 
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
@@ -18,6 +22,7 @@ public class BetaMindy extends Mod{
     public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
+    public static Seq<Block> visibleBlockList = new Seq<Block>();
     //public static UnitGravity gravity = new UnitGravity();
 
     private final ContentList[] mindyContent = {
@@ -42,10 +47,10 @@ public class BetaMindy extends Mod{
         Core.settings.defaults("slimeeffect", true, "correctview", false, "accelballs", true, "nonmoddedservers", false);
         Events.on(ClientLoadEvent.class, e -> {
             settingAdder.init();
-            Core.app.post(() -> {
+            Core.app.post(() -> Core.app.post(() -> {
                 if(!Core.settings.getBool("nonmoddedservers")) Vars.defaultServers.clear();
                 Vars.defaultServers.add(new ServerGroup("[white][accent]Modded BetaMindy Server[][]", new String[]{"185.86.230.102:25603"}));
-            });
+            }));
         });
     }
 
@@ -65,6 +70,14 @@ public class BetaMindy extends Mod{
             mod.meta.author = "[royal]" + mod.meta.author + "[]";
         }
         mod.meta.version = mod.meta.version + "\n" + shortName;
+
+        //used for block weather
+        Events.run(ClientLoadEvent.class, () -> {
+            Vars.content.blocks().each(temp -> {
+                if((temp instanceof ConstructBlock || !temp.hasBuilding()) || temp.icon(Cicon.medium) == Core.atlas.find("error")) return;
+                visibleBlockList.add(temp);
+            });
+        });
 
         //TODO later, stashed for now
         /*

@@ -15,8 +15,11 @@ import static mindustry.Vars.tilesize;
 public class BoostPad extends Block {
     public StatusEffect status = MindyStatusEffects.booster;
     public float duration = 140f, cooldown = 60f;
+    public boolean impulseUnit = true;
+
     public int animSpeed = 40;
     public TextureRegion[] animRegion = new TextureRegion[4];
+
     public Sound boostSound = MindySounds.boost;
     public Effect boostEffect = MindyFx.boostBlock;
 
@@ -57,7 +60,7 @@ public class BoostPad extends Block {
                 heat = cooldown;
             }
 
-            unit.impulseNet(Tmp.v1.trns(unit.rotation, unit.mass() * 10f));
+            if(impulseUnit) unit.impulseNet(Tmp.v1.trns(unit.rotation, unit.mass() * 10f));
             unit.apply(status, duration);
         }
     }

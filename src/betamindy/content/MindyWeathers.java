@@ -12,7 +12,7 @@ public class MindyWeathers implements ContentList {
 
     @Override
     public void load() {
-        routerWeather = new BlockWeather("routerWeather"){{
+        routerWeather = new BlockWeather("router-rain"){{
             blockChance *= 2.5f;
 
             sizeMax = 13f;
@@ -27,7 +27,7 @@ public class MindyWeathers implements ContentList {
             soundVolMin = 0.02f;
         }};
 
-        blockWeather = new BlockWeather("blockWeather"){{
+        blockWeather = new BlockWeather("block-rain"){{
             randomBlock = true;
             sizeMax = 15f;
             sizeMin = 3f;

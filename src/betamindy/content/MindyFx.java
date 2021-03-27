@@ -155,19 +155,30 @@ public class MindyFx {
         rect("betamindy-bumper-blue", e.x + Tmp.v1.x, e.y + Tmp.v1.y);
     }).layer(Layer.blockOver - 0.01f),
 
+    smallPuff = new Effect(15f, e -> {
+       color(Color.white);
+       Tmp.v1.trns(e.rotation, e.fin() * 7f);
+       Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.fout() * 1.5f);
+    }),
+
+    windHit = new Effect(8f, e -> {
+        float size = (e.data == null) ? 8f : (float)e.data;
+        float offset = Mathf.randomSeedRange(e.id, size) / 2.5f;
+        Tmp.v1.trns(e.rotation, Math.abs(offset) * 0.5f + e.fin() * 8f + Mathf.randomSeed(e.id + 1) * size / 3f, offset);
+        stroke(e.fout() * 1.2f, Color.white);
+        Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.fout());
+    }),
+
     blockFalling = new Effect(60 * 8f, e -> {
         if(!(e.data instanceof Block)) return;
         float size = 8 * ((Block)e.data).size * (1 + e.fout());
-        Draw.alpha(e.fin());
 
         float xoff = (Mathf.randomSeed(e.id + 1) - 0.5f) * (Core.graphics.getWidth() / renderer.minScale());
         float yoff = (Mathf.randomSeed(e.id + 2) + 0.5f) * (Core.graphics.getHeight() / renderer.minScale());
         float x = e.x + xoff * e.fout() * 2.4f;
         float y = e.y + yoff * e.fout() * 2.4f;
 
-        Draw.color(Pal.darkerGray);
-        Draw.rect(((Block)e.data).icon(Cicon.medium), x, y - 4 * 8 * e.fout(), size, size, Time.time * 4f);
         Draw.color();
         Draw.rect(((Block)e.data).icon(Cicon.medium), x, y, size, size, Time.time * 4f);
-    });
+    }).layer(Layer.flyingUnit + 1f);
 }

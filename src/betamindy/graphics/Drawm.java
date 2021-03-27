@@ -76,7 +76,7 @@ public class Drawm {
                         out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
                     }
                 }
-                Texture texture  = new Texture(new PixmapTextureData(out, null, true, false, true));
+                Texture texture  = new Texture(new PixmapTextureData(out, null, true, false));
                 TextureRegion res = Core.atlas.addRegion(b.name + "-team-" + team.name, new TextureRegion(texture));
 
                 if(team == Team.sharded){
@@ -85,5 +85,65 @@ public class Drawm {
             }
         }
         return shardTeamTop;
+    }
+
+    /** Draws a sprite that should be lightwise correct, using 4 sprites each colored with a different lighting angle. */
+    public static void spinSprite(TextureRegion[] sprites, float x, float y, float r){
+        r = Mathf.mod(r, 360f);
+        int now = (((int)(r + 45f)) / 90) % 4;
+
+        Draw.rect(sprites[now], x, y, r);
+        Draw.alpha(((r + 45f) % 90f) / 90f);
+        Draw.rect(sprites[(now + 1) % 4], x, y, r);
+        Draw.alpha(1f);
+    }
+    //TODO PR to turrets?
+
+    /** Draws a sprite that should be lightwise correct. Provided sprite must be symmetrical. */
+    public static void spinSprite(TextureRegion region, float x, float y, float r){
+        r = Mathf.mod(r, 90f);
+        Draw.rect(region, x, y, r);
+        Draw.alpha(r / 90f);
+        Draw.rect(region, x, y, r - 90f);
+        Draw.alpha(1f);
+    }
+    //TODO PR to drills?
+
+    /** Outlines a given textureRegion. Run in createIcons. */
+    public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name){
+        final int radius = 4;
+        PixmapRegion region = Core.atlas.getPixmap(tex);
+        Pixmap out = new Pixmap(region.width, region.height);
+        Color color = new Color();
+        for(int x = 0; x < region.width; x++){
+            for(int y = 0; y < region.height; y++){
+
+                region.getPixel(x, y, color);
+                out.draw(x, y, color);
+                if(color.a < 1f){
+                    boolean found = false;
+                    outer:
+                    for(int rx = -radius; rx <= radius; rx++){
+                        for(int ry = -radius; ry <= radius; ry++){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && color.set(region.getPixel(rx + x, ry + y)).a > 0.01f){
+                                found = true;
+                                break outer;
+                            }
+                        }
+                    }
+                    if(found){
+                        out.draw(x, y, outlineColor);
+                    }
+                }
+            }
+        }
+        packer.add(MultiPacker.PageType.main, name, out);
+    }
+
+    /** Outlines a list of regions. Run in createIcons. */
+    public static void outlineRegion(MultiPacker packer, TextureRegion[] textures, Color outlineColor, String name){
+        for(int i = 0; i < textures.length; i++){
+            outlineRegion(packer, textures[i], outlineColor, name + "-" + i);
+        }
     }
 }
