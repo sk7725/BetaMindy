@@ -108,7 +108,7 @@ public class BlockWeather extends ParticleWeather {
                         Damage.damage(x1 * 8, y1 * 8, blockDamageRad, blockDamage * state.intensity);
                     }
 
-                    Effect.shake(Math.min(10f, state.intensity * block2.size), 10f,x1 * 8, y1 * 8);
+                    Effect.shake(Math.min(20f, state.intensity * block2.size), 10f,x1 * 8, y1 * 8);
                     blockEffect.at(x1 * 8, y1 * 8, Mathf.random(360f));
                 });
             }

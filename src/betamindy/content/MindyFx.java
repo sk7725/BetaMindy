@@ -169,7 +169,7 @@ public class MindyFx {
         Fill.circle(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.fout());
     }),
 
-    blockFalling = new Effect(60 * 8f, e -> {
+    blockFalling = new Effect(60 * 8f, 600f, e -> {
         if(!(e.data instanceof Block)) return;
         float size = 8 * ((Block)e.data).size * (1 + e.fout());
 
