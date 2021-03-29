@@ -14,7 +14,7 @@ package betamindy.entities;
         public void created(){
             super.created();
             ext = Extension.create();
-            ext.holder(this);
+            ext.holder = this;
             ext.set(x, y);
             ext.add();
         }
