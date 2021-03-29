@@ -1,10 +1,10 @@
 package betamindy.entities;
 
 /**
- * An interface that holds a drawing extension. Example of use from Project Unity:
+ * An interface that holds a drawing extension. Example of use derived from Project Unity:
  * <pre> {@code
  *  public class DeflectProjectorBuild extends Building implements ExtensionHolder, Ranged{
-        protected Extension ext;
+        public Extension ext;
 
         public float heat;
         public float hit;

@@ -97,7 +97,7 @@ public class UnitFan extends LogicSpinBlock {
         @Override
         public void draw(){
             super.draw();
-            if(heat > 0.1f && windLen > 0f) drawWind(realRotation()); //TODO welp, there's no avoiding it. This time for sure, I need to use annos.
+            if(heat > 0.1f && windLen > 0f) drawWind(realRotation()); //TODO welp, there's no avoiding it. This time for sure, I need to use annos.    ~SIKE~
         }
 
         @Override

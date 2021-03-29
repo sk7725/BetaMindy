@@ -51,7 +51,7 @@ public class LogicSpinBlock extends Block {
     }
 
     @Override
-    public TextureRegion[] icons(){
+    protected TextureRegion[] icons(){
         return new TextureRegion[]{baseRegion, region};
     }
 

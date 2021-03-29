@@ -1,23 +1,26 @@
 package betamindy.world.blocks.power;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import arc.util.io.*;
 import betamindy.entities.*;
+import betamindy.world.blocks.logic.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.blocks.power.*;
+import mindustry.logic.*;
 
 import static mindustry.Vars.*;
 
-public class FloodLight extends LightBlock{
+public class FloodLight extends LogicSpinBlock{
     public float radius = 450f;
-    public float stroke = 8f;
+    public float stroke = 16f;
 
-    public float elevation = -1f;
+    public float elevation = 1f;
 
     public float rotateSpeed = 10f;
     public float angleIncrement = 15f;
@@ -26,12 +29,10 @@ public class FloodLight extends LightBlock{
 
     public FloodLight(String name){
         super(name);
-
+        configurable = true;
         outlineIcon = true;
 
-        config(Boolean.class, (FloodLightBuild tile, Boolean angle) -> {
-            tile.targetRotation += angleIncrement * Mathf.sign(angle);
-        });
+        config(Integer.class, (FloodLightBuild tile, Integer value) -> tile.color = value);
     }
 
     @Override
@@ -45,11 +46,9 @@ public class FloodLight extends LightBlock{
         return new TextureRegion[]{baseRegion, region};
     }
 
-    public class FloodLightBuild extends LightBuild implements ExtensionHolder{
-        protected Extension light;
-
-        public float targetRotation = 90;
-        public float rotation = 90;
+    public class FloodLightBuild extends LogicSpinBuild implements ExtensionHolder{
+        public Extension light;
+        public int color = Pal.accent.rgba();
 
         @Override
         public void created(){
@@ -68,9 +67,12 @@ public class FloodLight extends LightBlock{
         }
 
         @Override
-        public void updateTile(){
-            super.updateTile();
-            rotation = Mathf.approachDelta(rotation, targetRotation, rotateSpeed * efficiency());
+        public void control(LAccess type, double p1, double p2, double p3, double p4){
+            if(type == LAccess.color){
+                color = Color.rgba8888((float)p1, (float)p2, (float)p3, 1f);
+            }
+
+            super.control(type, p1, p2, p3, p4);
         }
 
         @Override
@@ -81,8 +83,9 @@ public class FloodLight extends LightBlock{
             float z = Draw.z();
             Draw.z(Layer.turret);
 
-            Drawf.shadow(region, x - elevation, y - elevation, rotation - 90);
-            Draw.rect(region, x, y, rotation - 90);
+            float r = realRotation();
+            Drawf.shadow(region, x - elevation, y - elevation, r);
+            Draw.rect(region, x, y, r);
 
             Draw.z(z);
         }
@@ -91,33 +94,38 @@ public class FloodLight extends LightBlock{
         public void drawExt(){
             if(renderer != null && (team == Team.derelict || team == player.team() || state.rules.enemyLights)){
                 for(int i = -1; i < 2; i++){
-                    Tmp.v1.trns(rotation + (i * 90f / stroke), radius);
-                    renderer.lights.line(x, y, x + Tmp.v1.x, y + Tmp.v1.y, stroke, Tmp.c1.set(color), 0.5f + Mathf.slope(0.5f + (i / 2f)) * 0.5f);
+                    //TODO not a very good way of doing this
+                    float e = stroke * efficiency();
+
+                    Tmp.v1.trns(realRotation(), radius).x += i * e;
+                    renderer.lights.line(x, y, x + Tmp.v1.x, y + Tmp.v1.y, e, Tmp.c1.set(color), 0.5f + Mathf.slope(0.5f + (i / 2f)) * 0.5f);
                 }
             }
         }
 
         @Override
         public float clipSizeExt(){
-            return radius * 2f;
-        }
-
-        @Override
-        public void drawLight(){
-            //do nothing, it's overriden in drawExt()
+            return 2f * (radius + stroke);
         }
 
         @Override
         public void buildConfiguration(Table table){
-            table
-                .button(Icon.left, () -> configure(Boolean.valueOf(true)))
-                .size(40f);
+            table.button(Icon.pencil, () -> {
+                ui.picker.show(Tmp.c1.set(color).a(0.5f), false, res -> configure(res.rgba()));
+                deselect();
+            }).size(40f);
+        }
 
-            super.buildConfiguration(table);
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.i(color);
+        }
 
-            table
-                .button(Icon.right, () -> configure(Boolean.valueOf(false)))
-                .size(40f);
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            color = read.i();
         }
     }
 }
