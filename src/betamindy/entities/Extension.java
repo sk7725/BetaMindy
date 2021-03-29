@@ -18,6 +18,7 @@ import static mindustry.Vars.*;
  * Won't add itself if the holder is null; always use {@code holder = ...} before calling {@link #add()}. <br>
  * <br>
  * See {@link ExtensionHolder} for usage and example codes.
+ * @author GlennFolker
 */
 @SuppressWarnings("unchecked")
 public final class Extension implements Drawc{
