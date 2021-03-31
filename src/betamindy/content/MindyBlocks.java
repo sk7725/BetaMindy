@@ -48,7 +48,7 @@ public class MindyBlocks implements ContentList {
     //turrets
     hopeBringer,
     //power
-    pressurePad, pressurePadLarge, button, buttonLarge;
+    pressurePad, pressurePadLarge, button, buttonLarge, spotlight;
 
     @Override
     public void load() {
@@ -571,6 +571,13 @@ public class MindyBlocks implements ContentList {
             size = 2;
             consumes.power(1.5f);
             requirements(Category.units, with(Items.titanium, 50, Items.silicon, 25, Items.metaglass, 30));
+        }};
+
+        spotlight = new FloodLight("spotlight"){{
+            requirements(Category.effect, BuildVisibility.lightingOnly, with(Items.graphite, 10, Items.silicon, 4));
+
+            size = 1;
+            consumes.power(0.08f);
         }};
     }
 }
