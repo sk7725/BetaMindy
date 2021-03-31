@@ -10,7 +10,6 @@ import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
 
-//TODO heal shar
 public class ButtonTap extends PowerBlock {
     public float tapTime = 16f;
     public float powerProduction = 2 * 60f;

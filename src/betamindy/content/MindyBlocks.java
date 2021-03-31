@@ -44,7 +44,7 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan,
     //logic
-    linkPin,
+    linkPin, heatSink, heatFan, heatSinkLarge,
     //turrets
     hopeBringer,
     //power
@@ -454,8 +454,31 @@ public class MindyBlocks implements ContentList {
         //}
 
         linkPin = new LinkPinner("linkpin"){{
-            requirements(Category.logic, with( Items.graphite, 30,Items.silicon, 15, Items.metaglass, 30));
+            requirements(Category.logic, with( Items.graphite, 30, Items.silicon, 15, Items.metaglass, 30));
         }};
+
+        heatSink = new ProcessorCooler("heatsink"){{
+            size = 2;
+            requirements(Category.logic, with( Items.titanium, 70, Items.silicon, 25, Items.plastanium, 65));
+        }};
+
+        heatFan = new ProcessorFan("coolerfan"){{
+            size = 3;
+            boost = 3;
+            maxProcessors = 5;
+            consumes.power(4f);
+            requirements(Category.logic, with( Items.titanium, 90, Items.silicon, 50, Items.plastanium, 50, Items.phaseFabric, 25));
+        }};
+
+        heatSinkLarge = new ProcessorCooler("waterblock"){{
+            size = 3;
+            boost = 2;
+            maxProcessors = 6;
+            liquidCapacity = 640;
+            //consumes.liquid(Liquids.water, 3f);
+            requirements(Category.logic, with( Items.titanium, 110, Items.silicon, 50, Items.metaglass, 40, Items.plastanium, 30, Items.surgeAlloy, 15));
+        }};
+
 
         hopeBringer = new MultiTurret("hopebringer"){{
             size = 9;

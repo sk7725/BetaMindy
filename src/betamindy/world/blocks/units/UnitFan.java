@@ -1,5 +1,6 @@
 package betamindy.world.blocks.units;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
@@ -7,10 +8,10 @@ import arc.util.*;
 import betamindy.content.*;
 import betamindy.util.*;
 import betamindy.world.blocks.logic.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.ui.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.tilesize;
@@ -31,13 +32,28 @@ public class UnitFan extends LogicSpinBlock {
         priority = TargetPriority.turret;
         flags = EnumSet.of(BlockFlag.turret);
         expanded = true;
-        //TODO ambientsound
+        ambientSound = Sounds.wind;
+        ambientSoundVolume = 0.1f;
     }
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         super.drawPlace(x, y, rotation, valid);
         Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.placing);
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.range, range / tilesize, StatUnit.blocks);
+        stats.add(Stat.speed, strength, StatUnit.none);
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+        bars.add("wind", (FanBuild entity) -> new Bar(() -> Core.bundle.get("bar.wind"), () -> Pal.lancerLaser, () -> Mathf.clamp(entity.visualWindStr() / strength)));
     }
 
     public class FanBuild extends LogicSpinBuild {
@@ -104,6 +120,11 @@ public class UnitFan extends LogicSpinBlock {
         public void drawSelect(){
             super.drawSelect();
             Drawf.dashCircle(x, y, range, Pal.placing);
+        }
+
+        @Override
+        public boolean shouldAmbientSound(){
+            return efficiency() > 0.1f;
         }
     }
 }

@@ -97,7 +97,6 @@ public class Drawm {
         Draw.rect(sprites[(now + 1) % 4], x, y, r);
         Draw.alpha(1f);
     }
-    //TODO PR to turrets?
 
     /** Draws a sprite that should be lightwise correct. Provided sprite must be symmetrical. */
     public static void spinSprite(TextureRegion region, float x, float y, float r){
