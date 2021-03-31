@@ -41,8 +41,11 @@ public class PayloadTurret extends Turret {
     public float payloadShootOffset = 15f;
     /** Maximum accepted payload size */
     public float maxPaySize = 4.5f;
+    
+    public boolean drawTop = false;
 
     public Effect acceptEffect = MindyFx.cannonAccept;
+    public TextureRegion topRegion;
 
     protected ObjectSet<Block> homingBlocks = new ObjectSet<Block>(2);
 
@@ -59,6 +62,12 @@ public class PayloadTurret extends Turret {
     public void init(){
         super.init();
         homingBlocks.addAll(MindyBlocks.siliconWall, MindyBlocks.siliconWallLarge);
+    }
+    
+    @Override
+    public void load(){
+        super.load();
+        topRegion = Core.atlas.find(name + "-top");
     }
 
     @Override
@@ -112,6 +121,7 @@ public class PayloadTurret extends Turret {
                 Draw.rect(payIcon, x + tr2.x, y + tr2.y, payIcon.width * Draw.scl * Draw.xscl * payloadScale * payheat, payIcon.height * Draw.scl * Draw.yscl * payloadScale * payheat, rotation + rotationOffset());
                 Draw.reset();
             }
+            if(drawTop) Draw.rect(topRegion, x + tr2.x, y + tr2.y, rotation - 90);
         }
 
         @Override
