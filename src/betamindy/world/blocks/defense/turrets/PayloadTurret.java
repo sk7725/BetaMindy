@@ -120,6 +120,7 @@ public class PayloadTurret extends Turret {
                 Draw.mixcol(team.color, 1f - payheat);
                 Draw.rect(payIcon, x + tr2.x, y + tr2.y, payIcon.width * Draw.scl * Draw.xscl * payloadScale * payheat, payIcon.height * Draw.scl * Draw.yscl * payloadScale * payheat, rotation + rotationOffset());
                 Draw.reset();
+                tr2.trns(rotation, -recoil);
             }
             if(drawTop) Draw.rect(topRegion, x + tr2.x, y + tr2.y, rotation - 90);
         }
