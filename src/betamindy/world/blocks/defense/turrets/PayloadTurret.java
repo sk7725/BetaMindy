@@ -41,8 +41,6 @@ public class PayloadTurret extends Turret {
     public float payloadShootOffset = 15f;
     /** Maximum accepted payload size */
     public float maxPaySize = 4.5f;
-    
-    public boolean drawTop = false;
 
     public Effect acceptEffect = MindyFx.cannonAccept;
     public TextureRegion topRegion;
@@ -122,7 +120,7 @@ public class PayloadTurret extends Turret {
                 Draw.reset();
                 tr2.trns(rotation, -recoil);
             }
-            if(drawTop) Draw.rect(topRegion, x + tr2.x, y + tr2.y, rotation - 90);
+            if(topRegion.found()) Draw.rect(topRegion, x + tr2.x, y + tr2.y, rotation - 90);
         }
 
         @Override
