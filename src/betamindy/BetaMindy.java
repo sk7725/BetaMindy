@@ -5,6 +5,7 @@ import arc.func.*;
 import arc.struct.*;
 import arc.util.Log;
 import betamindy.util.*;
+import betamindy.util.xelo.XeloUtil;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
@@ -17,12 +18,13 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 
 public class BetaMindy extends Mod{
+
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
     public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
-    public static Seq<Block> visibleBlockList = new Seq<Block>();
+    public static Seq<Block> visibleBlockList = new Seq<>();
     //public static UnitGravity gravity = new UnitGravity();
 
     private final ContentList[] mindyContent = {
@@ -41,9 +43,7 @@ public class BetaMindy extends Mod{
         pushUtil.init();
         if(Vars.mobile) mobileUtil.init();
 
-        Events.on(DisposeEvent.class, e -> {
-            MindySounds.dispose();
-        });
+        Events.run(DisposeEvent.class, MindySounds::dispose);
 
         Core.settings.defaults("slimeeffect", true, "correctview", false, "accelballs", true, "nonmoddedservers", false);
         Events.on(ClientLoadEvent.class, e -> {
@@ -74,10 +74,10 @@ public class BetaMindy extends Mod{
 
         //used for block weather
         Events.run(ClientLoadEvent.class, () -> {
-            Vars.content.blocks().each(temp -> {
-                if((temp instanceof ConstructBlock || !temp.hasBuilding()) || temp.icon(Cicon.medium) == Core.atlas.find("error")) return;
-                visibleBlockList.add(temp);
-            });
+            for(Block block : Vars.content.blocks()) {
+                if((block instanceof ConstructBlock || !block.hasBuilding()) || block.icon(Cicon.medium) == Core.atlas.find("error")) return;
+                visibleBlockList.add(block);
+            }
         });
 
         //TODO later, stashed for now
