@@ -1,5 +1,9 @@
 /.gradle/
+/.settings/
 /.idea/
 /build/
+/bin/
 *.temp
 /temp/
+.project
+.classpath
