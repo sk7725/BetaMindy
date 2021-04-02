@@ -9,7 +9,7 @@ import static arc.Core.atlas;
 
 public class ProcessorFan extends ProcessorCooler{
     public TextureRegion spinnerRegion;
-    public float spinSpeed = 1.7f;
+    public float spinSpeed = 28f;
 
     public ProcessorFan(String name){
         super(name);
@@ -30,6 +30,14 @@ public class ProcessorFan extends ProcessorCooler{
     }
 
     public class ProcessorFanBuild extends ProcessorCoolerBuild{
+        public float timeSpun = 0f;
+
+        @Override
+        public void updateTile(){
+            timeSpun += edelta() * heat;
+            super.updateTile();
+        }
+
         @Override
         public void draw(){
             Draw.rect(region, x, y);
@@ -40,7 +48,7 @@ public class ProcessorFan extends ProcessorCooler{
                 Draw.blend();
                 Draw.color();
             }
-            Draw.rect(spinnerRegion, x, y, Time.time * spinSpeed);
+            Draw.rect(spinnerRegion, x, y, timeSpun * spinSpeed);
             if(useTopRegion) Draw.rect(topRegion, x, y);
         }
     }

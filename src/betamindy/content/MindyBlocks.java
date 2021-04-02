@@ -475,6 +475,7 @@ public class MindyBlocks implements ContentList {
             boost = 2;
             maxProcessors = 6;
             liquidCapacity = 640;
+            acceptCoolant = true;
             //consumes.liquid(Liquids.water, 3f);
             requirements(Category.logic, with( Items.titanium, 110, Items.silicon, 50, Items.metaglass, 40, Items.plastanium, 30, Items.surgeAlloy, 15));
         }};

@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -23,6 +24,11 @@ public class ProcessorCooler extends Block {
     public int boost = 2;
     public int maxProcessors = 2;
 
+    /** The block will assume this to be the best coolant it will ever get. Switch this with the highest equal-game-progression coolant of your mod. Used for the bar only and does not affect gameplay. */
+    public Liquid maxCoolantConsidered = Liquids.cryofluid;
+    /** Set by maxCoolantConsided; Again, this is visual only. */
+    public int maxBoostBar;
+
     public ProcessorCooler(String name){
         super(name);
 
@@ -39,6 +45,8 @@ public class ProcessorCooler extends Block {
         }
 
         super.init();
+        if(acceptCoolant) maxBoostBar =  Mathf.round((1f + maxCoolantConsidered.heatCapacity) * boost);
+        else maxBoostBar = boost;
     }
 
     @Override
@@ -69,7 +77,7 @@ public class ProcessorCooler extends Block {
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("boost", (ProcessorCoolerBuild entity) -> new Bar(() -> Core.bundle.format("bar.boost", entity.realBoost() * 100), () -> Pal.accent, () -> (float)entity.realBoost() / boost));
+        bars.add("boost", (ProcessorCoolerBuild entity) -> new Bar(() -> Core.bundle.format("bar.boost", entity.realBoost() * 100), () -> Pal.accent, () -> (float)entity.realBoost() / maxBoostBar));
         bars.add("links", (ProcessorCoolerBuild entity) -> new Bar(() -> Core.bundle.format("bar.coolprocs", entity.usedLinks, maxProcessors), () -> Pal.ammo, () -> entity.heat));
     }
 

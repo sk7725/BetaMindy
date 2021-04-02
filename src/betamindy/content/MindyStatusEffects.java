@@ -14,7 +14,7 @@ public class MindyStatusEffects implements ContentList {
     public static StatusEffect radiation, controlSwap, booster;
 
     public void load(){
-        radiation = new StatusEffect("radiation"){
+        radiation = new StatusEffect("radiated"){
             //credits to EyeofDarkness
             @Override
             public void update(Unit unit, float time){
@@ -32,6 +32,7 @@ public class MindyStatusEffects implements ContentList {
             {
                 damage = 1.2f;
                 effect = Fx.burning;
+                color = Pal.heal; //very ironic, isn't it?
             }
         };
 

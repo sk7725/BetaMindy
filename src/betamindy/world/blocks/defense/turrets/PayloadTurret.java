@@ -22,6 +22,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 
+import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class PayloadTurret extends Turret {
@@ -43,6 +44,8 @@ public class PayloadTurret extends Turret {
     public float maxPaySize = 4.5f;
 
     public Effect acceptEffect = MindyFx.cannonAccept;
+    public TextureRegion topRegion;
+    public boolean useTopRegion = false; //set automatically
 
     protected ObjectSet<Block> homingBlocks = new ObjectSet<Block>(2);
 
@@ -59,6 +62,13 @@ public class PayloadTurret extends Turret {
     public void init(){
         super.init();
         homingBlocks.addAll(MindyBlocks.siliconWall, MindyBlocks.siliconWallLarge);
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        topRegion = atlas.find(name + "-top");
+        useTopRegion = atlas.isFound(topRegion);
     }
 
     @Override
@@ -111,6 +121,10 @@ public class PayloadTurret extends Turret {
                 Draw.mixcol(team.color, 1f - payheat);
                 Draw.rect(payIcon, x + tr2.x, y + tr2.y, payIcon.width * Draw.scl * Draw.xscl * payloadScale * payheat, payIcon.height * Draw.scl * Draw.yscl * payloadScale * payheat, rotation + rotationOffset());
                 Draw.reset();
+                if(useTopRegion){
+                    tr2.trns(rotation, -recoil);
+                    Draw.rect(topRegion, x + tr2.x, y + tr2.y, rotation - 90);
+                }
             }
         }
 
