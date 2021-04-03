@@ -19,11 +19,15 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.Vars;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.type.Liquid;
 import mindustry.world.*;
+
+import java.util.Comparator;
 
 import static mindustry.Vars.*;
 
@@ -131,4 +135,9 @@ public class Useful {
 
         return found && furthest != null ? Math.max(6f, Mathf.dst(x, y, furthest.worldx(), furthest.worldy())) : length;
     }
+
+    public static Liquid getBestCoolant() {
+        return content.liquids().max(Comparator.comparingDouble(liquid -> liquid.heatCapacity));
+    }
+
 }
