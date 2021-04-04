@@ -84,7 +84,6 @@ public class ProcessorCooler extends Block {
     public class ProcessorCoolerBuild extends Building {
         public float heat = 0;
         public int usedLinks = 0;
-        private final int[] veryGoodLanguageDesign = new int[]{0};
 
         public int realBoost(){
             if(enabled && cons.valid() && efficiency() > 0.8f){
@@ -99,18 +98,19 @@ public class ProcessorCooler extends Block {
 
         @Override
         public void updateTile(){
-            veryGoodLanguageDesign[0] = 0;
+            int count = 0;
 
+            //Thank you @Red
             int b = realBoost();
-            if(b >= 2) proximity.each(p -> {
-                if(veryGoodLanguageDesign[0] >= maxProcessors) return;
+            if(b >= 2) for(Building p : proximity){
+                if(count >= maxProcessors) break;
                 if(p instanceof LogicBlock.LogicBuild){
                     for(int i = 0; i < b - 1; i++) p.updateTile();
-                    veryGoodLanguageDesign[0]++; //suck
+                    count++;
                 }
-            });
-            usedLinks = veryGoodLanguageDesign[0];
-            heat = Mathf.lerpDelta(heat, Mathf.clamp(((float)veryGoodLanguageDesign[0]) / maxProcessors), 0.03f);
+            };
+            usedLinks = count;
+            heat = Mathf.lerpDelta(heat, Mathf.clamp(((float)count) / maxProcessors), 0.03f);
         }
 
         @Override

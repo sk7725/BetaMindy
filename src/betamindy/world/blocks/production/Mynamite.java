@@ -80,6 +80,7 @@ public class Mynamite extends Block {
         super.setStats();
 
         stats.add(Stat.range, mineRadius, StatUnit.blocks);
+        //TODO copypaste BlockFilterValue from 126.2
         stats.add(Stat.drillTier, table ->
             new BlockFilterValue(b -> b instanceof Floor && ((Floor) b).itemDrop != null && ((Floor) b).itemDrop.hardness <= tier && ((Floor) b).itemDrop.hardness >= minTier).display(table.left()));
     }

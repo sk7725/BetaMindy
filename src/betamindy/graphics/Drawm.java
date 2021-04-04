@@ -67,7 +67,8 @@ public class Drawm {
 
         for(Team team : Team.all){
             if(team.hasPalette){
-                Pixmap out = new Pixmap(teamr.width, teamr.height);
+                Pixmap out = new Pixmap(teamr.width, teamr.height, teamr.pixmap.getFormat());
+                out.setBlending(Pixmap.Blending.none);
                 Color pixel = new Color();
                 for(int x = 0; x < teamr.width; x++){
                     for(int y = 0; y < teamr.height; y++){
@@ -76,7 +77,7 @@ public class Drawm {
                         out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
                     }
                 }
-                Texture texture  = new Texture(new PixmapTextureData(out, null, true, false));
+                Texture texture  = new Texture(out);
                 TextureRegion res = Core.atlas.addRegion(b.name + "-team-" + team.name, new TextureRegion(texture));
 
                 if(team == Team.sharded){
@@ -144,5 +145,28 @@ public class Drawm {
         for(int i = 0; i < textures.length; i++){
             outlineRegion(packer, textures[i], outlineColor, name + "-" + i);
         }
+    }
+
+    /** Lerps 2 TextureRegions. */
+    public static TextureRegion blendSprites(TextureRegion a, TextureRegion b, float f, String name){
+        PixmapRegion r1 = Core.atlas.getPixmap(a);
+        PixmapRegion r2 = Core.atlas.getPixmap(b);
+
+        Pixmap out = new Pixmap(r1.width, r1.height, r1.pixmap.getFormat());
+        out.setBlending(Pixmap.Blending.none);
+        Color color1 = new Color();
+        Color color2 = new Color();
+
+        for(int x = 0; x < r1.width; x++){
+            for(int y = 0; y < r1.height; y++){
+
+                r1.getPixel(x, y, color1);
+                r2.getPixel(x, y, color2);
+                out.draw(x, y, color1.lerp(color2, f));
+            }
+        }
+
+        Texture texture  = new Texture(out);
+        return Core.atlas.addRegion(name + "-blended-" + (int)(f * 100), new TextureRegion(texture));
     }
 }
