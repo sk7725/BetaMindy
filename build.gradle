@@ -1,44 +1,63 @@
-plugins {
-    id 'java'
+plugins{
+    id "java"
+    id "idea"
 }
 
 group pGroup
-apply plugin: 'idea'
 
 sourceCompatibility = 1.8
-sourceSets.main {
+sourceSets.main{
     java.srcDir("src/")
     resources.srcDir("assets/")
 }
 
-
-repositories {
+repositories{
     mavenCentral()
-    maven { url "https://jitpack.io" }
+    maven{url "https://jitpack.io"}
 }
 
-dependencies {
-    implementation "com.github.Anuken.Mindustry:core:v125"
+dependencies{
+    implementation "com.github.Anuken.Mindustry:core:$pVer"
 }
 
-jar {
+ext{
+    isWindows = {
+        return System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")
+    }
+}
+
+jar{
     archiveFileName.set "raw-$pArtifactFilename"
 }
 
-task dexify(type: Jar) {
+task alphableed doFirst{
+    exec{
+        workingDir "$rootDir"
+
+        println "Alpha-bleeding sprites..."
+        if(isWindows()){
+            commandLine("cmd", "/c", "alpha-bleeding-windows.exe", "--replace", "./assets/sprites/")
+        }else{
+            commandLine("./alpha-bleed", "./assets/sprites/")
+        }
+    }
+}
+
+task dexify(type: Jar){
     archiveName "$pArtifactFilename"
 
-    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, "raw-$pArtifactFilename"),
-               dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
-    doFirst {
-        exec {
+    final File  jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, "raw-$pArtifactFilename"),
+                dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
+
+    doFirst{
+        exec{
             workingDir dexedArtifact.parent
             def command = ["d8", "--min-api", pMinApi, "--output", dexedArtifact, jarArtifact]
-            if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows'))
+            if(isWindows()){
                 commandLine("cmd", "/c", *command)
-            else
+            }else{
                 commandLine(*command)
-
+            }
         }
     }
 
