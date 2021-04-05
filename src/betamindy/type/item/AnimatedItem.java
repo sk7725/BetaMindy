@@ -1,0 +1,68 @@
+package betamindy.type.item;
+
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.util.*;
+import betamindy.graphics.*;
+import mindustry.type.*;
+import mindustry.ui.*;
+
+import static arc.Core.atlas;
+
+public class AnimatedItem extends Item {
+    public final TextureRegion animIcon = new TextureRegion();
+    public TextureRegion[] animRegions;
+
+    /** # of frames per sprite. */
+    public float animDelay = 3f;
+    protected int animateLevel = 2;
+
+    /** Number of initial sprites. */
+    public int sprites = 10;
+    /** # of transition frames inserted between two sprites. */
+    public int transition = 0;
+
+    //set in load()
+    public int n;
+
+    public AnimatedItem(String name, Color color){
+        super(name, color);
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        TextureRegion[] spriteArr = new TextureRegion[sprites];
+        for(int i = 0; i < sprites; i++){
+            spriteArr[i] = atlas.find(name + i, name + "-" + i);
+        }
+
+        n = sprites * (1 + transition);
+        animRegions = new TextureRegion[n];
+        for(int i = 0; i < sprites; i++){
+            if(transition <= 0) animRegions[i] = spriteArr[i];
+            else{
+                //daewhanjangparty
+                animRegions[i * (transition + 1)] = spriteArr[i];
+                for(int j = 1; j <= transition; j++){
+                    float f = (float)j / (transition + 1);
+                    animRegions[i * (transition + 1) + j] = Drawm.blendSprites(spriteArr[i], spriteArr[(i >= sprites - 1) ? 0 : i + 1], f, name + i);
+                }
+            }
+        }
+    }
+
+    //should be called in Trigger.update
+    public void update(){
+        animateLevel = Core.settings.getInt("animlevel", 2);
+        if(animateLevel >= 2) animIcon.set(animRegions[(int)(Time.globalTime / animDelay) % n]);
+    }
+
+    @Override
+    public TextureRegion icon(Cicon icon){
+        if(animateLevel <= 0) return super.icon(icon);
+        else if(animateLevel == 1) return animRegions[(int)(Time.globalTime / animDelay) % n];
+        else return animIcon;
+    }
+}

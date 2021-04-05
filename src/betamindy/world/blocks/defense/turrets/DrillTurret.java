@@ -69,7 +69,7 @@ public class DrillTurret extends BaseTurret {
 
         stats.add(Stat.range, range / tilesize, StatUnit.blocks);
         stats.addPercent(Stat.mineSpeed, mineSpeed);
-        stats.add(Stat.mineTier, new BlockFilterValue(b -> (b instanceof Floor) && canDrill((Floor)b)));
+        stats.add(Stat.mineTier, new BlockFilterValue(b -> (b instanceof Floor) && canDrill((Floor)b))); //TODO copypaste BlockFilterValue from 126.2
     }
 
     public class DrillTurretBuild extends BaseTurretBuild {

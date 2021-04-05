@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Checks if the directory exists.
+if [ -d $1 ]
+then 
+    printf "\nFound specified directory.\n"
+    for a in `find $1`
+    do
+        if [ -d $a ]
+        then
+            # Notifies if the working directory has changed.
+            printf "\nOpened directory: $a\n"
+        else
+            echo $a
+
+            # Alpha-bleeds the sprite.
+            ./alpha-bleeding-linux.exe $a $a-bleed
+            mv $a-bleed $a
+        fi
+    done
+else
+    echo "Cannot find specified directory"
+fi

@@ -488,7 +488,7 @@ public class MindyBlocks implements ContentList {
             range = 600f;
 
             patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
-            requirements(Category.turret, with(Items.surgeAlloy, 9999));//TODO
+            requirements(Category.turret, with(MindyItems.bittrium, 9999));//TODO
         }};
 
         button = new ButtonTap("button"){{

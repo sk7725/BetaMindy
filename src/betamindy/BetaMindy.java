@@ -30,6 +30,7 @@ public class BetaMindy extends Mod{
     private final ContentList[] mindyContent = {
         new OverWriter(),
         new MindyStatusEffects(),
+        new MindyItems(),
         new MindyBullets(),
         new MindyUnitTypes(),
         new MindyBlocks(),
@@ -45,7 +46,7 @@ public class BetaMindy extends Mod{
 
         Events.run(DisposeEvent.class, MindySounds::dispose);
 
-        Core.settings.defaults("slimeeffect", true, "correctview", false, "accelballs", true, "nonmoddedservers", false);
+        Core.settings.defaults("slimeeffect", true, "correctview", false, "accelballs", true, "nonmoddedservers", false, "animlevel", 2);
         Events.on(ClientLoadEvent.class, e -> {
             settingAdder.init();
             Core.app.post(() -> Core.app.post(() -> {
