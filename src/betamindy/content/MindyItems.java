@@ -16,7 +16,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class MindyItems implements ContentList {
-    public static Item bittrium, glennsthingy;
+    public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source;
 
     public void load(){
         bittrium = new AnimatedItem("bittrium", Color.valueOf("00ffff")){{
@@ -26,6 +26,49 @@ public class MindyItems implements ContentList {
 
             transition = 5;
             animDelay = 4f;
+        }};
+
+        scalarRaw = new Item("ore-scalar", Pal2.scalar){{
+            flammability = 0.45f;
+            hardness = 5;
+        }};
+
+        vectorRaw = new Item("ore-vector", Pal2.vector){{
+            explosiveness = 0.33f;
+            hardness = 6;
+        }};
+
+        tensorRaw = new Item("ore-tensor", Pal2.zeta){{
+            hardness = 7;
+        }};
+
+        scalar = new Item("scalar", Color.valueOf("ec83af")){{
+            flammability = 0.45f;
+            cost = 2;
+        }};
+
+        vector = new Item("vector", Color.valueOf("4664f0")){{
+            explosiveness = 0.33f;
+            cost = 2;
+        }};
+
+        tensor = new AnimatedItem("tensor",Color.valueOf("00bfa2")){{
+            hardness = 8;
+            cost = 3;
+
+            animDelay = 5f;
+            sprites = 5;
+            transition = 30; //I hope this doesn't kill devices
+        }};
+
+        source = new RandomAnimatedItem("source", Color.valueOf("0ddd33")){{
+            charge = 1f;
+            radioactivity = 0.97f;
+            cost = 4;
+            hardness = 8;
+
+            animDelay = 4f;
+            sprites = 10;
         }};
 
         /*
@@ -39,7 +82,7 @@ public class MindyItems implements ContentList {
         }};
         */
 
-        if(!Vars.headless){ //TODO animation setting
+        if(!Vars.headless){
             for(Item i : Vars.content.items()){
                 if(i instanceof AnimatedItem){
                     Events.run(EventType.Trigger.update, ((AnimatedItem) i)::update);

@@ -35,7 +35,7 @@ public class AnimatedItem extends Item {
         super.load();
         TextureRegion[] spriteArr = new TextureRegion[sprites];
         for(int i = 0; i < sprites; i++){
-            spriteArr[i] = atlas.find(name + i, name + "-" + i);
+            spriteArr[i] = atlas.find(name + i, name);
         }
 
         n = sprites * (1 + transition);

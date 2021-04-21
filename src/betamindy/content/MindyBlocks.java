@@ -12,6 +12,7 @@ import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.power.*;
 import betamindy.world.blocks.production.*;
+import betamindy.world.blocks.production.payduction.*;
 import betamindy.world.blocks.units.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
@@ -23,6 +24,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.experimental.*;
+import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
@@ -44,11 +46,13 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan,
     //logic
-    linkPin, heatSink, heatFan, heatSinkLarge,
+    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid,
     //turrets
     hopeBringer,
     //power
-    pressurePad, pressurePadLarge, button, buttonLarge, spotlight;
+    pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
+    //crafting
+    blockFurnace, heavyFurnace;
 
     @Override
     public void load() {
@@ -159,6 +163,18 @@ public class MindyBlocks implements ContentList {
             consumes.power(4.75f);
             consumes.liquid(Liquids.cryofluid, 1.5f);
             requirements(Category.crafting, with(Items.thorium, 640, Items.silicon, 120, Items.plastanium, 320, Items.phaseFabric, 460, Items.surgeAlloy, 480));
+        }};
+
+        blockFurnace = new PayloadFurnace("block-furnace"){{
+            size = 5;
+
+            crafts(Blocks.siliconSmelter, 2, Blocks.kiln, 1, Blocks.surgeSmelter, 2);
+            crafts(MindyItems.scalar, 1, 4).using(with(MindyItems.scalarRaw, 5, Items.plastanium, 3, Items.thorium, 10));
+            requirements(Category.crafting, with(Items.copper, 410, Items.titanium, 230, Items.graphite, 60, Items.silicon, 115, Items.metaglass, 65, Items.plastanium, 30));
+        }};
+
+        heavyFurnace = new PayloadFurnace("heavy-furnace"){{
+            size = 6;
         }};
 
         blockPacker = new BlockLoader("block-packer"){{
@@ -579,6 +595,13 @@ public class MindyBlocks implements ContentList {
 
             size = 1;
             consumes.power(0.08f);
+        }};
+
+        messageVoid = new MessageBlock("message-void"){{
+            requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+
+            maxNewlines = 1;
+            maxTextLength = 0;
         }};
     }
 }

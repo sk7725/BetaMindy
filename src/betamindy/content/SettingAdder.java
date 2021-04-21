@@ -20,7 +20,7 @@ public class SettingAdder {
         addGraphicSetting("accelballs");
         addGraphicSetting("correctview");
 
-        Vars.ui.settings.graphics.sliderPref("animlevel", 2, 0, 2, i -> Core.bundle.get("slider.level." + i, "" + i));
+        Vars.ui.settings.graphics.sliderPref("animlevel", 2, 0, 3, i -> Core.bundle.get("slider.level." + i, "" + i));
 
         Core.settings.put("uiscalechanged", tmp);
     }
