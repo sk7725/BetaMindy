@@ -32,7 +32,7 @@ public class PayloadFurnace extends PayloadFactory {
 
     @Override
     public float getFuelLerp(Item item){
-        return Mathf.clamp(baseHeatLerp + item.flammability * 0.1f + item.explosiveness * 0.5f - 0.1f * minItemEfficiency, baseHeatLerp, 0.3f);
+        return Mathf.clamp(baseHeatLerp + item.flammability * 0.001f + item.explosiveness * 0.005f - 0.001f * minItemEfficiency, baseHeatLerp, 0.005f);
     }
 
     public class PayloadFurnaceBuild extends PayloadFactoryBuild {

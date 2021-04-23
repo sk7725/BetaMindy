@@ -167,6 +167,8 @@ public class MindyBlocks implements ContentList {
 
         blockFurnace = new PayloadFurnace("block-furnace"){{
             size = 5;
+            health = 1000;
+            autoOutputTime = 15 * 60f; //TODO tmp, do 90 * 60f
 
             crafts(Blocks.siliconSmelter, 2, Blocks.kiln, 1, Blocks.surgeSmelter, 2);
             crafts(MindyItems.scalar, 1, 4).using(with(MindyItems.scalarRaw, 5, Items.plastanium, 3, Items.thorium, 10));

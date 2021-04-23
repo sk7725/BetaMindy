@@ -13,6 +13,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 import betamindy.world.blocks.production.payduction.GateController.*;
@@ -25,9 +26,9 @@ import static mindustry.Vars.tilesize;
 public class PayloadFactory extends PayloadAcceptor {
     public int maxBlockSize = 2;
     public float fuelTime = 120f;
-    public float baseCraftTime = 60f, baseHeatLerp = 0.01f;
+    public float baseCraftTime = 15f, baseHeatLerp = 0.0001f;
     /** Damage taken by the container every tick. */
-    public float damageAmount = 0.1f;
+    public float damageAmount = 0.01f;
     /** Damage the factory takes if the container perishes, scaled with size. */
     public float selfDamageAmount = 500f;
 
@@ -36,11 +37,11 @@ public class PayloadFactory extends PayloadAcceptor {
     public Effect catalystEffect = Fx.none;
     public Effect smokeEffect = Fx.fuelburn;
     public float smokeChance = 0.01f;
-    public Effect releaseEffect; //TODO heated effect
+    public Effect releaseEffect = Fx.none; //TODO heated effect
     public Sound catalystSound = Sounds.combustion;
     public Sound releaseSound = Sounds.steam;
 
-    public Color heatColor = Pal.turretHeat;
+    public Color heatColor = Pal.lightPyraFlame;
     public TextureRegion shadowRegion, heatRegion;
 
     /** How long should the factory keep crafting a payload before ejecting it, if no GateControllers are connected. GateControllers will always override this. Intended to be a shitty value. */
@@ -55,7 +56,7 @@ public class PayloadFactory extends PayloadAcceptor {
         hasItems = true;
         acceptsItems = true;
         outputsPayload = true;
-        outputFacing = true;
+        rotate = true;
         sync = true;
         ambientSound = Sounds.smelter;
 
@@ -128,7 +129,7 @@ public class PayloadFactory extends PayloadAcceptor {
 
     public class PayloadFactoryBuild extends PayloadAcceptorBuild<BuildPayload>{
         public float heat = 0f; //absolute heat value
-        public float fuelLeft = 0f, fuelValue = 0f, fuelLerp = 0.01f;
+        public float fuelLeft = 0f, fuelValue = 0f, fuelLerp = baseHeatLerp;
         public float time = 0f; //increases every tick when payload is in.
         public float progress = 0f;
         public int cycle = 0;
@@ -156,7 +157,6 @@ public class PayloadFactory extends PayloadAcceptor {
         }
 
         public void catalyst(Block b){
-
         }
 
         public boolean shouldOutput(){
@@ -185,54 +185,56 @@ public class PayloadFactory extends PayloadAcceptor {
 
             if(Mathf.chance(smokeChance * heat)) smokeEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
 
-            if(payload != null && consValid() && moveInPayload()){
-                if(isCatalyst(payload.block())){
-                    catalystEffect.at(this, payload.block().size);
-                    catalystSound.at(this);
-                    catalyst(payload.block());
-                    payload = null;
-                    return;
-                }
-
-                if(time == 0){
-                    //just got in
-                    progress = 0;
-                    cycle = 0;
-                }
-
+            if(payload != null){
                 if(outputting){
                     moveOutPayload();
-                    return;
+                    if(payload == null) outputting = false;
                 }
-
-                time += delta();
-                progress += edelta();
-                if(progress > baseCraftTime){
-                    progress %= baseCraftTime;
-                    craft(payload.build);
-
-                    payload.build.damage(baseCraftTime * damageAmount);
-                    if(payload.build.health <= 0f){
-                        Fx.blockExplosion.at(this);
-                        Fx.smokeCloud.at(this);
-                        Sounds.explosion.at(this);
-
-                        damage(payload.block().size * selfDamageAmount);
+                else if(consValid() && moveInPayload()){
+                    if(isCatalyst(payload.block())){
+                        catalystEffect.at(this, payload.block().size);
+                        catalystSound.at(this);
+                        catalyst(payload.block());
                         payload = null;
-                        time = 0;
                         return;
                     }
-                }
 
-                if(shouldOutput()){
-                    outputting = true;
-                    releaseEffect.at(x, y, 0f, payload);
-                    releaseSound.at(this);
-                    time = 0;
+                    if(time == 0){
+                        //just got in
+                        progress = 0;
+                        cycle = 0;
+                    }
+
+                    time += delta();
+                    progress += edelta();
+                    if(progress > baseCraftTime){
+                        progress %= baseCraftTime;
+                        craft(payload.build);
+
+                        float d = baseCraftTime * damageAmount;
+
+                        if(d + 1f >= payload.build.health){
+                            Fx.blockExplosion.at(this);
+                            Fx.smokeCloud.at(this);
+                            Sounds.explosion.at(this);
+
+                            damage(payload.block().size * selfDamageAmount);
+                            payload = null;
+                            time = 0;
+                            return;
+                        }else payload.build.health -= d;
+                    }
+
+                    if(shouldOutput()){
+                        outputting = true;
+                        releaseEffect.at(x, y, 0f, payload);
+                        releaseSound.at(this);
+                        time = 0;
+                    }
                 }
             }
             else{
-                if(payload == null) outputting = false;
+                outputting = false;
             }
         }
 
@@ -265,9 +267,13 @@ public class PayloadFactory extends PayloadAcceptor {
             Draw.z(Layer.blockOver + 0.1f);
             Draw.color(Pal.shadow, 0.22f * (1-f));
             Draw.rect(shadowRegion, x, y);
+
+            Draw.blend(Blending.additive);
             Draw.color(heatColor, f);
             Draw.rect(heatRegion, x, y);
+            Draw.blend();
             Draw.color();
+
             Draw.rect(topRegion, x, y);
         }
     }
