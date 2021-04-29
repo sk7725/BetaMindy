@@ -600,7 +600,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         messageVoid = new MessageBlock("message-void"){{
-            requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+            requirements(Category.logic, with(Items.graphite, 5, Items.pyratite, 10));
 
             maxNewlines = 1;
             maxTextLength = 0;
