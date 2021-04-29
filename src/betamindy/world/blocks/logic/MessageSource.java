@@ -43,13 +43,13 @@ public class MessageSource extends MessageBlock {
                 }
             }
             if(Mathf.chance((float)voids / (float)proximity.size)) {
-                if(!(message == null || message.length() == 0) && voids == proximity.size) { // surrounded by voids and not empty
+                if(!(message == null || message.length() == 0) && voids == 4) { // surrounded by voids and not empty
                     configure("");
                 } // if there's a void, do nothing
             } else {
                 float chance = (float)Vars.state.wave / 200.0f;
                 Tmp.c1.set(Color.scarlet).lerp(Color.yellow, Mathf.absin(10.0f - chance * 3.0f, 1.0f)).lerp(Color.white, 1.0f - chance);
-                configure("[#" + Tmp.c1 + "]" + quote(Mathf.random(1, Math.max(Mathf.random(40,160) / 7, 2))));
+                configure("[#" + Tmp.c1 + "]" + quote(Mathf.random(1, Math.max(Mathf.random(100,160) / 7, 2))));
             }
         }
     }
