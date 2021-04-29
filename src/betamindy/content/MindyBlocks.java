@@ -46,7 +46,7 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan,
     //logic
-    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid,
+    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource,
     //turrets
     hopeBringer,
     //power
@@ -604,6 +604,10 @@ public class MindyBlocks implements ContentList {
 
             maxNewlines = 1;
             maxTextLength = 0;
+        }};
+
+        messageSource = new MessageSource("message-source"){{
+            requirements(Category.logic, with(Items.graphite, 5, Items.surgeAlloy, 10));
         }};
     }
 }
