@@ -42,8 +42,8 @@ public class MessageSource extends MessageBlock {
                     voids += 1;
                 }
             }
-            if(Mathf.chance((float)voids / (float)proximity.size)) {
-                if(!(message == null || message.length() == 0) && voids == 4) { // surrounded by voids and not empty
+            if(Mathf.chance((float)voids / ((float)block().size * 4))) {
+                if(!(message == null || message.length() == 0) && voids == ((float)block().size * 4)) { // surrounded by voids and not empty
                     configure("");
                 } // if there's a void, do nothing
             } else {
