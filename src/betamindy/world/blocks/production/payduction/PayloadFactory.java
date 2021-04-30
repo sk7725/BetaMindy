@@ -1,5 +1,6 @@
 package betamindy.world.blocks.production.payduction;
 
+import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -26,11 +27,11 @@ import static mindustry.Vars.tilesize;
 public class PayloadFactory extends PayloadAcceptor {
     public int maxBlockSize = 2;
     public float fuelTime = 120f;
-    public float baseCraftTime = 15f, baseHeatLerp = 0.0001f;
+    public float baseCraftTime = 5f, baseHeatLerp = 0.001f;
     /** Damage taken by the container every tick. */
     public float damageAmount = 0.01f;
     /** Damage the factory takes if the container perishes, scaled with size. */
-    public float selfDamageAmount = 500f;
+    public float selfDamageAmount = 100f;
 
     public float minItemEfficiency = 0.5f;
 
@@ -42,10 +43,14 @@ public class PayloadFactory extends PayloadAcceptor {
     public Sound releaseSound = Sounds.steam;
 
     public Color heatColor = Pal.lightPyraFlame;
-    public TextureRegion shadowRegion, heatRegion;
+    public TextureRegion shadowRegion, heatRegion, doorRegion;
+    public float doorSize = 0.75f;
 
     /** How long should the factory keep crafting a payload before ejecting it, if no GateControllers are connected. GateControllers will always override this. Intended to be a shitty value. */
     public float autoOutputTime = 30 * 60f;
+
+    /** Used in UI only. */
+    public float maxHeat = 2f;
 
     public boolean defaults = false;
 
@@ -65,7 +70,7 @@ public class PayloadFactory extends PayloadAcceptor {
 
     @Override
     public TextureRegion[] icons(){
-        return new TextureRegion[]{region, inRegion, outRegion, topRegion};
+        return new TextureRegion[]{region, doorRegion, inRegion, outRegion, topRegion};
     }
 
     @Override
@@ -77,12 +82,13 @@ public class PayloadFactory extends PayloadAcceptor {
     public void setBars(){
         super.setBars();
 
-        bars.add("progress", entity -> new Bar("bar.heat", heatColor, () -> ((PayloadFactoryBuild)entity).heat));
+        bars.add("heat", entity -> new Bar(() -> Core.bundle.format("bar.efficiency", (int)(((PayloadFactoryBuild)entity).heat * 100)), () -> heatColor, ((PayloadFactoryBuild) entity)::fract));
     }
 
     @Override
     public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(region, req.drawx(), req.drawy());
+        Draw.rect(doorRegion, req.drawx(), req.drawy());
         Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
         Draw.rect(topRegion, req.drawx(), req.drawy());
     }
@@ -123,8 +129,9 @@ public class PayloadFactory extends PayloadAcceptor {
     @Override
     public void load(){
         super.load();
-        shadowRegion = atlas.find(name + "-shadpw");
-        heatRegion = atlas.find(name + "-heat");
+        shadowRegion = atlas.find(name + "-shadow");
+        heatRegion = atlas.find(name + "-glow");
+        doorRegion = atlas.find(name + "-door");
     }
 
     public class PayloadFactoryBuild extends PayloadAcceptorBuild<BuildPayload>{
@@ -133,12 +140,15 @@ public class PayloadFactory extends PayloadAcceptor {
         public float time = 0f; //increases every tick when payload is in.
         public float progress = 0f;
         public int cycle = 0;
+
+        public float doors = 0f;
         public boolean outputting = false;
 
-        public @Nullable GateControllerBuild gate; //TODO
+        public @Nullable GateControllerBuild gate;
 
         public void fuelUse(){
             //consume the item
+            fuelLeft -= delta();
             if(fuelLeft > 0) return;
             if(items.total() == 0 || !consValid()){
                 fuelValue = 0;
@@ -146,10 +156,11 @@ public class PayloadFactory extends PayloadAcceptor {
                 return;
             }
 
-            Item item = items.take();
+            Item item = items.first();
             fuelLeft = getFuelTime(item);
             fuelValue = getFuelValue(item);
             fuelLerp = getFuelLerp(item);
+            items.remove(item, 1);
         }
 
         public void craft(Building b){
@@ -160,7 +171,7 @@ public class PayloadFactory extends PayloadAcceptor {
         }
 
         public boolean shouldOutput(){
-            return (gate != null) ? gate.open() : time >= autoOutputTime;
+            return (gate != null && gate.isValid()) ? gate.open() : time >= autoOutputTime;
         }
 
         public boolean isCatalyst(Block b){
@@ -172,6 +183,14 @@ public class PayloadFactory extends PayloadAcceptor {
             return baseCraftTime / efficiency();
         }
 
+        public float fract(){ return Mathf.clamp(heat / maxHeat); }
+
+        public boolean active(){ return payload != null && !outputting && time > 5f; }
+
+        public void setGate(GateControllerBuild g){
+            if(gate == null || !gate.isValid()) gate = g;
+        }
+
         @Override
         public float efficiency(){
             return super.efficiency() * heat;
@@ -180,7 +199,7 @@ public class PayloadFactory extends PayloadAcceptor {
         @Override
         public void updateTile(){
             fuelUse();
-            heat = Mathf.lerpDelta(heat, payload == null ? 0.5f * fuelValue : fuelValue, fuelLerp);
+            heat = Mathf.approachDelta(heat, payload == null ? 0.5f * fuelValue : fuelValue, fuelLerp);
             super.updateTile();
 
             if(Mathf.chance(smokeChance * heat)) smokeEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
@@ -235,7 +254,10 @@ public class PayloadFactory extends PayloadAcceptor {
             }
             else{
                 outputting = false;
+                time = 0;
             }
+
+            doors = Mathf.lerpDelta(doors, active() ? 1f : 0f, 0.05f);
         }
 
         @Override
@@ -258,23 +280,43 @@ public class PayloadFactory extends PayloadAcceptor {
 
             Draw.rect(outRegion, x, y, rotdeg());
 
-            Draw.z(Layer.blockOver);
             payRotation = rotdeg();
             drawPayload();
 
-            float f = Mathf.clamp(heat / 2f * (Mathf.absin(7f, 0.2f) + 1f));
+            float f = Mathf.clamp(heat / maxHeat * (Mathf.absin(7f, 0.2f) + 1f));
 
-            Draw.z(Layer.blockOver + 0.1f);
+            Draw.z(Layer.blockOver + 0.05f);
             Draw.color(Pal.shadow, 0.22f * (1-f));
             Draw.rect(shadowRegion, x, y);
 
             Draw.blend(Blending.additive);
             Draw.color(heatColor, f);
-            Draw.rect(heatRegion, x, y);
+            Draw.rect(shadowRegion, x, y);
             Draw.blend();
             Draw.color();
 
+            if(doors > 0.99f){
+                Draw.rect(doorRegion, x, y);
+            }
+            else if(doors > 0.001f){
+                f = doorSize + (1f - doorSize) * doors;
+                Draw.rect(doorRegion, x, y, (float)doorRegion.width * Draw.scl * Draw.xscl * f, (float)doorRegion.height * Draw.scl * Draw.yscl * f);
+            }
             Draw.rect(topRegion, x, y);
+        }
+
+        @Override
+        public void drawSelect(){
+            super.drawSelect();
+            if(gate != null && gate.isValid()){
+                Lines.stroke(1f, Pal.accent);
+                Lines.square(gate.x, gate.y, gate.block.size * tilesize / 2f);
+                Draw.color();
+            }
+            else if(active()){
+                int sec = (int)((autoOutputTime - time) / 60f) + 1;
+                drawPlaceText(sec / 60 + ":" + String.format("%02d", sec % 60), tile.x, tile.y, true);
+            }
         }
     }
 }

@@ -52,7 +52,7 @@ public class MindyBlocks implements ContentList {
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
-    blockFurnace, heavyFurnace;
+    blockFurnace, heavyFurnace, gateSwitch;
 
     @Override
     public void load() {
@@ -168,8 +168,9 @@ public class MindyBlocks implements ContentList {
         blockFurnace = new PayloadFurnace("block-furnace"){{
             size = 5;
             health = 1000;
-            autoOutputTime = 15 * 60f; //TODO tmp, do 90 * 60f
+            autoOutputTime = 45 * 60f;
 
+            consumes.power(2f);
             crafts(Blocks.siliconSmelter, 2, Blocks.kiln, 1, Blocks.surgeSmelter, 2);
             crafts(MindyItems.scalar, 1, 4).using(with(MindyItems.scalarRaw, 5, Items.plastanium, 3, Items.thorium, 10));
             requirements(Category.crafting, with(Items.copper, 410, Items.titanium, 230, Items.graphite, 60, Items.silicon, 115, Items.metaglass, 65, Items.plastanium, 30));
@@ -177,6 +178,14 @@ public class MindyBlocks implements ContentList {
 
         heavyFurnace = new PayloadFurnace("heavy-furnace"){{
             size = 6;
+        }};
+
+        gateSwitch = new GateController("gate-switch"){{
+            size = 2;
+            health = 120;
+
+            consumes.power(0.1f);
+            requirements(Category.crafting, with(Items.copper, 20, Items.graphite, 10, Items.silicon, 10));
         }};
 
         blockPacker = new BlockLoader("block-packer"){{
@@ -599,15 +608,15 @@ public class MindyBlocks implements ContentList {
             consumes.power(0.08f);
         }};
 
+        messageSource = new MessageSource("message-source"){{
+            requirements(Category.logic, with(MindyItems.bittrium, 1));
+        }};
+
         messageVoid = new MessageBlock("message-void"){{
-            requirements(Category.logic, with(Items.graphite, 5, Items.pyratite, 10));
+            requirements(Category.logic, with(MindyItems.source, 1));
 
             maxNewlines = 1;
             maxTextLength = 0;
-        }};
-
-        messageSource = new MessageSource("message-source"){{
-            requirements(Category.logic, with(Items.graphite, 5, Items.surgeAlloy, 10));
         }};
     }
 }
