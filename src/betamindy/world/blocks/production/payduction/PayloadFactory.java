@@ -5,7 +5,11 @@ import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
+import betamindy.world.blocks.production.payduction.craft.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
@@ -20,8 +24,10 @@ import mindustry.world.blocks.production.*;
 import betamindy.world.blocks.production.payduction.GateController.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
+import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
 public class PayloadFactory extends PayloadAcceptor {
@@ -66,6 +72,11 @@ public class PayloadFactory extends PayloadAcceptor {
         ambientSound = Sounds.smelter;
 
         setDefaults();
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
     }
 
     @Override
@@ -143,8 +154,10 @@ public class PayloadFactory extends PayloadAcceptor {
 
         public float doors = 0f;
         public boolean outputting = false;
-
         public @Nullable GateControllerBuild gate;
+
+        public @Nullable Block booster;
+        public float boostLife = 0f;
 
         public void fuelUse(){
             //consume the item
@@ -168,6 +181,7 @@ public class PayloadFactory extends PayloadAcceptor {
         }
 
         public void catalyst(Block b){
+            //TODO
         }
 
         public boolean shouldOutput(){
@@ -197,9 +211,39 @@ public class PayloadFactory extends PayloadAcceptor {
         }
 
         @Override
+        public void displayBars(Table parent){
+            super.displayBars(parent);
+            parent.image().color(Pal.gray).height(4f).growX().padTop(2f).padBottom(8f);
+            parent.row();
+            parent.table(table -> {
+                table.image(() -> active() ? payload.icon(Cicon.full) : Icon.cancel.getRegion()).size(36f);
+
+                table.table(t -> {
+                    t.defaults().height(16f).pad(4f).padBottom(1f).padTop(1f).growX();
+                    t.add(new Bar(() -> active() ? Core.bundle.get("content.item.name") : "[lightgray]" + Core.bundle.get("empty") + "[]", () -> Pal.items, () -> active() ? Mathf.clamp(((float) payload.build.items.total()) / payload.block().itemCapacity) : 0f));
+                    t.row();
+                    t.table(st -> {
+                        st.left();
+                        Table crt = st.table().get();
+                        crt.left().defaults().pad(1f);
+                        crt.update(() -> {
+                            if(!active()) crt.clearChildren();
+                            else if((payload.build instanceof CraftReact) && !crt.hasChildren()) ((CraftReact) payload.build).displayReact(crt);
+                        });
+                        st.image(Icon.warningSmall).size(18f).pad(1f).color(Color.scarlet).visible(() -> active() && payload.build.healthf() < 0.15f && (payload.build.healthf() > 0.05f || Time.globalTime % 60f <= 30f));
+                    });
+                }).height(36f).padTop(2f).padLeft(0f).padRight(0f).growX();
+            });
+
+            parent.row();
+            parent.add().height(8f);
+            parent.row();
+        }
+
+        @Override
         public void updateTile(){
             fuelUse();
-            heat = Mathf.approachDelta(heat, payload == null ? 0.5f * fuelValue : fuelValue, fuelLerp);
+            heat = Mathf.approachDelta(heat, active() ? fuelValue : 0.5f * fuelValue, fuelLerp);
             super.updateTile();
 
             if(Mathf.chance(smokeChance * heat)) smokeEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
@@ -318,5 +362,7 @@ public class PayloadFactory extends PayloadAcceptor {
                 drawPlaceText(sec / 60 + ":" + String.format("%02d", sec % 60), tile.x, tile.y, true);
             }
         }
+
+        //TODO boosts, read, write, logicread
     }
 }

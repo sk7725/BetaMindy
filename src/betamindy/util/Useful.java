@@ -19,11 +19,15 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.Vars;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.type.Liquid;
 import mindustry.world.*;
+
+import java.util.*;
 
 import static mindustry.Vars.*;
 
@@ -130,5 +134,17 @@ public class Useful {
                 (tx, ty) -> (furthest = world.tile(tx, ty)) != null && furthest.solid() && (furthest.build == null || furthest.build != source));
 
         return found && furthest != null ? Math.max(6f, Mathf.dst(x, y, furthest.worldx(), furthest.worldy())) : length;
+    }
+
+    public static Liquid getBestCoolant(){
+        return content.liquids().max(Comparator.comparingDouble(liquid -> liquid.heatCapacity));
+    }
+
+    public static boolean jolly(){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(Time.millis());
+        if(c.get(Calendar.MONTH) != Calendar.DECEMBER) return false;
+        int d = c.get(Calendar.DAY_OF_MONTH);
+        return d >= 23; //12/23 ~ 12/31
     }
 }

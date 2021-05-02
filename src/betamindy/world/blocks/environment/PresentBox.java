@@ -10,6 +10,7 @@ import arc.scene.ui.layout.*;
 //import arc.util.Align;
 import arc.util.io.*;
 import betamindy.content.MindySounds;
+import betamindy.util.*;
 import mindustry.content.Fx;
 import mindustry.entities.*;
 import mindustry.game.*;
@@ -18,6 +19,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.Cicon;
 import mindustry.world.*;
+import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 import static arc.Core.atlas;
@@ -75,6 +77,11 @@ public class PresentBox extends Block {
         ribbonRegion = atlas.find(name + "-ribbon", "betamindy-present-ribbon");
         ribbonRegionBack = atlas.find(name + "-ribbon-back", "betamindy-present-ribbon-back");
         ribbonRegionBase = atlas.find(name + "-ribbon-base");
+    }
+
+    @Override
+    public boolean isHidden(){
+        return super.isHidden() || !(Useful.jolly() || state.rules.infiniteResources);
     }
 
     public class PresentBuild extends Building {

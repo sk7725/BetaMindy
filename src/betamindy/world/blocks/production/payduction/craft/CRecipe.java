@@ -31,6 +31,10 @@ public class CRecipe {
     public void craft(Building build, int c){
         if(c % cycle != cycle - 1 || build == null || build.items == null) return;
         if(build.items.has(in)){
+            if(build instanceof CraftReact){
+                ((CraftReact)build).craft(in, out);
+                return;
+            }
             int a = build.acceptStack(out.item, out.amount, build);
             if(a < out.amount) return;
 

@@ -13,6 +13,7 @@ import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.power.*;
 import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.production.payduction.*;
+import betamindy.world.blocks.storage.*;
 import betamindy.world.blocks.units.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
@@ -38,7 +39,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner,
     //effect
-    silo, warehouse,
+    silo, warehouse, pressureContainer,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, teamWall,
     //drills
@@ -349,6 +350,10 @@ public class MindyBlocks implements ContentList {
                 requirements(Category.effect, with(Items.titanium, 600, Items.thorium, 500, Items.plastanium, 450, Items.phaseFabric, 150, Items.surgeAlloy, 100));
             }
         };
+
+        pressureContainer = new SuperStorageBlock("pressure-container", Blocks.container){{
+            requirements(Category.effect, with(Items.titanium, 5, Items.thorium, 5));
+        }};
 
         present = new PresentBox("present"){{
             requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
