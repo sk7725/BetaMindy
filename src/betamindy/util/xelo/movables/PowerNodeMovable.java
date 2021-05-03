@@ -1,24 +1,24 @@
 package betamindy.util.xelo.movables;
 
-import arc.math.geom.Point2;
-import arc.struct.IntSeq;
-import betamindy.util.xelo.Movable;
-import mindustry.gen.Building;
+import arc.math.geom.*;
+import arc.struct.*;
+import betamindy.util.xelo.*;
+import mindustry.gen.*;
 
-public class PowerNodeMovable implements Movable {
+public class PowerNodeMovable implements Movable{
 
     private IntSeq links;
     private Building building;
 
-    public PowerNodeMovable() {
+    public PowerNodeMovable(){
         links = new IntSeq();
     }
 
     @Override
-    public void set(Building building, Point2 direction) {
+    public void set(Building building, Point2 direction){
         IntSeq currentLinks = building.power.links;
 
-        if(currentLinks.size == 0) {
+        if(currentLinks.size == 0){
             return;
         }
 
@@ -31,7 +31,7 @@ public class PowerNodeMovable implements Movable {
         int offX = direction.x;
         int offY = direction.y;
 
-        for(int i = 0; i < links.size; i++) {
+        for(int i = 0; i < links.size; i++){
             int item = links.items[i];
 
             int x = Point2.x(item);
@@ -42,22 +42,22 @@ public class PowerNodeMovable implements Movable {
     }
 
     @Override
-    public void pushed() {
+    public void pushed(){
 
     }
 
     @Override
-    public void config() {
-        if(building == null) {
+    public void config(){
+        if(building == null){
             return;
         }
-        while(!links.isEmpty()) {
+        while(!links.isEmpty()){
             building.configure(links.pop());
         }
     }
 
     @Override
-    public void reset() {
+    public void reset(){
         links.clear();
         building = null;
     }

@@ -3,15 +3,14 @@ package betamindy;
 import arc.*;
 import arc.func.*;
 import arc.struct.*;
-import arc.util.Log;
+import arc.util.*;
+import betamindy.content.*;
 import betamindy.util.*;
-import betamindy.util.xelo.XeloUtil;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
-import betamindy.content.*;
 import mindustry.net.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -22,26 +21,24 @@ public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
     public static SettingAdder settingAdder = new SettingAdder();
-    public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
     public static Seq<Block> visibleBlockList = new Seq<>();
     //public static UnitGravity gravity = new UnitGravity();
 
     private final ContentList[] mindyContent = {
-        new OverWriter(),
-        new MindyStatusEffects(),
-        new MindyItems(),
-        new MindyBullets(),
-        new MindyUnitTypes(),
-        new MindyBlocks(),
-        new MindyTechTree(),
-        new MindyWeathers()
+    new OverWriter(),
+    new MindyStatusEffects(),
+    new MindyItems(),
+    new MindyBullets(),
+    new MindyUnitTypes(),
+    new MindyBlocks(),
+    new MindyTechTree(),
+    new MindyWeathers()
     };
 
-    public BetaMindy() {
+    public BetaMindy(){
         super();
         MindySounds.load();
-        pushUtil.init();
         if(Vars.mobile) mobileUtil.init();
 
         Events.run(DisposeEvent.class, MindySounds::dispose);
@@ -75,7 +72,7 @@ public class BetaMindy extends Mod{
 
         //used for block weather
         Events.run(ClientLoadEvent.class, () -> {
-            for(Block block : Vars.content.blocks()) {
+            for(Block block : Vars.content.blocks()){
                 if((block instanceof ConstructBlock || !block.hasBuilding()) || block.icon(Cicon.medium) == Core.atlas.find("error")) return;
                 visibleBlockList.add(block);
             }

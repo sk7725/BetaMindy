@@ -1,23 +1,23 @@
 package betamindy.util.xelo.movables;
 
-import arc.math.geom.Point2;
-import betamindy.util.xelo.Movable;
-import mindustry.gen.Building;
-import mindustry.world.blocks.distribution.ItemBridge;
+import arc.math.geom.*;
+import betamindy.util.xelo.*;
+import mindustry.gen.*;
+import mindustry.world.blocks.distribution.*;
 
-public class BridgeMovable implements Movable {
+public class BridgeMovable implements Movable{
 
     private Point2 config;
     private Building building;
 
-    public BridgeMovable() {
+    public BridgeMovable(){
         config = new Point2();
     }
 
     @Override
-    public void set(Building building, Point2 direction) {
-        int link = ((ItemBridge.ItemBridgeBuild) building).link;
-        if(link == -1) {
+    public void set(Building building, Point2 direction){
+        int link = ((ItemBridge.ItemBridgeBuild)building).link;
+        if(link == -1){
             return;
         }
         this.building = building;
@@ -25,19 +25,19 @@ public class BridgeMovable implements Movable {
     }
 
     @Override
-    public void pushed() {
+    public void pushed(){
 
     }
 
     @Override
-    public void config() {
-        if(building != null) {
+    public void config(){
+        if(building != null){
             building.configure(config.pack());
         }
     }
 
     @Override
-    public void reset() {
+    public void reset(){
         building = null;
     }
 

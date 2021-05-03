@@ -1,10 +1,10 @@
 package betamindy.util.xelo;
 
-import arc.math.geom.Point2;
-import arc.util.pooling.Pool;
-import mindustry.gen.Building;
+import arc.math.geom.*;
+import arc.util.pooling.*;
+import mindustry.gen.*;
 
-public interface Movable extends Pool.Poolable {
+public interface Movable extends Pool.Poolable{
 
     void set(Building building, Point2 direction);
 
