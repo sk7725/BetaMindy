@@ -56,5 +56,18 @@ public class SidedSlimeBlock extends SlimeBlock {
             }
             else Draw.rect(baseRegion[rotation], x, y);
         }
+
+        @Override
+        public void drawSpinning(float x, float y, float dr){
+            if(Core.settings.getBool("animatedshields") && Core.settings.getBool("slimeeffect")){
+                Draw.rect(coreRegion, x, y, dr);
+                Draw.rect(slabRegion[rotation], x, y, dr);
+                Draw.z(Layer.shields + 0.0001f);
+                Draw.color(color);
+                Fill.rect(x + Geometry.d4x[rotation] * 2f, y + Geometry.d4y[rotation] * 2f, rotation % 2 == 0 ? 4f : 8f, rotation % 2 == 0 ? 8f : 4f, dr);
+                Draw.reset();
+            }
+            else Draw.rect(baseRegion[rotation], x, y, dr);
+        }
     }
 }

@@ -43,7 +43,7 @@ public class SlimeBlock extends Block {
         }
     }
 
-    public class SlimeBuild extends Building {
+    public class SlimeBuild extends Building implements SpinDraw {
         @Override
         public void draw(){
             if(Core.settings.getBool("animatedshields") && Core.settings.getBool("slimeeffect")){
@@ -58,6 +58,22 @@ public class SlimeBlock extends Block {
                 Draw.reset();
             }
             else super.draw();
+        }
+
+        @Override
+        public void drawSpinning(float x, float y, float dr){
+            if(Core.settings.getBool("animatedshields") && Core.settings.getBool("slimeeffect")){
+                Draw.rect(coreRegion, x, y, dr);
+                Draw.z(Layer.shields + 0.0001f);
+                Draw.color(color);
+                Fill.rect(x, y, size * tilesize, size * tilesize, dr);
+                if(useTopRegion){
+                    Draw.color();
+                    Draw.rect(topRegion, x, y, dr);
+                }
+                Draw.reset();
+            }
+            else Draw.rect(region, x, y, dr);
         }
     }
 }

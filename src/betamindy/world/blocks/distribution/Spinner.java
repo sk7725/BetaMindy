@@ -14,6 +14,7 @@ import mindustry.content.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
@@ -34,7 +35,7 @@ public class Spinner extends Block {
     public Color drawColor = Pal.heal;
     public float laserWidth = 0.4f;
 
-    public int maxBlocks = 8;
+    public int maxBlocks = 12;
     public final Boolf<Building> stickBool = b -> b.canPickup() && !(b.block == Blocks.phaseWall || b.block == Blocks.phaseWallLarge || b.block == Blocks.thoriumWall || b.block == Blocks.thoriumWallLarge);
 
     public final int[][] evenOffsets = {{-1, -1}, {0, -1}, {0, 0}, {-1, 0}};
@@ -48,6 +49,7 @@ public class Spinner extends Block {
         hasPower = true;
         configurable = true;
         saveConfig = true;
+        expanded = true;
 
         group = BlockGroup.transportation;//TODO: Make own category for place-overs
 
@@ -84,19 +86,24 @@ public class Spinner extends Block {
         Draw.color();
     }
 
-    public class SpinnerBuild extends Building {
+    public class SpinnerBuild extends Building implements SpinDraw{
         public boolean ccw = false; //counter clockwise
 
         /** Below are only valid when spinning is true */
         public boolean spinning = false, looped = false;
         public float spin = 0f; //0 ~ 4 * spinTime
         public byte offset = 0; //-7 ~ 8 hopefully
-        public @Nullable BuildPayload payload;
+        public @Nullable BuildPayload payload; //TODO refactor this to Building too
         //public float lifetime = 0f;
 
         /** Below are only valid if multiBuild is true */
         protected boolean multiBuild = false; //has more blocks stuck to this things
         protected Seq<RBuild> mbuilds = new Seq<RBuild>();
+
+        /*@Override
+        public int weight(){
+            return payload == null ? 1 : multiBuild ? mbuilds.size + 2 : 2;//TODO make RBuild & XeloUtil consider weight (make this an interface?)
+        }*/
 
         @Override
         public void updateTile() {
@@ -108,18 +115,18 @@ public class Spinner extends Block {
                         //it is almost 90 degrees, in its dropping window
                         if(payload == null) spinning = false; //nothing to drop; drop nothing
                         else{
-                            int dir = Mathf.round(spin / spinTime) * Mathf.sign(ccw) + rotation + payload.build.rotation;
+                            int dir = Mathf.round(spin / spinTime) * Mathf.sign(ccw) + rotation;
                             Tile t = destTile(tile, dir, offset, payload.block().size);
-                            //TODO: grab blocks from payload blocks if possible
+                            //TODO: offload to payload blocks if possible
                             if(t != null && RBuild.validPlace(payload.block(), t.x, t.y)){ //if it can be dropped
                                 //try dropping what it has
-                                payload.place(t, dir);
+                                payload.place(t, dir - rotation + payload.build.rotation);
                                 payload = null;
                                 spinning = false;
                                 if(multiBuild){
                                     multiBuild = false;
                                     int newr = Mathf.mod(Mathf.round(spin / spinTime) * Mathf.sign(ccw), 4);
-                                    RBuild.placeAll(mbuilds, tile.nearby((newr + rotation) % 4), newr);
+                                    RBuild.placeAll(mbuilds, tile.nearby((newr + rotation) % 4), newr, dir);
                                     mbuilds.clear();
                                 }
                             }
@@ -205,7 +212,8 @@ public class Spinner extends Block {
 
         @Override
         public void draw(){
-            Draw.rect(baseRegion, x, y);
+            drawSpinning(x, y, 0f);
+            /*Draw.rect(baseRegion, x, y);
             Draw.rect(sideRegions[Mathf.num(ccw)], x, y);
             Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f);
 
@@ -224,22 +232,55 @@ public class Spinner extends Block {
                 drawLaser();
                 drawPay();
                 if(multiBuild) RBuild.drawAll(mbuilds, x, y, angle(), rawAngle() * Mathf.sign(ccw));
+            }*/
+        }
+
+        @Override
+        public void drawSpinning(float x, float y, float dr){
+            Draw.rect(baseRegion, x, y, dr);
+            Draw.rect(sideRegions[Mathf.num(ccw)], x, y, dr);
+            Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f + dr);
+
+            if(!spinning || spin % spinTime < 0.0001f){
+                Draw.rect(topRegion, x, y, dr);
+            }
+            else{
+                float r = (spin % spinTime) / spinTime * 90f;
+                Draw.rect(topRegion, x, y, r * Mathf.sign(ccw) + dr);
+                Draw.alpha(r / 90f);
+                Draw.rect(topRegion, x, y, (r - 90f) * Mathf.sign(ccw) + dr);
+                Draw.alpha(1f);
+            }
+
+            if(spinning && payload != null){
+                drawLaser(x, y, dr);
+                drawPay(x, y, dr);//TODO
+                if(multiBuild) RBuild.drawAll(mbuilds, x, y, angle() + dr, rawAngle() * Mathf.sign(ccw) + dr);
             }
         }
 
         public void drawLaser(){
+            drawLaser(x, y, 0f);
+        }
+
+        public void drawLaser(float x, float y, float dr){
             //TODO: payload block io graphical extension
             Draw.z(Layer.blockOver + 0.15f);
-            Tmp.v2.trns(angle(), tilesize);
+            Tmp.v2.trns(angle() + dr, tilesize);
             Drawf.laser(team, laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
         }
 
         public void drawPay(){
+            drawPay(x, y, 0f);
+        }
+
+        public void drawPay(float x, float y, float dr){
             Draw.z(Layer.blockOver + 0.09f);
-            Tmp.v1.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle());
+            Tmp.v1.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle() + dr);
             Drawf.shadow(x + Tmp.v1.x, y + Tmp.v1.y, tilesize * payload.block().size * 2f);
             Draw.z(Layer.blockOver + 0.1f);
-            Draw.rect(payload.icon(Cicon.full), x + Tmp.v1.x, y + Tmp.v1.y, payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f);
+            if(payload.build instanceof SpinDraw) ((SpinDraw) payload.build).drawSpinning(x + Tmp.v1.x, y + Tmp.v1.y, (payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f) + dr);
+            else Draw.rect(payload.icon(Cicon.full), x + Tmp.v1.x, y + Tmp.v1.y, (payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f) + dr);
         }
 
         @Override
@@ -274,6 +315,14 @@ public class Spinner extends Block {
         }
 
         @Override
+        public double sense(LAccess sensor){
+            switch(sensor){
+                case rotation: return angle();
+                default: return super.sense(sensor);
+            }
+        }
+
+        @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
 
@@ -286,9 +335,13 @@ public class Spinner extends Block {
                 if(mobile) payload = BetaMindy.mobileUtil.readPayload(read);
                 else payload = Payload.read(read);
 
-                if(payload != null && (payload.block() instanceof SlimeBlock)){
+                if(read.bool()){
                     multiBuild = true;
-                    //TODO
+                    mbuilds.clear();
+                    int s = read.s();
+                    for(int i = 0; i < s; i++){
+                        mbuilds.add(RBuild.read(read, revision));
+                    }
                 }
             }
         }
@@ -305,8 +358,10 @@ public class Spinner extends Block {
                 if(mobile) BetaMindy.mobileUtil.writePayload(payload, write);
                 else Payload.write(payload, write);
 
+                write.bool(multiBuild);
                 if(multiBuild){
-
+                    write.s(mbuilds.size);
+                    mbuilds.each(mb -> RBuild.write(mb, write));
                 }
             }
         }

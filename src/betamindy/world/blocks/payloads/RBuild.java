@@ -9,8 +9,10 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.*;
 import betamindy.world.blocks.distribution.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -21,24 +23,30 @@ import static mindustry.Vars.*;
 
 /** Stores a BuildPayload with its relative coordinates to the origin block. */
 public class RBuild {
-    public BuildPayload pay; //TODO: use Building instead and refactor this shit
+    public Building build;
     public byte x, y; //should not go beyond a byte, unless tampered with via other mods
     public static final int[][] evenOffsets = {{-1, -1}, {0, -1}, {0, 0}, {-1, 0}};
     private static final Queue<Building> queue = new Queue<Building>();
     private static final Seq<Building> contacts = new Seq<Building>();
 
-    public RBuild(BuildPayload bp, byte x, byte y){
-        pay = bp;
+    public RBuild(Building bp, byte x, byte y){
+        build = bp;
         this.x = x;
         this.y = y;
     }
 
     public static RBuild read(Reads read, byte revision){
-        return new RBuild(BetaMindy.mobileUtil.readPayload(read), read.b(), read.b());
+        Block block = Vars.content.block(read.s());
+        Building b = block.newBuilding().create(block, Team.derelict);
+        byte version = read.b();
+        b.readAll(read, version);
+        return new RBuild(b, read.b(), read.b());
     }
 
     public static void write(RBuild rp, Writes write){
-        BetaMindy.mobileUtil.writePayload(rp.pay, write);
+        write.s(rp.build.block.id);
+        write.b(rp.build.version());
+        rp.build.writeAll(write);
         write.b(rp.x);
         write.b(rp.y);
     }
@@ -87,9 +95,9 @@ public class RBuild {
      * @param root the tile where (x, y) = (0, 0). The Seq should not include the root.
      * @param dir rotation difference between the pickup and place.
      */
-    public static void placeAll(Seq<RBuild> builds, Tile root, int dir){
+    public static void placeAll(Seq<RBuild> builds, Tile root, int dir, int absDir){
         if(root == null) return;
-        builds.forEach(b -> b.placeSingle(root, dir));
+        builds.each(b -> b.placeSingle(root, dir, absDir));
     }
 
     /**
@@ -102,14 +110,15 @@ public class RBuild {
      */
     public static void drawAll(Seq<RBuild> builds, float ox, float oy, float rotation, float rawRotation){
         Tmp.v2.trns(rotation, tilesize);
-        builds.forEach(b -> b.draw(ox + Tmp.v2.x, oy + Tmp.v2.y, rotation, rawRotation));
+        builds.each(b -> b.draw(ox + Tmp.v2.x, oy + Tmp.v2.y, rawRotation, rotation));
     }
-
+//TODO make it return an integer for weight
     public static boolean pickup(Seq<RBuild> builds, Building root, int dir, int max, Boolf<Building> bool){
         builds.clear();
         queue.clear();
         contacts.clear();
         queue.add(root);
+        //int extra = 0;
         do{
             Building next = queue.removeFirst();
             if(next.block.rotate){
@@ -119,6 +128,7 @@ public class RBuild {
                 Building b = t.build;
                 if(b == null || b == root || !bool.get(b) || contacts.contains(b)){continue;}
                 contacts.add(b);
+                //if(b instanceof HeavyBuild) extra += ((HeavyBuild) b).weight() - 1;
                 if(b.block instanceof SlimeBlock) queue.add(b);
             }
             else{
@@ -129,6 +139,7 @@ public class RBuild {
                     Building b = t.build;
                     if(b == null || b == root || !bool.get(b) || contacts.contains(b)){continue;}
                     contacts.add(b);
+                    //if(b instanceof HeavyBuild) extra += ((HeavyBuild) b).weight() - 1;
                     if(b.block instanceof SlimeBlock) queue.add(b);
                 }
             }
@@ -143,42 +154,44 @@ public class RBuild {
                 oy -= evenOffsets[dir][1];
             }
             b.tile.remove();
-            builds.add(new RBuild(new BuildPayload(b), (byte) ox, (byte) oy));
+            builds.add(new RBuild(b, (byte) ox, (byte) oy));
         });
         return true;
     }
 
-    public @Nullable Tile getTile(Tile root, int dir){
+    public @Nullable Tile getTile(Tile root, int dir, int absDir){
         if(root == null) return null;
+        absDir = Mathf.mod(absDir, 4);
         Tile t = root.nearby(Geometry.d4x(dir) * x - Geometry.d4y(dir) * y, Geometry.d4x(dir) * y + Geometry.d4y(dir) * x); //don't ask
         if(t == null) return null;
-        if(pay.block().size % 2 == 0){
-            return t.nearby(evenOffsets[dir][0], evenOffsets[dir][1]);
+        if(build.block().size % 2 == 0){
+            return t.nearby(evenOffsets[absDir][0], evenOffsets[absDir][1]);
         }
         return t;
     }
 
-    public void placeSingle(Tile root, int dir){
-        Tile t = getTile(root, dir);
+    public void placeSingle(Tile root, int dir, int absDir){
+        Tile t = getTile(root, dir, absDir);
         if(t == null) return;
-        if(!validPlace(pay.block(), t.x, t.y)) kill(t.worldx(), t.worldy());
-        else pay.place(t, pay.build.rotation + dir);
+        if(!validPlace(build.block, t.x, t.y)) kill(t.worldx(), t.worldy());
+        else t.setBlock(build.block, build.team, build.rotation + dir, () -> build);
     }
 
-    public void draw(float ox, float oy, float rotation, float rawRotation){
-        Tmp.v1.set(x * tilesize, y * tilesize).rotate(rotation);
+    public void draw(float ox, float oy, float rawRotation, float absRotation){
+        Tmp.v1.set(x * tilesize, y * tilesize).rotate(rawRotation);
         Draw.z(Layer.blockOver + 0.09f);
-        float offset = pay.block().offset;
-        ox += offset; oy += offset;
-        Drawf.shadow(ox + Tmp.v1.x, oy + Tmp.v1.y, tilesize * pay.block().size * 2f);
+        //float offset = build.block.offset;
+        //ox += offset; oy += offset;
+        Drawf.shadow(ox + Tmp.v1.x, oy + Tmp.v1.y, tilesize * build.block.size * 2f);
         Draw.z(Layer.blockOver + 0.1f);
-        Draw.rect(pay.icon(Cicon.full), ox + Tmp.v1.x, oy + Tmp.v1.y, (pay.block().rotate ? pay.build.rotation : 0) * 90f + rawRotation);
+        if(build instanceof SpinDraw) ((SpinDraw) build).drawSpinning(ox + Tmp.v1.x, oy + Tmp.v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
+        else Draw.rect(build.block.icon(Cicon.full), ox + Tmp.v1.x, oy + Tmp.v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
     }
 
     public void kill(float kx, float ky){
-        if(pay.block().size % 2 == 0){
+        if(build.block.size % 2 == 0){
             kx += tilesize / 2f; ky += tilesize / 2f;
         }
-        Fx.dynamicExplosion.at(kx, ky, pay.block().size / 1.3f); //boom!
+        Fx.dynamicExplosion.at(kx, ky, build.block.size / 1.3f); //boom!
     }
 }

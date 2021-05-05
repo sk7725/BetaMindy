@@ -9,12 +9,14 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import arc.util.io.*;
 import betamindy.world.blocks.production.payduction.craft.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -363,6 +365,68 @@ public class PayloadFactory extends PayloadAcceptor {
             }
         }
 
-        //TODO boosts, read, write, logicread
+        //TODO boosts
+
+        @Override
+        public double sense(LAccess sensor){
+            switch(sensor){
+                case enabled: return active() ? 1 : 0;
+                case heat: return heat;
+                case payloadCount: return active() ? payload.build.items.total() : 0;
+                case boosting: return booster == null ? 0 : 1;
+                default: return super.sense(sensor);
+            }
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            heat = read.f();
+
+            fuelLeft = read.f();
+            if(fuelLeft > 0f){
+                fuelValue = read.f();
+                fuelLerp = read.f();
+            }
+            else{
+                fuelValue = 0f;
+                fuelLerp = baseHeatLerp;
+            }
+
+            if(payload != null){
+                time = read.f();
+                progress = read.f();
+                cycle = read.i();
+                outputting = read.bool();
+            }
+            else{
+                time = 0f;
+                progress = 0f;
+                cycle = 0;
+                outputting = false;
+            }
+
+            doors = payload != null && !outputting && time >= 5f ? 1f : 0f;
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.f(heat);
+
+            write.f(fuelLeft);
+            if(fuelLeft > 0f){
+                write.f(fuelValue);
+                write.f(fuelLerp);
+            }
+
+            if(payload != null){
+                write.f(time);
+                write.f(progress);
+                write.i(cycle);
+                write.bool(outputting);
+            }
+        }
     }
 }
