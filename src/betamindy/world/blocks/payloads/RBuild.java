@@ -1,6 +1,7 @@
 package betamindy.world.blocks.payloads;
 
 import arc.func.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -112,13 +113,19 @@ public class RBuild {
         Tmp.v2.trns(rotation, tilesize);
         builds.each(b -> b.draw(ox + Tmp.v2.x, oy + Tmp.v2.y, rawRotation, rotation));
     }
-//TODO make it return an integer for weight
-    public static boolean pickup(Seq<RBuild> builds, Building root, int dir, int max, Boolf<Building> bool){
+
+    /**
+     * Picks up builds connected via sticky blocks. Returns the weight of selected builds. Returns -1 if it fails.
+     * @param builds where the result should be written.
+     * @param root the (0,0) of the Rbuilds, not included in the result.
+     * @param dir the angle of the spinner, absolute.
+     */
+    public static int pickup(Seq<RBuild> builds, Building root, int dir, int max, Boolf<Building> bool){
         builds.clear();
         queue.clear();
         contacts.clear();
         queue.add(root);
-        //int extra = 0;
+        int extra = 0;
         do{
             Building next = queue.removeFirst();
             if(next.block.rotate){
@@ -128,7 +135,7 @@ public class RBuild {
                 Building b = t.build;
                 if(b == null || b == root || !bool.get(b) || contacts.contains(b)){continue;}
                 contacts.add(b);
-                //if(b instanceof HeavyBuild) extra += ((HeavyBuild) b).weight() - 1;
+                if(b instanceof HeavyBuild) extra += ((HeavyBuild) b).weight() - 1;
                 if(b.block instanceof SlimeBlock) queue.add(b);
             }
             else{
@@ -139,13 +146,13 @@ public class RBuild {
                     Building b = t.build;
                     if(b == null || b == root || !bool.get(b) || contacts.contains(b)){continue;}
                     contacts.add(b);
-                    //if(b instanceof HeavyBuild) extra += ((HeavyBuild) b).weight() - 1;
+                    if(b instanceof HeavyBuild) extra += ((HeavyBuild) b).weight() - 1;
                     if(b.block instanceof SlimeBlock) queue.add(b);
                 }
             }
-        }while (contacts.size < max && !queue.isEmpty());
+        }while (contacts.size + extra < max && !queue.isEmpty());
 
-        if(contacts.size >= max) return false; //root is not counted, so size must be smaller than max!
+        if(contacts.size + extra >= max) return -1; //root is not counted, so size must be smaller than max!
         contacts.each(b -> {
             int ox = b.tile.x - root.tile.x;
             int oy = b.tile.y - root.tile.y;
@@ -156,7 +163,7 @@ public class RBuild {
             b.tile.remove();
             builds.add(new RBuild(b, (byte) ox, (byte) oy));
         });
-        return true;
+        return Math.max(0, contacts.size + extra);
     }
 
     public @Nullable Tile getTile(Tile root, int dir, int absDir){
@@ -179,6 +186,20 @@ public class RBuild {
 
     public void draw(float ox, float oy, float rawRotation, float absRotation){
         Tmp.v1.set(x * tilesize, y * tilesize).rotate(rawRotation);
+        Draw.z(Layer.blockOver + 0.11f);
+        //Lines.stroke(1, Color.red);
+        //Lines.line(ox, oy, ox + Tmp.v1.x, oy + Tmp.v1.y);
+        if(build.block.size % 2 == 0){
+            Tmp.v1.add(Tmp.v3.set(-4f, -4f).rotate(absRotation));
+
+            //Lines.square(ox + Tmp.v1.x, oy + Tmp.v1.y, 4f, rawRotation);
+            //Tmp.v3.set(-4f, -4f).rotate(absRotation);
+            //Lines.stroke(1, Color.cyan);
+            //Lines.line(ox + Tmp.v1.x, oy + Tmp.v1.y, ox + Tmp.v1.x + Tmp.v3.x, oy + Tmp.v1.y + Tmp.v3.y);
+
+            //Tmp.v1.add(Tmp.v3);
+        }
+        //Draw.color();
         Draw.z(Layer.blockOver + 0.09f);
         //float offset = build.block.offset;
         //ox += offset; oy += offset;

@@ -18,6 +18,7 @@ import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.production.PayloadAcceptor.*;
 import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
@@ -86,7 +87,7 @@ public class Spinner extends Block {
         Draw.color();
     }
 
-    public class SpinnerBuild extends Building implements SpinDraw{
+    public class SpinnerBuild extends Building implements SpinDraw, HeavyBuild{
         public boolean ccw = false; //counter clockwise
 
         /** Below are only valid when spinning is true */
@@ -95,15 +96,16 @@ public class Spinner extends Block {
         public byte offset = 0; //-7 ~ 8 hopefully
         public @Nullable BuildPayload payload; //TODO refactor this to Building too
         //public float lifetime = 0f;
+        protected int weight = 0;
 
         /** Below are only valid if multiBuild is true */
         protected boolean multiBuild = false; //has more blocks stuck to this things
         protected Seq<RBuild> mbuilds = new Seq<RBuild>();
 
-        /*@Override
+        @Override
         public int weight(){
-            return payload == null ? 1 : multiBuild ? mbuilds.size + 2 : 2;//TODO make RBuild & XeloUtil consider weight (make this an interface?)
-        }*/
+            return payload == null ? 1 : weight;
+        }
 
         @Override
         public void updateTile() {
@@ -117,17 +119,30 @@ public class Spinner extends Block {
                         else{
                             int dir = Mathf.round(spin / spinTime) * Mathf.sign(ccw) + rotation;
                             Tile t = destTile(tile, dir, offset, payload.block().size);
-                            //TODO: offload to payload blocks if possible
-                            if(t != null && RBuild.validPlace(payload.block(), t.x, t.y)){ //if it can be dropped
-                                //try dropping what it has
-                                payload.place(t, dir - rotation + payload.build.rotation);
-                                payload = null;
-                                spinning = false;
-                                if(multiBuild){
-                                    multiBuild = false;
-                                    int newr = Mathf.mod(Mathf.round(spin / spinTime) * Mathf.sign(ccw), 4);
-                                    RBuild.placeAll(mbuilds, tile.nearby((newr + rotation) % 4), newr, dir);
-                                    mbuilds.clear();
+
+                            if(t != null){
+                                if(!multiBuild && t.build != null && t.build.acceptPayload(t.build, payload)){
+                                    //payload placing
+                                    t.build.handlePayload(t.build, payload);
+                                    if(t.build instanceof PayloadAcceptorBuild){
+                                        ((PayloadAcceptorBuild<?>) t.build).payVector.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle()).add(this).sub(t.build).clamp(-t.build.block.size * tilesize / 2f, -t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f);
+                                    }
+
+                                    payload = null;
+                                    spinning = false;
+                                }
+                                else if(RBuild.validPlace(payload.block(), t.x, t.y)){ //if it can be dropped
+                                    //try dropping what it has
+                                    payload.place(t, dir - rotation + payload.build.rotation);
+
+                                    payload = null;
+                                    spinning = false;
+                                    if(multiBuild){
+                                        multiBuild = false;
+                                        int newr = Mathf.mod(Mathf.round(spin / spinTime) * Mathf.sign(ccw), 4);
+                                        RBuild.placeAll(mbuilds, tile.nearby((newr + rotation) % 4), newr, dir);
+                                        mbuilds.clear();
+                                    }
                                 }
                             }
                         }
@@ -179,20 +194,28 @@ public class Spinner extends Block {
             Building b = tile.nearbyBuild(rotation);
             if(b.canPickup()){
                 if(b.block instanceof SlimeBlock){
-                    multiBuild = RBuild.pickup(mbuilds, b, rotation, maxBlocks, other -> (other != this && stickBool.get(other)));
+                    weight = RBuild.pickup(mbuilds, b, rotation, maxBlocks, other -> (other != this && stickBool.get(other)));
+                    multiBuild = weight >= 0;
                     if(!multiBuild) return;
+                    weight++; //root tile, is never a HeavyTile anyways
                 }
+                else weight = (b instanceof HeavyBuild) ? ((HeavyBuild) b).weight() : 1;
 
-                if(rotation % 2 == 0){
-                    //y is the offset
-                    offset = (byte)(b.tileY() - tileY());
-                    if(b.block.size % 2 == 0) offset -= evenOffsets[rotation][1];
+                switch(rotation){
+                    case 0:
+                        offset = (byte)(b.tileY() - tileY());
+                        break;
+                    case 1:
+                        offset = (byte)(tileX() - b.tileX());
+                        break;
+                    case 2:
+                        offset = (byte)(tileY() - b.tileY());
+                        break;
+                    default:
+                        offset = (byte)(b.tileX() - tileX());
                 }
-                else{
-                    //x is the offset
-                    offset = (byte)(b.tileX() - tileX());
-                    if(b.block.size % 2 == 0) offset -= evenOffsets[rotation][0];
-                }
+                if(b.block.size % 2 == 0) offset -= evenOffsets[rotation][0];
+
                 b.tile.remove();
                 payload = new BuildPayload(b);
             }
@@ -318,6 +341,7 @@ public class Spinner extends Block {
         public double sense(LAccess sensor){
             switch(sensor){
                 case rotation: return angle();
+                case enabled: return spinning ? 1 : 0;
                 default: return super.sense(sensor);
             }
         }
@@ -328,12 +352,14 @@ public class Spinner extends Block {
 
             ccw = read.bool();
             spinning = read.bool();
+            weight = 0;
             if(spinning){
                 spin = (float)read.b();
                 if(spin >= spinTime) looped = true;
                 offset = read.b();
                 if(mobile) payload = BetaMindy.mobileUtil.readPayload(read);
                 else payload = Payload.read(read);
+                //TODO recursively get weight value?
 
                 if(read.bool()){
                     multiBuild = true;
