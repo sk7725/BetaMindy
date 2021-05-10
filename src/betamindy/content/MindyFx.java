@@ -178,7 +178,12 @@ public class MindyFx {
         float x = e.x + xoff * e.fout() * 2.4f;
         float y = e.y + yoff * e.fout() * 2.4f;
 
-        Draw.color();
-        Draw.rect(((Block)e.data).icon(Cicon.medium), x, y, size, size, Time.time * 4f);
-    }).layer(Layer.flyingUnit + 1f);
+        color();
+        rect(((Block)e.data).icon(Cicon.medium), x, y, size, size, Time.time * 4f);//shar wtf
+    }).layer(Layer.flyingUnit + 1f),
+
+    omegaShine = new Effect(96f, e -> { //69 is too short :P
+        color();
+        rect("betamindy-omega-effect", e.x, e.y, 12f * e.fout(), 12f * e.fout(), Mathf.randomSeed(e.id) * 360f);
+    });
 }

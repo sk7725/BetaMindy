@@ -27,7 +27,6 @@ import static mindustry.Vars.tilesize;
 
 public class Spinner extends Block {
     public float spinTime = 16f;
-    //public float holdTime = 60f;
 
     public TextureRegion baseRegion, topRegion, laser, laserEnd, altIcon;
     public TextureRegion[] sideRegions = new TextureRegion[2];
@@ -38,6 +37,9 @@ public class Spinner extends Block {
 
     public int maxBlocks = 12;
     public final Boolf<Building> stickBool = b -> b.canPickup() && !(b.block == Blocks.phaseWall || b.block == Blocks.phaseWallLarge || b.block == Blocks.thoriumWall || b.block == Blocks.thoriumWallLarge);
+    /** Whether to keep spinning when picked up. */
+    public boolean inertia = false;
+    public Color inertiaColor = Pal.accent;
 
     public final int[][] evenOffsets = {{-1, -1}, {0, -1}, {0, 0}, {-1, 0}};
 
@@ -61,14 +63,14 @@ public class Spinner extends Block {
     public void load() {
         super.load();
         baseRegion = atlas.find(name + "-base");
-        topRegion = atlas.find(name + "-top");
+        topRegion = atlas.find(name + "-top", "betamindy-spinner-top");
         laser = atlas.find(name + "-laser", "betamindy-spinner-laser");
         laserEnd = atlas.find(name + "-laser-end", "betamindy-spinner-laser-end");
         altIcon = atlas.find(name + "-alt");
         for(int i = 0; i < 2; i++){
-            sideRegions[i] = atlas.find(name + "-" + i);
+            sideRegions[i] = atlas.find(name + "-" + i, "betamindy-spinner-" + i);
             for(int j = 0; j < 2; j++){
-                sideRegions2[i][j] = atlas.find(name + "-side-" + (j * 2 + i));
+                sideRegions2[i][j] = atlas.find(name + "-side-" + (j * 2 + i), "betamindy-spinner-side-" + (j * 2 + i));
             }
         }
     }
@@ -87,14 +89,14 @@ public class Spinner extends Block {
         Draw.color();
     }
 
-    public class SpinnerBuild extends Building implements SpinDraw, HeavyBuild{
+    public class SpinnerBuild extends Building implements SpinDraw, HeavyBuild, SpinUpdate{
         public boolean ccw = false; //counter clockwise
 
         /** Below are only valid when spinning is true */
         public boolean spinning = false, looped = false;
         public float spin = 0f; //0 ~ 4 * spinTime
         public byte offset = 0; //-7 ~ 8 hopefully
-        public @Nullable BuildPayload payload; //TODO refactor this to Building too
+        public @Nullable BuildPayload payload;
         //public float lifetime = 0f;
         protected int weight = 0;
 
@@ -104,14 +106,47 @@ public class Spinner extends Block {
 
         @Override
         public int weight(){
-            return payload == null ? 1 : weight;
+            return payload == null ? 1 : weight + 1;
         }
 
         @Override
-        public void updateTile() {
+        public void spinUpdate(float sx, float sy, float srad, float absRot, float rawRot){
+            if(spinning){
+                if(inertia){
+                    spin += delta();
+                    if(spin >= spinTime) looped = true;
+                }
+                updateSpinBlocks(sx, sy, rawRot);
+            }
+        }
+
+        public void updateSpinBlocks(float x, float y, float dr){
+            if(payload != null){
+                if(payload.build instanceof SpinUpdate){
+                    Tmp.v2.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle() + dr);
+                    ((SpinUpdate) payload.build).spinUpdate(x + Tmp.v2.x, y + Tmp.v2.y, Tmp.v2.len(), angle() + dr, rawAngle() * Mathf.sign(ccw) + dr);
+                }
+
+                if(multiBuild){
+                    float a = angle() + dr;
+                    float ra = rawAngle() * Mathf.sign(ccw) + dr;
+
+                    mbuilds.each(mb -> {
+                        if(mb.build instanceof SpinUpdate){
+                            Tmp.v2.set(mb.x * tilesize, mb.y * tilesize).rotate(ra).add(Tmp.v3.trns(a, tilesize));
+                            ((SpinUpdate) mb.build).spinUpdate(x + Tmp.v2.x, y + Tmp.v2.y, Tmp.v2.len(), a, ra);
+                        }
+                    });
+                }
+            }
+        }
+
+        @Override
+        public void updateTile(){
             if(spinning){
                 spin += delta();
                 if(spin >= spinTime) looped = true;
+                updateSpinBlocks(x, y, 0f);
                 if(!consValid()){
                     if(checkDrop()){
                         //it is almost 90 degrees, in its dropping window
@@ -200,6 +235,7 @@ public class Spinner extends Block {
                     weight++; //root tile, is never a HeavyTile anyways
                 }
                 else weight = (b instanceof HeavyBuild) ? ((HeavyBuild) b).weight() : 1;
+                if(weight > maxBlocks && !multiBuild) return; //even if it is overweight, refusing to pick up multiblocks here will lead to a critical bug. Normally this should not happen anyways
 
                 switch(rotation){
                     case 0:
@@ -235,31 +271,15 @@ public class Spinner extends Block {
 
         @Override
         public void draw(){
-            drawSpinning(x, y, 0f);
-            /*Draw.rect(baseRegion, x, y);
-            Draw.rect(sideRegions[Mathf.num(ccw)], x, y);
-            Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f);
-
-            if(!spinning || spin % spinTime < 0.0001f){
-                Draw.rect(topRegion, x, y);
-            }
-            else{
-                float r = (spin % spinTime) / spinTime * 90f;
-                Draw.rect(topRegion, x, y, r * Mathf.sign(ccw));
-                Draw.alpha(r / 90f);
-                Draw.rect(topRegion, x, y, (r - 90f) * Mathf.sign(ccw));
-                Draw.alpha(1f);
-            }
-
-            if(spinning && payload != null){
-                drawLaser();
-                drawPay();
-                if(multiBuild) RBuild.drawAll(mbuilds, x, y, angle(), rawAngle() * Mathf.sign(ccw));
-            }*/
+            drawSpinning(x, y, 0f, false);
         }
 
         @Override
         public void drawSpinning(float x, float y, float dr){
+            drawSpinning(x, y, dr, inertia);
+        }
+
+        public void drawSpinning(float x, float y, float dr, boolean tint){
             Draw.rect(baseRegion, x, y, dr);
             Draw.rect(sideRegions[Mathf.num(ccw)], x, y, dr);
             Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f + dr);
@@ -276,25 +296,23 @@ public class Spinner extends Block {
             }
 
             if(spinning && payload != null){
-                drawLaser(x, y, dr);
-                drawPay(x, y, dr);//TODO
+                drawLaser(x, y, dr, tint);
+                drawPay(x, y, dr);
                 if(multiBuild) RBuild.drawAll(mbuilds, x, y, angle() + dr, rawAngle() * Mathf.sign(ccw) + dr);
             }
         }
 
-        public void drawLaser(){
-            drawLaser(x, y, 0f);
-        }
-
-        public void drawLaser(float x, float y, float dr){
-            //TODO: payload block io graphical extension
+        public void drawLaser(float x, float y, float dr, boolean tint){
             Draw.z(Layer.blockOver + 0.15f);
             Tmp.v2.trns(angle() + dr, tilesize);
-            Drawf.laser(team, laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
-        }
-
-        public void drawPay(){
-            drawPay(x, y, 0f);
+            if(tint){
+                Draw.color(inertiaColor);
+                Drawf.laser(team, laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
+                Draw.color();
+            }
+            else{
+                Drawf.laser(team, laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
+            }
         }
 
         public void drawPay(float x, float y, float dr){
@@ -302,7 +320,7 @@ public class Spinner extends Block {
             Tmp.v1.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle() + dr);
             Drawf.shadow(x + Tmp.v1.x, y + Tmp.v1.y, tilesize * payload.block().size * 2f);
             Draw.z(Layer.blockOver + 0.1f);
-            if(payload.build instanceof SpinDraw) ((SpinDraw) payload.build).drawSpinning(x + Tmp.v1.x, y + Tmp.v1.y, (payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f) + dr);
+            if(payload.build instanceof SpinDraw) ((SpinDraw) payload.build).drawSpinning(x + Tmp.v1.x, y + Tmp.v1.y, rawAngle() * Mathf.sign(ccw) + dr);
             else Draw.rect(payload.icon(Cicon.full), x + Tmp.v1.x, y + Tmp.v1.y, (payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f) + dr);
         }
 
@@ -338,6 +356,25 @@ public class Spinner extends Block {
         }
 
         @Override
+        public void onDestroyed(){
+            if(payload != null){
+                Tmp.v1.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle());
+                Fx.dynamicExplosion.at(x + Tmp.v1.x, y + Tmp.v1.y, payload.block().size / 1.3f);
+            }
+            if(multiBuild){
+                for(RBuild rb : mbuilds){
+                    Tmp.v1.set(rb.x * tilesize, rb.y * tilesize).rotate(rawAngle() + Mathf.sign(ccw));
+                    if(rb.build.block.size % 2 == 0){
+                        Tmp.v1.add(Tmp.v3.set(-4f, -4f).rotate(angle()));
+                    }
+                    Tmp.v1.add(Tmp.v3.trns(angle(), tilesize));
+                    Fx.dynamicExplosion.at(x + Tmp.v1.x, y + Tmp.v1.y, rb.build.block.size / 1.3f);
+                }
+            }
+            super.onDestroyed();
+        }
+
+        @Override
         public double sense(LAccess sensor){
             switch(sensor){
                 case rotation: return angle();
@@ -359,7 +396,8 @@ public class Spinner extends Block {
                 offset = read.b();
                 if(mobile) payload = BetaMindy.mobileUtil.readPayload(read);
                 else payload = Payload.read(read);
-                //TODO recursively get weight value?
+
+                if(payload != null) weight = read.b();
 
                 if(read.bool()){
                     multiBuild = true;
@@ -383,6 +421,8 @@ public class Spinner extends Block {
                 write.b(offset);
                 if(mobile) BetaMindy.mobileUtil.writePayload(payload, write);
                 else Payload.write(payload, write);
+
+                if(payload != null) write.b(weight);
 
                 write.bool(multiBuild);
                 if(multiBuild){

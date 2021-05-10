@@ -15,6 +15,7 @@ import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.production.payduction.*;
 import betamindy.world.blocks.storage.*;
 import betamindy.world.blocks.units.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.*;
@@ -33,11 +34,11 @@ import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno,
+    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune,
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner,
+    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
     silo, warehouse, pressureContainer,
     //walls
@@ -305,6 +306,28 @@ public class MindyBlocks implements ContentList {
             hasPower = true;
             consumes.power(0.3f);
             requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.plastanium, 8));
+        }};
+
+        spinnerInert = new Spinner("spinner-inert"){{
+            hasPower = true;
+            inertia = true;
+            consumes.power(0.3f);
+            requirements(Category.distribution, with(Items.thorium, 30, Items.silicon, 35, MindyItems.vector, 8));
+        }};
+
+        spinnerInfi = new Spinner("spinner-infi"){{
+            hasPower = true;
+            maxBlocks = 120;
+            consumes.power(0.3f);
+            requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
+        }};
+
+        spinnerInertInfi = new Spinner("spinner-inert-infi"){{
+            hasPower = true;
+            inertia = true;
+            maxBlocks = 120;
+            consumes.power(0.3f);
+            requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
         }};
 
         silo = new StorageBlock("silo"){
@@ -623,5 +646,16 @@ public class MindyBlocks implements ContentList {
             maxNewlines = 1;
             maxTextLength = 0;
         }};
+
+        omegaRune = new RuneBlock("omega-rune"){
+            @Override
+            public boolean isHidden(){
+                return super.isHidden() || !(Vars.headless || Vars.net.server()); //TODO remove
+            }
+
+            {
+                requirements(Category.effect, with(MindyItems.scalar, 1, MindyItems.vector, 1, MindyItems.tensor, 1, MindyItems.source, 1));
+            }
+        };
     }
 }

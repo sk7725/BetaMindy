@@ -205,7 +205,7 @@ public class RBuild {
         //ox += offset; oy += offset;
         Drawf.shadow(ox + Tmp.v1.x, oy + Tmp.v1.y, tilesize * build.block.size * 2f);
         Draw.z(Layer.blockOver + 0.1f);
-        if(build instanceof SpinDraw) ((SpinDraw) build).drawSpinning(ox + Tmp.v1.x, oy + Tmp.v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
+        if(build instanceof SpinDraw) ((SpinDraw) build).drawSpinning(ox + Tmp.v1.x, oy + Tmp.v1.y, rawRotation);
         else Draw.rect(build.block.icon(Cicon.full), ox + Tmp.v1.x, oy + Tmp.v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
     }
 
@@ -214,5 +214,6 @@ public class RBuild {
             kx += tilesize / 2f; ky += tilesize / 2f;
         }
         Fx.dynamicExplosion.at(kx, ky, build.block.size / 1.3f); //boom!
+        Sounds.explosion.at(kx, ky);
     }
 }
