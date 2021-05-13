@@ -8,6 +8,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import betamindy.graphics.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -25,9 +26,13 @@ public class RepairTurret extends Block{
     public float repairSpeed = 0.3f;
     public float powerUse;
 
+    public float phaseRangeBoost = 30f;
+    public float phaseBoost = 0.15f;
+
     public TextureRegion baseRegion, laser, laserEnd;
 
     public Color laserColor = Color.valueOf("e8ffd7");
+    public Color phaseColor = Pal2.scalar; //TODO booster
 
     public RepairTurret(String name){
         super(name);
@@ -36,12 +41,15 @@ public class RepairTurret extends Block{
         flags = EnumSet.of(BlockFlag.repair);
         hasPower = true;
         outlineIcon = true;
+        group = BlockGroup.projectors;
     }
 
     @Override
     public void setStats(){
         super.setStats();
         stats.add(Stat.range, repairRadius / tilesize, StatUnit.blocks);
+        stats.add(Stat.boostEffect, phaseRangeBoost / tilesize, StatUnit.blocks);
+        stats.add(Stat.boostEffect, (phaseBoost + repairSpeed) / repairSpeed, StatUnit.timesSpeed);
     }
 
     @Override

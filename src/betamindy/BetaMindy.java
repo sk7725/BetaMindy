@@ -19,6 +19,7 @@ import mindustry.world.blocks.*;
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
+    public static final String omegaServer = "185.86.230.102:25603";
     public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
@@ -51,7 +52,7 @@ public class BetaMindy extends Mod{
             settingAdder.init();
             Core.app.post(() -> Core.app.post(() -> {
                 if(!Core.settings.getBool("nonmoddedservers")) Vars.defaultServers.clear();
-                Vars.defaultServers.add(new ServerGroup("[white][accent]Modded BetaMindy Server[][]", new String[]{"185.86.230.102:25603"}));
+                Vars.defaultServers.add(new ServerGroup("[white][accent]Modded BetaMindy Server[][]", new String[]{omegaServer}));
             }));
         });
     }
@@ -93,7 +94,7 @@ public class BetaMindy extends Mod{
         for(ContentList list : mindyContent){
             list.load();
 
-            Log.info("@: Loaded content list: @", getClass().getSimpleName(), list.getClass().getSimpleName());
+            //Log.info("@: Loaded content list: @", getClass().getSimpleName(), list.getClass().getSimpleName());
         }
     }
 }

@@ -29,6 +29,9 @@ public class RBuild {
     public static final int[][] evenOffsets = {{-1, -1}, {0, -1}, {0, 0}, {-1, 0}};
     private static final Queue<Building> queue = new Queue<Building>();
     private static final Seq<Building> contacts = new Seq<Building>();
+    private static final Vec2 v1 = new Vec2();
+    private static final Vec2 v2 = new Vec2();
+    private static final Vec2 v3 = new Vec2();
 
     public RBuild(Building bp, byte x, byte y){
         build = bp;
@@ -110,8 +113,8 @@ public class RBuild {
      * @param rawRotation the degrees that the blocks have turned, relative.
      */
     public static void drawAll(Seq<RBuild> builds, float ox, float oy, float rotation, float rawRotation){
-        Tmp.v2.trns(rotation, tilesize);
-        builds.each(b -> b.draw(ox + Tmp.v2.x, oy + Tmp.v2.y, rawRotation, rotation));
+        v2.trns(rotation, tilesize);
+        builds.each(b -> b.draw(ox + v2.x, oy + v2.y, rawRotation, rotation));
     }
 
     /**
@@ -185,28 +188,28 @@ public class RBuild {
     }
 
     public void draw(float ox, float oy, float rawRotation, float absRotation){
-        Tmp.v1.set(x * tilesize, y * tilesize).rotate(rawRotation);
+        v1.set(x * tilesize, y * tilesize).rotate(rawRotation);
         Draw.z(Layer.blockOver + 0.11f);
         //Lines.stroke(1, Color.red);
-        //Lines.line(ox, oy, ox + Tmp.v1.x, oy + Tmp.v1.y);
+        //Lines.line(ox, oy, ox + v1.x, oy + v1.y);
         if(build.block.size % 2 == 0){
-            Tmp.v1.add(Tmp.v3.set(-4f, -4f).rotate(absRotation));
+            v1.add(v3.set(-4f, -4f).rotate(absRotation));
 
-            //Lines.square(ox + Tmp.v1.x, oy + Tmp.v1.y, 4f, rawRotation);
-            //Tmp.v3.set(-4f, -4f).rotate(absRotation);
+            //Lines.square(ox + v1.x, oy + v1.y, 4f, rawRotation);
+            //v3.set(-4f, -4f).rotate(absRotation);
             //Lines.stroke(1, Color.cyan);
-            //Lines.line(ox + Tmp.v1.x, oy + Tmp.v1.y, ox + Tmp.v1.x + Tmp.v3.x, oy + Tmp.v1.y + Tmp.v3.y);
+            //Lines.line(ox + v1.x, oy + v1.y, ox + v1.x + v3.x, oy + v1.y + v3.y);
 
-            //Tmp.v1.add(Tmp.v3);
+            //v1.add(v3);
         }
         //Draw.color();
         Draw.z(Layer.blockOver + 0.09f);
         //float offset = build.block.offset;
         //ox += offset; oy += offset;
-        Drawf.shadow(ox + Tmp.v1.x, oy + Tmp.v1.y, tilesize * build.block.size * 2f);
+        Drawf.shadow(ox + v1.x, oy + v1.y, tilesize * build.block.size * 2f);
         Draw.z(Layer.blockOver + 0.1f);
-        if(build instanceof SpinDraw) ((SpinDraw) build).drawSpinning(ox + Tmp.v1.x, oy + Tmp.v1.y, rawRotation);
-        else Draw.rect(build.block.icon(Cicon.full), ox + Tmp.v1.x, oy + Tmp.v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
+        if(build instanceof SpinDraw) ((SpinDraw) build).drawSpinning(ox + v1.x, oy + v1.y, rawRotation);
+        else Draw.rect(build.block.icon(Cicon.full), ox + v1.x, oy + v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
     }
 
     public void kill(float kx, float ky){

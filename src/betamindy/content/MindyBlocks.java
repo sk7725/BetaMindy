@@ -30,6 +30,7 @@ import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
+import static betamindy.BetaMindy.omegaServer;
 import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
@@ -54,7 +55,9 @@ public class MindyBlocks implements ContentList {
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
-    blockFurnace, heavyFurnace, gateSwitch;
+    blockFurnace, heavyFurnace, gateSwitch,
+    //catalysts (pushreact & spinreact & boost)
+    discharger;
 
     @Override
     public void load() {
@@ -647,10 +650,17 @@ public class MindyBlocks implements ContentList {
             maxTextLength = 0;
         }};
 
+        discharger = new Discharger("discharger"){{
+            health = 80;
+            buildCostMultiplier = 3f;
+            consumes.powerBuffered(4000f);
+            requirements(Category.effect, with(Items.lead, 10, Items.graphite, 10, Items.silicon, 10));
+        }};
+
         omegaRune = new RuneBlock("omega-rune"){
             @Override
             public boolean isHidden(){
-                return super.isHidden() || !(Vars.headless || Vars.net.server()); //TODO remove
+                return super.isHidden() || !(Vars.headless || (Vars.net.active() && Vars.player.con != null && Vars.player.con.address.equals(omegaServer)));
             }
 
             {

@@ -116,15 +116,15 @@ public class Spinner extends Block {
                     spin += delta();
                     if(spin >= spinTime) looped = true;
                 }
-                updateSpinBlocks(sx, sy, rawRot);
+                updateSpinBlocks(sx, sy, rawRot, srad);
             }
         }
 
-        public void updateSpinBlocks(float x, float y, float dr){
+        public void updateSpinBlocks(float x, float y, float dr, float addrad){
             if(payload != null){
                 if(payload.build instanceof SpinUpdate){
                     Tmp.v2.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle() + dr);
-                    ((SpinUpdate) payload.build).spinUpdate(x + Tmp.v2.x, y + Tmp.v2.y, Tmp.v2.len(), angle() + dr, rawAngle() * Mathf.sign(ccw) + dr);
+                    ((SpinUpdate) payload.build).spinUpdate(x + Tmp.v2.x, y + Tmp.v2.y, Tmp.v2.len() + addrad, angle() + dr, rawAngle() * Mathf.sign(ccw) + dr);
                 }
 
                 if(multiBuild){
@@ -134,7 +134,7 @@ public class Spinner extends Block {
                     mbuilds.each(mb -> {
                         if(mb.build instanceof SpinUpdate){
                             Tmp.v2.set(mb.x * tilesize, mb.y * tilesize).rotate(ra).add(Tmp.v3.trns(a, tilesize));
-                            ((SpinUpdate) mb.build).spinUpdate(x + Tmp.v2.x, y + Tmp.v2.y, Tmp.v2.len(), a, ra);
+                            ((SpinUpdate) mb.build).spinUpdate(x + Tmp.v2.x, y + Tmp.v2.y, Tmp.v2.len() + addrad, a, ra);
                         }
                     });
                 }
@@ -146,7 +146,7 @@ public class Spinner extends Block {
             if(spinning){
                 spin += delta();
                 if(spin >= spinTime) looped = true;
-                updateSpinBlocks(x, y, 0f);
+                updateSpinBlocks(x, y, 0f, 0f);
                 if(!consValid()){
                     if(checkDrop()){
                         //it is almost 90 degrees, in its dropping window

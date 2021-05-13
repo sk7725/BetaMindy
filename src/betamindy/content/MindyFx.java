@@ -185,5 +185,10 @@ public class MindyFx {
     omegaShine = new Effect(96f, e -> { //69 is too short :P
         color();
         rect("betamindy-omega-effect", e.x, e.y, 12f * e.fout(), 12f * e.fout(), Mathf.randomSeed(e.id) * 360f);
+    }),
+
+    powerDust = new Effect(45f, e -> {
+        color(e.color, Color.white, e.fout());
+        Fill.square(e.x + Mathf.range(e.fout()), e.y + Mathf.range(e.fout()), e.fout() * 1.5f, 45f);
     });
 }
