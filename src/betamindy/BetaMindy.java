@@ -4,6 +4,7 @@ import arc.*;
 import arc.func.*;
 import arc.struct.*;
 import arc.util.Log;
+import betamindy.graphics.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
@@ -34,7 +35,8 @@ public class BetaMindy extends Mod{
         new MindyUnitTypes(),
         new MindyBlocks(),
         new MindyTechTree(),
-        new MindyWeathers()
+        new MindyWeathers(),
+        new FireColor()
     };
 
     public BetaMindy() {

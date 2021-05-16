@@ -20,10 +20,8 @@ import mindustry.world.meta.*;
 import static arc.Core.atlas;
 
 public class Discharger extends Battery {
-    //TODO make SpinUpdate support bigger blocks
-    //TODO extends AbilityBlock instead of Battery
     /** Lightning damage. */
-    public float damage = 10f;
+    public float damage = 15f;
     /** Amount of lightning. */
     public int amount = 2;
     public float reloadTime = 4f;
@@ -113,15 +111,16 @@ public class Discharger extends Battery {
             heat = 1f;
             shootSound.at(this);
 
+            int rnd = Mathf.random(2);
             for(int i = 0; i < amount; i++) Lightning.create(team, lightningColor, damage, x + Mathf.range(4f), y + Mathf.range(4f), dir * 90f + Mathf.range(inaccuracy), Mathf.round(pushLength * f));
-            for(int i = 0 ; i < Mathf.random(2) + amount; i++) shootEffect.at(x + Mathf.range(4f), y + Mathf.range(4f), lightningColor);
+            for(int i = 0 ; i < rnd + amount; i++) shootEffect.at(x + Mathf.range(size / 2f), y + Mathf.range(size / 2f), lightningColor);
         }
 
         @Override
         public void spinUpdate(float sx, float sy, float srad, float absRot, float rawRot){
             updateVars();
             reload += delta();
-            if(!noCharge() && Mathf.chanceDelta(Math.min(0.3f, effectChance * srad))) shootEffect.at(sx + Mathf.range(4f), sy + Mathf.range(4f), lightningColor);
+            if(!noCharge() && Mathf.chanceDelta(Math.min(0.3f, effectChance * srad))) shootEffect.at(sx + Mathf.range(size / 2f), sy + Mathf.range(size / 2f), lightningColor);
             if(noCharge() || reload < reloadTime) return;
             float f = useCharge(spinCharge);
             reload = 0f;

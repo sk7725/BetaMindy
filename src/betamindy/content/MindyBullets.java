@@ -1,14 +1,24 @@
 package betamindy.content;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.util.*;
 import betamindy.entities.bullet.*;
-import mindustry.content.Fx;
+import betamindy.graphics.*;
+import mindustry.content.*;
 import mindustry.ctype.ContentList;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.world.*;
+
+import static mindustry.Vars.world;
 
 public class MindyBullets implements ContentList {
-    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar;
+    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball;
     @Override
     public void load(){
         payBullet = new PayloadBullet(1.6f){{
@@ -124,5 +134,46 @@ public class MindyBullets implements ContentList {
 
             shiny = true;
         }};
+
+        colorFireball = new BulletType(1f, 4){
+            {
+                pierce = true;
+                collidesTiles = false;
+                collides = false;
+                drag = 0.03f;
+                hitEffect = despawnEffect = Fx.none;
+            }
+
+            @Override
+            public void init(Bullet b){
+                b.vel.setLength(0.6f + Mathf.random(2f));
+                if(!(b.data instanceof Item)) b.data(Items.coal);
+            }
+
+            @Override
+            public void draw(Bullet b){
+                FireColor.fset((Item)b.data, b.fin(), Color.gray);
+                Fill.circle(b.x, b.y, 3f * b.fout());
+                Draw.reset();
+            }
+
+            @Override
+            public void update(Bullet b){
+                if(Mathf.chance(0.04 * Time.delta)){
+                    Tile tile = world.tileWorld(b.x, b.y);
+                    if(tile != null){
+                        Fires.create(tile);
+                    }
+                }
+
+                if(Mathf.chance(0.1 * Time.delta)){
+                    Fx.fireballsmoke.at(b.x, b.y);
+                }
+
+                if(Mathf.chance(0.1 * Time.delta)){
+                    MindyFx.ballfire.at(b.x, b.y, 0f, b.data);
+                }
+            }
+        };
     }
 }

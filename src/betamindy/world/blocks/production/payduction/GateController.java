@@ -88,5 +88,14 @@ public class GateController extends Block {
             }
             Draw.color();
         }
+
+        @Override
+        public void drawLight(){
+            if(Time.time % 90 < 30) return;
+            int mode = getMode();
+            if(mode >= 0){
+                Drawf.light(team, x, y, 20f, statusColor[mode], 0.8f);
+            }
+        }
     }
 }

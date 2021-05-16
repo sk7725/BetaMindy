@@ -22,7 +22,7 @@ public class RepairTurret extends Block{
 
     public int timerTarget = timers++;
 
-    public float repairRadius = 50f;
+    public float repairRadius = 60f;
     public float repairSpeed = 0.3f;
     public float powerUse;
 
@@ -49,7 +49,7 @@ public class RepairTurret extends Block{
         super.setStats();
         stats.add(Stat.range, repairRadius / tilesize, StatUnit.blocks);
         stats.add(Stat.boostEffect, phaseRangeBoost / tilesize, StatUnit.blocks);
-        stats.add(Stat.boostEffect, (phaseBoost + repairSpeed) / repairSpeed, StatUnit.timesSpeed);
+        stats.add(Stat.boostEffect, 1f + phaseBoost / repairSpeed, StatUnit.timesSpeed);
     }
 
     @Override

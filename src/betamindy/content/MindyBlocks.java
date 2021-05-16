@@ -43,7 +43,7 @@ public class MindyBlocks implements ContentList {
     //effect
     silo, warehouse, pressureContainer,
     //walls
-    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, teamWall,
+    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeClear,
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
@@ -57,7 +57,7 @@ public class MindyBlocks implements ContentList {
     //crafting
     blockFurnace, heavyFurnace, gateSwitch,
     //catalysts (pushreact & spinreact & boost)
-    discharger;
+    discharger, fireCan, campfire;
 
     @Override
     public void load() {
@@ -632,6 +632,32 @@ public class MindyBlocks implements ContentList {
             requirements(Category.units, with(Items.titanium, 50, Items.silicon, 25, Items.metaglass, 30));
         }};
 
+        spikeScrap = new Spike("spike"){{
+            health = 100;
+            requirements(Category.defense, with(Items.scrap, 6));
+        }};
+
+        spikeSurge = new Spike("spike-surge"){{
+            health = 400;
+            damage = 75f;
+            lightningChance = 0.05f;
+            requirements(Category.defense, with(Items.titanium, 3, Items.surgeAlloy, 3));
+        }};
+
+        spikePyra = new Spike("spike-pyra"){{
+            health = 200;
+            status = StatusEffects.burning;
+            lightningChance = 0.05f;
+            requirements(Category.defense, with(Items.lead, 6, Items.pyratite, 3));
+        }};
+
+        spikeClear = new Spike("spike-clear"){{
+            health = 400;
+            damage = 75f;
+            celeste = true;
+            requirements(Category.defense, with(Items.metaglass, 3, MindyItems.vector, 3));
+        }};
+
         spotlight = new FloodLight("spotlight"){{
             requirements(Category.effect, BuildVisibility.lightingOnly, with(Items.graphite, 10, Items.silicon, 4));
 
@@ -648,6 +674,25 @@ public class MindyBlocks implements ContentList {
 
             maxNewlines = 1;
             maxTextLength = 0;
+        }};
+
+        fireCan = new Campfire("fire-can"){{
+            health = 100;
+            itemCapacity = 15;
+            buildCostMultiplier = 3f;
+            requirements(Category.effect, with(Items.copper, 12, Items.sand, 10));
+        }};
+
+        campfire = new Campfire("campfire"){{
+            size = 2;
+            health = 400;
+            itemCapacity = 30;
+            buildCostMultiplier = 3f;
+
+            fireEffect = MindyFx.bigFire;
+            fireDustEffect = MindyFx.bigFireDust;
+            smokeChance = 0.15f;
+            requirements(Category.effect, with(Items.copper, 48, Items.titanium, 20, Items.sand, 10));
         }};
 
         discharger = new Discharger("discharger"){{

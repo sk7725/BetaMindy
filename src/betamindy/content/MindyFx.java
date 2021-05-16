@@ -6,18 +6,19 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import betamindy.graphics.Pal2;
+import betamindy.graphics.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.Team;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
 
 import static arc.graphics.g2d.Draw.*;
 //I do not want my fills and lines fighting, so no wildcad imports
-import static arc.graphics.g2d.Lines.lineAngle;
-import static arc.graphics.g2d.Lines.stroke;
+import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.renderer;
 
@@ -190,5 +191,71 @@ public class MindyFx {
     powerDust = new Effect(45f, e -> {
         color(e.color, Color.white, e.fout());
         Fill.square(e.x + Mathf.range(e.fout()), e.y + Mathf.range(e.fout()), e.fout() * 1.5f, 45f);
+    }),
+
+    fire = new Effect(50f, e -> {
+        FireColor.fset(e.data == null ? Items.coal : (Item)e.data, e.fin());
+
+        randLenVectors(e.id, 2, 2f + e.fin() * 9f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.2f + e.fslope() * 1.5f);
+        });
+
+        color();
+        Drawf.light(Team.derelict, e.x, e.y, 20f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
+    }),
+
+    bigFire = new Effect(60f, e -> {
+        FireColor.fset(e.data == null ? Items.coal : (Item)e.data, e.fin());
+
+        randLenVectors(e.id, 4, 2f + e.fin() * 11f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.5f + e.fslope() * 3f);
+        });
+
+        color();
+        Drawf.light(Team.derelict, e.x, e.y, 40f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
+    }),
+
+    ballfire = new Effect(25f, e -> {
+        FireColor.fset(e.data == null ? Items.coal : (Item)e.data, e.fin());
+
+        randLenVectors(e.id, 2, 2f + e.fin() * 7f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.2f + e.fout() * 1.5f);
+        });
+    }),
+
+    fireDust = new Effect(25f, e -> {
+        FireColor.fset(e.data == null ? Items.coal : (Item)e.data, e.fin());
+
+        randLenVectors(e.id, 3, 2f + e.fin() * 9f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.2f + e.fout() * 1.3f);
+        });
+
+        color();
+        Drawf.light(Team.derelict, e.x, e.y, 18f * e.fout(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
+    }),
+
+    bigFireDust = new Effect(30f, e -> {
+        FireColor.fset(e.data == null ? Items.coal : (Item)e.data, e.fin());
+
+        randLenVectors(e.id, 6, 2f + e.fin() * 11f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.5f + e.fout() * 2.5f);
+        });
+
+        color();
+        Drawf.light(Team.derelict, e.x, e.y, 35f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
+    }),
+
+    question = new Effect(30f, e -> {
+        color(e.color);
+        rect("betamindy-question-effect", e.x, e.y, 7f * e.fslope(), 7f * e.fslope());
+    }),
+
+    forbidden = new Effect(60f, e -> {
+        float f = Mathf.clamp(e.fout() * 3f - 2f);
+        Tmp.v1.set(Mathf.range(2f), Mathf.range(2f)).scl(f).add(e.x, e.y);
+
+        stroke(3f * e.fout(), e.color);
+        lineAngleCenter(Tmp.v1.x, Tmp.v1.y, 45f, 16f);
+        lineAngleCenter(Tmp.v1.x, Tmp.v1.y, -45f, 16f);
     });
 }
