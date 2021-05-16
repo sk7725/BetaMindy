@@ -10,7 +10,7 @@ Java мод для тестирования и хаотичного весель
 Check planned features/known bugs in the [Trello](https://trello.com/b/AiElGCt1) before suggesting content/improvements or submitting bugs!
 
 ## Enjoying   
-[![Download](https://img.shields.io/github/v/release/sk7725/BetaMindy?color=green&include_prereleases&label=DOWNLOAD%20LATEST%20RELEASE&logo=github&logoColor=green&style=for-the-badge)](https://github.com/sk7725/BetaMindy/releases) [![Total Downloads](https://img.shields.io/github/downloads/sk7725/BetaMindy/total?color=555555&label=%20&style=for-the-badge)](https://github.com/sk7725/BetaMindy/releases)
+[![Download](https://img.shields.io/github/v/release/sk7725/BetaMindy?color=green&include_prereleases&label=DOWNLOAD%20LATEST%20RELEASE&logo=github&logoColor=green&style=for-the-badge)](https://github.com/sk7725/BetaMindy/releases) [![Total Downloads](https://img.shields.io/github/downloads/sk7725/BetaMindy/total?color=555555&label=%20&style=for-the-badge&logo=docusign&logoColor=green)](https://github.com/sk7725/BetaMindy/releases)
 ### Releases   
 Go to the releases, the latest release will have a `BetaMindy.jar` attached to it that you can download. If it does not have it, follow the steps below(recommended) or bother me with a new issue so I can attach the compiled mod.   
 After you have the `BetaMindy.jar`, paste it into your mod folder(locate your mod folder in the "open mod folder" of Mindustry).   
