@@ -44,8 +44,7 @@ public class SettingAdder {
             Method m = table.getClass().getDeclaredMethod(method, types);
             m.invoke(table, values);
         }catch(Exception e){
-            throw new RuntimeException(e);
-            //Log.err(e);
+            Log.err(e);
         }
     }
 }
