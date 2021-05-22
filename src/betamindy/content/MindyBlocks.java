@@ -3,6 +3,7 @@ package betamindy.content;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
+import arc.util.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
@@ -10,6 +11,7 @@ import betamindy.world.blocks.defense.turrets.pattern.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.logic.*;
+import betamindy.world.blocks.payloads.*;
 import betamindy.world.blocks.power.*;
 import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.production.payduction.*;
@@ -25,7 +27,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.experimental.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
@@ -338,8 +339,14 @@ public class MindyBlocks implements ContentList {
 
             @Override
             public void load(){
-                iconRegion = Drawm.generateTeamRegion(this);
                 super.load();
+                iconRegion = Drawm.getTeamRegion(this);
+            }
+
+            @Override
+            public void createIcons(MultiPacker packer){
+                Drawm.generateTeamRegion(packer, this);
+                super.createIcons(packer);
             }
 
             @Override
@@ -360,8 +367,14 @@ public class MindyBlocks implements ContentList {
 
             @Override
             public void load(){
-                iconRegion = Drawm.generateTeamRegion(this);
                 super.load();
+                iconRegion = Drawm.getTeamRegion(this);
+            }
+
+            @Override
+            public void createIcons(MultiPacker packer){
+                Drawm.generateTeamRegion(packer, this);
+                super.createIcons(packer);
             }
 
             @Override

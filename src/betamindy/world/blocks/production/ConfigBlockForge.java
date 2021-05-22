@@ -6,9 +6,9 @@ import mindustry.Vars;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
-import mindustry.world.blocks.experimental.*;
+import betamindy.world.blocks.payloads.*;
 
-public class ConfigBlockForge extends BlockForge {
+public class ConfigBlockForge extends BlockForge{
     protected int[] minSizes = {1, 3, 5};
     protected int[] maxSizes = {2, 4, 6};
     public ConfigBlockForge(String name){

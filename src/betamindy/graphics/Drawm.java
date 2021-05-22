@@ -21,9 +21,11 @@ import arc.graphics.gl.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 
 public class Drawm {
@@ -60,9 +62,8 @@ public class Drawm {
         Draw.reset();
     }
 
-    /** Generates all team regions and returns the sharded team region for icon. */
-    public static @Nullable TextureRegion generateTeamRegion(Block b){
-        TextureRegion shardTeamTop = null;
+    /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */
+    public static void generateTeamRegion(MultiPacker packer, Block b){
         PixmapRegion teamr = Core.atlas.getPixmap(b.name + "-team");
 
         for(Team team : Team.all){
@@ -77,15 +78,22 @@ public class Drawm {
                         out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
                     }
                 }
-                Texture texture  = new Texture(out);
-                TextureRegion res = Core.atlas.addRegion(b.name + "-team-" + team.name, new TextureRegion(texture));
+                packer.add(PageType.main, b.name + "-team-" + team.name, out);
 
-                if(team == Team.sharded){
-                    shardTeamTop = res;
+                //for 6.0 compatibility only! TODO remove in 7.0
+                if(Version.number <= 6){
+                    Core.atlas.addRegion(b.name + "-team-" + team.name, new TextureRegion(new Texture(out)));
                 }
             }
         }
-        return shardTeamTop;
+
+        //force reload of team region
+        b.load();
+    }
+
+    /** @return the sharded team texture region for this block */
+    public static TextureRegion getTeamRegion(Block b){
+        return Core.atlas.find(b.name + "-team-sharded");
     }
 
     /** Draws a sprite that should be lightwise correct, using 4 sprites each colored with a different lighting angle. */
