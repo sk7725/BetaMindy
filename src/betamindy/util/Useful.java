@@ -14,6 +14,7 @@
 
 package betamindy.util;
 
+import arc.*;
 import arc.func.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -24,8 +25,10 @@ import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.input.*;
 import mindustry.type.Liquid;
 import mindustry.world.*;
+import mindustry.world.blocks.payloads.*;
 
 import java.util.*;
 
@@ -146,5 +149,77 @@ public class Useful {
         if(c.get(Calendar.MONTH) != Calendar.DECEMBER) return false;
         int d = c.get(Calendar.DAY_OF_MONTH);
         return d >= 23; //12/23 ~ 12/31
+    }
+
+    /** -1null 0W 1A 2S 3D */
+    public static byte wasd(){
+        float ya = Core.input.axis(Binding.move_y);
+        float xa = Core.input.axis(Binding.move_x);
+        if(Math.abs(ya) > 0.2f){
+            if(ya > 0) return 0;
+            return 2;
+        }
+        if(Math.abs(xa) > 0.2f){
+            if(xa > 0) return 3;
+            return 1;
+        }
+        return -1;
+    }
+
+    /** -1null 0D 1W 2A 3S */
+    public static byte dwas(){
+        float ya = Core.input.axis(Binding.move_y);
+        float xa = Core.input.axis(Binding.move_x);
+        if(Math.abs(ya) > 0.2f){
+            if(ya > 0) return 1;
+            return 3;
+        }
+        if(Math.abs(xa) > 0.2f){
+            if(xa > 0) return 0;
+            return 2;
+        }
+        return -1;
+    }
+
+    public static void lockCam(Vec2 pos){
+        if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = true;
+        Core.camera.position.set(pos);
+    }
+
+    public static void unlockCam(){
+        if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = false;
+    }
+
+    public static boolean dumpPlayerUnit(UnitPayload u, Player player){
+        if(u.unit.type == null) return true;
+
+        if(!Units.canCreate(u.unit.team, u.unit.type)){
+            u.deactiveTime = 1f;
+            return false;
+        }
+
+        //check if unit can be dumped here
+        EntityCollisions.SolidPred solid = u.unit.solidity();
+        if(solid != null){
+            int tx = u.unit.tileX(), ty = u.unit.tileY();
+            boolean nearEmpty = !solid.solid(tx, ty);
+            for(Point2 p : Geometry.d4){
+                nearEmpty |= !solid.solid(tx + p.x, ty + p.y);
+            }
+
+            //cannot dump on solid blocks
+            if(!nearEmpty) return false;
+        }
+
+        //no client dumping
+        if(Vars.net.client()) return true;
+
+        //prevents stacking
+        u.unit.vel.add(Mathf.range(0.5f), Mathf.range(0.5f));
+        u.unit.add();
+        Events.fire(new EventType.UnitUnloadEvent(u.unit));
+        player.unit(u.unit);
+
+        return true;
     }
 }

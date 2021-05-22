@@ -16,16 +16,22 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class MindyItems implements ContentList {
-    public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source;
+    public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source, cryonite;
 
     public void load(){
         bittrium = new AnimatedItem("bittrium", Color.valueOf("00ffff")){{
             charge = 10.24f;
             radioactivity = 10.24f;
             cost = 0.1f;
+            hardness = 15;
 
             transition = 5;
             animDelay = 4f;
+        }};
+
+        cryonite = new Item("cryonite", Liquids.cryofluid.color){{
+            flammability = -1f;
+            explosiveness = 1f;
         }};
 
         scalarRaw = new Item("ore-scalar", Pal2.scalar){{

@@ -245,7 +245,7 @@ public class MindyFx {
         Drawf.light(Team.derelict, e.x, e.y, 35f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
     }),
 
-    question = new Effect(30f, e -> {
+    question = new Effect(25f, e -> {
         color(e.color);
         rect("betamindy-question-effect", e.x, e.y, 7f * e.fslope(), 7f * e.fslope());
     }),
@@ -257,5 +257,35 @@ public class MindyFx {
         stroke(3f * e.fout(), e.color);
         lineAngleCenter(Tmp.v1.x, Tmp.v1.y, 45f, 16f);
         lineAngleCenter(Tmp.v1.x, Tmp.v1.y, -45f, 16f);
+    }),
+
+    snowflake = new Effect(30f, e -> {
+        color(Color.white, e.fout(0.4f));
+        stroke(Mathf.randomSeed(e.id + 2) * 0.5f + 0.6f);
+        float r = Mathf.randomSeed(e.id) * 360f + e.finpow() * 45f;
+        float l = Mathf.randomSeed(e.id + 1) * 1.5f + 2.2f;
+        for(int i = 0; i < 3; i++) lineAngleCenter(e.x, e.y, r + 60f * i, l);
+    }),
+
+    iceBurst = new Effect(45f, e -> {
+        color(Pal2.ice, Color.white, e.fin());
+        stroke(5f * (1f - e.finpow()));
+        poly(e.x, e.y, 6, e.finpow() * 5f);
+
+        stroke(e.fout() * 1.5f);
+        randLenVectors(e.id, 3, 2f + 4f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fin() * 2.5f + 1f);
+        });
+    }),
+
+    iceBurstBig = new Effect(55f, e -> {
+        color(Pal2.ice, Color.white, e.fin());
+        stroke(7f * (1f - e.finpow()));
+        poly(e.x, e.y, 6, e.finpow() * 10f);
+
+        stroke(e.fout() * 1.5f);
+        randLenVectors(e.id, 6, 4f + 10f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fin() * 5f + 1f);
+        });
     });
 }

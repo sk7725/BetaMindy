@@ -13,6 +13,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.meta.*;
@@ -70,7 +71,7 @@ public class Spike extends Wall {
         Draw.alpha(Mathf.absin(Time.globalTime, 2f, 1f));
         Draw.rect(region, x * tilesize, y * tilesize, rotation * 90f);
         Draw.color();
-        Draw.rect(Icon.warning.getRegion(), t.drawx(), t.drawy(), 32f * Draw.scl * Draw.xscl, 32f * Draw.scl * Draw.yscl);
+        Draw.rect(Icon.warning.getRegion(), t.worldx(), t.worldy(), 32f * Draw.scl * Draw.xscl, 32f * Draw.scl * Draw.yscl);
         Draw.mixcol();
     }
 
@@ -78,6 +79,11 @@ public class Spike extends Wall {
     public void setStats(){
         super.setStats();
         stats.add(Stat.damage, (int)damage + " ~ [coral]" + (int)(damage * pushMultiplier) + "[]");
+        if(status == null) return;
+        stats.add(Stat.damage, table -> {
+            table.image(status.icon(Cicon.medium)).size(18f);
+            table.add(" [accent]" + status.localizedName + "[] " + (int)(statusDuration / 60) + " " + Core.bundle.get("unit.seconds"));
+        });
     }
 
     public class SpikeBuild extends WallBuild implements PushReact {
@@ -113,7 +119,7 @@ public class Spike extends Wall {
 
             if(dir % 2 == 0){
                 //tall rectangle
-                float dr = d4(dir).x;
+                //float dr = d4(dir).x;
                 Units.nearby(x + ox - 4f, y + oy - size * 4f, 8f, size * 8f, u -> {
                     if(!u.isFlying() && u.x >= x + ox - 4f && u.x <= x + ox + 4f){
                         damagePush(u);
@@ -122,7 +128,7 @@ public class Spike extends Wall {
             }
             else{
                 //wide rectangle
-                float dr = d4(dir).y;
+                //float dr = d4(dir).y;
                 Units.nearby(x + ox - size * 4f, y + oy - 4f, size * 8f, 8f, u -> {
                     if(!u.isFlying() && u.y >= y + oy - 4f && u.y <= y + oy + 4f){
                         damagePush(u);
@@ -159,7 +165,7 @@ public class Spike extends Wall {
             Draw.alpha(Mathf.absin(Time.globalTime, 2f, 1f));
             Draw.rect(region, x, y, rotation * 90f);
             Draw.color();
-            Draw.rect(Icon.warning.getRegion(), t.drawx(), t.drawy(), 32f * Draw.scl * Draw.xscl, 32f * Draw.scl * Draw.yscl);
+            Draw.rect(Icon.warning.getRegion(), t.worldx(), t.worldy(), 32f * Draw.scl * Draw.xscl, 32f * Draw.scl * Draw.yscl);
             Draw.mixcol();
         }
 

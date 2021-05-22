@@ -4,7 +4,7 @@ import arc.graphics.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.graphics.Pal2;
-import mindustry.content.Fx;
+import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Unit;
@@ -12,7 +12,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy;
 
     public void load(){
         radiation = new StatusEffect("radiated"){
@@ -60,6 +60,34 @@ public class MindyStatusEffects implements ContentList {
                 dragMultiplier = 0.001f;
             }
         };
+
+        icy = new StatusEffect("icy"){{
+            color = Color.valueOf("b1f6fa");
+            effect = MindyFx.snowflake;
+            speedMultiplier = 0.3f;
+            dragMultiplier = 0.5f;
+            reloadMultiplier = 0.5f;
+            healthMultiplier = 0.75f;
+            transitionDamage = 36f;
+
+            init(() -> {
+                opposite(StatusEffects.melting, StatusEffects.burning);
+
+                affinity(StatusEffects.blasted, ((unit, time, newTime, result) -> {
+                    unit.damagePierce(transitionDamage);
+                    result.set(icy, time);
+                }));
+
+                affinity(StatusEffects.wet, ((unit, time, newTime, result) -> {
+                    unit.damagePierce(transitionDamage);
+                    result.set(icy, time);
+                }));
+
+                affinity(StatusEffects.freezing, ((unit, time, newTime, result) -> {
+                    result.set(icy, time + newTime);
+                }));
+            }); //TODO do I need to affinitify the affinities / oppositify the opposites too?
+        }};
 
         amnesia = new StatusEffect("amnesia"){
             @Override

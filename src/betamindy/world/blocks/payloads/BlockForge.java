@@ -38,6 +38,12 @@ public class BlockForge extends PayloadAcceptor{
         rotate = true;
 
         config(Block.class, (BlockForgeBuild tile, Block block) -> {
+            if(block.isHidden()){
+                tile.recipe = null;
+                tile.progress = 0f;
+                return;
+            }
+
             if(tile.recipe != block) tile.progress = 0f;
             tile.recipe = block;
         });

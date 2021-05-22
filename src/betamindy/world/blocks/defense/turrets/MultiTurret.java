@@ -8,6 +8,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+import betamindy.util.*;
 import betamindy.world.blocks.defense.turrets.pattern.*;
 import mindustry.*;
 import mindustry.entities.*;
@@ -89,24 +90,12 @@ public class MultiTurret extends Turret {
             //clientside
             if(!shouldTurn()) return;
 
-            int input = wasd();
+            int input = Useful.wasd();
             if(input == -1) return;
             if(input != mode) configure(input);
         }
 
-        public int wasd(){
-            float ya = Core.input.axis(Binding.move_y);
-            float xa = Core.input.axis(Binding.move_x);
-            if(Math.abs(ya) > 0.2f){
-                if(ya > 0) return 0;
-                return 2;
-            }
-            if(Math.abs(xa) > 0.2f){
-                if(xa > 0) return 3;
-                return 1;
-            }
-            return -1;
-        }
+
 
         @Override
         public double sense(LAccess sensor){

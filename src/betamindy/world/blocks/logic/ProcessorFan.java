@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import betamindy.content.*;
 
 import static arc.Core.atlas;
 
@@ -15,7 +16,8 @@ public class ProcessorFan extends ProcessorCooler{
         super(name);
 
         canOverdrive = false;
-        //TODO ambientsound
+        ambientSound = MindySounds.coolingFan;
+        ambientSoundVolume = 0.5f;
     }
 
     @Override
@@ -50,6 +52,11 @@ public class ProcessorFan extends ProcessorCooler{
             }
             Draw.rect(spinnerRegion, x, y, timeSpun * spinSpeed);
             if(useTopRegion) Draw.rect(topRegion, x, y);
+        }
+
+        @Override
+        public boolean shouldAmbientSound(){
+            return consValid() && heat > 0.1f;
         }
     }
 }

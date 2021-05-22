@@ -33,7 +33,7 @@ public class UnitFan extends LogicSpinBlock {
         flags = EnumSet.of(BlockFlag.turret);
         expanded = true;
         ambientSound = Sounds.wind;
-        ambientSoundVolume = 0.1f;
+        ambientSoundVolume = 0.2f;
     }
 
     @Override

@@ -121,7 +121,6 @@ public class Mynamite extends Block {
         public boolean configTapped(){
             if(canClick) {
                 if (lit) return false;
-                //이건 config 써야하겠다
                 configure(true);
             }
             return false;
@@ -191,7 +190,6 @@ public class Mynamite extends Block {
             lit = read.bool();
         }
 
-        //프로세서 읽기
         @Override
         public double sense(LAccess sensor){
             switch(sensor){

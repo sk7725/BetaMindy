@@ -71,7 +71,6 @@ public class ButtonTap extends PowerBlock {
         public boolean configTapped(){
             if(!enabled || pressed()) return false;
 
-            //어떤 약을 빠셨나요 그것이 궁금합니다 // 샤로인요
             configure(true);
             return false;
         }

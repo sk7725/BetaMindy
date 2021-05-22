@@ -7,5 +7,6 @@ public class Pal2 {
     scalar = Color.valueOf("f5bbf1"),
     vector = Color.valueOf("7f9cfa"),
     zeta = Color.valueOf("82ffe8"),
-    production = Color.valueOf("94fff6");
+    production = Color.valueOf("94fff6"),
+    ice = Color.valueOf("b1f6fa");
 }

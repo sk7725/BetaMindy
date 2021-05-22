@@ -44,11 +44,11 @@ public class MindyBlocks implements ContentList {
     //effect
     silo, warehouse, pressureContainer,
     //walls
-    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeClear,
+    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, clearPipePink,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource,
     //turrets
@@ -480,6 +480,29 @@ public class MindyBlocks implements ContentList {
             requirements(Category.defense, with(Items.coal, 8, Items.blastCompound, 32));
         }};
 
+        cryoWall = new ShardWall("cryo-wall"){{
+            //shard = MindyBullets.iceBolt; //TODO later
+            shard = Bullets.cryoShot;
+            destroyEffect = MindyFx.iceBurst;
+            breakSound = MindySounds.freeze;
+            amount = 6;
+            inaccuracy = 18f;
+            health = 600;
+            requirements(Category.defense, with(Items.titanium, 6, Items.thorium, 3, MindyItems.cryonite, 6));
+        }};
+
+        cryoWallLarge = new ShardWall("cryo-wall-large"){{
+            //shard = MindyBullets.iceSpear;//TODO
+            shard = Bullets.heavyCryoShot;
+            destroyEffect = MindyFx.iceBurstBig;
+            breakSound = MindySounds.freeze;
+            amount = 12;
+            inaccuracy = 9f;
+            health = 2400;
+            size = 2;
+            requirements(Category.defense, with(Items.titanium, 24,Items.thorium, 12, MindyItems.cryonite, 24));
+        }};
+
         teamWall = new TeamWall("team-wall"){{
             health = 360;
             requirements(Category.defense, with(Items.titanium, 6, Items.graphite, 6, Items.silicon, 12));
@@ -659,9 +682,19 @@ public class MindyBlocks implements ContentList {
 
         spikePyra = new Spike("spike-pyra"){{
             health = 200;
+            damageSelf = 12f;
             status = StatusEffects.burning;
             lightningChance = 0.05f;
             requirements(Category.defense, with(Items.lead, 6, Items.pyratite, 3));
+        }};
+
+        spikeCryo = new Spike("spike-cryo"){{
+            health = 500;
+            damage = 100f;
+            damageSelf = 20f;
+            breakSound = MindySounds.freeze;
+            status = MindyStatusEffects.icy;
+            requirements(Category.defense, with(Items.titanium, 3, Items.phaseFabric, 3, MindyItems.cryonite, 4));
         }};
 
         spikeClear = new Spike("spike-clear"){{
@@ -713,6 +746,11 @@ public class MindyBlocks implements ContentList {
             buildCostMultiplier = 3f;
             consumes.powerBuffered(4000f);
             requirements(Category.effect, with(Items.lead, 10, Items.graphite, 10, Items.silicon, 10));
+        }};
+
+        clearPipe = new ClearPipe("clear-pipe"){{
+            size = 2;
+            requirements(Category.units, with(Items.metaglass, 20, MindyItems.vector, 8));
         }};
 
         omegaRune = new RuneBlock("omega-rune"){

@@ -7,8 +7,8 @@ import arc.audio.*;
 import mindustry.*;
 
 public class MindySounds {
-    public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing;
-    public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing"};
+    public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan;
+    public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan"};
     private static int num = 0;
 
     public static void load() {
@@ -19,6 +19,8 @@ public class MindySounds {
         boost = l();
         tntfuse = l();
         boing = l();
+        freeze = l();
+        coolingFan = l();
     }
 
     public static void dispose() {
@@ -29,6 +31,8 @@ public class MindySounds {
         boost = d();
         tntfuse = d();
         boing = d();
+        freeze = d();
+        coolingFan = d();
     }
 
     protected static Sound l() {
