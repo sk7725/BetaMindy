@@ -8,6 +8,7 @@ import mindustry.Vars;
 import mindustry.entities.Units;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.blocks.defense.*;
 
 public class TeamWall extends Wall {
@@ -24,8 +25,14 @@ public class TeamWall extends Wall {
 
     @Override
     public void load(){
-        iconRegion = Drawm.generateTeamRegion(this);
         super.load();
+        iconRegion = Drawm.getTeamRegion(this);
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        Drawm.generateTeamRegion(packer, this);
+        super.createIcons(packer);
     }
 
     @Override

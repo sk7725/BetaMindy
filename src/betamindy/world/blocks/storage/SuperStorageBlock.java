@@ -7,6 +7,7 @@ import arc.struct.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.production.payduction.craft.*;
 import mindustry.content.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
@@ -34,10 +35,16 @@ public class SuperStorageBlock extends StorageBlock {
 
     @Override
     public void load(){
-        iconRegion = Drawm.generateTeamRegion(this);
         super.load();
+        iconRegion = Drawm.getTeamRegion(this);
         armRegion = atlas.find(name + "-arm");
         boostIcon = atlas.find(name + "-boost");
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        Drawm.generateTeamRegion(packer, this);
+        super.createIcons(packer);
     }
 
     @Override
