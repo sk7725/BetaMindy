@@ -1,6 +1,5 @@
 plugins{
     id "java"
-    id "idea"
 }
 
 group pGroup
@@ -20,22 +19,16 @@ dependencies{
     implementation "com.github.Anuken.Mindustry:core:$pVer"
 }
 
-ext{
-    isWindows = {
-        return System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")
-    }
-}
+jar.archiveFileName.set("raw-$pArtifactFilename");
 
-jar{
-    archiveFileName.set "raw-$pArtifactFilename"
-}
+def isWindows = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows");
 
 task alphableed doFirst{
     exec{
         workingDir "$rootDir"
 
         println "Alpha-bleeding sprites..."
-        if(isWindows()){
+        if(isWindows){
             commandLine("cmd", "/c", "alpha-bleeding-windows.exe", "--replace", "./assets/sprites/")
         }else{
             commandLine("./alpha-bleed", "./assets/sprites/")
@@ -44,7 +37,7 @@ task alphableed doFirst{
 }
 
 task dexify(type: Jar){
-    archiveName "$pArtifactFilename"
+    archiveFileName.set(pArtifactFilename)
 
     final File  jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, "raw-$pArtifactFilename"),
                 dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
@@ -53,7 +46,7 @@ task dexify(type: Jar){
         exec{
             workingDir dexedArtifact.parent
             def command = ["d8", "--min-api", pMinApi, "--output", dexedArtifact, jarArtifact]
-            if(isWindows()){
+            if(isWindows){
                 commandLine("cmd", "/c", *command)
             }else{
                 commandLine(*command)
