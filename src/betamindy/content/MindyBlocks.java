@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.*;
+import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
@@ -26,6 +27,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.storage.*;
@@ -48,11 +50,11 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, clearPipePink,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, vacuumPipe,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource,
     //turrets
-    hopeBringer,
+    hopeBringer, anchor, bermuda,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
@@ -102,6 +104,69 @@ public class MindyBlocks implements ContentList {
             lightRadius = 16f;
             lightColor = Color.red;
             emitLight = true;
+        }};
+
+        anchor = new ItemTurret("anchor"){{
+            requirements(Category.turret, with(Items.lead, 80, Items.graphite, 65, Items.titanium, 50));
+
+            reloadTime = 70f;
+            shootShake = 3f;
+            range = 160f;
+            recoilAmount = 4f;
+            restitution = 0.1f;
+            size = 2;
+
+            health = 220 * size * size;
+            shootSound = Sounds.shotgun;
+
+            ammo(
+                    Items.titanium, new NavalBulletType(2.5f, 60f){{
+                        lifetime = 100f;
+                        ammoMultiplier = 4f;
+                        reloadMultiplier = 1.3f;
+                    }},
+                    Items.thorium, new NavalBulletType(2.5f, 110f){{
+                        lifetime = 100f;
+                        ammoMultiplier = 5f;
+                        width = 8.5f;
+                        toColor = Pal.thoriumPink;
+                        shootEffect = smokeEffect = Fx.thoriumShoot;
+                        despawnEffect = MindyFx.thoriumDespawn;
+                    }}
+            );
+        }};
+
+        bermuda = new ItemTurret("bermuda"){{
+            requirements(Category.turret, with(Items.lead, 220, Items.graphite, 160, Items.thorium, 105));
+
+            reloadTime = 50f;
+            shootShake = 3f;
+            range = 220f;
+            recoilAmount = 5f;
+            restitution = 0.1f;
+            size = 3;
+
+            health = 220 * size * size;
+            shootSound = Sounds.shotgun;
+
+            ammo(
+                    Items.titanium, new NavalBulletType(3.5f, 90f){{
+                        length = 55f;
+                        width = 8f;
+                        lifetime = 120f;
+                        ammoMultiplier = 4f;
+                        reloadMultiplier = 1.3f;
+                    }},
+                    Items.thorium, new NavalBulletType(3.5f, 175f){{
+                        length = 55f;
+                        lifetime = 120f;
+                        ammoMultiplier = 5f;
+                        width = 10.5f;
+                        toColor = Pal.thoriumPink;
+                        shootEffect = smokeEffect = Fx.thoriumShoot;
+                        despawnEffect = MindyFx.thoriumDespawn;
+                    }}
+            );
         }};
 
         payCannon = new PayloadTurret("payload-cannon"){{
@@ -532,10 +597,9 @@ public class MindyBlocks implements ContentList {
 
         repairTurret = new RepairTurret("repair-turret"){{
             size = 3;
-            repairRadius = 100f;
             powerUse = 4f;
-            repairSpeed = 10.5f;
             requirements(Category.units, with(Items.lead, 50, Items.copper, 65, Items.silicon, 50, Items.plastanium, 25, Items.phaseFabric, 15));
+            consumes.item(MindyItems.scalar).boost();
         }};
 
         boostPad = new BoostPad("boostpad"){{
@@ -750,6 +814,7 @@ public class MindyBlocks implements ContentList {
 
         clearPipe = new ClearPipe("clear-pipe"){{
             size = 2;
+            hasShadow = false; //use custom shadows
             requirements(Category.units, with(Items.metaglass, 20, MindyItems.vector, 8));
         }};
 

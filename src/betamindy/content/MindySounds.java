@@ -22,7 +22,7 @@ public class MindySounds {
         freeze = l();
         coolingFan = l();
     }
-
+/*
     public static void dispose() {
         num = 0;
         pistonPush = d();
@@ -33,15 +33,15 @@ public class MindySounds {
         boing = d();
         freeze = d();
         coolingFan = d();
-    }
+    }*/
 
     protected static Sound l() {
         return loadSound(soundFiles[num++]);
     }
 
-    protected static Sound d() {
+    /*protected static Sound d() {
         return disposeSound(soundFiles[num++]);
-    }
+    }*/
 
     protected static Sound loadSound(String soundName) {
         if(!Vars.headless) {
@@ -59,7 +59,7 @@ public class MindySounds {
         }
     }
 
-    protected static Sound disposeSound(String soundName) {
+    /*protected static Sound disposeSound(String soundName) {
         if(!Vars.headless) {
             String name = "sounds/" + soundName;
             String path = name + ".ogg";
@@ -70,5 +70,5 @@ public class MindySounds {
         }
 
         return null;
-    }
+    }*/
 }

@@ -287,5 +287,29 @@ public class MindyFx {
         randLenVectors(e.id, 6, 4f + 10f * e.finpow(), (x, y) -> {
             lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fin() * 5f + 1f);
         });
+    }),
+
+    energyDespawn = new Effect(35f, e -> {
+        color(Color.white, Pal.lancerLaser, e.fin());
+        stroke(e.fout() * 1.3f);
+        Tmp.v1.trns(e.rotation + 180f, 8f).add(e.x, e.y);
+
+        circle(Tmp.v1.x, Tmp.v1.y, e.finpow() * 14f);
+
+        randLenVectors(e.id, 14, e.fin() * 25f, (x, y) -> {
+            lineAngle(Tmp.v1.x + x, Tmp.v1.y + y, Mathf.angle(x, y), e.fout() * 6f + 1f);
+        });
+    }),
+
+    thoriumDespawn = new Effect(35f, e -> {
+        color(Color.white, Pal.thoriumPink, e.fin());
+        stroke(e.fout() * 1.5f);
+        Tmp.v1.trns(e.rotation + 180f, 8f).add(e.x, e.y);
+
+        circle(Tmp.v1.x, Tmp.v1.y, e.finpow() * 17f);
+
+        randLenVectors(e.id, 14, e.fin() * 27f, (x, y) -> {
+            lineAngle(Tmp.v1.x + x, Tmp.v1.y + y, Mathf.angle(x, y), e.fout() * 6f + 1f);
+        });
     });
 }

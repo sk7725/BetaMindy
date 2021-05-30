@@ -20,19 +20,20 @@ import static mindustry.Vars.*;
 public class RepairTurret extends Block{
     static final Rect rect = new Rect();
 
-    public int timerTarget = timers++;
+    public final int timerTarget = timers++;
 
-    public float repairRadius = 60f;
-    public float repairSpeed = 0.3f;
+    public float repairRadius = 100f;
+    public float repairSpeed = 10.5f;
     public float powerUse;
 
-    public float phaseRangeBoost = 30f;
-    public float phaseBoost = 0.15f;
+    public float phaseRangeBoost = 75f;
+    public float phaseBoost = 5.5f;
+    public float useTime = 240f;
 
     public TextureRegion baseRegion, laser, laserEnd;
 
     public Color laserColor = Color.valueOf("e8ffd7");
-    public Color phaseColor = Pal2.scalar; //TODO booster
+    public Color phaseColor = Pal2.scalar;
 
     public RepairTurret(String name){
         super(name);
@@ -49,7 +50,7 @@ public class RepairTurret extends Block{
         super.setStats();
         stats.add(Stat.range, repairRadius / tilesize, StatUnit.blocks);
         stats.add(Stat.boostEffect, phaseRangeBoost / tilesize, StatUnit.blocks);
-        stats.add(Stat.boostEffect, 1f + phaseBoost / repairSpeed, StatUnit.timesSpeed);
+        stats.add(Stat.boostEffect, (1f + phaseBoost / repairSpeed) * 100f, StatUnit.percent);
     }
 
     @Override
@@ -79,6 +80,8 @@ public class RepairTurret extends Block{
     public class RepairTurretBuild extends Building{
         public Healthc target;
         public float strength, rotation = 90;
+        public float phaseHeat = 0f;
+        public float timeUsed = 0f;
 
         @Override
         public void draw(){
@@ -93,7 +96,7 @@ public class RepairTurret extends Block{
                 float ang = angleTo(target);
                 float len = 5f;
 
-                Draw.color(laserColor);
+                Draw.color(laserColor, phaseColor, phaseHeat);
                 Drawf.laser(team, laser, laserEnd,
                         x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len),
                         target.x(), target.y(), strength * 1.1f);
@@ -103,7 +106,7 @@ public class RepairTurret extends Block{
 
         @Override
         public void drawSelect(){
-            Drawf.dashCircle(x, y, repairRadius, Pal.accent);
+            Drawf.dashCircle(x, y, repairRadius + phaseRangeBoost * phaseHeat, Tmp.c1.set(Pal.heal).lerp(phaseColor, phaseHeat));
         }
 
         public float getSize(Healthc unit){
@@ -114,10 +117,21 @@ public class RepairTurret extends Block{
         @Override
         public void updateTile(){
             boolean targetIsBeingRepaired = false;
-            if(target != null && (target.dead() || target.dst(tile) - getSize(target)/2f > repairRadius || target.health() >= target.maxHealth())){
+            phaseHeat = Mathf.lerpDelta(phaseHeat, Mathf.num(hasItems && !items.empty()), 0.1f);
+            float r = repairRadius + phaseRangeBoost * phaseHeat;
+
+            if(cons.optionalValid() && efficiency() > 0){
+                timeUsed += edelta();
+                if(timeUsed >= useTime){
+                    consume();
+                    timeUsed = 0f;
+                }
+            }
+
+            if(target != null && (target.dead() || target.dst(tile) - getSize(target)/2f > r || target.health() >= target.maxHealth())){
                 target = null;
             }else if(target != null && consValid()){
-                target.heal(repairSpeed * Time.delta * strength * efficiency());
+                target.heal((repairSpeed + phaseBoost * phaseHeat) * Time.delta * strength * efficiency());
                 rotation = Mathf.slerpDelta(rotation, angleTo(target), 0.5f);
                 targetIsBeingRepaired = true;
             }
@@ -129,9 +143,9 @@ public class RepairTurret extends Block{
             }
 
             if(timer(timerTarget, 20)){
-                rect.setSize(repairRadius * 2).setCenter(x, y);
-                target = Units.closest(team, x, y, repairRadius, Unit::damaged);
-                if(target == null) target = Units.findAllyTile(team, x, y, repairRadius, Building::damaged);
+                rect.setSize(r * 2).setCenter(x, y);
+                target = Units.closest(team, x, y, r, Unit::damaged);
+                if(target == null) target = Units.findAllyTile(team, x, y, r, Building::damaged);
             }
         }
 
@@ -150,6 +164,7 @@ public class RepairTurret extends Block{
             super.write(write);
 
             write.f(rotation);
+            write.f(timeUsed);
         }
 
         @Override
@@ -157,6 +172,7 @@ public class RepairTurret extends Block{
             super.read(read, revision);
 
             rotation = read.f();
+            timeUsed = read.f();
         }
     }
 }

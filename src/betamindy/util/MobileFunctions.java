@@ -11,11 +11,7 @@ import mindustry.world.blocks.payloads.*;
 //exists to provide functions that are not public in the Mobile version, for some reason.
 
 public class MobileFunctions {
-    public int payloadUnit, payloadBlock;
-    public void init() {
-        payloadUnit = Payload.payloadUnit;
-        payloadBlock = Payload.payloadBlock;
-    }
+    public final int payloadUnit = 0, payloadBlock = 1;
 
     public void writePayload(@Nullable Payload payload, Writes write){
         if(payload == null){

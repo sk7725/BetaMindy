@@ -17,6 +17,8 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 
+import static mindustry.Vars.headless;
+
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
@@ -43,11 +45,6 @@ public class BetaMindy extends Mod{
         super();
         MindySounds.load();
         pushUtil.init();
-        if(Vars.mobile) mobileUtil.init();
-
-        Events.on(DisposeEvent.class, e -> {
-            MindySounds.dispose();
-        });
 
         Core.settings.defaults("slimeeffect", true, "correctview", false, "accelballs", true, "nonmoddedservers", false, "animlevel", 2);
         Events.on(ClientLoadEvent.class, e -> {
@@ -64,7 +61,7 @@ public class BetaMindy extends Mod{
         Vars.enableConsole = true;
 
         LoadedMod mod = Vars.mods.locateMod("betamindy");
-        if(!Vars.headless){
+        if(!headless){
             //Partial credits to ProjectUnity
 
             Func<String, String> stringf = value -> Core.bundle.get("mod." + value);
@@ -82,6 +79,13 @@ public class BetaMindy extends Mod{
                 if((temp instanceof ConstructBlock || !temp.hasBuilding()) || temp.icon(Cicon.medium) == Core.atlas.find("error")) return;
                 visibleBlockList.add(temp);
             });
+        });
+
+        Events.run(WorldLoadEvent.class, () -> {
+            if(!headless){
+                Useful.unlockCam();
+                Useful.cutsceneEnd();
+            }
         });
 
         //TODO later, stashed for now

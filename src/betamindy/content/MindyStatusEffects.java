@@ -86,7 +86,7 @@ public class MindyStatusEffects implements ContentList {
                 affinity(StatusEffects.freezing, ((unit, time, newTime, result) -> {
                     result.set(icy, time + newTime);
                 }));
-            }); //TODO do I need to affinitify the affinities / oppositify the opposites too?
+            });
         }};
 
         amnesia = new StatusEffect("amnesia"){

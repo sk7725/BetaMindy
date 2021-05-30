@@ -18,6 +18,7 @@ import arc.*;
 import arc.func.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.ui.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.Vars;
@@ -40,6 +41,7 @@ public class Useful {
     private static final Rect hitrect = new Rect();
     private static final Vec2 tr = new Vec2();
     private static final Seq<Unit> units = new Seq<>();
+    private static final TextField scrollLocker = new TextField();
     //private static IntSet collidedBlocks = new IntSet();
 
     /** Applies stuff to units in a line. Does not affect buildings. Anuke why do you do this to me */
@@ -182,12 +184,27 @@ public class Useful {
     }
 
     public static void lockCam(Vec2 pos){
+        if(headless) return;
         if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = true;
         Core.camera.position.set(pos);
     }
 
     public static void unlockCam(){
+        if(headless) return;
         if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = false;
+    }
+
+    public static void cutscene(Vec2 pos){
+        if(headless) return;
+        if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = true;
+        if(!Core.scene.hasField()) Core.scene.setKeyboardFocus(scrollLocker);
+        Core.camera.position.set(pos);
+    }
+
+    public static void cutsceneEnd(){
+        if(headless) return;
+        if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = false;
+        if(Core.scene.getKeyboardFocus() != null && Core.scene.getKeyboardFocus().equals(scrollLocker)) Core.scene.setKeyboardFocus(null);
     }
 
     public static boolean dumpPlayerUnit(UnitPayload u, Player player){

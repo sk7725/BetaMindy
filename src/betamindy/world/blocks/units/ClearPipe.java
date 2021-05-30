@@ -5,10 +5,13 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
+import betamindy.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -20,16 +23,17 @@ import static arc.Core.atlas;
 import static arc.math.geom.Geometry.d4;
 import static mindustry.Vars.*;
 
-//TODO sm3dw, can output to payload blocks
 public class ClearPipe extends Block {
     public static final byte[] pipePriority = {2, 1, 3, 0};
+    public static final byte[][] shadowTypes = {{0, 0}, {1, 2}, {1, 3}, {3, 0}, {1, 0}, {2, 0}, {3, 1}, {4, 1}, {1, 1}, {3, 3}, {2, 1}, {4, 0}, {3, 2}, {4, 3} ,{4, 2} ,{5, 0}};
     public static final byte[][][] pipeOpening = {{{2, 0}, {2, 1}}, {{0, 2}, {1, 2}}, {{-1, 0}, {-1, 1}}, {{0, -1}, {1, -1}}};
     public float speed = 1f / 6f;
     public float ejectStrength = 6f;
 
     public Effect suckEffect = Fx.mineHuge; //TODO effect
     public Effect spitEffect = Fx.mineHuge;
-    public TextureRegion[] pipeRegions = new TextureRegion[16];
+    public TextureRegion[] pipeRegions = new TextureRegion[16], shadowRegions = new TextureRegion[6];
+    private int tiling;
 
     public ClearPipe(String name){
         super(name);
@@ -38,8 +42,8 @@ public class ClearPipe extends Block {
         solid = true;
         update = true;
         noUpdateDisabled = false;
+        drawDisabled = false;
         rotate = false;
-        hasShadow = false;
     }
 
     @Override
@@ -49,6 +53,40 @@ public class ClearPipe extends Block {
         for(int i = 1; i < 16; i++){
             pipeRegions[i] = atlas.find(name + "-" + i, name + "" + i);
         }
+
+        if(hasShadow) return;
+        for(int i = 0; i < 6; i++){
+            shadowRegions[i] = atlas.find(name + "-shadow-" + i, "clear-pipe-shadow-" + i);
+        }
+    }
+
+    @Override
+    public boolean canBreak(Tile tile){
+        return !(tile.build instanceof ClearPipeBuild) || !((ClearPipeBuild) tile.build).unit().isPlayer();
+    }
+
+    @Override
+    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+        tiling = 0;
+        list.each(other -> {
+            if(other.breaking || other == req || !(other.block instanceof ClearPipe)) return;
+            if(other.y == req.y){
+                if(other.x - req.x == 2) tiling += 1;
+                else if(other.x - req.x == -2) tiling += 4;
+            }
+            else if(other.x == req.x){
+                if(other.y - req.y == 2) tiling += 2;
+                else if(other.y - req.y == -2) tiling += 8;
+            }
+        });
+        int i = 0;
+        for(Point2 point : Geometry.d4){
+            int x = req.x + point.x * 2, y = req.y + point.y * 2;
+            Tile t = world.tile(x, y);
+            if(t != null && ((1 << i) & tiling) == 0 && (t.build instanceof ClearPipeBuild) && t.build.tile == t) tiling += (1 << i);
+            i++;
+        }
+        Draw.rect(pipeRegions[tiling], req.drawx(), req.drawy());
     }
 
     public class ClearPipeBuild extends Building implements ControlBlock {
@@ -56,7 +94,6 @@ public class ClearPipe extends Block {
         public Seq<UnitinaBottle> units = new Seq<>();
         public ClearPipeBuild[] pipes = new ClearPipeBuild[4];
         public int connections = 0, contype = 0;
-
 
         public float speed(){
             return speed;
@@ -101,14 +138,17 @@ public class ClearPipe extends Block {
         }
 
         public void acceptUnit(Unit unit, int dir){
+            if(!unit.isAdded()) return;
+
             if(unit.isPlayer()){
-                if(unit() != null && unit().isPlayer()){
+                if(unit() != null && unit().isPlayer() && unit().getPlayer() != unit.getPlayer()){
                     //display text
                     if(!headless && unit.getPlayer() == player) ui.showInfoToast("$clearpipe.no", 3f);
                     return;
                 }
-                if(!net.client()) unit.getPlayer().unit(unit());
+                Player p = unit.getPlayer();
                 unit.remove();
+                if(!net.client()) p.unit(unit());
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir, this));
             }
             else{
@@ -131,10 +171,10 @@ public class ClearPipe extends Block {
             return (Unit)blockUnit;
         }
 
-        @Override
+        /*@Override
         public boolean canControl(){
-            return unit().isPlayer(); //does this work even?
-        }
+            return unit().isPlayer(); //does this work even? //breaks when READ/WRITE, why?
+        }*/
 
         @Override
         public void update(){
@@ -156,11 +196,12 @@ public class ClearPipe extends Block {
 
         @Override
         public void draw(){
-            //TODO decent shadows
-            Draw.z(Layer.block - 0.99f);
-            Draw.color(Pal.shadow);
-            Draw.rect(pipeRegions[contype], x - 3f, y - 3f);
-            Draw.color();
+            if(!hasShadow){
+                Draw.z(Layer.block - 0.99f);
+                Draw.color(Pal.shadow, 0.15f);
+                Draw.rect(shadowRegions[shadowTypes[contype][0]], x, y, shadowTypes[contype][1] * 90f);
+                Draw.color();
+            }
 
             Draw.z(Layer.block);
             units.each(u -> u.draw(this));
@@ -184,6 +225,57 @@ public class ClearPipe extends Block {
                 }
             }
         }
+
+        @Override
+        public void onRemoved(){
+            units.each(u -> u.dump(this));
+            super.onRemoved();
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            int size = read.s();
+            for(int i = 0; i < size; i++){
+                units.add(readUnit(read));
+            }
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.s(units.size);
+            for(int i = 0; i < units.size; i++){
+                writeUnit(units.get(i), write);
+            }
+        }
+
+        public UnitinaBottle readUnit(Reads read){
+            UnitinaBottle u = new UnitinaBottle(BetaMindy.mobileUtil.readPayload(read), read.b());
+            u.to = read.b();
+            u.f = read.f();
+            if(u.f < 0f) u.initf = read.f();
+            if(read.bool()){
+                u.savedTile = world.tile(read.i());
+            }
+            return u;
+        }
+
+        public void writeUnit(UnitinaBottle u, Writes write){
+            if(u.player() != null){
+                u.playerPipe.unit().set(u.playerPipe); //return
+            }
+            BetaMindy.mobileUtil.writePayload(u.unit, write);
+            write.b(u.from);
+            write.b(u.to);
+            write.f(u.f);
+            if(u.f < 0f) write.f(u.initf);
+
+            write.bool(u.player() != null);
+            if(u.player() != null){
+                write.i(u.playerPipe.pos());
+            }
+        }
     }
 
     public class UnitinaBottle{
@@ -194,8 +286,10 @@ public class ClearPipe extends Block {
         private float initf;
         public static final float maxDrawSize = 52f;
         public static final float shadowOffset = 3f;
+        private float lastTime = 0f;
 
         public @Nullable ClearPipeBuild playerPipe;
+        private @Nullable Tile savedTile = null;
 
         public UnitinaBottle(UnitPayload unit, int from){
             this(unit, from, null);
@@ -220,10 +314,18 @@ public class ClearPipe extends Block {
             return playerPipe != null && playerPipe.isValid() && playerPipe.unit().isPlayer() ? playerPipe.unit().getPlayer() : null;
         }
 
+        public void updateSavedTile(){
+            if(savedTile == null) return;
+            if(playerPipe == null && savedTile.build != null && (savedTile.build instanceof ClearPipeBuild)) playerPipe = (ClearPipeBuild) savedTile.build;
+            savedTile = null;
+        }
+
         public void reset(){
-            f %= 1f;
+            f -= 1f;
+            if(f < 0f) f = 0f;
             from = (to + 2) % 4;
             to = -1;
+            lastTime = Time.time;
         }
 
         public void uturn(){
@@ -272,16 +374,47 @@ public class ClearPipe extends Block {
             spitEffect.at(Tmp.v2.trns(to * 90f, tilesize * size / 2f).add(build), to * 90f);
         }
 
+        public void dump(ClearPipeBuild build){
+            //init
+            Player p = player();
+            if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
+            else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (f - 0.5f)).add(build);
+            float r = (f <= 0.5f || to < 0) ? from * 90f + 180f : to * 90f;
+            unit.set(Tmp.v1.x, Tmp.v1.y,r);
+
+            //clear removed state of unit so it can be synced
+            if(net.client()){
+                netClient.clearRemovedEntity(unit.unit.id);
+            }
+
+            unit.unit.vel.trns(r, ejectStrength / 2f);
+
+            if(p == null){
+                unit.dump();
+            }
+            else{
+                Useful.unlockCam();
+                Useful.dumpPlayerUnit(unit, p);
+            }
+        }
+
         /** Returns true if the unit left this build. */
         public boolean update(ClearPipeBuild build){
+            updateSavedTile();
             if(f < 0f){
                 //special animation playing for fat units, do nothing
-                f += build.delta();
+                f += Time.delta;
+                if(player() == player) playerPipe.unit().set(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));
                 if(f > 0f) f = 0f;
             }
             else{
-                f += build.edelta() * build.speed();
+                if(Time.time - lastTime < 0.1f){
+                    return false;
+                }
+
+                f += build.delta() * build.speed();
                 Player p = player();
+                if(p == null && playerPipe != null) playerPipe = null;
 
                 if(f <= 0.5f){
                     Tmp.v1.trns(from * 90f, tilesize * (0.5f - f) * build.block.size).add(build);
@@ -290,7 +423,8 @@ public class ClearPipe extends Block {
                     if(!headless && player() == Vars.player){
                         int input = Useful.dwas();
                         if(input >= 0 && from != input && build.validPipe(input)) to = input;
-                        Useful.lockCam(Tmp.v1);
+                        playerPipe.unit().set(Tmp.v1);
+                        //Useful.lockCam(Tmp.v1);
                     }
                 }
                 else{
@@ -308,7 +442,7 @@ public class ClearPipe extends Block {
                     }
                     Tmp.v1.trns(to * 90f, tilesize * (f - 0.5f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,to * 90f);
-                    if(p == player) Useful.lockCam(Tmp.v1);
+                    if(p == player) playerPipe.unit().set(Tmp.v1);
 
                     if(f > 1f){
                         if(to < 0) to = from;
@@ -345,7 +479,7 @@ public class ClearPipe extends Block {
                             return false;
                         }
                         else{
-                            Useful.unlockCam();
+                            //Useful.unlockCam();
                             //if(unit.unit.type == null) return true;
                             if(build.isOpen(to, true) && Useful.dumpPlayerUnit(unit, p)){
                                 effects(build);
@@ -360,7 +494,7 @@ public class ClearPipe extends Block {
 
                 if(p == null && unit.unit.spawnedByCore){
                     Fx.unitDespawn.at(unit.unit.x, unit.unit.y, 0f, unit.unit);
-                    Useful.unlockCam();
+                    //Useful.unlockCam();
                     return true;
                 }
             }
