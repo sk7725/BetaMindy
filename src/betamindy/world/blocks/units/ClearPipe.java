@@ -95,6 +95,13 @@ public class ClearPipe extends Block {
         public ClearPipeBuild[] pipes = new ClearPipeBuild[4];
         public int connections = 0, contype = 0;
 
+        @Override
+        public void created(){
+            super.created();
+            blockUnit = (BlockUnitc)UnitTypes.block.create(team);
+            blockUnit.tile(this);
+        }
+
         public float speed(){
             return speed;
         }
@@ -164,10 +171,6 @@ public class ClearPipe extends Block {
 
         @Override
         public Unit unit(){
-            if(blockUnit == null){
-                blockUnit = (BlockUnitc) UnitTypes.block.create(team);
-                blockUnit.tile(this);
-            }
             return (Unit)blockUnit;
         }
 
@@ -263,7 +266,7 @@ public class ClearPipe extends Block {
 
         public void writeUnit(UnitinaBottle u, Writes write){
             if(u.player() != null){
-                u.playerPipe.unit().set(u.playerPipe); //return
+                //u.playerPipe.unit().set(u.playerPipe); //return
             }
             BetaMindy.mobileUtil.writePayload(u.unit, write);
             write.b(u.from);
@@ -404,7 +407,7 @@ public class ClearPipe extends Block {
             if(f < 0f){
                 //special animation playing for fat units, do nothing
                 f += Time.delta;
-                if(player() == player) playerPipe.unit().set(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));
+                if(player() == player) /*playerPipe.unit().set(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build))*/Useful.lockCam(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));
                 if(f > 0f) f = 0f;
             }
             else{
@@ -423,8 +426,8 @@ public class ClearPipe extends Block {
                     if(!headless && player() == Vars.player){
                         int input = Useful.dwas();
                         if(input >= 0 && from != input && build.validPipe(input)) to = input;
-                        playerPipe.unit().set(Tmp.v1);
-                        //Useful.lockCam(Tmp.v1);
+                        //playerPipe.unit().set(Tmp.v1);
+                        Useful.lockCam(Tmp.v1);
                     }
                 }
                 else{
@@ -442,7 +445,7 @@ public class ClearPipe extends Block {
                     }
                     Tmp.v1.trns(to * 90f, tilesize * (f - 0.5f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,to * 90f);
-                    if(p == player) playerPipe.unit().set(Tmp.v1);
+                    if(p == player) /*playerPipe.unit().set(Tmp.v1)*/Useful.lockCam(Tmp.v1);
 
                     if(f > 1f){
                         if(to < 0) to = from;
@@ -479,7 +482,7 @@ public class ClearPipe extends Block {
                             return false;
                         }
                         else{
-                            //Useful.unlockCam();
+                            Useful.unlockCam();
                             //if(unit.unit.type == null) return true;
                             if(build.isOpen(to, true) && Useful.dumpPlayerUnit(unit, p)){
                                 effects(build);
@@ -494,7 +497,7 @@ public class ClearPipe extends Block {
 
                 if(p == null && unit.unit.spawnedByCore){
                     Fx.unitDespawn.at(unit.unit.x, unit.unit.y, 0f, unit.unit);
-                    //Useful.unlockCam();
+                    Useful.unlockCam();
                     return true;
                 }
             }
