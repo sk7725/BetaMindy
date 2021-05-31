@@ -44,6 +44,9 @@ public class Useful {
     private static final TextField scrollLocker = new TextField();
     //private static IntSet collidedBlocks = new IntSet();
 
+    private static Vec2 cameraPos = new Vec2();
+    private static boolean camLock;
+
     /** Applies stuff to units in a line. Does not affect buildings. Anuke why do you do this to me */
     public static void applyLine(Cons<Unit> acceptor, @Nullable Building source, Effect effect, float x, float y, float angle, float length, boolean wall){
         if(wall) length = findPathLength(x, y, angle, length, source);
@@ -185,13 +188,22 @@ public class Useful {
 
     public static void lockCam(Vec2 pos){
         if(headless) return;
-        if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = true;
-        Core.camera.position.set(pos);
+        if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = false;
+        if(!camLock){
+            cameraPos.set(Core.camera.position);
+            camLock = true;
+        }
+
+        cameraPos.lerp(pos, (Core.settings.getBool("smoothcamera") ? 0.08f : 1f) * Time.delta);
+        Core.camera.position.set(cameraPos);
     }
 
     public static void unlockCam(){
         if(headless) return;
-        if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = false;
+        Core.app.post(() -> {
+            //if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = false;
+            camLock = false;
+        });
     }
 
     public static void cutscene(Vec2 pos){
