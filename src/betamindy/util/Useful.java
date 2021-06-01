@@ -196,6 +196,7 @@ public class Useful {
 
         cameraPos.lerp(pos, (Core.settings.getBool("smoothcamera") ? 0.08f : 1f) * Time.delta);
         Core.camera.position.set(cameraPos);
+        //Core.camera.update(); no effect
     }
 
     public static void unlockCam(){
@@ -210,13 +211,21 @@ public class Useful {
         if(headless) return;
         if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = true;
         if(!Core.scene.hasField()) Core.scene.setKeyboardFocus(scrollLocker);
-        Core.camera.position.set(pos);
+        if(!camLock){
+            cameraPos.set(Core.camera.position);
+            camLock = true;
+        }
+        cameraPos.lerp(pos, (Core.settings.getBool("smoothcamera") ? 0.08f : 1f) * Time.delta);
+        Core.camera.position.set(cameraPos);
     }
 
     public static void cutsceneEnd(){
         if(headless) return;
         if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = false;
         if(Core.scene.getKeyboardFocus() != null && Core.scene.getKeyboardFocus().equals(scrollLocker)) Core.scene.setKeyboardFocus(null);
+        Core.app.post(() -> {
+            camLock = false;
+        });
     }
 
     public static boolean dumpPlayerUnit(UnitPayload u, Player player){

@@ -109,23 +109,26 @@ public class MindyBlocks implements ContentList {
         anchor = new ItemTurret("anchor"){{
             requirements(Category.turret, with(Items.lead, 80, Items.graphite, 65, Items.titanium, 50));
 
-            reloadTime = 70f;
+            reloadTime = 80f;
             shootShake = 3f;
             range = 160f;
             recoilAmount = 4f;
             restitution = 0.1f;
             size = 2;
+            targetAir = false;
 
             health = 220 * size * size;
             shootSound = Sounds.shotgun;
 
             ammo(
-                    Items.titanium, new NavalBulletType(2.5f, 60f){{
+                    Items.titanium, new NavalBulletType(2.5f, 130f){{
+                        drag = 0.0095f;
                         lifetime = 100f;
                         ammoMultiplier = 4f;
                         reloadMultiplier = 1.3f;
                     }},
-                    Items.thorium, new NavalBulletType(2.5f, 110f){{
+                    Items.thorium, new NavalBulletType(2.5f, 190f){{
+                        drag = 0.0095f;
                         lifetime = 100f;
                         ammoMultiplier = 5f;
                         width = 8.5f;
@@ -137,27 +140,28 @@ public class MindyBlocks implements ContentList {
         }};
 
         bermuda = new ItemTurret("bermuda"){{
-            requirements(Category.turret, with(Items.lead, 220, Items.graphite, 160, Items.thorium, 105));
+            requirements(Category.turret, with(Items.lead, 220, Items.graphite, 160, Items.thorium, 105, Items.plastanium, 85));
 
-            reloadTime = 50f;
+            reloadTime = 40f;
             shootShake = 3f;
-            range = 220f;
+            range = 230f;
             recoilAmount = 5f;
             restitution = 0.1f;
             size = 3;
+            targetAir = false;
 
-            health = 220 * size * size;
+            health = 240 * size * size;
             shootSound = Sounds.shotgun;
 
             ammo(
-                    Items.titanium, new NavalBulletType(3.5f, 90f){{
+                    Items.titanium, new NavalBulletType(3.5f, 240f){{
                         length = 55f;
                         width = 8f;
                         lifetime = 120f;
                         ammoMultiplier = 4f;
                         reloadMultiplier = 1.3f;
                     }},
-                    Items.thorium, new NavalBulletType(3.5f, 175f){{
+                    Items.thorium, new NavalBulletType(3.5f, 424f){{
                         length = 55f;
                         lifetime = 120f;
                         ammoMultiplier = 5f;

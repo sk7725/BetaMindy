@@ -1,5 +1,6 @@
 package betamindy.world.blocks.units;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -174,10 +175,10 @@ public class ClearPipe extends Block {
             return (Unit)blockUnit;
         }
 
-        /*@Override
+        @Override
         public boolean canControl(){
-            return unit().isPlayer(); //does this work even? //breaks when READ/WRITE, why?
-        }*/
+            return unit().isPlayer() || (control.input.controlledType == UnitTypes.block && world.buildWorld(player.x, player.y) == self());
+        }
 
         @Override
         public void update(){
@@ -260,6 +261,11 @@ public class ClearPipe extends Block {
             if(u.f < 0f) u.initf = read.f();
             if(read.bool()){
                 u.savedTile = world.tile(read.i());
+                if(!read.bool()) return u;
+                player.set(u.savedTile.worldx(), u.savedTile.worldy());
+                Core.app.post(() -> {
+                    Core.camera.position.set(this);
+                });
             }
             return u;
         }
@@ -277,6 +283,7 @@ public class ClearPipe extends Block {
             write.bool(u.player() != null);
             if(u.player() != null){
                 write.i(u.playerPipe.pos());
+                write.bool(u.player() == player);
             }
         }
     }
@@ -396,7 +403,7 @@ public class ClearPipe extends Block {
                 unit.dump();
             }
             else{
-                Useful.unlockCam();
+                //Useful.unlockCam();
                 Useful.dumpPlayerUnit(unit, p);
             }
         }
@@ -407,7 +414,8 @@ public class ClearPipe extends Block {
             if(f < 0f){
                 //special animation playing for fat units, do nothing
                 f += Time.delta;
-                if(player() == player) /*playerPipe.unit().set(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build))*/Useful.lockCam(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));
+                if(player() == player) playerPipe.unit().set(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));
+                /*Useful.lockCam(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));*/
                 if(f > 0f) f = 0f;
             }
             else{
@@ -426,8 +434,8 @@ public class ClearPipe extends Block {
                     if(!headless && player() == Vars.player){
                         int input = Useful.dwas();
                         if(input >= 0 && from != input && build.validPipe(input)) to = input;
-                        //playerPipe.unit().set(Tmp.v1);
-                        Useful.lockCam(Tmp.v1);
+                        playerPipe.unit().set(Tmp.v1);
+                        //Useful.lockCam(Tmp.v1);
                     }
                 }
                 else{
@@ -445,7 +453,7 @@ public class ClearPipe extends Block {
                     }
                     Tmp.v1.trns(to * 90f, tilesize * (f - 0.5f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,to * 90f);
-                    if(p == player) /*playerPipe.unit().set(Tmp.v1)*/Useful.lockCam(Tmp.v1);
+                    if(p == player) playerPipe.unit().set(Tmp.v1);/*Useful.lockCam(Tmp.v1);*/
 
                     if(f > 1f){
                         if(to < 0) to = from;
@@ -482,8 +490,8 @@ public class ClearPipe extends Block {
                             return false;
                         }
                         else{
-                            Useful.unlockCam();
-                            //if(unit.unit.type == null) return true;
+                            //Useful.unlockCam();
+                            if(unit.unit.type == null) return true;
                             if(build.isOpen(to, true) && Useful.dumpPlayerUnit(unit, p)){
                                 effects(build);
                                 return true;
@@ -497,7 +505,7 @@ public class ClearPipe extends Block {
 
                 if(p == null && unit.unit.spawnedByCore){
                     Fx.unitDespawn.at(unit.unit.x, unit.unit.y, 0f, unit.unit);
-                    Useful.unlockCam();
+                    //Useful.unlockCam();
                     return true;
                 }
             }

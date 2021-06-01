@@ -11,7 +11,6 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
 public class NavalBulletType extends BulletType {
