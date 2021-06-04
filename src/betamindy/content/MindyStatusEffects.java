@@ -12,7 +12,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology;
 
     public void load(){
         radiation = new StatusEffect("radiated"){
@@ -123,6 +123,23 @@ public class MindyStatusEffects implements ContentList {
                 buildSpeedMultiplier = 0f;
             }
         };
+
+        pause = new StatusEffect("paused"){{
+            color = Pal2.vector;
+            speedMultiplier = 0.001f;
+            buildSpeedMultiplier = 0f;
+            reloadMultiplier = 0f;
+            //TODO effect
+        }};
+
+        dissonance = new StatusEffect("dissonance"){{
+            damage = 4f;
+            color = Color.white;
+        }};
+
+        ideology = new StatusEffect("ideology"){{
+            color = Color.coral;
+        }};
 
         //harmful blocks will ignore units with this on, as it has been damaged recently.
         ouch = new StatusEffect("ouch"){{

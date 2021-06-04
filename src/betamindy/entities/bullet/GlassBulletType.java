@@ -8,7 +8,7 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.Bullet;
 import mindustry.graphics.Layer;
 
-public class GlassBullet extends BulletType {
+public class GlassBulletType extends BulletType {
     public String sprite;
     public int variants;
     public Color tintColor = Color.white;
@@ -18,7 +18,7 @@ public class GlassBullet extends BulletType {
 
     public TextureRegion[] regions;
 
-    public GlassBullet(float speed, float damage, String bulletSprite, int variants){
+    public GlassBulletType(float speed, float damage, String bulletSprite, int variants){
         super(speed, damage);
         this.sprite = bulletSprite;
         this.variants = variants;
@@ -28,11 +28,11 @@ public class GlassBullet extends BulletType {
         drag = 0.1f;
     }
 
-    public GlassBullet(float speed, float damage, String bulletSprite){
+    public GlassBulletType(float speed, float damage, String bulletSprite){
         this(speed, damage, bulletSprite, 5);
     }
 
-    public GlassBullet(String bulletSprite){
+    public GlassBulletType(String bulletSprite){
         this(1f, 1f, bulletSprite, 5);
     }
 

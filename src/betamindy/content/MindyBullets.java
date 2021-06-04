@@ -71,7 +71,7 @@ public class MindyBullets implements ContentList {
             homingRange = 120f;
         }};
 
-        glassPiece = new GlassBullet(4f, 30f, "betamindy-glass"){{
+        glassPiece = new GlassBulletType(4f, 30f, "betamindy-glass"){{
             trailColor = Color.white;
             trailParam = 0.8f;
             trailChance = 0.04f;
@@ -82,7 +82,7 @@ public class MindyBullets implements ContentList {
             despawnEffect = Fx.none;
         }};
 
-        glassPieceBig = new GlassBullet(5f, 65f, "betamindy-glassbig"){{
+        glassPieceBig = new GlassBulletType(5f, 65f, "betamindy-glassbig"){{
             trailColor = Color.white;
             trailParam = 1.8f;
             trailChance = 0.04f;

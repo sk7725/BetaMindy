@@ -311,5 +311,32 @@ public class MindyFx {
         randLenVectors(e.id, 14, e.fin() * 27f, (x, y) -> {
             lineAngle(Tmp.v1.x + x, Tmp.v1.y + y, Mathf.angle(x, y), e.fout() * 6f + 1f);
         });
+    }),
+
+    mineHugeButHuger = new Effect(50, e -> {
+        stroke(e.fout(), Color.white);
+        circle(e.x, e.y, 8f * e.fin());
+
+        randLenVectors(e.id, 12, 7f + e.fin() * 7f, (x, y) -> {
+            color(e.color, Color.lightGray, e.fin());
+            Fill.square(e.x + x, e.y + y, e.fout() * 2.5f + 0.5f, 45);
+        });
+    }),
+
+    pipePop = new Effect(40, e -> {
+        randLenVectors(e.id, 10, 8f + e.fin() * 18f, e.rotation, 15f, (x, y) -> {
+            color(e.color, Color.lightGray, e.fin());
+            Fill.square(e.x + x, e.y + y, e.fout() * 2f + 0.5f, 45);
+        });
+    }),
+
+    bigBoiPipePop = new Effect(50, e -> {
+        stroke(e.fout(), Color.white);
+        circle(e.x, e.y, 8f + 16f * e.finpow());
+
+        randLenVectors(e.id, 12, 7f + e.fin() * 24f, e.rotation, 60f, (x, y) -> {
+            color(e.color, Color.lightGray, e.fin());
+            Fill.square(e.x + x, e.y + y, e.fout() * 2.5f + 1f, 45);
+        });
     });
 }

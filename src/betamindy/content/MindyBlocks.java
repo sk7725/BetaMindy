@@ -54,7 +54,7 @@ public class MindyBlocks implements ContentList {
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource,
     //turrets
-    hopeBringer, anchor, bermuda,
+    hopeBringer, anchor, bermuda, propaganda, spear, justice, ray,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
@@ -169,6 +169,69 @@ public class MindyBlocks implements ContentList {
                         toColor = Pal.thoriumPink;
                         shootEffect = smokeEffect = Fx.thoriumShoot;
                         despawnEffect = MindyFx.thoriumDespawn;
+                    }}
+            );
+        }};
+
+        propaganda = new ItemTurret("propaganda"){{
+            requirements(Category.turret, with(Items.copper, 500, Items.graphite, 360, Items.metaglass, 65, Items.phaseFabric, 65));
+
+            reloadTime = 160f;
+            shootShake = 3f;
+            range = 240f;
+            recoilAmount = 2f;
+            restitution = 0.1f;
+            size = 3;
+            cooldown = 0.03f;
+            shootShake = 1f;
+            burstSpacing = 10f;
+            shots = 3;
+
+            health = 140 * size * size;
+            shootSound = Sounds.plasmadrop;
+            heatColor = Pal.lancerLaser;
+            shootShake = 0f;
+            shootLength = 2f;
+            //TODO make it consume power (clear map first!)
+
+            ammo(
+                    Items.metaglass, new SoundwaveBulletType(4.5f, 60f, MindyStatusEffects.dissonance){{
+                        fromColor = toColor = Color.white;
+                        lifetime = 60f;
+                        ammoMultiplier = 4f;
+                        reloadMultiplier = 2.5f;
+                    }},
+                    Items.phaseFabric, new SoundwaveBulletType(4.5f, 10f, MindyStatusEffects.controlSwap){{
+                        fromColor = Items.phaseFabric.color;
+                        toColor = Pal.sapBullet;
+                        lifetime = 90f;
+                        ammoMultiplier = 3f;
+                    }},
+                    Items.surgeAlloy, new SoundwaveBulletType(4.5f, 5f, MindyStatusEffects.creativeShock){{
+                        fromColor = Pal.surge;
+                        toColor = Color.orange;
+                        lifetime = 110f;
+                        ammoMultiplier = 5f;
+                    }},
+                    MindyItems.vector, new SoundwaveBulletType(4.2f, 30f, MindyStatusEffects.pause){{
+                        statusDuration = 60f;
+                        fromColor = Pal2.vector;
+                        toColor = Color.white;
+                        lifetime = 60f;
+                        ammoMultiplier = 6f;
+                        reloadMultiplier = 0.35f;
+                    }},
+                    MindyItems.tensor, new SoundwaveBulletType(5f, 10f, MindyStatusEffects.amnesia){{
+                        fromColor = Pal.accent;
+                        toColor = Pal2.zeta;
+                        lifetime = 90f;
+                        ammoMultiplier = 8f;
+                    }},
+                    MindyItems.source, new IdeologyBulletType(4f, 20f){{
+                        fromColor = Pal.accent;
+                        toColor = Pal.remove;
+                        lifetime = 50f;
+                        ammoMultiplier = 8f;
                     }}
             );
         }};

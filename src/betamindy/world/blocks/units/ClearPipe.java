@@ -8,6 +8,7 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.*;
+import betamindy.content.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -31,8 +32,8 @@ public class ClearPipe extends Block {
     public float speed = 1f / 6f;
     public float ejectStrength = 6f;
 
-    public Effect suckEffect = Fx.mineHuge; //TODO effect
-    public Effect spitEffect = Fx.mineHuge;
+    public Effect suckEffect = Fx.mineHuge, bigSuckEffect = MindyFx.mineHugeButHuger;
+    public Effect spitEffect = MindyFx.pipePop, bigSpitEffect = MindyFx.bigBoiPipePop;
     public TextureRegion[] pipeRegions = new TextureRegion[16], shadowRegions = new TextureRegion[6];
     private int tiling;
 
@@ -95,6 +96,7 @@ public class ClearPipe extends Block {
         public Seq<UnitinaBottle> units = new Seq<>();
         public ClearPipeBuild[] pipes = new ClearPipeBuild[4];
         public int connections = 0, contype = 0;
+        public int lastPlayerKey = -1;
 
         @Override
         public void created(){
@@ -164,7 +166,7 @@ public class ClearPipe extends Block {
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir));
             }
 
-            suckEffect.at(Tmp.v1.trns(dir * 90f, tilesize * size / 2f).add(this));
+            if(!units.peek().datBigBoi()) suckEffect.at(Tmp.v1.trns(dir * 90f, tilesize * size / 2f).add(this));
             if(Vars.net.client()){
                 Vars.netClient.clearRemovedEntity(unit.id);
             }
@@ -309,7 +311,7 @@ public class ClearPipe extends Block {
             this.unit = unit;
             this.from = from;
             to = -1;
-            if(unit.icon(Cicon.full).width > maxDrawSize + 16f){
+            if(datBigBoi(unit)){
                 initf = Math.min(150f, (unit.icon(Cicon.full).width - maxDrawSize) / 3f) + 15f;
                 f = -initf;
             }
@@ -322,6 +324,14 @@ public class ClearPipe extends Block {
 
         public @Nullable Player player(){
             return playerPipe != null && playerPipe.isValid() && playerPipe.unit().isPlayer() ? playerPipe.unit().getPlayer() : null;
+        }
+
+        public boolean datBigBoi(){
+            return datBigBoi(unit);
+        }
+
+        public boolean datBigBoi(UnitPayload unit){
+            return unit.icon(Cicon.full).width > maxDrawSize + 16f;
         }
 
         public void updateSavedTile(){
@@ -381,7 +391,9 @@ public class ClearPipe extends Block {
         }
 
         public void effects(ClearPipeBuild build){
-            spitEffect.at(Tmp.v2.trns(to * 90f, tilesize * size / 2f).add(build), to * 90f);
+            Tmp.v2.trns(to * 90f, tilesize * size / 2f).add(build);
+            if(datBigBoi()) bigSpitEffect.at(Tmp.v2, to * 90f);
+            else spitEffect.at(Tmp.v2, to * 90f);
         }
 
         public void dump(ClearPipeBuild build){
@@ -414,9 +426,13 @@ public class ClearPipe extends Block {
             if(f < 0f){
                 //special animation playing for fat units, do nothing
                 f += Time.delta;
-                if(player() == player) playerPipe.unit().set(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));
+                if(player() == player) playerPipe.unit().set(Tmp.v1.trns(from * 90f, tilesize * build.block.size / 2f).add(build));
                 /*Useful.lockCam(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));*/
-                if(f > 0f) f = 0f;
+                if(f >= 0f){
+                    f = 0f;
+                    Tmp.v1.trns(from * 90f, tilesize * build.block.size / 2f).add(build);
+                    bigSuckEffect.at(Tmp.v1, from * 90f + 180f);
+                }
             }
             else{
                 if(Time.time - lastTime < 0.1f){
