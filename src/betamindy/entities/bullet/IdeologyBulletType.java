@@ -7,7 +7,7 @@ import mindustry.*;
 import mindustry.gen.*;
 
 public class IdeologyBulletType extends SoundwaveBulletType{
-    public float successChance = 0.1f;
+    public float successChance = 0.05f;
 
     public IdeologyBulletType(float speed, float damage){
         super(speed, damage, MindyStatusEffects.ideology);
@@ -20,6 +20,7 @@ public class IdeologyBulletType extends SoundwaveBulletType{
             Unit unit = (Unit)other;
             Tmp.v3.set(unit).sub(b.x, b.y).nor().scl(knockback * 80f);
             unit.impulse(Tmp.v3);
+            unit.apply(MindyStatusEffects.glitched, 160f);
             if(!Vars.net.client() && Mathf.chance(successChance)) hypnotise(b, unit);
         }
     }
@@ -27,5 +28,6 @@ public class IdeologyBulletType extends SoundwaveBulletType{
     public void hypnotise(Bullet b, Unit u){
         if(u.isPlayer()) return;
         u.team(b.team);
+        u.apply(MindyStatusEffects.ideology, 360f);
     }
 }

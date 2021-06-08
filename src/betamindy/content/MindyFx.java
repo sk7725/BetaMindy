@@ -313,7 +313,7 @@ public class MindyFx {
         });
     }),
 
-    mineHugeButHuger = new Effect(50, e -> {
+    mineHugeButHuger = new Effect(50f, e -> {
         stroke(e.fout(), Color.white);
         circle(e.x, e.y, 8f * e.fin());
 
@@ -323,14 +323,14 @@ public class MindyFx {
         });
     }),
 
-    pipePop = new Effect(40, e -> {
+    pipePop = new Effect(40f, e -> {
         randLenVectors(e.id, 10, 8f + e.fin() * 18f, e.rotation, 15f, (x, y) -> {
             color(e.color, Color.lightGray, e.fin());
             Fill.square(e.x + x, e.y + y, e.fout() * 2f + 0.5f, 45);
         });
     }),
 
-    bigBoiPipePop = new Effect(50, e -> {
+    bigBoiPipePop = new Effect(50f, e -> {
         stroke(e.fout(), Color.white);
         circle(e.x, e.y, 8f + 16f * e.finpow());
 
@@ -338,5 +338,16 @@ public class MindyFx {
             color(e.color, Color.lightGray, e.fin());
             Fill.square(e.x + x, e.y + y, e.fout() * 2.5f + 1f, 45);
         });
+    }),
+
+    ideologied = new Effect(18f, e -> {
+        color(Pal.accent, Pal.remove, e.fin());
+        Fill.square(e.x, e.y, 1.5f * e.fout(), 45f);
+    }),
+
+    soundwaveHit = new Effect(20f, e -> {
+        stroke(e.fout() * 2f, e.color);
+        circle(e.x, e.y, e.fslope() * 15f);
+        circle(e.x, e.y, e.finpow() * 15f);
     });
 }

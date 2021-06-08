@@ -31,10 +31,15 @@ public class ClearPipe extends Block {
     public static final byte[][][] pipeOpening = {{{2, 0}, {2, 1}}, {{0, 2}, {1, 2}}, {{-1, 0}, {-1, 1}}, {{0, -1}, {1, -1}}};
     public float speed = 1f / 6f;
     public float ejectStrength = 6f;
+    /** Whether to only input units when consValid() */
+    public boolean conditional = false;
+    public boolean hasBaseRegion = false;  //set automatically
+    public boolean hasLightRegion = false; //set automatically
 
     public Effect suckEffect = Fx.mineHuge, bigSuckEffect = MindyFx.mineHugeButHuger;
     public Effect spitEffect = MindyFx.pipePop, bigSpitEffect = MindyFx.bigBoiPipePop;
     public TextureRegion[] pipeRegions = new TextureRegion[16], shadowRegions = new TextureRegion[6];
+    public TextureRegion baseRegion, lightRegion;
     private int tiling;
 
     public ClearPipe(String name){
@@ -44,7 +49,7 @@ public class ClearPipe extends Block {
         solid = true;
         update = true;
         noUpdateDisabled = false;
-        drawDisabled = false;
+        drawDisabled = conditional;
         rotate = false;
     }
 
@@ -55,6 +60,12 @@ public class ClearPipe extends Block {
         for(int i = 1; i < 16; i++){
             pipeRegions[i] = atlas.find(name + "-" + i, name + "" + i);
         }
+
+        baseRegion = atlas.find(name + "-base");
+        hasBaseRegion = atlas.has(name + "-base");
+
+        lightRegion = atlas.find(name + "-light");
+        hasLightRegion = atlas.has(name + "-light");
 
         if(hasShadow) return;
         for(int i = 0; i < 6; i++){
@@ -88,7 +99,14 @@ public class ClearPipe extends Block {
             if(t != null && ((1 << i) & tiling) == 0 && (t.build instanceof ClearPipeBuild) && t.build.tile == t) tiling += (1 << i);
             i++;
         }
+        if(hasBaseRegion) Draw.rect(baseRegion, req.drawx(), req.drawy());
         Draw.rect(pipeRegions[tiling], req.drawx(), req.drawy());
+    }
+
+    @Override
+    public TextureRegion[] icons(){
+        if(hasBaseRegion) return new TextureRegion[]{baseRegion, region};
+        return super.icons();
     }
 
     public class ClearPipeBuild extends Building implements ControlBlock {
@@ -97,6 +115,7 @@ public class ClearPipe extends Block {
         public ClearPipeBuild[] pipes = new ClearPipeBuild[4];
         public int connections = 0, contype = 0;
         public int lastPlayerKey = -1;
+        public float heat = 0f;
 
         @Override
         public void created(){
@@ -115,6 +134,10 @@ public class ClearPipe extends Block {
             return pipes[r] != null;
         }
 
+        public boolean isGate(){
+            return connections <= 1;
+        }
+
         public boolean isOpen(int r){ return isOpen(r, false); }
 
         public boolean isOpen(int r, boolean strict){
@@ -126,6 +149,7 @@ public class ClearPipe extends Block {
         }
 
         public void suck(int dir){
+            if(conditional && (!enabled || (power != null && power.status < 0.9f) || heat > 0f)) return;
             float ox = d4(dir).x * (size * 4f + 4f);
             float oy = d4(dir).y * (size * 4f + 4f);
 
@@ -170,6 +194,8 @@ public class ClearPipe extends Block {
             if(Vars.net.client()){
                 Vars.netClient.clearRemovedEntity(unit.id);
             }
+
+            heat = 1f;
         }
 
         @Override
@@ -191,6 +217,7 @@ public class ClearPipe extends Block {
             else if (connections == 1){
                 suck(rotation);
             }
+            if(heat >= 0f) heat -= 0.005f * delta();
 
             for(int i = 0; i < units.size; i++){
                 if(units.get(i).update(this)){
@@ -209,9 +236,26 @@ public class ClearPipe extends Block {
                 Draw.color();
             }
 
+            if(hasBaseRegion){
+                Draw.z(Layer.blockUnder);
+                Draw.rect(baseRegion, x, y);
+            }
             Draw.z(Layer.block);
             units.each(u -> u.draw(this));
             Draw.rect(pipeRegions[contype], x, y);
+
+            if(hasLightRegion && connections <= 1){
+                Draw.z(Layer.bullet - 0.01f);
+                Draw.color(heat > 0f ? Pal.accent : (enabled && (power == null || power.status > 0.9f) ? Pal.heal : Pal.remove));
+                if(connections == 0){
+                    Draw.rect(lightRegion, x, y, 0f);
+                    Draw.rect(lightRegion, x, y, 180f);
+                }
+                else{
+                    Draw.rect(lightRegion, x, y, rotation * 90f);
+                }
+                Draw.reset();
+            }
         }
 
         @Override

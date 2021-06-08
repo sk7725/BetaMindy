@@ -1,6 +1,7 @@
 package betamindy.content;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.graphics.Pal2;
@@ -8,11 +9,12 @@ import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Unit;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
 import mindustry.type.StatusEffect;
+import mindustry.ui.*;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched;
 
     public void load(){
         radiation = new StatusEffect("radiated"){
@@ -124,13 +126,24 @@ public class MindyStatusEffects implements ContentList {
             }
         };
 
-        pause = new StatusEffect("paused"){{
-            color = Pal2.vector;
-            speedMultiplier = 0.001f;
-            buildSpeedMultiplier = 0f;
-            reloadMultiplier = 0f;
-            //TODO effect
-        }};
+        pause = new StatusEffect("paused"){
+            @Override
+            public void draw(Unit unit){
+                Draw.z(Layer.flyingUnit + 0.05f);
+                Draw.blend(Blending.additive);
+                Draw.color(Pal2.vector, Mathf.absin(Time.globalTime, 8f, 0.5f) + 0.4f);
+                Draw.rect(unit.icon(), unit.x, unit.y, unit.rotation - 90f);
+                Draw.blend();
+                Draw.color();
+            }
+
+            {
+                color = Pal2.vector;
+                speedMultiplier = 0.001f;
+                buildSpeedMultiplier = 0f;
+                reloadMultiplier = 0f;
+            }
+        };
 
         dissonance = new StatusEffect("dissonance"){{
             damage = 4f;
@@ -139,12 +152,35 @@ public class MindyStatusEffects implements ContentList {
 
         ideology = new StatusEffect("ideology"){{
             color = Color.coral;
+            effect = MindyFx.ideologied;
         }};
+
+        //graphic status effect
+        glitched = new StatusEffect("glitched"){
+            @Override
+            public void draw(Unit unit){
+                Draw.z(Layer.flyingUnit + 0.05f);
+                Draw.blend(Blending.additive);
+                float f = Mathf.sin(Time.time / 5f) * 3f;
+                float a = Mathf.random();
+                int c = (int)(Mathf.randomSeed(unit.id) * 3f);
+                Draw.color(c == 0 ? Color.magenta : c == 1 ? Color.yellow : Color.cyan, a);
+                Draw.rect(unit.icon(), unit.x + f, unit.y, unit.rotation - 90f);
+                Draw.color(c == 0 ? Color.cyan : c == 1 ? Color.magenta : Color.yellow, a);
+                Draw.rect(unit.icon(), unit.x - f, unit.y, unit.rotation - 90f);
+                Draw.blend();
+                Draw.color();
+            }
+
+            {
+                color = Pal2.source;
+            }
+        };
 
         //harmful blocks will ignore units with this on, as it has been damaged recently.
         ouch = new StatusEffect("ouch"){{
             color = Color.clear;
-            effect = Fx.none;
+            effect = MindyFx.ideologied;
         }};
     }
 }

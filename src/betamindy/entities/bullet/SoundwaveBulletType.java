@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import betamindy.content.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -22,12 +23,14 @@ public class SoundwaveBulletType extends BulletType {
         this.damage = damage;
         this.status = status;
         statusDuration = 60f * 20f;
-        hitEffect = shootEffect = smokeEffect = despawnEffect = Fx.none;
+        shootEffect = smokeEffect = despawnEffect = Fx.none;
+        hitEffect = MindyFx.soundwaveHit;
         pierce = pierceBuilding = true;
         absorbable = false;
         hittable = false;
         collidesTiles = false;
         lifetime = 120f;
+        hitSize = 15f;
     }
 
     @Override

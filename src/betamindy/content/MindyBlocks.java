@@ -50,7 +50,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, vacuumPipe,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, clearDuct, claw,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource,
     //turrets
@@ -192,46 +192,51 @@ public class MindyBlocks implements ContentList {
             heatColor = Pal.lancerLaser;
             shootShake = 0f;
             shootLength = 2f;
-            //TODO make it consume power (clear map first!)
+            coolantUsage = 1f;
+            coolantMultiplier = 0.4f;
+
+            consumes.powerCond(18f, TurretBuild::isActive);
 
             ammo(
                     Items.metaglass, new SoundwaveBulletType(4.5f, 60f, MindyStatusEffects.dissonance){{
-                        fromColor = toColor = Color.white;
+                        fromColor = toColor = hitColor = Color.white;
                         lifetime = 60f;
                         ammoMultiplier = 4f;
                         reloadMultiplier = 2.5f;
                     }},
                     Items.phaseFabric, new SoundwaveBulletType(4.5f, 10f, MindyStatusEffects.controlSwap){{
                         fromColor = Items.phaseFabric.color;
-                        toColor = Pal.sapBullet;
+                        toColor = hitColor = Pal.sapBullet;
                         lifetime = 90f;
                         ammoMultiplier = 3f;
                     }},
                     Items.surgeAlloy, new SoundwaveBulletType(4.5f, 5f, MindyStatusEffects.creativeShock){{
-                        fromColor = Pal.surge;
+                        fromColor = hitColor = Pal.surge;
                         toColor = Color.orange;
                         lifetime = 110f;
                         ammoMultiplier = 5f;
                     }},
                     MindyItems.vector, new SoundwaveBulletType(4.2f, 30f, MindyStatusEffects.pause){{
-                        statusDuration = 60f;
-                        fromColor = Pal2.vector;
+                        statusDuration = 90f;
+                        fromColor = hitColor = Pal2.vector;
                         toColor = Color.white;
                         lifetime = 60f;
                         ammoMultiplier = 6f;
-                        reloadMultiplier = 0.35f;
+                        reloadMultiplier = 0.45f;
                     }},
                     MindyItems.tensor, new SoundwaveBulletType(5f, 10f, MindyStatusEffects.amnesia){{
-                        fromColor = Pal.accent;
-                        toColor = Pal2.zeta;
+                        fromColor = MindyStatusEffects.amnesia.color;
+                        toColor = hitColor = Pal2.zeta;
                         lifetime = 90f;
                         ammoMultiplier = 8f;
                     }},
                     MindyItems.source, new IdeologyBulletType(4f, 20f){{
                         fromColor = Pal.accent;
-                        toColor = Pal.remove;
+                        toColor = Pal2.source;
+                        hitColor = Pal2.source;
                         lifetime = 50f;
                         ammoMultiplier = 8f;
+                        reloadMultiplier = 0.65f;
                     }}
             );
         }};
@@ -652,14 +657,14 @@ public class MindyBlocks implements ContentList {
             size = 3;
             range = 120f;
             itemCapacity = 50;
-            mineSpeed = 3.5f;
+            mineSpeed = 4.5f;
             minDrillTier = 1;
-            maxDrillTier = 5;
+            maxDrillTier = 6;
             hasPower = true;
             laserWidth = 1.1f;
             laserOffset = 11f;
-            consumes.power(7.6f);
-            requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, Items.surgeAlloy, 15));
+            consumes.power(5.6f);
+            requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, MindyItems.vector, 15));
         }};
 
         repairTurret = new RepairTurret("repair-turret"){{
@@ -879,10 +884,24 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, with(Items.lead, 10, Items.graphite, 10, Items.silicon, 10));
         }};
 
+        claw = new Claw("claw"){{
+            requirements(Category.units, with(Items.copper, 15, Items.titanium, 15, Items.plastanium, 6));
+        }};
+
         clearPipe = new ClearPipe("clear-pipe"){{
             size = 2;
             hasShadow = false; //use custom shadows
-            requirements(Category.units, with(Items.metaglass, 20, MindyItems.vector, 8));
+            requirements(Category.units, with(Items.metaglass, 20, Items.plastanium, 8));
+        }};
+
+        clearDuct = new ClearPipe("unit-duct"){{
+            size = 2;
+            hasShadow = true;
+            conditional = true;
+            speed = 1f / 3.5f;
+            ejectStrength = 8f;
+            consumes.powerCond(6f, ClearPipeBuild::isGate);
+            requirements(Category.units, with(Items.metaglass, 20, Items.graphite, 8, MindyItems.vector, 2));
         }};
 
         omegaRune = new RuneBlock("omega-rune"){
