@@ -1,6 +1,7 @@
 package betamindy.world.blocks.units;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -37,10 +38,17 @@ public class ClearPipe extends Block {
     public boolean hasLightRegion = false; //set automatically
 
     public Effect suckEffect = Fx.mineHuge, bigSuckEffect = MindyFx.mineHugeButHuger;
+    public Effect suckSmokeEffect = MindyFx.suckSmoke;
     public Effect spitEffect = MindyFx.pipePop, bigSpitEffect = MindyFx.bigBoiPipePop;
+    public float suckSmokeChance = 0.3f;
     public TextureRegion[] pipeRegions = new TextureRegion[16], shadowRegions = new TextureRegion[6];
     public TextureRegion baseRegion, lightRegion;
     private int tiling;
+
+    public Sound popSound = MindySounds.pipePop;
+    public Sound suckSound = MindySounds.pipeIn;
+    public Sound squeezeSound = MindySounds.pipeSqueeze;
+    //public float squeezeSoundLength = 120f;
 
     public ClearPipe(String name){
         super(name);
@@ -51,6 +59,10 @@ public class ClearPipe extends Block {
         noUpdateDisabled = false;
         drawDisabled = conditional;
         rotate = false;
+
+        config(Integer.class, (ClearPipeBuild build, Integer i) -> {
+            if(0 <= i && i < 4) build.lastPlayerKey = i;
+        });
     }
 
     @Override
@@ -190,7 +202,20 @@ public class ClearPipe extends Block {
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir));
             }
 
-            if(!units.peek().datBigBoi()) suckEffect.at(Tmp.v1.trns(dir * 90f, tilesize * size / 2f).add(this));
+            if(!headless){
+                if(!units.peek().datBigBoi()){
+                    suckEffect.at(Tmp.v1.trns(dir * 90f, tilesize * size / 2f).add(this));
+                    suckSound.at(this);
+                }else{
+                    float len = Math.min(150f, (unit.icon().width - UnitinaBottle.maxDrawSize) / 3f) + 15f;
+                    final int sfxid = squeezeSound.at(x, y, 1f, 0.7f);
+                    Time.run(len, () -> {
+                        Core.audio.stop(sfxid);
+                        suckSound.at(this);
+                    });
+                }
+            }
+
             if(Vars.net.client()){
                 Vars.netClient.clearRemovedEntity(unit.id);
             }
@@ -218,6 +243,14 @@ public class ClearPipe extends Block {
                 suck(rotation);
             }
             if(heat >= 0f) heat -= 0.005f * delta();
+
+            if(unit().isPlayer() && unit().getPlayer() == player){
+                int input = Useful.dwas();
+                if(input >= 0 && lastPlayerKey != input){
+                    configure(input);
+                    lastPlayerKey = input;
+                }
+            }
 
             for(int i = 0; i < units.size; i++){
                 if(units.get(i).update(this)){
@@ -435,9 +468,16 @@ public class ClearPipe extends Block {
         }
 
         public void effects(ClearPipeBuild build){
+            if(headless) return;
             Tmp.v2.trns(to * 90f, tilesize * size / 2f).add(build);
-            if(datBigBoi()) bigSpitEffect.at(Tmp.v2, to * 90f);
-            else spitEffect.at(Tmp.v2, to * 90f);
+            if(datBigBoi()){
+                bigSpitEffect.at(Tmp.v2, to * 90f);
+                popSound.at(Tmp.v2, 0.9f);
+            }
+            else{
+                spitEffect.at(Tmp.v2, to * 90f);
+                popSound.at(Tmp.v2);
+            }
         }
 
         public void dump(ClearPipeBuild build){
@@ -470,11 +510,12 @@ public class ClearPipe extends Block {
             if(f < 0f){
                 //special animation playing for fat units, do nothing
                 f += Time.delta;
-                if(player() == player) playerPipe.unit().set(Tmp.v1.trns(from * 90f, tilesize * build.block.size / 2f).add(build));
+                Tmp.v1.trns(from * 90f, tilesize * build.block.size / 2f).add(build);
+                if(player() == player) playerPipe.unit().set(Tmp.v1);
+                if(Mathf.chance(suckSmokeChance)) suckSmokeEffect.at(Tmp.v2.trns(from * 90f, -3f).add(Tmp.v1), from * 90f);
                 /*Useful.lockCam(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));*/
                 if(f >= 0f){
                     f = 0f;
-                    Tmp.v1.trns(from * 90f, tilesize * build.block.size / 2f).add(build);
                     bigSuckEffect.at(Tmp.v1, from * 90f + 180f);
                 }
             }
@@ -491,11 +532,14 @@ public class ClearPipe extends Block {
                     Tmp.v1.trns(from * 90f, tilesize * (0.5f - f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,from * 90f + 180f);
                     //not halfway yet
-                    if(!headless && player() == Vars.player){
-                        int input = Useful.dwas();
-                        if(input >= 0 && from != input && build.validPipe(input)) to = input;
+                    if(playerPipe != null){
+                        int input = playerPipe.lastPlayerKey;
+                        if(input >= 0 && from != input && build.validPipe(input)){
+                            to = input;
+                            playerPipe.lastPlayerKey = -1;
+                        }
                         playerPipe.unit().set(Tmp.v1);
-                        //Useful.lockCam(Tmp.v1);
+                        if(!headless && mobile && p == player) Core.camera.position.set(Tmp.v1);
                     }
                 }
                 else{

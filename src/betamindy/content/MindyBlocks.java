@@ -900,6 +900,8 @@ public class MindyBlocks implements ContentList {
             conditional = true;
             speed = 1f / 3.5f;
             ejectStrength = 8f;
+            popSound = Sounds.release;
+            suckSound = Sounds.respawn;
             consumes.powerCond(6f, ClearPipeBuild::isGate);
             requirements(Category.units, with(Items.metaglass, 20, Items.graphite, 8, MindyItems.vector, 2));
         }};

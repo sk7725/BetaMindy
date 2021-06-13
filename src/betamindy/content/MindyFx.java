@@ -313,6 +313,14 @@ public class MindyFx {
         });
     }),
 
+    suckSmoke = new Effect(12f, e -> {
+        color();
+        alpha(e.finpow());
+        randLenVectors(e.id, 1, e.fout() * 13f + 6f, e.rotation, 40f, (x, y) -> {
+            Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45);
+        });
+    }),
+
     mineHugeButHuger = new Effect(50f, e -> {
         stroke(e.fout(), Color.white);
         circle(e.x, e.y, 8f * e.fin());

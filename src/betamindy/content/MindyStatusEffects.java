@@ -180,7 +180,6 @@ public class MindyStatusEffects implements ContentList {
         //harmful blocks will ignore units with this on, as it has been damaged recently.
         ouch = new StatusEffect("ouch"){{
             color = Color.clear;
-            effect = MindyFx.ideologied;
         }};
     }
 }
