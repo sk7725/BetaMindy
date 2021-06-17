@@ -8,3 +8,4 @@
 /temp/
 .project
 .classpath
+*.log
