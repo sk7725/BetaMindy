@@ -207,7 +207,7 @@ public class ClearPipe extends Block {
                     suckEffect.at(Tmp.v1.trns(dir * 90f, tilesize * size / 2f).add(this));
                     suckSound.at(this);
                 }else{
-                    float len = Math.min(150f, (unit.icon().width - UnitinaBottle.maxDrawSize) / 3f) + 15f;
+                    float len = Math.min(150f, ((net.active() ? unit.hitSize * 1.3f : unit.icon().width) - UnitinaBottle.maxDrawSize) / 3f) + 15f;
                     final int sfxid = squeezeSound.at(x, y, 1f, 0.7f);
                     Time.run(len, () -> {
                         Core.audio.stop(sfxid);
@@ -389,7 +389,7 @@ public class ClearPipe extends Block {
             this.from = from;
             to = -1;
             if(datBigBoi(unit)){
-                initf = Math.min(150f, (unit.icon(Cicon.full).width - maxDrawSize) / 3f) + 15f;
+                initf = Math.min(150f, ((net.active() ? unit.unit.hitSize * 1.3f : unit.icon(Cicon.full).width) - maxDrawSize) / 3f) + 15f;
                 f = -initf;
             }
             else{
@@ -408,7 +408,7 @@ public class ClearPipe extends Block {
         }
 
         public boolean datBigBoi(UnitPayload unit){
-            return unit.icon(Cicon.full).width > maxDrawSize + 16f;
+            return (net.active() ? unit.unit.hitSize * 1.3f : unit.icon(Cicon.full).width) > maxDrawSize + 16f;
         }
 
         public void updateSavedTile(){

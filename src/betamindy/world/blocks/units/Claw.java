@@ -1,5 +1,6 @@
 package betamindy.world.blocks.units;
 
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -13,10 +14,13 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.payloads.*;
 
 import static arc.Core.atlas;
+import static mindustry.Vars.world;
 
 //TODO grab all units on ground, grab air/mechs on spinning (use the TP method, not UnitPayload)
 //TODO can output to payload convs
@@ -26,16 +30,20 @@ public class Claw extends Block {
     public float grabOffset = grabRange / 2f + 4f;
     public float pullStrength = 3f;
     public float maxTension = 180f;
+    public float maxSize = 24f;
 
     public TextureRegion topRegion;
     public TextureRegion handRegion, handRegion2,  handOverlay, handOutline;
     public TextureRegion armRegion;
 
-    public float clawOffset = 9f, clawGrab = 30f, clawOpen = 0f, clawFail = -7f;
+    public float clawOffset = 9f, clawGrab = 30f, clawOpen = 0f, clawFail = -7f, clawGrabBlock = 10f;
 
     private final Vec2 toV = new Vec2();
     //after being logic-controlled and this amount of time passes, the claw will resume normal AI
     public final static float logicControlCooldown = 60 * 3;
+
+    public Sound grabSound = Sounds.door;
+    public Sound detachSound = Sounds.click;
 
     public Claw(String name){
         super(name);
@@ -66,6 +74,7 @@ public class Claw extends Block {
 
     public class ClawBuild extends Building implements SpinDraw, SpinUpdate, ControlBlock {
         public @Nullable Unit unit; //TODO grab blocks when controlled
+        public @Nullable BuildPayload heldBuild;
         protected final Vec2 lastV = new Vec2(), targetV = new Vec2();
         public float tension = 0f;//TODO better escaping
 
@@ -82,11 +91,33 @@ public class Claw extends Block {
         }
 
         public void grab(float x, float y, float r){
-            boolean empty = unit == null;
+            if(unit != null) return;
             Tmp.v2.trns(r, grabOffset).add(x, y);
-            unit = Units.closestEnemy(null, Tmp.v2.x, Tmp.v2.y, grabRange / 2f, u -> u.type != UnitTypes.block && !u.hasEffect(MindyStatusEffects.ouch));
-            if(empty && unit != null){
+            unit = Units.closestEnemy(null, Tmp.v2.x, Tmp.v2.y, grabRange / 2f, u -> u.type != UnitTypes.block && u.hitSize() <= maxSize && !u.hasEffect(MindyStatusEffects.ouch));
+            if(unit != null){
                 //TODO effect
+                grabSound.at(x, y);
+            }
+        }
+
+        public void grabBuild(float x, float y){
+            if(heldBuild != null) return;
+            Tile tile = world.tileWorld(x, y);
+            if(tile == null || tile.build == null) return;
+
+            if(tile.build.getPayload() instanceof BuildPayload){
+                BuildPayload bp = (BuildPayload) tile.build.getPayload();
+                if(bp.block().size == 1 && !(bp.block() instanceof Claw)){
+                    heldBuild = (BuildPayload) tile.build.takePayload();
+                    return;
+                }
+            }
+
+            if(tile.build.block.size == 1 && tile.build.canPickup() && tile.team() == team && !(tile.block() instanceof Claw)){
+                Building build = tile.build;
+                build.pickedUp();
+                tile.remove();
+                heldBuild = new BuildPayload(build);
             }
         }
 
@@ -94,6 +125,39 @@ public class Claw extends Block {
             //TODO effect
             unit.apply(MindyStatusEffects.ouch, 45f);
             unit = null;
+        }
+
+        public boolean detachBuild(float x, float y){
+            boolean dropped = dropBlock(heldBuild, x, y);
+            if(dropped) heldBuild = null;
+            return dropped;
+        }
+
+        public boolean dropBlock(BuildPayload payload, float x, float y){
+            Building tile = payload.build;
+            int tx = World.toTile(x - tile.block.offset), ty = World.toTile(y - tile.block.offset);
+            Tile on = world.tile(tx, ty);
+            //drop off payload on an acceptor if possible
+            if(on != null && on.build != null && on.build.acceptPayload(on.build, payload)){
+                Fx.unitDrop.at(on.build);
+                on.build.handlePayload(on.build, payload);
+                return true;
+            }
+            //drop it on the floor le deja vu lu mu tu su ku
+            if(on != null && Build.validPlace(tile.block, tile.team, tx, ty, tile.rotation, false)){
+                int rot = (int)((rotation + 45f) / 90f) % 4;
+                payload.place(on, rot);
+
+                if(blockUnit != null && blockUnit.isPlayer()){
+                    payload.build.lastAccessed = blockUnit.getControllerName();
+                }
+
+                Fx.unitDrop.at(tile);
+                Fx.placeBlock.at(on.drawx(), on.drawy(), on.block().size);
+                return true;
+            }
+
+            return false;
         }
 
         public void updateUnit(float x, float y, float r, boolean spinning){
@@ -105,8 +169,9 @@ public class Claw extends Block {
             if(!con) targetV.trns(r, 8f);
 
             if(unit == null && (!con || logicGrab)){
-                Tmp.v1.set(targetV).clamp(4f, range  - grabRange / 2f + 4f);
-                grab(Tmp.v1.x, Tmp.v1.y, targetV.angle());
+                Tmp.v1.set(targetV).clamp(4f, range  - grabRange / 2f + 4f).add(x, y);
+                if(heldBuild == null) grab(Tmp.v1.x, Tmp.v1.y, targetV.angle());
+                if(!spinning && unit == null && con && logicGrab) grabBuild(Tmp.v1.x, Tmp.v1.y); //does not normally grab blocks
             }
             else checkUnit();
 
@@ -114,8 +179,16 @@ public class Claw extends Block {
                 lastV.lerpDelta(targetV, 0.05f);
                 tension = 0f;
                 if(!con || !logicGrab) grabFailed = false;
+                if(heldBuild != null){
+                    if(!con || !logicGrab){
+                        if(detachBuild(lastV.x + x, lastV.y + y)) return;
+                    }
+                    heldBuild.set(lastV.x + x, lastV.y + y, 0f);
+                    return;
+                }
+
                 if(grabFail > 0f) grabFail -= delta() * 0.05f;
-                if(con && logicGrab && !grabFailed){
+                if(con && logicGrab && !grabFailed && heldBuild == null){
                     grabFailed = true;
                     grabFail = 1f;
                     Sounds.click.at(x, y);
@@ -150,7 +223,7 @@ public class Claw extends Block {
             blockUnit.set(x, y);
 
             //float angle = angleTo(blockUnit.aimX(), blockUnit.aimY());
-            targetV.set(blockUnit.aimX(), blockUnit.aimY()).sub(this).clamp(0f, range);
+            targetV.set(blockUnit.aimX(), blockUnit.aimY()).sub(this).clamp(0f, range + 2f);
             logicGrab = blockUnit.isShooting();
         }
 
@@ -167,11 +240,13 @@ public class Claw extends Block {
             Lines.line(armRegion, x, y, Tmp.v1.x, Tmp.v1.y, false);
             Draw.z(Layer.flyingUnit + 0.1f);
 
-            float clawa = (unit == null ? clawOpen + clawFail * grabFail : clawGrab);
+            float clawa = (unit == null ? (heldBuild != null ? clawGrabBlock : clawOpen + clawFail * grabFail) : clawGrab);
             Draw.rect(handOutline, Tmp.v1.x, Tmp.v1.y, angle - 90f);
             Draw.rect(handRegion2, Tmp.v1.x, Tmp.v1.y, angle + clawa - 90f);
             Draw.rect(handRegion, Tmp.v1.x, Tmp.v1.y, angle - clawa - 90f);
             Draw.rect(handOverlay, Tmp.v1.x, Tmp.v1.y, angle - 90f);
+
+            if(heldBuild != null) Draw.rect(heldBuild.icon(Cicon.full), lastV.x + x, lastV.y + y, heldBuild.block().rotate ? heldBuild.build.rotation * 90f : 0f);
             Draw.z(lz);
         }
 
