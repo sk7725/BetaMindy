@@ -50,7 +50,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, clearDuct, claw,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, clearDuct, claw, phaseClaw,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource,
     //turrets
@@ -886,6 +886,15 @@ public class MindyBlocks implements ContentList {
 
         claw = new Claw("claw"){{
             requirements(Category.units, with(Items.copper, 15, Items.titanium, 15, Items.plastanium, 6));
+        }};
+
+        phaseClaw = new Claw("phase-claw"){{
+            range = 84f;
+            pullStrength = 5f;
+            maxSize = 48f;
+            hasPower = true;
+            consumes.power(1f);
+            requirements(Category.units, with(Items.titanium, 15, Items.thorium, 15, Items.silicon, 12, Items.phaseFabric, 5));
         }};
 
         clearPipe = new ClearPipe("clear-pipe"){{

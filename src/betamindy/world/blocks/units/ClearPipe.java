@@ -21,6 +21,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
 import static arc.math.geom.Geometry.d4;
@@ -83,6 +84,12 @@ public class ClearPipe extends Block {
         for(int i = 0; i < 6; i++){
             shadowRegions[i] = atlas.find(name + "-shadow-" + i, "clear-pipe-shadow-" + i);
         }
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.speed, (int)(size * speed * 60f) + " " + Core.bundle.get("unit.blocks") + Core.bundle.get("unit.persecond"));
     }
 
     @Override
