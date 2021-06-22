@@ -1,6 +1,8 @@
 package betamindy.world.blocks.units;
 
+import arc.*;
 import arc.audio.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -28,23 +30,26 @@ public class Claw extends Block {
     public float range = 36f;
     public float grabRange = 24f;
     public float grabOffset = grabRange / 2f + 4f;
-    public float pullStrength = 3f;
+    public float pullStrength = 2f;
     public float maxTension = 180f;
+
     public float maxSize = 24f;
+    public int maxBlockSize = 1;
 
     public TextureRegion topRegion;
     public TextureRegion handRegion, handRegion2,  handOverlay, handOutline;
     public TextureRegion armRegion;
 
-    public float clawOffset = 9f, clawGrab = 30f, clawOpen = 0f, clawFail = -7f, clawGrabBlock = 10f;
+    public float clawOffset = 9f, clawGrab = 20f, clawOpen = 0f, clawFail = -7f, clawGrabBlock = 10f;
 
     private final Vec2 toV = new Vec2();
+    private UnitPayload tempUnitPayload = null;
     //after being logic-controlled and this amount of time passes, the claw will resume normal AI
     public final static float logicControlCooldown = 60 * 3;
 
     public Effect grabEffect = Fx.none;//todo hmm
     public Sound grabSound = Sounds.door;
-    public Sound detachSound = Sounds.click;
+    public Sound detachSound = Sounds.place;
 
     public Claw(String name){
         super(name);
@@ -52,6 +57,12 @@ public class Claw extends Block {
         rotate = true;
         expanded = true;
         solid = true;
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+        bars.add("tension", (ClawBuild entity) -> new Bar(() -> Core.bundle.get("bar.tension"), () -> Pal.ammo, () -> Mathf.clamp(entity.tension / maxTension)));
     }
 
     @Override
@@ -83,7 +94,7 @@ public class Claw extends Block {
     public void setStats(){
         super.setStats();
         stats.add(Stat.range, range / tilesize, StatUnit.blocks);
-        stats.add(Stat.payloadCapacity, maxSize / tilesize, StatUnit.blocksSquared);
+        stats.add(Stat.payloadCapacity, "[white]\uF800[] "+(int)(maxSize / tilesize)+" "+Core.bundle.get("unit.blockssquared") + " [white]\uF8AE[] "+maxBlockSize+"x"+maxBlockSize);
     }
 
     public class ClawBuild extends Building implements SpinDraw, SpinUpdate, ControlBlock {
@@ -104,6 +115,7 @@ public class Claw extends Block {
         public void checkUnit(){
             if(unit != null && (unit.dead() || !unit.isValid())) unit = null;
         }
+        public boolean hostile() { return unit == null || unit.team != team || unit.isPlayer(); }
 
         public void grab(float x, float y, float r){
             if(unit != null) return;
@@ -112,6 +124,21 @@ public class Claw extends Block {
             if(unit != null){
                 grabSound.at(x, y);
                 grabEffect.at(x, y, unit.hitSize());
+            }
+            else{
+                //free a unit from its demise
+                Tile tile = world.tileWorld(x, y);
+                if(tile == null || tile.build == null) return;
+
+                if(tile.build.getPayload() instanceof UnitPayload){
+                    UnitPayload up = (UnitPayload) tile.build.getPayload();
+                    if(up.unit.hitSize <= maxSize){
+                        tile.build.takePayload().dump();
+                        unit = up.unit;
+                        grabSound.at(x, y);
+                        grabEffect.at(x, y, 8f);
+                    }
+                }
             }
         }
 
@@ -122,7 +149,7 @@ public class Claw extends Block {
 
             if(tile.build.getPayload() instanceof BuildPayload){
                 BuildPayload bp = (BuildPayload) tile.build.getPayload();
-                if(bp.block().size == 1 && !(bp.block() instanceof Claw)){
+                if(bp.block().size <= maxBlockSize && !(bp.block() instanceof Claw)){
                     heldBuild = (BuildPayload) tile.build.takePayload();
                     grabSound.at(x, y);
                     grabEffect.at(x, y, 8f);
@@ -130,7 +157,7 @@ public class Claw extends Block {
                 }
             }
 
-            if(tile.build.block.size == 1 && tile.build.canPickup() && tile.team() == team && !(tile.block() instanceof Claw)){
+            if(tile.build.block.size <= maxBlockSize && tile.build.canPickup() && tile.team() == team && !(tile.block() instanceof Claw)){
                 Building build = tile.build;
                 build.pickedUp();
                 tile.remove();
@@ -141,7 +168,18 @@ public class Claw extends Block {
         }
 
         public void detach(float x, float y){
-            unit.apply(MindyStatusEffects.ouch, 45f);
+            if(!hostile()){
+                //shove the unit into demise
+                Building on = world.buildWorld(x, y);
+                if(tempUnitPayload == null) tempUnitPayload = new UnitPayload(unit);
+                else tempUnitPayload.unit = unit;
+                if(on != null && on.acceptPayload(on, tempUnitPayload)){
+                    unit.remove();
+                    on.handlePayload(on, new UnitPayload(unit));
+                    unit = null;
+                }
+            }
+            if(unit != null) unit.apply(MindyStatusEffects.ouch, 45f);
             unit = null;
             detachSound.at(x, y);
             Fx.unitDrop.at(x, y);
@@ -183,14 +221,14 @@ public class Claw extends Block {
             return false;
         }
 
-        public void updateUnit(float x, float y, float r, boolean spinning){
+        public void updateUnit(float x, float y, float r, boolean spinning, float spinningRadius){
             if(logicControlTime > 0){
                 logicControlTime -= Time.delta;
             }
             boolean con = !spinning && logicControlled();
             boolean on = (consValid() && efficiency() > 0.9f) || spinning;
 
-            if(!con) targetV.trns(r, 8f);
+            if(!con) targetV.trns(r, spinning ? Math.min(spinningRadius, range) : 8f);
             if(on){
                 uptime = Mathf.lerpDelta(uptime, 1f, 0.04f);
             }else{
@@ -198,9 +236,9 @@ public class Claw extends Block {
             }
 
             if(unit == null && (!con || logicGrab) && on){
-                Tmp.v1.set(targetV).clamp(4f, range  - grabRange / 2f + 4f).add(x, y);
-                if(heldBuild == null) grab(Tmp.v1.x, Tmp.v1.y, targetV.angle());
-                if(!spinning && unit == null && con && logicGrab) grabBuild(Tmp.v1.x, Tmp.v1.y); //does not normally grab blocks
+                Tmp.v1.set(lastV).clamp(4f, range  - grabRange / 2f + 4f).add(x, y);
+                if(heldBuild == null) grab(Tmp.v1.x, Tmp.v1.y, lastV.angle());
+                if(!spinning && unit == null && con && logicGrab) grabBuild(lastV.x + x, lastV.y + y); //does not normally grab blocks
             }
             if(unit != null) checkUnit();
 
@@ -229,20 +267,21 @@ public class Claw extends Block {
             lastV.set(toV);
             float dst = toV.len();
             if(tension >= 0f) tension -= Math.min(edelta() * 0.4f, 0.8f);
-            if(dst > range - 8f) tension += delta();
+            if(!unit.vel.isZero(0.01f)/* && ((targetV.x - toV.x) * unit.vel.x <= 0f && (targetV.y - toV.y) * unit.vel.y <= 0f)*/) tension += delta() * (hostile() ? 2.5f : 1f);
 
             if(dst > range){
                 Tmp.v1.set(toV).setLength(range).add(x, y).sub(unit);
                 unit.move(Tmp.v1.x, Tmp.v1.y);
                 //unit.vel.setZero();
                 if(unit.dst(x, y) > range + 4f || tension > maxTension){
-                    detach(x, y);
+                    detach(unit.x, unit.y);
                     return;
                 }
             }
-            Tmp.v1.set(targetV).add(x, y).sub(unit).clamp(0f, pullStrength).scl(Time.delta);
+            Tmp.v1.set(targetV).add(x, y).sub(unit).clamp(0f, pullStrength).scl(Time.delta * 0.8f);
+            //if(Tmp.v1.len2() >= pullStrength * pullStrength * 0.85f)
             unit.move(Tmp.v1.x, Tmp.v1.y);
-            if(!on || (con && !logicGrab)) detach(x, y);
+            if(!on || (con && !logicGrab)) detach(unit.x, unit.y);
         }
 
         public void updatePlayer(){
@@ -263,15 +302,18 @@ public class Claw extends Block {
             Draw.z(Layer.flyingUnitLow - 0.1f);
             Draw.rect(topRegion, x, y);
 
-            Tmp.v1.set(lastV).sub(Tmp.v3.trns(angle, clawOffset)).add(x, y);
+            float offsetLen = unit == null ? (heldBuild == null ? clawOffset : 8f + heldBuild.block().size) : 5f + unit.hitSize / 2f;
+            Tmp.v1.set(lastV).sub(Tmp.v3.trns(angle, offsetLen)).add(x, y);
             Draw.z(Layer.flyingUnitLow - 0.11f);
             Lines.stroke(6f);
             Draw.alpha(Math.max(0.25f, uptime) * Renderer.bridgeOpacity);
+            Draw.mixcol(Color.white, unit == null || (tension / maxTension) < 0.3f ? 0f : Mathf.absin(Time.globalTime, 3f + maxTension / tension, Mathf.clamp(tension / maxTension)));
             Lines.line(armRegion, x, y, Tmp.v1.x, Tmp.v1.y, false);
             Draw.color();
+            Draw.mixcol();
             Draw.z(Layer.flyingUnit + 0.1f);
 
-            float clawa = (unit == null ? (heldBuild != null ? clawGrabBlock : clawOpen + clawFail * grabFail) : clawGrab);
+            float clawa = (unit == null ? (heldBuild != null ? clawGrabBlock + 30f * heldBuild.block().size - 30f : clawOpen + clawFail * grabFail) : clawGrab + unit.hitSize / 2f);
             Draw.rect(handOutline, Tmp.v1.x, Tmp.v1.y, angle - 90f);
             Draw.rect(handRegion2, Tmp.v1.x, Tmp.v1.y, angle + clawa - 90f);
             Draw.rect(handRegion, Tmp.v1.x, Tmp.v1.y, angle - clawa - 90f);
@@ -292,15 +334,24 @@ public class Claw extends Block {
         }
 
         @Override
+        public void drawSelect(){
+            super.drawSelect();
+            Lines.stroke(1f, Pal.place);
+            Lines.poly(x + targetV.x, y + targetV.y, 4, tilesize / 2f * Mathf.sqrt2, Time.time);
+            Draw.color();
+            Drawf.dashCircle(x, y, range, team.color);
+        }
+
+        @Override
         public void update(){
             super.update();
             if(blockUnit != null && isControlled()) updatePlayer();
-            updateUnit(x, y, rotation * 90f, false);
+            updateUnit(x, y, rotation * 90f, false, 0f);
         }
 
         @Override
         public void spinUpdate(float sx, float sy, float srad, float absRot, float rawRot){
-            updateUnit(sx, sy, absRot, true);
+            updateUnit(sx, sy, absRot, true, srad);
         }
 
         public boolean logicControlled(){

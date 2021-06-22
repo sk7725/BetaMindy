@@ -890,8 +890,10 @@ public class MindyBlocks implements ContentList {
 
         phaseClaw = new Claw("phase-claw"){{
             range = 84f;
-            pullStrength = 5f;
-            maxSize = 48f;
+            pullStrength = 3.6f;
+            maxSize = 40f;
+            maxBlockSize = 2;
+
             hasPower = true;
             consumes.power(1f);
             requirements(Category.units, with(Items.titanium, 15, Items.thorium, 15, Items.silicon, 12, Items.phaseFabric, 5));
