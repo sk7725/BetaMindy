@@ -243,7 +243,7 @@ public class Claw extends Block {
             if(unit != null) checkUnit();
 
             if(unit == null){
-                if(on) lastV.lerp(targetV, 0.05f * edelta());
+                if(on) lastV.lerp(targetV, 0.05f * (spinning ? Time.delta : edelta()));
                 tension = 0f;
                 if(!con || !logicGrab) grabFailed = false;
                 if(heldBuild != null){
@@ -266,7 +266,7 @@ public class Claw extends Block {
             toV.set(unit).sub(x, y);
             lastV.set(toV);
             float dst = toV.len();
-            if(tension >= 0f) tension -= Math.min(edelta() * 0.4f, 0.8f);
+            if(tension >= 0f) tension -= Math.min(edelta() * 0.3f, 0.8f);
             if(!unit.vel.isZero(0.01f)/* && ((targetV.x - toV.x) * unit.vel.x <= 0f && (targetV.y - toV.y) * unit.vel.y <= 0f)*/) tension += delta() * (hostile() ? 2.5f : 1f);
 
             if(dst > range){
@@ -403,5 +403,7 @@ public class Claw extends Block {
         public boolean shouldAutoTarget(){
             return false;
         }
+
+        //TODO read/write
     }
 }
