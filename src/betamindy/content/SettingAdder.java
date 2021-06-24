@@ -1,50 +1,86 @@
 package betamindy.content;
 
-import arc.Core;
+import arc.*;
+import arc.func.*;
+import arc.scene.*;
+import arc.scene.ui.*;
 import arc.scene.ui.SettingsDialog.*;
-import arc.util.*;
-import mindustry.*;
+import arc.scene.ui.layout.*;
+import mindustry.ui.*;
+import mindustry.ui.dialogs.*;
 
-import java.lang.reflect.*;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class SettingAdder {
-
-    //reflection is used as a workaround for fields being merged into the subclass in 7.0
-    public void addGraphicSetting(String key){
-        set("graphics", "checkPref", new Class[]{String.class, boolean.class}, key, Core.settings.getBool(key));
-    }
-
-    public void addGameSetting(String key){
-        set("game", "checkPref", new Class[]{String.class, boolean.class}, key, Core.settings.getBool(key));
-    }
-
     public void init(){
-        boolean tmp = Core.settings.getBool("uiscalechanged", false);
-        Core.settings.put("uiscalechanged", false);
+        BaseDialog dialog = new BaseDialog("Progressed Materials");
 
-        addGameSetting("nonmoddedservers");
-        addGraphicSetting("slimeeffect");
-        addGraphicSetting("accelballs");
-        addGraphicSetting("correctview");
+        dialog.addCloseButton();
+        dialog.cont.center().pane(p -> {
+            checkSetting(p, "bm-nonmoddedservers");
+            checkSetting(p, "bm-slimeeffect");
+            checkSetting(p, "bm-accelballs", true);
+            checkSetting(p, "bm-correctview", true);
+            sliderSetting(p, "bm-animlevel", 2, 0, 3, i -> Core.bundle.get("slider.level." + i, "" + i));
+        }).growY().width(mobile ? graphics.getWidth() : graphics.getWidth() / 3f);
 
-        //Vars.ui.settings.graphics is technically located in a different class, so this throws an error in 7.0
-        //simply recompiling with the 7.0 jar as a dependency will fix it
-        try{
-            Vars.ui.settings.graphics.sliderPref("animlevel", 2, 0, 3, i -> Core.bundle.get("slider.level." + i, "" + i));
-        }catch(NoSuchFieldError nope){
-            Log.warn("[BetaMindy] Ignoring animlevel setting for 7.0 compatibility");
-        }
-
-        Core.settings.put("uiscalechanged", tmp);
+        ui.settings.shown(() -> {
+            Table settingUi = (Table)((Group)((Group)(ui.settings.getChildren().get(1))).getChildren().get(0)).getChildren().get(0); //This looks so stupid lol
+            settingUi.row();
+            settingUi.button(bundle.get("setting.bm-title"), Styles.cleart, dialog::show);
+        });
     }
 
-    private static void set(String field, String method, Class[] types, Object... values){
-        try{
-            Object table = Reflect.get(Vars.ui.settings, field);
-            Method m = table.getClass().getDeclaredMethod(method, types);
-            m.invoke(table, values);
-        }catch(Exception e){
-            Log.err(e);
-        }
+    public void checkSetting(Table table, String key, boolean def, Boolc changed){
+        CheckBox box = new CheckBox(bundle.get("setting." + key + ".name"));
+
+        box.update(() -> box.setChecked(settings.getBool(key, def)));
+
+        box.changed(() -> {
+            settings.put(key, box.isChecked());
+            if(changed != null){
+                changed.get(box.isChecked());
+            }
+        });
+
+        box.left();
+        table.add(box).left().padTop(3f);
+        table.row();
+    }
+
+    public void checkSetting(Table table, String key, boolean def){
+        checkSetting(table, key, def, null);
+    }
+
+    public void checkSetting(Table table, String key){
+        checkSetting(table, key, false);
+    }
+
+    public void sliderSetting(Table table, String key, int def, int min, int max, int step, StringProcessor s){
+        Slider slider = new Slider(min, max, step, false);
+        String title = bundle.get("setting." + key + ".name");
+
+        slider.setValue(settings.getInt(key, def));
+
+        Label label = new Label(title);
+        slider.changed(() -> {
+            settings.put(key, (int)slider.getValue());
+            label.setText(title + ": " + s.get((int)slider.getValue()));
+        });
+
+        slider.change();
+
+        table.table(t -> {
+            t.left().defaults().left();
+            t.add(label).minWidth(label.getPrefWidth() / Scl.scl(1f) + 50);
+            t.add(slider).width(180);
+        }).left().padTop(3);
+
+        table.row();
+    }
+
+    public void sliderSetting(Table table, String key, int def, int min, int max, StringProcessor s){
+        sliderSetting(table, key, def, min, max, 1, s);
     }
 }
