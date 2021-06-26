@@ -38,7 +38,7 @@ import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune,
+    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor,
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
@@ -927,5 +927,9 @@ public class MindyBlocks implements ContentList {
                 requirements(Category.effect, with(MindyItems.scalar, 1, MindyItems.vector, 1, MindyItems.tensor, 1, MindyItems.source, 1));
             }
         };
+
+        crystalScalar = new ScidustryCrystal("scalar-crystal", MindyItems.scalarRaw){{
+            requirements(Category.effect, with(MindyItems.scalarRaw, 15f));
+        }};
     }
 }
