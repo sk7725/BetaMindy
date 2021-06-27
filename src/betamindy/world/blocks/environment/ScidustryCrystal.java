@@ -1,10 +1,16 @@
 package betamindy.world.blocks.environment;
 
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.util.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.power.*;
 
 public class ScidustryCrystal extends Crystal{
+    /** Alternative behavior. */
+    public boolean alt = false;
     public ScidustryCrystal(String name, Item item){
         super(name, item);
         hasPower = true;
@@ -63,16 +69,25 @@ public class ScidustryCrystal extends Crystal{
         }
 
         public boolean updateOutput(){
-            if(connections < 2) return output;
+            if(connections < 1) return false;
+            if(connections == 1) return input(in1);
             if(connections == 2) return input(in1) || input(in2);
             if(connections == 3) return input(rotation);
             return (input(0) || input(2)) && (input(1) || input(3));
         }
 
+        public boolean updateOutputAlt(){
+            if(connections < 1) return false;
+            if(connections == 1) return !input(in1);
+            if(connections == 2) return input(in1) && input(in2);
+            if(connections == 3) return !input(rotation);
+            return (input(0) && input(2)) || (input(1) && input(3));
+        }
+
         @Override
         public void updateTile(){
             super.updateTile();
-            boolean next = updateOutput();
+            boolean next = alt ? updateOutputAlt() : updateOutput();
             if(next != output){
                 output = next;
                 PowerGraph newGraph = new PowerGraph();
@@ -88,6 +103,15 @@ public class ScidustryCrystal extends Crystal{
                     }
                 }
             }
+        }
+
+        @Override
+        public void beforeDraw(){
+            if(output && connections > 0 && !Mathf.zero(power.graph.getSatisfaction())){
+                Draw.z(Layer.bullet - 0.01f);
+                Draw.mixcol(Tmp.c1.set(item.color).mul(1.2f), 0.7f);
+            }
+            else super.beforeDraw();
         }
     }
 }
