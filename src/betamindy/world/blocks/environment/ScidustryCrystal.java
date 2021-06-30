@@ -11,12 +11,15 @@ import mindustry.world.blocks.power.*;
 public class ScidustryCrystal extends Crystal{
     /** Alternative behavior. */
     public boolean alt = false;
+    //public TextureRegion[] circuitRegion = new TextureRegion[5];
+
     public ScidustryCrystal(String name, Item item){
         super(name, item);
         hasPower = true;
         consumesPower = false;
         outputsPower = false;
         insulated = true;
+        enableDrawStatus = true;
     }
 
     public class ScidustryCrystalBuild extends CrystalBuild {
@@ -108,10 +111,33 @@ public class ScidustryCrystal extends Crystal{
         @Override
         public void beforeDraw(){
             if(output && connections > 0 && !Mathf.zero(power.graph.getSatisfaction())){
-                Draw.z(Layer.bullet - 0.01f);
+                Draw.z(Layer.bullet - 0.009f);
                 Draw.mixcol(Tmp.c1.set(item.color).mul(1.2f), 0.7f);
             }
             else super.beforeDraw();
+        }
+
+        @Override
+        public void drawStatus(){
+            if(connections == 0) return;
+            /*int r = rotation, n = connections;
+            if(connections == 1){
+                r = in1; n = 0;
+            }
+            else if(connections == 2){
+                if((in1 ^ in2) == 0){
+                    r = in1;
+                    n = 1;
+                }
+                else{
+                    if(in1 == 0 && in2 == 3) r = 3;
+                    else r = in1;
+                }
+            }*/
+
+            Draw.z(Layer.power + 1);
+            Lines.stroke(3f);
+            //eh TODO
         }
     }
 }

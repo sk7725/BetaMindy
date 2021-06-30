@@ -34,6 +34,7 @@ public class SettingAdder {
         }catch(NoSuchFieldError nope){
             Log.warn("[BetaMindy] Ignoring animlevel setting for 7.0 compatibility");
         }
+        //addGraphicSetting("ifritview"); //merged to status view
 
         Core.settings.put("uiscalechanged", tmp);
     }

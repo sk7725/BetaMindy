@@ -46,7 +46,7 @@ public class BetaMindy extends Mod{
         MindySounds.load();
         pushUtil.init();
 
-        Core.settings.defaults("slimeeffect", true, "correctview", false, "accelballs", true, "nonmoddedservers", false, "animlevel", 2);
+        Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false);
         Events.on(ClientLoadEvent.class, e -> {
             settingAdder.init();
             Core.app.post(() -> Core.app.post(() -> {

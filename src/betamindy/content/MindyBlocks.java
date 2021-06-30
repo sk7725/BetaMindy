@@ -929,15 +929,16 @@ public class MindyBlocks implements ContentList {
         };
 
         crystalScalar = new ScidustryCrystal("scalar-crystal", MindyItems.scalarRaw){{
-
+            sprites = 4;
         }};
 
         crystalVector = new ScidustryCrystal("vector-crystal", MindyItems.vectorRaw){{
             alt = true;
+            sprites = 6;
         }};
 
         crystalTensor = new EldoofusCrystal("tensor-crystal", MindyItems.tensorRaw){{
-
+            sprites = 6;
         }};
     }
 }
