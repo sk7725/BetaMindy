@@ -14,7 +14,7 @@ import mindustry.type.StatusEffect;
 import mindustry.ui.*;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy;
 
     public void load(){
         radiation = new StatusEffect("radiated"){
@@ -62,6 +62,13 @@ public class MindyStatusEffects implements ContentList {
                 dragMultiplier = 0.001f;
             }
         };
+
+        cozy = new StatusEffect("cozy"){{
+            color = Color.coral;
+            effect = Fx.none;
+            damage = -0.05f; //slow af healing
+            healthMultiplier = 1.1f;
+        }};
 
         icy = new StatusEffect("icy"){{
             color = Color.valueOf("b1f6fa");

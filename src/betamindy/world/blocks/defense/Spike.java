@@ -9,7 +9,6 @@ import betamindy.content.*;
 import betamindy.world.blocks.logic.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -98,18 +97,34 @@ public class Spike extends Wall {
             if(unit.hasEffect(invincibleMarker)) return;
             unit.damagePierce(damage);
             unit.apply(invincibleMarker, invincibleFrames);
-            damage(damageSelf);
             if(status != null) unit.apply(status, statusDuration);
+            if(!unit.spawnedByCore()) damage(damageSelf);
+            else if(unit.isPlayer() && celeste){
+                //play easter egg
+                final Player p = unit.getPlayer();
+                if(!headless){
+                    final float r = rotation * 90f + Mathf.range(15f), ux = unit.x, uy = unit.y, w = unit.hitSize / 1.3f;
+                    MindyFx.prePoof.at(ux, uy, r, unit.icon());
+                    MindySounds.easterEgg1.at(ux, uy);
+                    Time.run(60f, () -> {
+                        Tmp.v6.trns(r, 65f).add(ux, uy);
+                        MindyFx.poof.at(Tmp.v6.x, Tmp.v6.y, w, Mathf.randomBoolean() ? Pal.remove : (Mathf.randomBoolean() ? Color.cyan : Color.pink));
+                        MindySounds.easterEgg2.at(Tmp.v6);
+                    });
+                }
+                Core.app.post(() -> {
+                    p.deathTimer = -90f;
+                });
+                unit.remove();
+            }
         }
 
         public void damagePush(Unit unit){
             unit.damagePierce(damage * pushMultiplier);
             unit.apply(invincibleMarker, invincibleFrames);
-            damage(damageSelf);
             if(status != null) unit.apply(status, statusDuration);
+            if(!unit.spawnedByCore()) damage(damageSelf);
         }
-
-        //TODO surge spike zap idle effect
 
         @Override
         public void pushed(int dir){

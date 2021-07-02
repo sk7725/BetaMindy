@@ -4,10 +4,8 @@ import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.util.*;
 import betamindy.graphics.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.Team;
@@ -23,6 +21,7 @@ import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.renderer;
 
 public class MindyFx {
+    private static final int[] vgld = {0}; //VERY_GOOD_LANGUAGE_DESIGN
     public static final Effect
     directionalSmoke = new Effect(160f, e -> {
         Draw.z(Layer.flyingUnit + 0.1f);
@@ -357,5 +356,53 @@ public class MindyFx {
         stroke(e.fout() * 2f, e.color);
         circle(e.x, e.y, e.fslope() * 15f);
         circle(e.x, e.y, e.finpow() * 15f);
+    }),
+
+    prePoof = new Effect(60f, e -> {
+        if(!(e.data instanceof TextureRegion)) return;
+        Tmp.v1.trns(e.rotation, e.finpow() * 65f).add(e.x, e.y);
+        color();
+        boolean b = Time.globalTime % 30f > 15f;
+        z(b ? Layer.effect : Layer.effect + 1f);
+        mixcol(Color.white, b ? 1f : 0f);
+        Draw.rect((TextureRegion) e.data, Tmp.v1.x, Tmp.v1.y, e.rotation + 90f);
+        mixcol();
+    }),
+
+    poof = new Effect(70f, e -> {
+        color(Time.globalTime % 30f > 15f ? Color.white : e.color);
+        float r = (e.rotation - 2f + 4f * e.fin()) * e.fout(0.6f);
+        for(int i = 0; i < 8; i++){
+            Tmp.v1.trns(i * 45f - e.finpow() * 50f, e.finpow() * 40f).add(e.x, e.y);
+            Fill.circle(Tmp.v1.x, Tmp.v1.y, r);
+        }
+    }),
+
+    sparkle = new Effect(55f, e -> {
+        color(e.color);
+        vgld[0] = 0;
+        Angles.randLenVectors(e.id, e.id % 3 + 1, 8f, (x, y) -> {
+            vgld[0]++;
+            Drawm.spark(e.x+x, e.y+y, e.fout()*2.5f, 0.5f+e.fout(), e.id * vgld[0]);
+        });
+    }),
+
+    sparkleZeta = new Effect(60f, e -> {
+        color(Pal2.zeta);
+        Lines.stroke(e.fout());
+        vgld[0] = 0;
+        Angles.randLenVectors(e.id, e.id % 3 + 2, 7f + 5f * e.fin(), (x, y) -> {
+            vgld[0]++;
+            Lines.poly(e.x+x, e.y+y, 4, e.fin()*0.6f+0.45f);
+        });
+    }),
+
+    sparkleCode = new Effect(60f, e -> {
+        color(Pal2.source);
+        vgld[0] = e.id;
+        Angles.randLenVectors(e.id, 5, 7f + 5f * e.fin(), (x, y) -> {
+            vgld[0]++;
+            Drawm.drawBit(vgld[0] % 2 == 1, e.x+x, e.y+y, 1f, e.fout());
+        });
     });
 }

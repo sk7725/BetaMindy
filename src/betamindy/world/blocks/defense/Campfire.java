@@ -33,6 +33,9 @@ public class Campfire extends Block {
     public float inaccuracy = 15f;
 
     public float damage = 4f;
+    public StatusEffect cozyStatus = MindyStatusEffects.cozy;
+    public float statusDuration = 1200f;
+    public float statusReload = 600f;
 
     public float effectChance = 0.12f, smokeChance = 0.06f;
 
@@ -71,6 +74,8 @@ public class Campfire extends Block {
     }
 
     public class CampfireBuild extends Building implements PushReact, SpinUpdate, SpinDraw {
+        public float statusLeft = Mathf.random(statusReload);
+
         public void effects(float x, float y, boolean spin){
             if(Mathf.chanceDelta(effectChance)){
                 if(spin) fireDustEffect.at(x + Mathf.range(size / 3f), y + Mathf.range(size / 3f), 0f, items.first());
@@ -102,6 +107,11 @@ public class Campfire extends Block {
             if(items.empty()) return;
             effects(x, y, false);
 
+            statusLeft += delta();
+            if(statusLeft > statusReload){
+                statusLeft = 0f;
+                Units.nearby(team, x, y, 40f * size, u -> u.apply(cozyStatus, statusDuration));
+            }
             if(Mathf.chanceDelta(consumeChance)) items.remove(items.first(), 1);
         }
 

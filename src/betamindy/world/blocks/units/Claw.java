@@ -7,14 +7,18 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import arc.util.io.*;
+import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
+import betamindy.util.*;
 import betamindy.world.blocks.distribution.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.io.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -31,7 +35,7 @@ public class Claw extends Block {
     public float grabRange = 24f;
     public float grabOffset = grabRange / 2f + 4f;
     public float pullStrength = 2f;
-    public float maxTension = 180f;
+    public float maxTension = 210f;
 
     public float maxSize = 24f;
     public int maxBlockSize = 1;
@@ -47,7 +51,7 @@ public class Claw extends Block {
     //after being logic-controlled and this amount of time passes, the claw will resume normal AI
     public final static float logicControlCooldown = 60 * 3;
 
-    public Effect grabEffect = Fx.none;//todo hmm
+    public Effect grabEffect = Fx.pickup;
     public Sound grabSound = Sounds.door;
     public Sound detachSound = Sounds.place;
 
@@ -101,7 +105,7 @@ public class Claw extends Block {
         public @Nullable Unit unit;
         public @Nullable BuildPayload heldBuild;
         protected final Vec2 lastV = new Vec2(), targetV = new Vec2();
-        public float tension = 0f;//TODO better escaping
+        public float tension = 0f;
         public float uptime = 1f;
 
         public float logicControlTime = -1f;
@@ -404,6 +408,39 @@ public class Claw extends Block {
             return false;
         }
 
-        //TODO read/write
+        @Override
+        public byte version(){
+            return 1;
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            int mode = (heldBuild != null) ? 2 : (unit == null ? 0 : 1);
+            write.b(mode);
+            write.f(lastV.x);
+            write.f(lastV.y);
+            if(mode == 1){
+                TypeIO.writeUnit(write, unit);
+            }
+            else if(mode == 2){
+                BetaMindy.mobileUtil.writePayload(heldBuild, write);
+            }
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            if(revision == 1){
+                int mode = read.b();
+                lastV.set(read.f(), read.f());
+                if(mode == 1){
+                    unit = TypeIO.readUnit(read);
+                }
+                else if(mode == 2){
+                    heldBuild = BetaMindy.mobileUtil.readPayload(read);
+                }
+            }
+        }
     }
 }

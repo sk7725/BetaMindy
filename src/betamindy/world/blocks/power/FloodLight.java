@@ -14,18 +14,19 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 
+import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class FloodLight extends LogicSpinBlock{
     public float radius = 450f;
     public float stroke = 16f;
+    public float brightness = 0.4f;
 
-    public float elevation = 1f;
+    //public float elevation = 1f;
 
-    public float rotateSpeed = 10f;
-    public float angleIncrement = 15f;
-
-    public TextureRegion baseRegion;
+    //public float rotateSpeed = 10f;
+    //public float angleIncrement = 15f;
+    public TextureRegion topRegion;
 
     public FloodLight(String name){
         super(name);
@@ -38,7 +39,7 @@ public class FloodLight extends LogicSpinBlock{
     @Override
     public void load(){
         super.load();
-        baseRegion = Core.atlas.find("block-" + size);
+        topRegion = atlas.find(name + "-top");
     }
 
     @Override
@@ -75,6 +76,7 @@ public class FloodLight extends LogicSpinBlock{
             super.control(type, p1, p2, p3, p4);
         }
 
+        /*
         @Override
         public void draw(){
             Draw.rect(baseRegion, x, y);
@@ -88,17 +90,26 @@ public class FloodLight extends LogicSpinBlock{
             Draw.rect(region, x, y, r);
 
             Draw.z(z);
+        }*/
+
+        @Override
+        public void draw(){
+            super.draw();
+            Draw.color(color);
+            Draw.rect(topRegion, x, y, realRotation());
+            Draw.color();
         }
 
         @Override
         public void drawExt(){
             if(renderer != null && (team == Team.derelict || team == player.team() || state.rules.enemyLights)){
-                for(int i = -1; i < 2; i++){
-                    //TODO not a very good way of doing this
+                for(int i = -2; i <= 2; i++){
+                    //TODO not a very good way of doing this    ~DINGUS~
                     float e = stroke * efficiency();
 
-                    Tmp.v1.trns(realRotation(), radius).x += i * e;
-                    renderer.lights.line(x, y, x + Tmp.v1.x, y + Tmp.v1.y, e, Tmp.c1.set(color), 0.5f + Mathf.slope(0.5f + (i / 2f)) * 0.5f);
+                    Tmp.v1.trns(realRotation(), radius, i * e / 1.6f);
+                    Tmp.v2.trns(realRotation(), stroke / 2f);
+                    renderer.lights.line(x + Tmp.v2.x, y + Tmp.v2.y, x + Tmp.v1.x, y + Tmp.v1.y, e, Tmp.c1.set(color).a(brightness), (1f / (Math.abs(i) + 1f)));
                 }
             }
         }

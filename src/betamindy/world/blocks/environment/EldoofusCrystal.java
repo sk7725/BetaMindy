@@ -11,11 +11,12 @@ public class EldoofusCrystal extends ScidustryCrystal{
 
     public class EldoofusBuild extends ScidustryCrystalBuild {
         public boolean prev = false;
+        public boolean state = false;
 
         @Override
         public boolean updateOutput(){
             if(connections < 1) return false;
-            if(connections == 1) return input(in1);
+            //if(connections == 1) return input(in1);
             if(connections == 2){
                 if(input(in1) || input(in2)){
                     if(!prev){
@@ -28,32 +29,39 @@ public class EldoofusCrystal extends ScidustryCrystal{
                 }
                 return false;
             }
-            if(connections == 3){
-                if(input(rotation)){
+            if(connections == 3 || connections == 1){
+                if((connections == 3 && input(rotation)) || (connections == 1 && input(in1))){
                     if(!prev){
                         prev = true;
                         //toggle
-                        return !output;
+                        state = !state;
                     }
                 }
                 else{
                     prev = false;
                 }
-                return output;
+                return state;
             }
-            return ((int)(Time.time / 60f) & 1) == 0;
+            return ((int)(Time.time / delayTicks) & 1) == 0;
+        }
+
+        @Override
+        public byte version(){
+            return 1;
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
             prev = read.bool();
+            if(revision == 1) state = read.bool();
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
             write.bool(prev);
+            write.bool(state);
         }
     }
 }

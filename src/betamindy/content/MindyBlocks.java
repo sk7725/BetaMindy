@@ -874,6 +874,8 @@ public class MindyBlocks implements ContentList {
             fireEffect = MindyFx.bigFire;
             fireDustEffect = MindyFx.bigFireDust;
             smokeChance = 0.15f;
+            statusDuration = 2400f;
+            statusReload = 360f;
             requirements(Category.effect, with(Items.copper, 48, Items.titanium, 20, Items.sand, 10));
         }};
 
@@ -939,6 +941,7 @@ public class MindyBlocks implements ContentList {
 
         crystalTensor = new EldoofusCrystal("tensor-crystal", MindyItems.tensorRaw){{
             sprites = 6;
+            updateEffect = MindyFx.sparkleZeta;
         }};
     }
 }

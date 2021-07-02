@@ -62,6 +62,24 @@ public class Drawm {
         Draw.reset();
     }
 
+    public static void spark(float x, float y, float size, float width, float r){
+        Drawf.tri(x, y, width, size, r);
+        Drawf.tri(x, y, width, size, r+180f);
+        Drawf.tri(x, y, width, size, r+90f);
+        Drawf.tri(x, y, width, size, r+270f);
+    }
+
+    public static void drawBit(boolean bit, float x, float y, float size, float stroke){
+        if(bit){
+            Lines.stroke(stroke*1.2f);
+            Lines.lineAngleCenter(x, y, 90f, size);
+        }
+        else{
+            Lines.stroke(stroke);
+            Lines.poly(x, y, 4, size, 45f);
+        }
+    }
+
     /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */
     public static void generateTeamRegion(MultiPacker packer, Block b){
         PixmapRegion teamr = Core.atlas.getPixmap(b.name + "-team");

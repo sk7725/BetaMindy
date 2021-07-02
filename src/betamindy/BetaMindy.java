@@ -88,7 +88,7 @@ public class BetaMindy extends Mod{
             }
         });
 
-        //TODO later, stashed for now
+        //later, stashed for now
         /*
         Events.run(Trigger.update, () -> {
             gravity.update();

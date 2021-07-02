@@ -16,16 +16,15 @@ import mindustry.world.*;
 import static arc.Core.atlas;
 import static mindustry.type.ItemStack.with;
 
-//looks pretty TODO
-//does not refund items normally, naturally occurring ones give large amounts of resources when destroyed by mynamites
+//todo does not refund items normally, naturally occurring ones give large amounts of resources when destroyed by mynamites
 public class Crystal extends Block {
     public Item item;
     public int sprites = 1;
 
-    public Effect updateEffect = Fx.none; //TODO port cb sparkle
-    public float effectChance = 0.01f;
+    public Effect updateEffect = MindyFx.sparkle;
+    public float effectChance = 0.001f;
     public TextureRegion[] regions;
-    public TextureRegion[] shineRegion; //TODO unbloomshineregion, random sprite variants etc.
+    public TextureRegion[] shineRegion;
     public Crystal(String name, Item item){
         super(name);
         update = true;
@@ -52,7 +51,7 @@ public class Crystal extends Block {
     public class CrystalBuild extends Building {
         @Override
         public void updateTile(){
-            if(Mathf.chanceDelta(effectChance)) updateEffect.at(this);
+            if(Mathf.chanceDelta(effectChance)) updateEffect.at(x, y, item.color);
         }
 
         public void beforeDraw(){
@@ -60,9 +59,10 @@ public class Crystal extends Block {
             //Draw.alpha(0.9f);
         }
 
+        public void afterDraw(){}
+
         @Override
         public void draw(){
-            //TODO placeholder code
             float ox = x + Mathf.randomSeedRange(id, 0.5f);
             float oy = y + Mathf.randomSeedRange(id + 628, 0.5f);
             float r = Mathf.randomSeedRange(id + 420, 15f);
@@ -79,6 +79,7 @@ public class Crystal extends Block {
 
             Draw.rect(regions[sprite], ox, oy, 10f, 10f, r);
             Draw.color();
+            if(Vars.renderer.drawStatus) afterDraw();
 
             if(Vars.renderer.bloom == null) return;
             Draw.z(Layer.bullet - 0.01f);
