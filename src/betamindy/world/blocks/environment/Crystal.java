@@ -34,7 +34,7 @@ public class Crystal extends Block {
         drawDisabled = false;
         enableDrawStatus = false;
         this.item = item;
-        requirements(Category.effect, with(item, 15f));
+        requirements(Category.effect, with(item, 30f));
     }
 
     @Override

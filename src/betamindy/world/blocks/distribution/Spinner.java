@@ -9,6 +9,7 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.BetaMindy;
+import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.payloads.*;
 import mindustry.content.*;
 import mindustry.entities.units.*;
@@ -22,8 +23,7 @@ import mindustry.world.blocks.production.PayloadAcceptor.*;
 import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
-import static mindustry.Vars.mobile;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class Spinner extends Block {
     public float spinTime = 16f;
@@ -112,12 +112,18 @@ public class Spinner extends Block {
         @Override
         public void spinUpdate(float sx, float sy, float srad, float absRot, float rawRot){
             if(spinning){
-                if(inertia){
+                if(inertia && notNullified(sx, sy)){
                     spin += delta();
                     if(spin >= spinTime) looped = true;
                 }
                 updateSpinBlocks(sx, sy, rawRot, srad);
             }
+        }
+
+        public boolean notNullified(float x, float y){
+            Building n = world.buildWorld(x, y);
+            if(n == null || !(n.block instanceof Disabler)) return true;
+            return !n.consValid();
         }
 
         public void updateSpinBlocks(float x, float y, float dr, float addrad){

@@ -52,7 +52,7 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, clearDuct, claw, phaseClaw,
     //logic
-    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource,
+    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, ray,
     //power
@@ -710,6 +710,11 @@ public class MindyBlocks implements ContentList {
             requirements(Category.logic, with( Items.titanium, 110, Items.silicon, 50, Items.metaglass, 40, Items.plastanium, 30, Items.surgeAlloy, 15));
         }};
 
+        nullifier = new Disabler("nullifier"){{
+            consumes.power(0.1f);
+            requirements(Category.logic, with(Items.copper, 40, Items.lead, 20, Items.silicon, 10));
+        }};
+
 
         hopeBringer = new MultiTurret("hopebringer"){{
             size = 9;
@@ -929,6 +934,8 @@ public class MindyBlocks implements ContentList {
                 requirements(Category.effect, with(MindyItems.scalar, 1, MindyItems.vector, 1, MindyItems.tensor, 1, MindyItems.source, 1));
             }
         };
+
+        //todo pyra, cryo
 
         crystalScalar = new ScidustryCrystal("scalar-crystal", MindyItems.scalarRaw){{
             sprites = 4;

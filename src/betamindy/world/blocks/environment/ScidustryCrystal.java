@@ -157,20 +157,14 @@ public class ScidustryCrystal extends Crystal{
         }
 
         @Override
-        public byte version(){
-            return 1;
-        }
-
-        @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
-            if(revision == 1) delay = read.f();
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
-            write.f(delay);
+            //write.f(delay); it fucking refuses to save anyways
         }
     }
 }

@@ -13,6 +13,7 @@ import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
 import betamindy.world.blocks.distribution.*;
+import betamindy.world.blocks.logic.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
@@ -230,7 +231,7 @@ public class Claw extends Block {
                 logicControlTime -= Time.delta;
             }
             boolean con = !spinning && logicControlled();
-            boolean on = (consValid() && efficiency() > 0.9f) || spinning;
+            boolean on = (!spinning && consValid() && efficiency() > 0.9f) || (spinning && notNullified(x, y));
 
             if(!con) targetV.trns(r, spinning ? Math.min(spinningRadius, range) : 8f);
             if(on){
@@ -325,6 +326,12 @@ public class Claw extends Block {
 
             if(heldBuild != null) Draw.rect(heldBuild.icon(Cicon.full), lastV.x + x, lastV.y + y, heldBuild.block().rotate ? heldBuild.build.rotation * 90f : 0f);
             Draw.z(lz);
+        }
+
+        public boolean notNullified(float x, float y){
+            Building n = world.buildWorld(x, y);
+            if(n == null || !(n.block instanceof Disabler)) return true;
+            return !n.consValid();
         }
 
         @Override

@@ -46,15 +46,10 @@ public class EldoofusCrystal extends ScidustryCrystal{
         }
 
         @Override
-        public byte version(){
-            return 1;
-        }
-
-        @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
             prev = read.bool();
-            if(revision == 1) state = read.bool();
+            state = read.bool();
         }
 
         @Override

@@ -60,7 +60,7 @@ public class BoostPad extends Block {
                 heat = cooldown;
             }
 
-            if(impulseUnit) unit.impulseNet(Tmp.v1.trns(unit.rotation, unit.mass() * 10f));
+            if(impulseUnit && unit.vel().len2() < 1f) unit.impulseNet(Tmp.v1.trns(unit.rotation, unit.mass() * 8f));
             unit.apply(status, duration);
         }
     }

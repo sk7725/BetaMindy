@@ -31,7 +31,7 @@ public class SoundwaveBulletType extends BulletType {
         collidesTiles = false;
         lifetime = 120f;
         hitSize = 15f;
-        lightRadius = 16f;
+        lightRadius = 0f;
         lightColor = hitColor;
     }
 
