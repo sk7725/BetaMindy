@@ -80,7 +80,7 @@ public class Discharger extends Battery {
         return new TextureRegion[]{region, topRegion};
     }
 
-    public class DischargerBuild extends BatteryBuild implements PushReact, SpinUpdate, SpinDraw { //TODO instanceof Catalyst
+    public class DischargerBuild extends BatteryBuild implements PushReact, SpinUpdate, SpinDraw {
         public float heat = 0f;
         public float reload = 0f;
 

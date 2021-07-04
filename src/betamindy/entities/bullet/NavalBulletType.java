@@ -31,6 +31,8 @@ public class NavalBulletType extends BulletType {
         drag = 0.008f;
         collidesAir = false;
         despawnShake = 1f;
+        lightRadius = 16f;
+        lightColor = hitColor;
     }
 
     @Override

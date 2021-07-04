@@ -30,6 +30,7 @@ public class FireColor implements ContentList {
         c(MindyItems.vectorRaw, "cfddff");
         c(MindyItems.tensorRaw, "82ffe8");
         c(MindyItems.source, Color.valueOf("5eff79"), Pal.accent);
+        c(MindyItems.cryonite, Color.valueOf("45f5ff"), Color.white);
         //binlog : Pal.accent / rblog: ff4444
     }
 

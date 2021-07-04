@@ -3,14 +3,19 @@ package betamindy.world.blocks.environment;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.power.*;
+import mindustry.world.meta.*;
+
+import static mindustry.Vars.tilesize;
 
 public class ScidustryCrystal extends Crystal{
     /** Alternative behavior. */
     public boolean alt = false;
+    public float delayTicks = 8f;
     //public TextureRegion[] circuitRegion = new TextureRegion[5];
 
     public ScidustryCrystal(String name, Item item){
@@ -19,13 +24,14 @@ public class ScidustryCrystal extends Crystal{
         consumesPower = false;
         outputsPower = false;
         insulated = true;
-        enableDrawStatus = true;
+        enableDrawStatus = false;
     }
 
     public class ScidustryCrystalBuild extends CrystalBuild {
         public int connections = 0;
         public boolean output = false;
         public int in1, in2;
+        public float delay = 0f;
 
         @Override
         public boolean conductsTo(Building other){
@@ -62,19 +68,25 @@ public class ScidustryCrystal extends Crystal{
         public float inputValue(int r){
             Building b = nearby(r);
             if(b == null || b.power == null) return 0;
-            return b.power.graph.getLastPowerProduced() - b.power.graph.getLastPowerNeeded();
+            return b.power.graph.getLastScaledPowerIn() - b.power.graph.getLastScaledPowerOut();
         }
 
         public boolean input(int r){
             Building b = nearby(r);
             if(b == null || b.power == null) return false;
-            return b.power.graph.getLastPowerProduced() - b.power.graph.getLastPowerNeeded() > 0.016f;
+            return b.power.graph.getLastScaledPowerIn() - b.power.graph.getLastScaledPowerOut() > 0.0016f;
         }
 
         public boolean updateOutput(){
             if(connections < 1) return false;
             if(connections == 1) return input(in1);
-            if(connections == 2) return input(in1) || input(in2);
+            if(connections == 2){
+                if(input(in1) || input(in2)){
+                    if(delay <= delayTicks) delay += delta();
+                }
+                else delay = 0f;
+                return delay >= delayTicks;
+            }
             if(connections == 3) return input(rotation);
             return (input(0) || input(2)) && (input(1) || input(3));
         }
@@ -82,7 +94,12 @@ public class ScidustryCrystal extends Crystal{
         public boolean updateOutputAlt(){
             if(connections < 1) return false;
             if(connections == 1) return !input(in1);
-            if(connections == 2) return input(in1) && input(in2);
+            if(connections == 2){
+                boolean out = delay > 0f;
+                if(input(in1) || input(in2)) delay = 1f;
+                else delay = 0f;
+                return out;
+            }
             if(connections == 3) return !input(rotation);
             return (input(0) && input(2)) || (input(1) && input(3));
         }
@@ -110,7 +127,7 @@ public class ScidustryCrystal extends Crystal{
 
         @Override
         public void beforeDraw(){
-            if(output && connections > 0 && !Mathf.zero(power.graph.getSatisfaction())){
+            if(output && connections > 0 && (connections == 1 || !Mathf.zero(power.graph.getSatisfaction()))){
                 Draw.z(Layer.bullet - 0.009f);
                 Draw.mixcol(Tmp.c1.set(item.color).mul(1.2f), 0.7f);
             }
@@ -118,26 +135,36 @@ public class ScidustryCrystal extends Crystal{
         }
 
         @Override
-        public void drawStatus(){
-            if(connections == 0) return;
-            /*int r = rotation, n = connections;
-            if(connections == 1){
-                r = in1; n = 0;
-            }
-            else if(connections == 2){
-                if((in1 ^ in2) == 0){
-                    r = in1;
-                    n = 1;
-                }
-                else{
-                    if(in1 == 0 && in2 == 3) r = 3;
-                    else r = in1;
-                }
-            }*/
+        public void afterDraw(){
+            if(connections < 2) return;
+            float multiplier = block.size > 1 ? 1 : 0.64f;
+            float brcx = x + (block.size * tilesize / 2f) - (tilesize * multiplier / 2f);
+            float brcy = y - (block.size * tilesize / 2f) + (tilesize * multiplier / 2f);
 
-            Draw.z(Layer.power + 1);
-            Lines.stroke(3f);
-            //eh TODO
+            Draw.z(Layer.effect + 2f);
+            Draw.color(Pal.gray);
+            Fill.square(brcx, brcy, 2.5f * multiplier, 45);
+            Draw.color(status().color);
+            Fill.square(brcx, brcy, 1.5f * multiplier, 45);
+            Draw.color();
+        }
+
+        @Override
+        public BlockStatus status(){
+            if(!output || connections < 2) return BlockStatus.noInput;
+            if(!Mathf.zero(power.graph.getSatisfaction())) return BlockStatus.active;
+            return BlockStatus.noOutput;
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            //write.f(delay); it fucking refuses to save anyways
         }
     }
 }

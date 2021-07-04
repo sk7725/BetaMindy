@@ -17,7 +17,7 @@ public class UnitGravity {
     public float groundedPad = 6f; // units need to be less than this amount from the ground to qualify as grounded
 
     public float jumpHeight = 25f;
-    public Effect jumpEffect = Fx.mine; //TODO maybe temp
+    public Effect jumpEffect = Fx.mine; //maybe temp
 
     public boolean enabled = false;
 
@@ -58,7 +58,6 @@ public class UnitGravity {
     }
 
     public void update(){
-        //TODO remove test
         /*
         if(Core.input.keyTap(KeyCode.down)) set(3);
         if(Core.input.keyTap(KeyCode.up)) set(1);
