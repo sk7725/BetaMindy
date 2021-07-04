@@ -24,19 +24,19 @@ Releases를 클릭하고, 최신 버전에 달린 `BetaMindy.jar`를 다운로�
 ### Actions   
 [EN]:
 1. Go to [Actions](https://github.com/sk7725/BetaMindy/actions), and click on the latest workflow that has a green ✔️.   
-2. Select the "normal" Artifact (with the box icon), it will download the zip.   
+2. Select the "betamindy in a box" Artifact (with the box icon), it will download the zip.   
 3. Unzip and paste the `BetaMindy.jar` into your mod folder(locate your mod folder in the "open mod folder" of Mindustry).   
 4. Enjoy!   
 
 [KO]:
 1. [Actions](https://github.com/sk7725/BetaMindy/actions) 탭으로 가서, ✔️으로 표시된 가장 최근의 Workflow를 클릭하세요.   
-2. "normal"이라는 이름의 Artifact(상자 모양 아이콘)을 클릭하면, 압축 파일이 다운로드됩니다.   
+2. "betamindy in a box" 이라는 이름의 Artifact(상자 모양 아이콘)을 클릭하면, 압축 파일이 다운로드됩니다.   
 3. 압축 해제 후 `BetaMindy.jar`를 모드 디렉토리(민더스트리에서 모드 파일 열기로 확인 가능)에 옮기세요.   
 4. 끝!
    
 [RU]:
 1. Перейдите во вкладку [Actions](https://github.com/sk7725/BetaMindy/actions) и выберите последний рабочий процесс, начинающийся со ✔️.
-2. Нажмите на надпись "normal" (со значком коробки). Начнётся загрузка zip архива.
+2. Нажмите на надпись "betamindy in a box" (со значком коробки). Начнётся загрузка zip архива.
 3. Распакуйте и вставьте `BetaMindy.jar` в папку модификаций (найдите её с помощью кнопки "Открыть папку с модификациями" в игре).
 4. Наслаждайтесь!
    
