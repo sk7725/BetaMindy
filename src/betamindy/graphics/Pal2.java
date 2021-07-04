@@ -9,5 +9,7 @@ public class Pal2 {
     zeta = Color.valueOf("82ffe8"),
     production = Color.valueOf("94fff6"),
     ice = Color.valueOf("b1f6fa"),
-    source = Color.valueOf("54ff73");
+    source = Color.valueOf("54ff73"),
+    placeLight = Color.valueOf("af91ff"),
+    exp = Color.valueOf("84ff00");
 }

@@ -362,7 +362,7 @@ public class Claw extends Block {
 
         @Override
         public void spinUpdate(float sx, float sy, float srad, float absRot, float rawRot){
-            updateUnit(sx, sy, absRot, true, srad);
+            updateUnit(sx, sy, rawRot + rotation * 90f, true, srad);
         }
 
         public boolean logicControlled(){

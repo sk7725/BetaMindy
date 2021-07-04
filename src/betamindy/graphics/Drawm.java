@@ -80,6 +80,48 @@ public class Drawm {
         }
     }
 
+    public static void portal(float x, float y, float radius, Color color1, Color color2){
+        if(Vars.renderer.bloom == null) color2 = color1;
+        Draw.z(Layer.groundUnit - 1f);
+        Draw.color(Color.black);
+        Fill.circle(x, y, radius);
+        Draw.z(Layer.effect);
+
+        int n = 9;
+        Draw.color(color1);
+        for(int i = 0; i < n; i++){
+            Tmp.v1.trns(i * 360f / n - Time.globalTime / 2f, radius - 2f).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 12f), 120f, i * 360f / n - Time.globalTime / 2f + 100f);
+        }
+        n = 6;
+        Draw.color(color2);
+        for(int i = 0; i < n; i++){
+            Tmp.v1.trns(i * 360f / n - Time.globalTime / 3f, radius - 4f).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 16f), 160f, i * 360f / n - Time.globalTime / 3f + 110f);
+        }
+
+        n = 4;
+        for(int i = 0; i < n; i++){
+            Lines.stroke(Math.min(radius, 8.2f));
+            Draw.alpha(1f - ((float)i) / n);
+            Lines.circle(x, y, Math.max(1f ,radius - i * 8f));
+        }
+
+        Fill.light(x, y, Lines.circleVertices(radius), radius, Color.clear, color1);
+
+        n = 64;
+        float m = 11f;
+        Draw.alpha(0.7f);
+        for(int i = 0; i < n; i++){
+            float s = Mathf.randomSeed(n + 17 * i) * m;
+            float speed = (Mathf.randomSeed(i * n) + 0.5f) * (m + 1f - s) * 0.1f;
+            Draw.color(color1, color2, Mathf.randomSeed(i - 3 * n));
+            Tmp.v1.trns(i * 360f / n - Time.globalTime * speed + Mathf.randomSeedRange(n + i, 180f / n), radius + 14f - s * 1.5f + Mathf.randomSeedRange(n - i, 3f)).add(x, y);
+            Fill.circle(Tmp.v1.x, Tmp.v1.y, Math.min(radius, s));
+        }
+        Draw.color();
+    }
+
     /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */
     public static void generateTeamRegion(MultiPacker packer, Block b){
         PixmapRegion teamr = Core.atlas.getPixmap(b.name + "-team");
