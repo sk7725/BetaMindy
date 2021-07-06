@@ -404,5 +404,39 @@ public class MindyFx {
             vgld[0]++;
             Drawm.drawBit(vgld[0] % 2 == 1, e.x+x, e.y+y, 1f, e.fout());
         });
+    }),
+
+    portalUnitDespawn = new Effect(40f, e -> {
+        if(!(e.data instanceof TextureRegion)) return;
+        color();
+        mixcol(e.color, e.fin());
+        alpha(e.fout(0.5f));
+        Draw.rect((TextureRegion) e.data, e.x, e.y, e.rotation);
+        mixcol();
+    }),
+
+    portalCoreKill = new Effect(90f, e -> {
+        color(e.color, Color.white, e.fin());
+        alpha(e.fout());
+        Fill.square(e.x, e.y, e.rotation / 2f);
+        alpha(1f);
+        vgld[0] = e.id;
+        Angles.randLenVectors(e.id, 5, 7f + 5f * e.fin(), (x, y) -> {
+            vgld[0]++;
+            Fill.square(e.x + x, e.y + y, e.fout() * (0.5f * Mathf.randomSeed(vgld[0]) * 0.3f) * e.rotation / 3f);
+        });
+    }),
+
+    portalShockwave = new Effect(50f, 200f, e -> {
+        color(Color.white, e.color, e.fin());
+        stroke(e.fout() * 2f);
+        circle(e.x, e.y, e.finpow() * 200f);
+    }),
+
+    portalSpawn = new Effect(20f, e -> {
+        stroke(e.fout() * 2f);
+        color(Color.white, e.color, e.fin());
+        circle(e.x, e.y, e.fslope() * e.rotation);
+        circle(e.x, e.y, e.finpow() * e.rotation);
     });
 }
