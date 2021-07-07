@@ -26,6 +26,8 @@ public class HardMode {
     public final static float portalSize = 60f;
     public final static float maxCoreDamage = 4200f;
     public static final int rankLevel = 10;
+    public static final int maxLevel = 200; //integer overflow
+
     public @Nullable Portal portal = null;
     public @Nullable CoreBlock.CoreBuild core = null;
     public float coreDamage = 0f;
@@ -34,6 +36,7 @@ public class HardMode {
     public Color[] lc2 = {Color.pink, Pal2.placeLight, Pal.accent, Pal2.zeta, Color.pink};
 
     private final static Color tmpc = new Color();
+    private boolean loaded = false;
 
     public void init(){
         Events.on(EventType.GameOverEvent.class, e -> {
@@ -41,15 +44,25 @@ public class HardMode {
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            reset();
+            if(!loaded) reset();
+            else loaded = false;
         });
 
         Events.on(EventType.UnitDestroyEvent.class, e -> {
             if(e.unit.team == state.rules.waveTeam && portal != null){
-                portal.exp += Math.max(2f, (e.unit.hitSize - 8f) * 2f);
+                portal.exp += Math.max(1f, (e.unit.hitSize - 8f) * 2f);
                 portal.kills++;
             }
         });
+
+        /*Events.on(EventType.BlockDestroyEvent.class, e -> {
+            if(portal != null && core != null && e.tile == core.tile){
+                //but it refused.
+                boolean cango = state.rules.canGameOver;
+                state.rules.canGameOver = false;
+
+            }
+        });*/
     }
 
     public void update(){
@@ -114,11 +127,12 @@ public class HardMode {
     }
 
     public int level(){
-        return (int)(Mathf.sqrt(experience * 4) / 10);
+        return Math.min(maxLevel, (int)(Math.cbrt(experience * 4) / 10));
     }
 
     public float expCap(int l){
-        return (l + 1) * (l + 1) * 100f / 4f;
+        if(l > maxLevel) l = maxLevel;
+        return (l + 1) * (l + 1) * (l + 1) * 1000f / 4f;
     }
 
     public void reset(){
@@ -163,7 +177,7 @@ public class HardMode {
                         Core.bundle.format("stat.hardmode.waves", win ? lp.maxWave : lp.wave, lp.maxWave) + "\n" +
                         Core.bundle.format("stat.hardmode.kills", lp.kills) + "\n" +
                         Core.bundle.format("stat.hardmode.hardmodeKills", 0) + "\n" +
-                        Core.bundle.format("stat.hardmode.exp", experience, cap, Math.min(lp.exp, cap + 1f)) + "\n" +
+                        Core.bundle.format("stat.hardmode.exp", experience, cap, win ? Math.min(lp.exp, cap + 1f) : 0) + "\n" +
                         (experience >= cap ? Core.bundle.get("ui.hardmode.levelup") : ""),
                         () -> {}
                 );
@@ -192,14 +206,18 @@ public class HardMode {
         }
     }
 
+    //TODO: add Delete Hardmode Progress setting
+    public void deleteCampaign(){
+        Core.settings.remove("betamindy-campaign-exp");
+    }
+
     //TODO: should be called from the initiator
     public void write(Writes write){
         //experience is special; it is global in campaign and should be saved to settings
         //everything else is saved to the initiator
         //portal pos is saved (sectors can have more than 1 spawn), core pos is not (in campaign, you should have one core anyways).
-        //todo save experience to the settings if it is campaign
         if(state.isCampaign()){
-            //todo
+            Core.settings.put("betamindy-campaign-exp", experience);
         }
         else{
             write.i(experience);
@@ -219,8 +237,37 @@ public class HardMode {
         }
     }
 
-    public void read(Reads read){
+    public void read(Reads read, byte revision){
+        loaded = true;
+        if(state.isCampaign()){
+            experience = Core.settings.getInt("betamindy-campaign-exp", 0);
+        }
+        else{
+            experience = read.i();
+        }
+        boolean hasPortal = read.bool();
+        if(hasPortal){
+            coreDamage = read.f();
+            int ps = read.b();
+            if(ps != 2) core = state.rules.defaultTeam.core();
+            else core = null;
 
+            int pl = read.s();
+            Point2 pPos = Point2.unpack(read.i());
+            float pRadius = read.f();
+            portal = new Portal(pl, pPos.x * tilesize, pPos.y * tilesize, pRadius);
+            portal.state = ps;
+            if(ps == 1 || ps == 2) portal.r = read.f();
+            else portal.nextWave = read.f();
+            portal.wave = read.s();
+            portal.kills = read.i();
+            portal.exp = read.i();
+            read.bool();
+        }
+        else{
+            portal = null;
+            core = null;
+        }
     }
 
     public class Portal implements Position {
@@ -306,11 +353,6 @@ public class HardMode {
                 if(!headless) Useful.cutscene(Tmp.v6.set(x, y));
             }
             else{
-                /*if(wave > maxWave && state == 0){
-                    stop(true);
-                    state = 2;
-                    return;
-                }*/
                 if(state == 3){
                     if(Vars.state.enemies <= 0){
                         //you won lol
