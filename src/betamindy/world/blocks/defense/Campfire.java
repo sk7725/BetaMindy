@@ -43,6 +43,9 @@ public class Campfire extends Block {
     public Effect fireEffect = MindyFx.fire, smokeEffect = Fx.fireSmoke, fireDustEffect = MindyFx.fireDust;
     public BulletType fireball = MindyBullets.colorFireball;
 
+    /** Whether it can be used as an altar torch */
+    public boolean isTorch = false;
+
     public Campfire(String name){
         super(name);
         update = true;

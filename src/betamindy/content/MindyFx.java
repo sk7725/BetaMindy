@@ -4,6 +4,8 @@ import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import betamindy.graphics.*;
 import mindustry.content.*;
@@ -438,5 +440,51 @@ public class MindyFx {
         color(Color.white, e.color, e.fin());
         circle(e.x, e.y, e.fslope() * e.rotation);
         circle(e.x, e.y, e.finpow() * e.rotation);
+    }),
+
+    thickLightning = new Effect(12f, 700f, e -> {
+        if(!(e.data instanceof Seq)) return;
+        Seq<Vec2> lines = e.data();
+        int n = Mathf.clamp(1 + (int)(e.fin() * lines.size), 1, lines.size);
+        for(int i = 2; i >= 0; i--){
+            stroke(3.5f * (i / 2f + 1f));
+            color(i == 0 ? Color.white : e.color);
+            alpha(i == 2 ? 0.5f : 1f);
+
+            beginLine();
+            for(int j = 0; j < n; j++){
+                linePoint(lines.get(j).x, lines.get(j).y);
+            }
+            endLine(false);
+        }
+    }),
+
+    thickLightningFade = new Effect(60f, 700f, e -> {
+        if(!(e.data instanceof Seq)) return;
+        Seq<Vec2> lines = e.data();
+        for(int i = 2; i >= 0; i--){
+            stroke(3.5f * (i / 2f + 1f) * e.fout());
+            color(i == 0 ? Color.white : e.color);
+            alpha((i == 2 ? 0.5f : 1f) * e.fout());
+
+            beginLine();
+            for(Vec2 p : lines){
+                linePoint(p.x, p.y);
+            }
+            endLine(false);
+        }
+    }),
+
+    thickLightningStrike = new Effect(60f, 100f, e -> {
+        //todo cooler effect, this is a test
+        color(Color.white, e.color, e.fin());
+        /*
+        for(int i = 0; i < 5; i++){
+            Drawf.tri(e.x, e.y, e.fout() * 20f, 55f, e.rotation + Mathf.randomSeedRange(e.id + i, 45f) + 180f);
+        }*/
+        stroke(3f * e.fout(), e.color);
+        float r = 55f * e.finpow();
+        Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
+        circle(e.x, e.y, r);
     });
 }

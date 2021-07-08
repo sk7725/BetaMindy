@@ -93,6 +93,9 @@ public class HardMode {
             portal.wave++;
             portal.next();
         }
+        if(Core.input.keyTap(KeyCode.left) && portal != null){
+            ThickLightning.create(state.rules.waveTeam, portal.color(), 1000f, portal.x, portal.y, 200f, 50);
+        }
     }
 
     public void draw(){

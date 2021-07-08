@@ -867,6 +867,7 @@ public class MindyBlocks implements ContentList {
             health = 100;
             itemCapacity = 15;
             buildCostMultiplier = 3f;
+            isTorch = true;
             requirements(Category.effect, with(Items.copper, 12, Items.sand, 10));
         }};
 
