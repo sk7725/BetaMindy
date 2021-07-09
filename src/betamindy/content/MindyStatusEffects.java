@@ -21,7 +21,7 @@ public class MindyStatusEffects implements ContentList {
 
     public void load(){
         //marker for portal-spawned enemies
-        portal = new StatusEffect("portal"){
+        portal = new StatusEffect("warped"){
             {
                 healthMultiplier = 1.5f;
                 damageMultiplier = 5f;

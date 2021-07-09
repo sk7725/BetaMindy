@@ -442,12 +442,12 @@ public class MindyFx {
         circle(e.x, e.y, e.finpow() * e.rotation);
     }),
 
-    thickLightning = new Effect(12f, 700f, e -> {
+    thickLightning = new Effect(12f, 1300f, e -> {
         if(!(e.data instanceof Seq)) return;
         Seq<Vec2> lines = e.data();
         int n = Mathf.clamp(1 + (int)(e.fin() * lines.size), 1, lines.size);
         for(int i = 2; i >= 0; i--){
-            stroke(3.5f * (i / 2f + 1f));
+            stroke(4.5f * (i / 2f + 1f));
             color(i == 0 ? Color.white : e.color);
             alpha(i == 2 ? 0.5f : 1f);
 
@@ -459,11 +459,11 @@ public class MindyFx {
         }
     }),
 
-    thickLightningFade = new Effect(60f, 700f, e -> {
+    thickLightningFade = new Effect(80f, 1300f, e -> {
         if(!(e.data instanceof Seq)) return;
         Seq<Vec2> lines = e.data();
         for(int i = 2; i >= 0; i--){
-            stroke(3.5f * (i / 2f + 1f) * e.fout());
+            stroke(4.5f * (i / 2f + 1f) * e.fout());
             color(i == 0 ? Color.white : e.color);
             alpha((i == 2 ? 0.5f : 1f) * e.fout());
 
@@ -475,16 +475,47 @@ public class MindyFx {
         }
     }),
 
-    thickLightningStrike = new Effect(60f, 100f, e -> {
-        //todo cooler effect, this is a test
+    thickLightningStrike = new Effect(80f, 100f, e -> {
         color(Color.white, e.color, e.fin());
-        /*
-        for(int i = 0; i < 5; i++){
-            Drawf.tri(e.x, e.y, e.fout() * 20f, 55f, e.rotation + Mathf.randomSeedRange(e.id + i, 45f) + 180f);
-        }*/
+
+        for(int i = 2; i >= 0; i--){
+            float s = 4.5f * (i / 2f + 1f) * e.fout();
+            color(i == 0 ? Color.white : e.color);
+            alpha((i == 2 ? 0.5f : 1f) * e.fout());
+            for(int j = 0; j < 3; j++){
+                Drawf.tri(e.x, e.y, 2f * s, (s + 65f + Mathf.randomSeed(e.id - j, 95f)) * e.fout(), e.rotation + Mathf.randomSeedRange(e.id + j, 80f) + 180f);
+            }
+        }
+
+        Draw.z(Layer.effect - 0.001f);
         stroke(3f * e.fout(), e.color);
         float r = 55f * e.finpow();
         Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
         circle(e.x, e.y, r);
+    }).layer(Layer.effect + 0.001f),
+
+    thickLightningHit = new Effect(80f, 100f, e -> {
+        color(Color.white, e.color, e.fin());
+
+        for(int i = 2; i >= 0; i--){
+            float s = 4.5f * (i / 2f + 1f) * e.fout();
+            color(i == 0 ? Color.white : e.color);
+            alpha((i == 2 ? 0.5f : 1f) * e.fout());
+            for(int j = 0; j < 6; j++){
+                Drawf.tri(e.x, e.y, 2f * s, (s + 35f + Mathf.randomSeed(e.id - j, 95f)) * e.fout(), Mathf.randomSeedRange(e.id + j, 360f));
+            }
+        }
+
+        Draw.z(Layer.effect - 0.001f);
+        stroke(3f * e.fout(), e.color);
+        float r = 55f * e.finpow();
+        Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
+        circle(e.x, e.y, r);
+    }).layer(Layer.effect + 0.001f),
+
+    lightningOrbDespawn = new Effect(120f, e -> {
+        if(!(e.data instanceof Color)) return;
+        Color color2 = e.data();
+        Drawm.lightningOrb(e.x, e.y, e.rotation * e.fout(), e.color, color2);
     });
 }

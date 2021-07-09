@@ -49,6 +49,9 @@ public class ThickLightning {
         Seq<Vec2> lines = new Seq<>();
         bhit = false;
 
+        //is this necessary?
+        lines.add(new Vec2(x, y));
+
         for(int i = 0; i < length / 2; i++){
             hitCreate.create(null, team, x, y, rotation, damage, 1f, 1f, hitter);
             lines.add(new Vec2(x + Mathf.range(15f), y + Mathf.range(15f)));
@@ -101,8 +104,20 @@ public class ThickLightning {
         float finalY = y;
         Time.run(MindyFx.thickLightning.lifetime, () -> {
             MindyFx.thickLightningFade.at(finalX, finalY, finalRotation, color, lines);
-            MindyFx.thickLightningStrike.at(lines.peek().x, lines.peek().y, finalRotation, color);
-            Effect.shake(4f, 5f, finalX, finalY);
+            int n = Mathf.random(5);
+            if(bhit){
+                for(int j = 0; j < n; j++) Lightning.create(team, color, damage * 0.2f, lines.peek().x, lines.peek().y, finalRotation + Mathf.range(30f), length / 3);
+                MindyFx.thickLightningStrike.at(lines.peek().x, lines.peek().y, finalRotation, color);
+            }
+            else{
+                for(int j = 0; j < n; j++) Lightning.create(team, color, damage * 0.2f, lines.peek().x, lines.peek().y, Mathf.random(360f), length / 3);
+                MindyFx.thickLightningHit.at(lines.peek().x, lines.peek().y, finalRotation, color);
+            }
+
+            if(!headless){
+                Effect.shake(6f, 5.5f, finalX, finalY);
+                MindySounds.lightningStrike.at(finalX, finalY, 1f + Mathf.range(0.1f), 3f);
+            }
         });
     }
 }

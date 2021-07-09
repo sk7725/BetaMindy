@@ -122,6 +122,33 @@ public class Drawm {
         Draw.color();
     }
 
+    public static void lightningOrb(float x, float y, float r, Color color1, Color color2){
+        Draw.z(Layer.effect - 0.001f);
+        Draw.color(color1);
+        Fill.circle(x, y, r * 0.6f);
+        Drawf.tri(x, y, r, r * 1.6f, Time.time);
+        Drawf.tri(x, y, r, r * 1.6f, Time.time + 180f);
+        Draw.color(Vars.renderer.bloom == null ? color1 : color2);
+        Drawf.tri(x, y, r * 0.7f, r * 1.3f, Time.time * -1.5f + 60f);
+        Drawf.tri(x, y, r * 0.7f, r * 1.3f, Time.time * -1.5f + 60f + 180f);
+
+        Draw.z(Layer.effect + 0.002f);
+        Draw.color();
+        Drawf.tri(x, y, r * 0.6f, r * 0.7f, Time.time * 1.7f + 60f);
+        Drawf.tri(x, y, r * 0.6f, r * 0.7f, Time.time * 1.7f + 60f + 180f);
+        Fill.circle(x, y, r * 0.45f);
+
+        Draw.blend(Blending.additive);
+        Lines.stroke(Math.min(1.5f, r));
+        Draw.color(color1);
+        Lines.poly(x, y, Mathf.random(7) + 5, r * 0.9f, Mathf.random(360f));
+        Lines.stroke(Math.min(1f, r));
+        Draw.color(color2);
+        Lines.poly(x, y, Mathf.random(7) + 5, r * 1.1f, Mathf.random(360f));
+        Draw.color();
+        Draw.blend();
+    }
+
     /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */
     public static void generateTeamRegion(MultiPacker packer, Block b){
         PixmapRegion teamr = Core.atlas.getPixmap(b.name + "-team");

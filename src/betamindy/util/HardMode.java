@@ -6,14 +6,18 @@ import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
+import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import mindustry.*;
 import mindustry.entities.*;
+import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -38,7 +42,15 @@ public class HardMode {
     private final static Color tmpc = new Color();
     private boolean loaded = false;
 
+    public BulletType[] lightning;
+
     public void init(){
+        //lightning for each rank
+        lightning = new BulletType[lc1.length];
+        for(int i = 0; i < lc1.length; i++){
+            lightning[i] = new PortalLightningBulletType(750f + 150f * i, lc1[i], lc2[i]);
+        }
+
         Events.on(EventType.GameOverEvent.class, e -> {
             stop(false);
         });
@@ -50,7 +62,7 @@ public class HardMode {
 
         Events.on(EventType.UnitDestroyEvent.class, e -> {
             if(e.unit.team == state.rules.waveTeam && portal != null){
-                portal.exp += Math.max(1f, (e.unit.hitSize - 8f) * 2f);
+                portal.exp += Math.max(1f, (e.unit.hitSize - 8f) * 2f) * (portal.level < 10 ? 4f : (portal.level < 20 ? 2f : 1f));
                 portal.kills++;
             }
         });
@@ -94,7 +106,8 @@ public class HardMode {
             portal.next();
         }
         if(Core.input.keyTap(KeyCode.left) && portal != null){
-            ThickLightning.create(state.rules.waveTeam, portal.color(), 1000f, portal.x, portal.y, 200f, 50);
+            portal.shootLightning();
+            //ThickLightning.create(state.rules.waveTeam, portal.color(), 1000f, portal.x, portal.y, 200f, 50);
         }
     }
 
@@ -124,24 +137,25 @@ public class HardMode {
                 Lines.square(core.x, core.y, rad * f);
                 Draw.reset();
 
-                core.block.drawPlaceText("< [#" + portal.color().toString() + "]" + Core.bundle.format("save.wave", portal.wave + " / " + portal.maxWave) + "[] >", core.tile.x, core.tile.y, true);
+                core.block.drawPlaceText(portal.waveString(), core.tile.x, core.tile.y, true);
             }
         }
     }
 
     public int level(){
-        return Math.min(maxLevel, (int)(Math.cbrt(experience * 4) / 10));
+        return Math.min(maxLevel, (int)(Math.cbrt(experience / 25f)));
     }
 
     public float expCap(int l){
         if(l > maxLevel) l = maxLevel;
-        return (l + 1) * (l + 1) * (l + 1) * 1000f / 4f;
+        return (l + 1) * (l + 1) * (l + 1) * 25f;
     }
 
     public void reset(){
         portal = null;
         core = null;
         experience = 0;
+        if(!headless) ui.hudfrag.toggleHudText(false);
     }
 
     public void start(){
@@ -159,7 +173,12 @@ public class HardMode {
         core = state.rules.defaultTeam.core();
         coreDamage = 0f;
         openPortal(spawn.worldx(), spawn.worldy(), level);
-        if(!headless) MindySounds.portalOpen.play();
+        if(!headless){
+            MindySounds.portalOpen.play();
+            ui.hudfrag.toggleHudText(true);
+            ui.hudfrag.setHudText("\n" + Core.bundle.get("ui.hardmode.hudIntro"));
+            ui.hudfrag.showToast(new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")), Core.bundle.get("ui.hardmode.intro"));
+        }
     }
 
     public void stop(boolean win){
@@ -185,6 +204,7 @@ public class HardMode {
                         () -> {}
                 );
             });
+            ui.hudfrag.toggleHudText(false);
             //ui.showOkText("$ui.hardmode.title", Core.bundle.format(win ? "ui.hardmode.clear" : "ui.hardmode.gameover", win ? portal.maxWave : portal.wave, portal.maxWave), () -> {});
         }
         Groups.bullet.each(b -> {
@@ -201,6 +221,8 @@ public class HardMode {
 
     public void openPortal(float x, float y, int level){
         portal = new Portal(level, x, y, portalSize);
+        //show the player that from now on, the portal is more aggressive than before
+        if(level == 5) portal.shootLightning();
     }
 
     public void closePortal(){
@@ -302,6 +324,17 @@ public class HardMode {
 
         public void runWave(Seq<SpawnGroup> spawns, int wave){
             if(net.client()) return;
+
+            if(level >= 5){
+                int n = (int)(Mathf.random() * Mathf.sqrt(level) * ((float)wave / maxWave) * 1.6f - 1f);
+                if(n > 16) n = 16;
+                for(int i = 0; i < n; i++){
+                    Time.run(Mathf.random(Math.min(Mathf.sqrt(level) * 60f, 300f)), () -> {
+                        if(state == 2) return;
+                        shootLightning();
+                    });
+                }
+            }
             //if(net.active()) Call.effectReliable(MindyFx.portalShockwave, x, y, 0f, color());
             //else MindyFx.portalShockwave.at(x, y, 0f, color());
 
@@ -335,6 +368,7 @@ public class HardMode {
                 runWave(Vars.state.rules.spawns, wave + offset);
             }
             MindyFx.portalShockwave.at(x, y, 0f, color());
+            Sounds.wave.play();
             //much more benevolent version of shockwave; only damage whats inside the visual portal
             Damage.damage(Vars.state.rules.waveTeam, x, y, radius + 20f, 99999999f, true);
         }
@@ -360,21 +394,31 @@ public class HardMode {
                     if(Vars.state.enemies <= 0){
                         //you won lol
                         wave++;
+                        if(!headless) ui.hudfrag.setHudText("\n" + waveString());
                         state = 0;
                         if(wave > maxWave){
                             stop(true);
                             state = 2;
                             return;
                         }
-                        nextWave = wave == maxWave ? 100f : (maxWave == wave - 1 ? 1800f + level * 45f : 600f + level * 45f);
+                        nextWave = wave == maxWave ? 100f : (maxWave == wave - 1 ? 1000f + level * 55f : 500f + level * 35f);
                         //TODO boss wave
                     }
+                    /*
+                    else{
+                        //attack the player itself
+                        //lightning
+                        if(level >= 5 && Mathf.chanceDelta((float)(level % rankLevel) / rankLevel * 0.005f + (level < 10 ? 0.01f : 0.005f) + Math.max(0.006f, (float)(level / rankLevel) * 0.0005f))) shootLightning();
+                    }*/
                 }
                 else{
                     if(nextWave > 0f) nextWave -= Time.delta;
                     else{
                         //next wave
-                        if(wave <= maxWave) next();
+                        if(wave <= maxWave){
+                            next();
+                            if(!headless) ui.hudfrag.setHudText("\n" + waveString());
+                        }
                         state = 3;
                     }
                 }
@@ -388,6 +432,18 @@ public class HardMode {
                     if(renderer.bloom == null) heat = 11f;
                 }
             }
+        }
+
+        public void shootLightning(){
+            shoot(lightning[Math.min(level / rankLevel, lightning.length - 1)]);
+        }
+
+        public void shoot(BulletType b){
+            if(net.client()) return;
+            Posc target = Units.bestTarget(Vars.state.rules.waveTeam, x, y, Math.max(radius * 3f, b.range()), u -> !u.spawnedByCore, build -> !(build.block instanceof CoreBlock), Unit::dst2);
+            float rot = target == null ? Angles.angle(x, y, world.width()/2f * tilesize, world.height()/2f * tilesize) : target.angleTo(this) + 180f;
+            Tmp.v1.trns(Mathf.random(360f), radius * 2.3f).add(x, y);
+            Call.createBullet(b, Vars.state.rules.waveTeam, Tmp.v1.x, Tmp.v1.y, rot, b.damage, 1f, 1f);
         }
 
         public void draw(){
@@ -418,6 +474,10 @@ public class HardMode {
 
         public int pos(){
             return Point2.pack((int)(x / tilesize), (int)(y / tilesize));
+        }
+
+        public String waveString(){
+            return "< [#" + color().toString() + "]" + Core.bundle.format("save.wave", wave + " / " + maxWave) + "[] >";
         }
     }
 }
