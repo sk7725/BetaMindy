@@ -28,6 +28,8 @@ import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 
+import static mindustry.Vars.renderer;
+
 public class Drawm {
     public static void construct(Building t, TextureRegion region, float rotation, float progress, float speed, float time, Color color){
         Shaders.build.region = region;
@@ -81,7 +83,12 @@ public class Drawm {
     }
 
     public static void portal(float x, float y, float radius, Color color1, Color color2){
-        if(Vars.renderer.bloom == null) color2 = color1;
+        if(Vars.renderer.bloom == null){
+            Tmp.c2.set(color1).lerp(color2, Mathf.sin(Time.globalTime / 35f) * 0.5f + 0.5f);
+            Tmp.c3.set(color1).lerp(color2, Mathf.cos(Time.globalTime / 35f) * 0.5f + 0.5f);
+            color1 = Tmp.c2;
+            color2 = Tmp.c3;
+        }
         Draw.z(Layer.groundUnit - 1f);
         Draw.color(Color.black);
         Fill.circle(x, y, radius);
@@ -122,7 +129,7 @@ public class Drawm {
         Draw.color();
     }
 
-    public static void lightningOrb(float x, float y, float r, Color color1, Color color2){
+    public static void lightningOrbOld(float x, float y, float r, Color color1, Color color2){
         Draw.z(Layer.effect - 0.001f);
         Draw.color(color1);
         Fill.circle(x, y, r * 0.6f);
@@ -147,6 +154,43 @@ public class Drawm {
         Lines.poly(x, y, Mathf.random(7) + 5, r * 1.1f, Mathf.random(360f));
         Draw.color();
         Draw.blend();
+    }
+
+    public static void lightningOrb(float x, float y, float radius, Color color1, Color color2){
+        Draw.z(Layer.effect - 0.001f);
+        Draw.color(color1);
+        Fill.circle(x, y, radius);
+
+        int n = 3;
+        Draw.color(color2);
+        for(int i = 0; i < n; i++){
+            Tmp.v1.trns(i * 360f / n - Time.globalTime / 3f, radius - 5f).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 7f), radius * 4f, i * 360f / n - Time.globalTime / 3f + 110f);
+        }
+        n = 4;
+        Draw.color(color1);
+        for(int i = 0; i < n; i++){
+            Tmp.v1.trns(i * 360f / n - Time.globalTime / 2f, radius - 3f).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 7f), radius * 5f, i * 360f / n - Time.globalTime / 2f + 100f);
+        }
+
+        Draw.z(Layer.effect + 0.002f);
+        Draw.color();
+        Drawf.tri(x, y, radius * 0.6f, radius * 1.7f, Time.time * 1.7f + 60f);
+        Drawf.tri(x, y, radius * 0.6f, radius * 1.7f, Time.time * 1.7f + 60f + 180f);
+        Fill.circle(x, y, radius * 0.8f);
+
+        Draw.blend(Blending.additive);
+        Lines.stroke(Math.min(1.5f, radius));
+        Draw.color(color1);
+        Lines.poly(x, y, Mathf.random(7) + 5, radius * 1.8f, Mathf.random(360f));
+        Lines.stroke(Math.min(1f, radius));
+        Draw.color(color2);
+        Lines.poly(x, y, Mathf.random(7) + 5, radius * 2.2f, Mathf.random(360f));
+        Draw.color();
+        Draw.blend();
+
+        if(renderer.lights.enabled()) Drawf.light(x, y, radius * 9f, color2, 1f);
     }
 
     /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */

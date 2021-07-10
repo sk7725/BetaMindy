@@ -2,6 +2,7 @@ package betamindy.entities.bullet;
 
 import arc.graphics.*;
 import arc.math.*;
+import arc.util.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
@@ -17,7 +18,7 @@ public class PortalLightningBulletType extends BulletType {
     public Color color1, color2;
     public int lightningLength = 50;
     public int lightningLengthRand = 0;
-    public float orbRadius = 17f;
+    public float orbRadius = 11f;
 
     public PortalLightningBulletType(float damage, Color c1, Color c2){
         this.damage = damage;
@@ -26,14 +27,14 @@ public class PortalLightningBulletType extends BulletType {
 
         speed = 0.001f;
         lifetime = 180f;
+        shootEffect = MindyFx.lightningOrbCharge;
         despawnEffect = MindyFx.lightningOrbDespawn;
         hitEffect = Fx.none;
         keepVelocity = false;
         hittable = false;
         absorbable = false;
         hitSize = orbRadius;
-        lightRadius = orbRadius * 2f;
-        lightColor = color2;
+        lightOpacity = 0f;
         collides = false;
         collidesAir = false;
         collidesGround = false;
@@ -60,7 +61,12 @@ public class PortalLightningBulletType extends BulletType {
     @Override
     public void init(Bullet b){
         super.init(b);
-        if(!headless) MindySounds.portalOpen.at(b, 1.6f);
+        if(!headless){
+            Time.run(Math.max(0f, lifetime - shootEffect.lifetime), () -> {
+                if(b != null) shootEffect.at(b.x, b.y, orbRadius, color1);
+            });
+            MindySounds.portalOpen.at(b, 1.6f);
+        }
     }
 
     @Override

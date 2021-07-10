@@ -457,6 +457,12 @@ public class MindyFx {
             }
             endLine(false);
         }
+
+        if(renderer.lights.enabled()){
+            for(int i = 0; i < n - 1; i++){
+                Drawf.light(null, lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f);
+            }
+        }
     }),
 
     thickLightningFade = new Effect(80f, 1300f, e -> {
@@ -472,6 +478,12 @@ public class MindyFx {
                 linePoint(p.x, p.y);
             }
             endLine(false);
+        }
+
+        if(renderer.lights.enabled()){
+            for(int i = 0; i < lines.size - 1; i++){
+                Drawf.light(null, lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f * e.fout());
+            }
         }
     }),
 
@@ -492,6 +504,7 @@ public class MindyFx {
         float r = 55f * e.finpow();
         Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
         circle(e.x, e.y, r);
+        if(renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
     }).layer(Layer.effect + 0.001f),
 
     thickLightningHit = new Effect(80f, 100f, e -> {
@@ -511,7 +524,21 @@ public class MindyFx {
         float r = 55f * e.finpow();
         Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
         circle(e.x, e.y, r);
+        if(renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
     }).layer(Layer.effect + 0.001f),
+
+    lightningOrbCharge = new Effect(90f, e -> {
+        color(e.color, Color.white, e.fin());
+        stroke(5f * e.fin());
+        circle(e.x, e.y, e.fout() * e.rotation * 5f);
+
+        color();
+        stroke(2.5f * e.fin());
+
+        randLenVectors(e.id, 14, e.fout() * e.rotation * 3.5f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10f);
+        });
+    }),
 
     lightningOrbDespawn = new Effect(120f, e -> {
         if(!(e.data instanceof Color)) return;

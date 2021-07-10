@@ -102,8 +102,7 @@ public class HardMode {
         if(Core.input.keyTap(KeyCode.down)) stop(true);
         if(Core.input.keyTap(KeyCode.up)) start();
         if(Core.input.keyTap(KeyCode.right) && portal != null){
-            portal.wave++;
-            portal.next();
+            experience += (int)expCap(level()) + 1;
         }
         if(Core.input.keyTap(KeyCode.left) && portal != null){
             portal.shootLightning();
@@ -450,7 +449,7 @@ public class HardMode {
             int i = Math.min(level / rankLevel, lc1.length - 1);
             if(renderer.bloom == null) Drawm.portal(x, y, r, tmpc.set(lc1[i]).lerp(Color.white, Mathf.clamp(heat / 11f)), lc2[i]);
             else Drawm.portal(x, y, r, lc1[i], lc2[i]);
-            if(renderer.lights.enabled()) Drawf.light(x, y, r * 2.5f, lc1[i], 0.5f);
+            if(renderer.lights.enabled()) Drawf.light(x, y, r * 2.5f, lc1[i], 1f);
         }
 
         public Color color(){
