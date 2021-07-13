@@ -204,6 +204,6 @@ public class PayloadBullet extends ArtilleryBulletType {
     }
 
     public void print(String pain){
-        Vars.mods.getScripts().log("BetaMindy", pain);
+        Log.info(pain);
     }
 }

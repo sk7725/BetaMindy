@@ -18,7 +18,7 @@ public class PortalLightningBulletType extends BulletType {
     public Color color1, color2;
     public int lightningLength = 50;
     public int lightningLengthRand = 0;
-    public float orbRadius = 11f;
+    public float orbRadius = 12.5f;
 
     public PortalLightningBulletType(float damage, Color c1, Color c2){
         this.damage = damage;

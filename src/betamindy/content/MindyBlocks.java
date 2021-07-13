@@ -54,7 +54,7 @@ public class MindyBlocks implements ContentList {
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
     //turrets
-    hopeBringer, anchor, bermuda, propaganda, spear, justice, ray,
+    hopeBringer, anchor, bermuda, propaganda, spear, justice, ray, tarnation,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
@@ -119,6 +119,7 @@ public class MindyBlocks implements ContentList {
 
             health = 220 * size * size;
             shootSound = Sounds.shotgun;
+            placeableLiquid = true;
 
             ammo(
                     Items.titanium, new NavalBulletType(2.5f, 130f){{
@@ -152,6 +153,7 @@ public class MindyBlocks implements ContentList {
 
             health = 240 * size * size;
             shootSound = Sounds.shotgun;
+            placeableLiquid = true;
 
             ammo(
                     Items.titanium, new NavalBulletType(3.5f, 240f){{
@@ -715,17 +717,6 @@ public class MindyBlocks implements ContentList {
             requirements(Category.logic, with(Items.copper, 40, Items.lead, 20, Items.silicon, 10));
         }};
 
-
-        hopeBringer = new MultiTurret("hopebringer"){{
-            size = 9;
-            health = 9999;
-            powerUse = 90f;
-            range = 600f;
-
-            patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
-            requirements(Category.turret, with(MindyItems.bittrium, 9999));//TODO
-        }};
-
         button = new ButtonTap("button"){{
             requirements(Category.power, with(Items.graphite, 5, Items.silicon, 25));
             health = 40;
@@ -936,7 +927,20 @@ public class MindyBlocks implements ContentList {
             }
         };
 
-        //todo pyra, cryo
+        //todo pyra
+
+        crystalPyra = new Crystal("pyra-crystal", Items.pyratite){{
+            sprites = 1;
+            status = StatusEffects.burning;
+            updateEffect = Fx.burning;
+        }};
+
+        crystalCryo = new Crystal("cryo-crystal", MindyItems.cryonite){{
+            sprites = 4;
+            sizeScl = 8f;
+            status = MindyStatusEffects.icy;
+            updateEffect = MindyFx.snowflake;
+        }};
 
         crystalScalar = new ScidustryCrystal("scalar-crystal", MindyItems.scalarRaw){{
             sprites = 4;
@@ -950,6 +954,45 @@ public class MindyBlocks implements ContentList {
         crystalTensor = new EldoofusCrystal("tensor-crystal", MindyItems.tensorRaw){{
             sprites = 6;
             updateEffect = MindyFx.sparkleZeta;
+        }};
+
+        // endgame turrets
+        tarnation = new PowerTurret("tarnation"){{
+            requirements(Category.turret, with(Items.lead, 6000, Items.thorium, 5500, Items.silicon, 3950, Items.plastanium, 1800, Items.surgeAlloy, 1024, MindyItems.bittrium, 128));
+            range = 540f;
+            chargeTime = 130f;
+            chargeMaxDelay = 100f;
+            chargeEffects = 8;
+            recoilAmount = 9f;
+            reloadTime = 290f;
+            cooldown = 0.03f;
+            powerUse = 60f;
+            shootShake = 6f;
+            shootEffect = MindyFx.tarnationShoot;
+            smokeEffect = Fx.none;
+            chargeEffect = MindyFx.tarnationLines;
+            chargeBeginEffect = MindyFx.tarnationCharge;
+            heatColor = Color.red;
+            size = 6;
+            health = 280 * size * size;
+            targetAir = true;
+            shootSound = Sounds.plasmadrop;
+            rotateSpeed = 2f;
+            unitSort = (u, x, y) -> -u.maxHealth;
+
+            shootType = new ThickLightningBulletType(3048, Pal.lancerLaser){{
+                buildingDamageMultiplier = 0.3f;
+            }};
+        }};
+
+        hopeBringer = new MultiTurret("hopebringer"){{
+            requirements(Category.turret, with(MindyItems.bittrium, 9999));//TODO
+            size = 9;
+            health = 9999;
+            powerUse = 90f;
+            range = 600f;
+
+            patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
         }};
     }
 }

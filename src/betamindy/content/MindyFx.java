@@ -20,6 +20,8 @@ import static arc.graphics.g2d.Draw.*;
 //I do not want my fills and lines fighting, so no wildcad imports
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
+import static betamindy.graphics.Drawm.shard;
+import static betamindy.graphics.Drawm.spark;
 import static mindustry.Vars.renderer;
 
 public class MindyFx {
@@ -385,7 +387,7 @@ public class MindyFx {
         vgld[0] = 0;
         Angles.randLenVectors(e.id, e.id % 3 + 1, 8f, (x, y) -> {
             vgld[0]++;
-            Drawm.spark(e.x+x, e.y+y, e.fout()*2.5f, 0.5f+e.fout(), e.id * vgld[0]);
+            spark(e.x+x, e.y+y, e.fout()*2.5f, 0.5f+e.fout(), e.id * vgld[0]);
         });
     }),
 
@@ -544,5 +546,71 @@ public class MindyFx {
         if(!(e.data instanceof Color)) return;
         Color color2 = e.data();
         Drawm.lightningOrb(e.x, e.y, e.rotation * e.fout(), e.color, color2);
+    }),
+
+    placeShine = new Effect(30f, e -> {
+        color(e.color);
+        stroke(e.fout());
+        square(e.x, e.y, e.rotation / 2f + e.fin() * 3f);
+        spark(e.x, e.y, 25f, 15f * e.fout(), e.finpow() * 90f);
+    }),
+
+    trailFade = new Effect(18f, e -> {
+        if(!(e.data instanceof Trail)) return;
+        Trail t = e.data();
+        t.draw(e.color, e.rotation * e.fout());
+    }),
+
+    crystalBreak = new Effect(90f, e -> {
+        e.scaled(25f, s -> {
+            color(Color.white, e.color, s.finpow());
+            vgld[0] = 0;
+            randLenVectors(e.id, e.id % 4 + 4, 2f + 19f * s.finpow(), (x, y) -> {
+                vgld[0]++;
+                shard(e.x + x, e.y + y, 5f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 4f * s.fout(), Mathf.angle(x, y));
+            });
+        });
+
+        color(Color.white, e.color, e.fin());
+        randLenVectors(e.id, 20, 4f + 13f * e.finpow(), 6f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 0.6f);
+        });
+    }),
+
+    tarnationCharge = new Effect(130f, 180f, e -> {
+        color(Pal.lancerLaser, Color.white, e.fin());
+        stroke(5f * e.fin());
+        circle(e.x, e.y, e.fout() * 15f * 5f);
+
+        Drawm.lightningOrb(e.x, e.y, 10f * e.finpow(), Pal.lancerLaser, Pal.sapBullet);
+    }),
+
+    tarnationLines = new Effect(15f, e -> {
+        color();
+        stroke(2.5f * e.fin());
+
+        randLenVectors(e.id, 5, e.fout() * 15f * 3.5f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10f);
+        });
+    }),
+
+    tarnationShoot = new Effect(40f, 240f, e -> {
+        stroke(4f * e.fout(), Pal.sapBullet);
+        circle(e.x, e.y, 10f + e.fin() * 40f);
+        color(Pal.lancerLaser);
+        Fill.circle(e.x, e.y, 10f * e.fout(0.5f));
+        spark(e.x, e.y, e.finpow() * 40f + 28f, 18f * e.fout(), Mathf.randomSeed(e.id, 360f));
+        color();
+        Fill.circle(e.x, e.y, 10f * 0.8f * e.fout(0.5f));
+        spark(e.x, e.y, e.finpow() * 40f + 20f, 12f * e.fout(), Mathf.randomSeed(e.id, 360f));
+        Draw.blend(Blending.additive);
+        Lines.stroke(1.5f * e.fout());
+        Draw.color(Pal.lancerLaser);
+        Lines.poly(e.x, e.y, Mathf.random(7) + 11, 10f * 1.8f + e.finpow() * 90f, Mathf.random(360f));
+        Lines.stroke(e.fout());
+        Draw.color(Pal.sapBullet);
+        Lines.poly(e.x, e.y, Mathf.random(7) + 11, 10f * 2.2f + e.finpow() * 110f, Mathf.random(360f));
+        Draw.color();
+        Draw.blend();
     });
 }

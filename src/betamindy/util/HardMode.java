@@ -15,7 +15,9 @@ import betamindy.*;
 import betamindy.content.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
+import betamindy.world.blocks.environment.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
@@ -43,14 +45,10 @@ public class HardMode {
     private boolean loaded = false;
 
     public BulletType[] lightning;
+    public BulletType[] crystals;
 
+    /** Called when mod is initialized. */
     public void init(){
-        //lightning for each rank
-        lightning = new BulletType[lc1.length];
-        for(int i = 0; i < lc1.length; i++){
-            lightning[i] = new PortalLightningBulletType(750f + 150f * i, lc1[i], lc2[i]);
-        }
-
         Events.on(EventType.GameOverEvent.class, e -> {
             stop(false);
         });
@@ -66,15 +64,24 @@ public class HardMode {
                 portal.kills++;
             }
         });
+    }
 
-        /*Events.on(EventType.BlockDestroyEvent.class, e -> {
-            if(portal != null && core != null && e.tile == core.tile){
-                //but it refused.
-                boolean cango = state.rules.canGameOver;
-                state.rules.canGameOver = false;
+    /** Called after contents load. */
+    public void load(){
+        //lightning for each rank
+        lightning = new BulletType[lc1.length];
+        for(int i = 0; i < lc1.length; i++){
+            lightning[i] = new PortalLightningBulletType(750f + 150f * i, lc1[i], lc2[i]);
+        }
 
-            }
-        });*/
+        //crystal rewards todo bittrium crystal
+        crystals = new BulletType[]{
+                new CrystalBulletType((Crystal)MindyBlocks.crystalPyra),
+                new CrystalBulletType((Crystal)MindyBlocks.crystalCryo),
+                new CrystalBulletType((Crystal)MindyBlocks.crystalScalar),
+                new CrystalBulletType((Crystal)MindyBlocks.crystalVector),
+                new CrystalBulletType((Crystal)MindyBlocks.crystalTensor)
+        };
     }
 
     public void update(){
@@ -99,6 +106,7 @@ public class HardMode {
             portal.update();
         }
         //TODO remove test
+        //I am running out of keys to bind to this thing help
         if(Core.input.keyTap(KeyCode.down)) stop(true);
         if(Core.input.keyTap(KeyCode.up)) start();
         if(Core.input.keyTap(KeyCode.right) && portal != null){
@@ -106,7 +114,9 @@ public class HardMode {
         }
         if(Core.input.keyTap(KeyCode.left) && portal != null){
             portal.shootLightning();
-            //ThickLightning.create(state.rules.waveTeam, portal.color(), 1000f, portal.x, portal.y, 200f, 50);
+        }
+        if(Core.input.keyTap(KeyCode.slash) && portal != null){
+            portal.shootCrystal(2, 3);
         }
     }
 
@@ -177,6 +187,7 @@ public class HardMode {
             ui.hudfrag.toggleHudText(true);
             ui.hudfrag.setHudText("\n" + Core.bundle.get("ui.hardmode.hudIntro"));
             ui.hudfrag.showToast(new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")), Core.bundle.get("ui.hardmode.intro"));
+            BetaMindy.musics.playUntil(0, () -> BetaMindy.hardmode.portal == null, 1, false, true);
         }
     }
 
@@ -190,7 +201,6 @@ public class HardMode {
         if(!headless){
             MindySounds.portalClose.play();
             if(core != null && core.isValid()) MindyFx.portalCoreKill.at(core.x, core.y, core.block.size * tilesize, portal.color());
-            //TODO custom dialogue
             final Portal lp = portal;
             Time.run(300f, () -> {
                 ui.showOkText(Core.bundle.get("ui.hardmode.title") + " " + Core.bundle.format("ui.hardmode.level", lp.level),
@@ -211,7 +221,7 @@ public class HardMode {
         });
         Groups.unit.each(u -> {
             if(u.team == state.rules.waveTeam){
-                MindyFx.portalUnitDespawn.at(u.x, u.y, u.rotation, portal.color(), u.icon());
+                MindyFx.portalUnitDespawn.at(u.x, u.y, u.rotation + 90f, portal.color(), u.icon());
                 u.remove();
             }
         });
@@ -257,7 +267,7 @@ public class HardMode {
             write.s(portal.wave);
             write.i(portal.kills);
             write.i(portal.exp);
-            write.bool(false);//todo for useCustomSpawn r/w later
+            write.bool(false);//for useCustomSpawn r/w later
         }
     }
 
@@ -296,9 +306,9 @@ public class HardMode {
 
     public class Portal implements Position {
         public float x, y, radius;
-        public float r = 0f;
-        public int state = 0; //0: idle 1: opening 2: closing 3: wave
-        public int level = 0;
+        public float r;
+        public int state; //0: idle 1: opening 2: closing 3: wave
+        public int level;
         private float heat = 0f;
 
         public Seq<SpawnGroup> spawns = new Seq<>(); //todo used for special spawns
@@ -378,6 +388,7 @@ public class HardMode {
                 if(state == 1 && Mathf.equal(r, radius, 0.1f)){
                     state = 0;
                     Useful.cutsceneEnd();
+                    BetaMindy.musics.go();
                     return;
                 }
                 else if(state == 2 && Mathf.zero(r, 0.1f)){
@@ -443,6 +454,38 @@ public class HardMode {
             float rot = target == null ? Angles.angle(x, y, world.width()/2f * tilesize, world.height()/2f * tilesize) : target.angleTo(this) + 180f;
             Tmp.v1.trns(Mathf.random(360f), radius * 2.3f).add(x, y);
             Call.createBullet(b, Vars.state.rules.waveTeam, Tmp.v1.x, Tmp.v1.y, rot, b.damage, 1f, 1f);
+        }
+
+        public void rewardCrystal(){
+            if(net.client()) return;
+            if(level / rankLevel < 2){
+                if(Mathf.chance(0.25f)) shootCrystal(1, Mathf.random(1, (int)Math.min(3, 2 + 0.5f * level / rankLevel)));
+                else shootCrystal(0, Mathf.random(1, Math.min(4, 2 + level / rankLevel)));
+            }
+            else{
+                for(int i = 0; i < crystals.length; i++){
+                    if(i == crystals.length - 1 || Mathf.randomBoolean() || (i == crystals.length - 2 && level < 45)){
+                        shootCrystal(i, Mathf.random(1, Mathf.clamp(4 + level / rankLevel - i, 1, crystals.length - i + 1)));
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void shootCrystal(int id, int amount){
+            if(world.width() < 20 || world.height() < 20) return; //too small to spawn crystals; they would clog the map up
+            for(int i = 0; i < amount; i++){
+                Tile t = null;
+                for(int j = 0; j < 5; j++){
+                    //keep looking for a good tile randomly
+                    t = world.tile(Mathf.random(5, world.width() - 5), Mathf.random(5, world.height() - 5));
+                    if(t != null && t.block() == Blocks.air && dst2(t.worldx(), t.worldy()) > radius * radius) break;
+                }
+                if(t == null) return;
+                Tmp.v1.set(t.worldx(), t.worldy());
+                float lifeScl = Mathf.dst(x, y, Tmp.v1.x, Tmp.v1.y) / crystals[id].range();
+                Call.createBullet(crystals[id], Vars.state.rules.defaultTeam, x, y, 180f + Tmp.v1.angleTo(this), -1, 1f, lifeScl);
+            }
         }
 
         public void draw(){

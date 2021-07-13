@@ -2,6 +2,7 @@ package betamindy.world.blocks.power;
 
 import arc.Core;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.struct.*;
 import mindustry.entities.Units;
 import mindustry.gen.*;
@@ -82,7 +83,7 @@ public class ButtonPad extends PowerBlock {
         @Override
         public void unitOn(Unit unit){
             if(!enabled) return;
-            powerProduction = basicPowerProduction * (unit.hitSize * 1.2f - 8); //TODO: figure out how to deal with multiple units on one pad
+            powerProduction = Mathf.clamp(basicPowerProduction * (unit.hitSize * 1.2f - 8) * 0.3f, 0.01f, 1f); //TODO: figure out how to deal with multiple units on one pad
 
             if(heat < 0.001f) Sounds.place.at(x, y, 1.2f / size);
             heat = pushTime;

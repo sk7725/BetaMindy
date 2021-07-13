@@ -71,6 +71,11 @@ public class Drawm {
         Drawf.tri(x, y, width, size, r+270f);
     }
 
+    public static void shard(float x, float y, float size, float width, float r){
+        Drawf.tri(x, y, width, size, r);
+        Drawf.tri(x, y, width, size, r+180f);
+    }
+
     public static void drawBit(boolean bit, float x, float y, float size, float stroke){
         if(bit){
             Lines.stroke(stroke*1.2f);
@@ -246,7 +251,7 @@ public class Drawm {
         Draw.rect(region, x, y, r - 90f);
         Draw.alpha(1f);
     }
-    //TODO PR to drills?
+    //PR to drills?
 
     /** Outlines a given textureRegion. Run in createIcons. */
     public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name){
