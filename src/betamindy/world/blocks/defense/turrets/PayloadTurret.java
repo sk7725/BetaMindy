@@ -25,6 +25,7 @@ import mindustry.world.meta.*;
 import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
+@SuppressWarnings("unchecked")
 public class PayloadTurret extends Turret {
     /** Base damage multiplier */
     public float damage = 1.3f;

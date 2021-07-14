@@ -27,7 +27,7 @@ public class BlockCloner extends Block {
     public Color color = Pal.lancerLaser;
     /** Build speed multiplier */
     public float buildSpeed = 0.8f;
-    public int maxSize = 1;//TODO: add support for bigger sizes?
+    public int maxSize = 1; //add support for bigger sizes?
     public TextureRegion baseRegion;
     public TextureRegion[] topRegion = new TextureRegion[4];
 

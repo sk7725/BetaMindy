@@ -4,6 +4,8 @@ import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import betamindy.graphics.*;
 import mindustry.content.*;
@@ -18,6 +20,8 @@ import static arc.graphics.g2d.Draw.*;
 //I do not want my fills and lines fighting, so no wildcad imports
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
+import static betamindy.graphics.Drawm.shard;
+import static betamindy.graphics.Drawm.spark;
 import static mindustry.Vars.renderer;
 
 public class MindyFx {
@@ -383,7 +387,7 @@ public class MindyFx {
         vgld[0] = 0;
         Angles.randLenVectors(e.id, e.id % 3 + 1, 8f, (x, y) -> {
             vgld[0]++;
-            Drawm.spark(e.x+x, e.y+y, e.fout()*2.5f, 0.5f+e.fout(), e.id * vgld[0]);
+            spark(e.x+x, e.y+y, e.fout()*2.5f, 0.5f+e.fout(), e.id * vgld[0]);
         });
     }),
 
@@ -404,5 +408,209 @@ public class MindyFx {
             vgld[0]++;
             Drawm.drawBit(vgld[0] % 2 == 1, e.x+x, e.y+y, 1f, e.fout());
         });
+    }),
+
+    portalUnitDespawn = new Effect(40f, e -> {
+        if(!(e.data instanceof TextureRegion)) return;
+        color();
+        mixcol(e.color, e.fin());
+        alpha(e.fout(0.5f));
+        Draw.rect((TextureRegion) e.data, e.x, e.y, e.rotation);
+        mixcol();
+    }),
+
+    portalCoreKill = new Effect(90f, e -> {
+        color(e.color, Color.white, e.fin());
+        alpha(e.fout());
+        Fill.square(e.x, e.y, e.rotation / 2f);
+        alpha(1f);
+        vgld[0] = e.id;
+        Angles.randLenVectors(e.id, 5, 7f + 5f * e.fin(), (x, y) -> {
+            vgld[0]++;
+            Fill.square(e.x + x, e.y + y, e.fout() * (0.5f * Mathf.randomSeed(vgld[0]) * 0.3f) * e.rotation / 3f);
+        });
+    }),
+
+    portalShockwave = new Effect(50f, 200f, e -> {
+        color(Color.white, e.color, e.fin());
+        stroke(e.fout() * 2f);
+        circle(e.x, e.y, e.finpow() * 200f);
+    }),
+
+    portalSpawn = new Effect(20f, e -> {
+        stroke(e.fout() * 2f);
+        color(Color.white, e.color, e.fin());
+        circle(e.x, e.y, e.fslope() * e.rotation);
+        circle(e.x, e.y, e.finpow() * e.rotation);
+    }),
+
+    thickLightning = new Effect(12f, 1300f, e -> {
+        if(!(e.data instanceof Seq)) return;
+        Seq<Vec2> lines = e.data();
+        int n = Mathf.clamp(1 + (int)(e.fin() * lines.size), 1, lines.size);
+        for(int i = 2; i >= 0; i--){
+            stroke(4.5f * (i / 2f + 1f));
+            color(i == 0 ? Color.white : e.color);
+            alpha(i == 2 ? 0.5f : 1f);
+
+            beginLine();
+            for(int j = 0; j < n; j++){
+                linePoint(lines.get(j).x, lines.get(j).y);
+            }
+            endLine(false);
+        }
+
+        if(renderer.lights.enabled()){
+            for(int i = 0; i < n - 1; i++){
+                Drawf.light(null, lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f);
+            }
+        }
+    }),
+
+    thickLightningFade = new Effect(80f, 1300f, e -> {
+        if(!(e.data instanceof Seq)) return;
+        Seq<Vec2> lines = e.data();
+        for(int i = 2; i >= 0; i--){
+            stroke(4.5f * (i / 2f + 1f) * e.fout());
+            color(i == 0 ? Color.white : e.color);
+            alpha((i == 2 ? 0.5f : 1f) * e.fout());
+
+            beginLine();
+            for(Vec2 p : lines){
+                linePoint(p.x, p.y);
+            }
+            endLine(false);
+        }
+
+        if(renderer.lights.enabled()){
+            for(int i = 0; i < lines.size - 1; i++){
+                Drawf.light(null, lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f * e.fout());
+            }
+        }
+    }),
+
+    thickLightningStrike = new Effect(80f, 100f, e -> {
+        color(Color.white, e.color, e.fin());
+
+        for(int i = 2; i >= 0; i--){
+            float s = 4.5f * (i / 2f + 1f) * e.fout();
+            color(i == 0 ? Color.white : e.color);
+            alpha((i == 2 ? 0.5f : 1f) * e.fout());
+            for(int j = 0; j < 3; j++){
+                Drawf.tri(e.x, e.y, 2f * s, (s + 65f + Mathf.randomSeed(e.id - j, 95f)) * e.fout(), e.rotation + Mathf.randomSeedRange(e.id + j, 80f) + 180f);
+            }
+        }
+
+        Draw.z(Layer.effect - 0.001f);
+        stroke(3f * e.fout(), e.color);
+        float r = 55f * e.finpow();
+        Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
+        circle(e.x, e.y, r);
+        if(renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
+    }).layer(Layer.effect + 0.001f),
+
+    thickLightningHit = new Effect(80f, 100f, e -> {
+        color(Color.white, e.color, e.fin());
+
+        for(int i = 2; i >= 0; i--){
+            float s = 4.5f * (i / 2f + 1f) * e.fout();
+            color(i == 0 ? Color.white : e.color);
+            alpha((i == 2 ? 0.5f : 1f) * e.fout());
+            for(int j = 0; j < 6; j++){
+                Drawf.tri(e.x, e.y, 2f * s, (s + 35f + Mathf.randomSeed(e.id - j, 95f)) * e.fout(), Mathf.randomSeedRange(e.id + j, 360f));
+            }
+        }
+
+        Draw.z(Layer.effect - 0.001f);
+        stroke(3f * e.fout(), e.color);
+        float r = 55f * e.finpow();
+        Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
+        circle(e.x, e.y, r);
+        if(renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
+    }).layer(Layer.effect + 0.001f),
+
+    lightningOrbCharge = new Effect(90f, e -> {
+        color(e.color, Color.white, e.fin());
+        stroke(5f * e.fin());
+        circle(e.x, e.y, e.fout() * e.rotation * 5f);
+
+        color();
+        stroke(2.5f * e.fin());
+
+        randLenVectors(e.id, 14, e.fout() * e.rotation * 3.5f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10f);
+        });
+    }),
+
+    lightningOrbDespawn = new Effect(120f, e -> {
+        if(!(e.data instanceof Color)) return;
+        Color color2 = e.data();
+        Drawm.lightningOrb(e.x, e.y, e.rotation * e.fout(), e.color, color2);
+    }),
+
+    placeShine = new Effect(30f, e -> {
+        color(e.color);
+        stroke(e.fout());
+        square(e.x, e.y, e.rotation / 2f + e.fin() * 3f);
+        spark(e.x, e.y, 25f, 15f * e.fout(), e.finpow() * 90f);
+    }),
+
+    trailFade = new Effect(18f, e -> {
+        if(!(e.data instanceof Trail)) return;
+        Trail t = e.data();
+        t.draw(e.color, e.rotation * e.fout());
+    }),
+
+    crystalBreak = new Effect(90f, e -> {
+        e.scaled(25f, s -> {
+            color(Color.white, e.color, s.finpow());
+            vgld[0] = 0;
+            randLenVectors(e.id, e.id % 4 + 4, 2f + 19f * s.finpow(), (x, y) -> {
+                vgld[0]++;
+                shard(e.x + x, e.y + y, 5f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 4f * s.fout(), Mathf.angle(x, y));
+            });
+        });
+
+        color(Color.white, e.color, e.fin());
+        randLenVectors(e.id, 20, 4f + 13f * e.finpow(), 6f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 0.6f);
+        });
+    }),
+
+    tarnationCharge = new Effect(130f, 180f, e -> {
+        color(Pal.lancerLaser, Color.white, e.fin());
+        stroke(5f * e.fin());
+        circle(e.x, e.y, e.fout() * 15f * 5f);
+
+        Drawm.lightningOrb(e.x, e.y, 10f * e.finpow(), Pal.lancerLaser, Pal.sapBullet);
+    }),
+
+    tarnationLines = new Effect(15f, e -> {
+        color();
+        stroke(2.5f * e.fin());
+
+        randLenVectors(e.id, 5, e.fout() * 15f * 3.5f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10f);
+        });
+    }),
+
+    tarnationShoot = new Effect(40f, 240f, e -> {
+        stroke(4f * e.fout(), Pal.sapBullet);
+        circle(e.x, e.y, 10f + e.fin() * 40f);
+        color(Pal.lancerLaser);
+        Fill.circle(e.x, e.y, 10f * e.fout(0.5f));
+        spark(e.x, e.y, e.finpow() * 40f + 28f, 18f * e.fout(), Mathf.randomSeed(e.id, 360f));
+        color();
+        Fill.circle(e.x, e.y, 10f * 0.8f * e.fout(0.5f));
+        spark(e.x, e.y, e.finpow() * 40f + 20f, 12f * e.fout(), Mathf.randomSeed(e.id, 360f));
+        Draw.blend(Blending.additive);
+        Lines.stroke(1.5f * e.fout());
+        Draw.color(Pal.lancerLaser);
+        Lines.poly(e.x, e.y, Mathf.random(7) + 11, 10f * 1.8f + e.finpow() * 90f, Mathf.random(360f));
+        Lines.stroke(e.fout());
+        Draw.color(Pal.sapBullet);
+        Lines.poly(e.x, e.y, Mathf.random(7) + 11, 10f * 2.2f + e.finpow() * 110f, Mathf.random(360f));
+        Draw.color();
+        Draw.blend();
     });
 }

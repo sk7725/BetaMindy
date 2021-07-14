@@ -4,19 +4,51 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import betamindy.*;
 import betamindy.graphics.Pal2;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.units.WeaponMount;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.StatusEffect;
 import mindustry.ui.*;
 
+import static betamindy.BetaMindy.hardmode;
+
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal;
 
     public void load(){
+        //marker for portal-spawned enemies
+        portal = new StatusEffect("warped"){
+            {
+                healthMultiplier = 1.5f;
+                damageMultiplier = 5f;
+                color = Color.pink;
+                effect = Fx.none;
+                permanent = true;
+            }
+
+            @Override
+            public void draw(Unit unit){
+                if(hardmode.portal == null) return;
+                float r = unit.dst(hardmode.portal) / (hardmode.portal.r + 20f);
+                if(unit.type().flying && !unit.type.lowAltitude) Draw.z(Layer.flyingUnit + 1f);
+                else Draw.z(Layer.effect + 0.0001f);
+                Draw.color();
+                Draw.mixcol(Tmp.c1.set(Color.white).lerp(hardmode.portal.color(), Mathf.clamp(r)), 1f);
+                Draw.alpha(1f - Mathf.clamp(r - 1.5f));
+                Draw.rect(unit.icon(), unit.x, unit.y, unit.rotation - 90f);
+                Draw.reset();
+            }
+        };
+
+        //harmful blocks will ignore units with this on, as it has been damaged recently.
+        ouch = new StatusEffect("ouch"){{
+            color = Color.clear;
+        }};
+
         radiation = new StatusEffect("radiated"){
             //credits to EyeofDarkness
             @Override
@@ -183,10 +215,5 @@ public class MindyStatusEffects implements ContentList {
                 color = Pal2.source;
             }
         };
-
-        //harmful blocks will ignore units with this on, as it has been damaged recently.
-        ouch = new StatusEffect("ouch"){{
-            color = Color.clear;
-        }};
     }
 }

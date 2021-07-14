@@ -111,7 +111,7 @@ public class FloodLight extends LogicSpinBlock{
         public void drawExt(){
             if(renderer != null && (team == Team.derelict || team == player.team() || state.rules.enemyLights)){
                 for(int i = -2; i <= 2; i++){
-                    //TODO not a very good way of doing this    ~DINGUS~
+                    //GLENN: not a very good way of doing this    ~DINGUS~
                     float e = stroke * efficiency();
 
                     Tmp.v1.trns(realRotation(), radius, i * e / 1.5f);

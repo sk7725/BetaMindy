@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import betamindy.world.blocks.production.payduction.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -11,13 +12,12 @@ import mindustry.world.*;
 
 import static mindustry.Vars.tilesize;
 
-//todo make spinning claws drop stuff when over this block
 public class Disabler extends Block {
     public Color zoneColor = Pal.health;
     public Disabler(String name){
         super(name);
         update = true;
-        solid = false; //todo something special when a unit walks into it?
+        solid = false;
     }
 
     public class DisablerBuild extends Building {
@@ -51,6 +51,11 @@ public class Disabler extends Block {
             Draw.color(zoneColor);
             Fill.square(x, y, 5f * heat);
             Draw.color();
+        }
+
+        @Override
+        public void unitOn(Unit unit){
+            unit.apply(StatusEffects.disarmed, 20f);
         }
     }
 }

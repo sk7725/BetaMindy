@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.io.*;
+import betamindy.world.blocks.environment.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -165,15 +166,37 @@ public class Mynamite extends Block {
             );
         }
 
+        public void mineCrystal(Tile other, Crystal c){
+            Item drops = c.item;
+            int amount = c.requirements[0].amount;
+            amount = Mathf.random(amount / 2, amount + size * 2);
+            if(amount <= 0) amount = 1;
+
+            Building dest = destTile(drops, amount);
+            if(dest != null){
+                InputHandler.transferItemTo(
+                        null, drops, amount,
+                        other.worldx() + Mathf.range(tilesize / 2f),
+                        other.worldy() + Mathf.range(tilesize / 2f),
+                        dest
+                );
+            }
+            if(other.build != null) other.build.kill();
+        }
+
         @Override
         public void onDestroyed(){
             super.onDestroyed();
-            if(!Vars.net.client())
-                for(int i = -mineRadius; i <= mineRadius; i++)
+            if(!Vars.net.client()){
+                for(int i = -mineRadius; i <= mineRadius; i++){
                     for(int j = -mineRadius; j <= mineRadius; j++){
-                        Tile other = Vars.world.tile(tile.x+i, tile.y+j);
-                        if(other != null && other.drop() != null) mineTile(other, Math.abs(i)+Math.abs(j));
+                        Tile other = Vars.world.tile(tile.x + i, tile.y + j);
+                        if(other == null) continue;
+                        if(other.drop() != null) mineTile(other, Math.abs(i) + Math.abs(j));
+                        if(other.block() instanceof Crystal) mineCrystal(other, (Crystal)other.block());
                     }
+                }
+            }
 
             if(Vars.state.rules.reactorExplosions) Damage.damage(x, y, damageRadius, damage);
         }

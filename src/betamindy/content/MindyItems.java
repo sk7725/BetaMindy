@@ -32,6 +32,7 @@ public class MindyItems implements ContentList {
         cryonite = new Item("cryonite", Liquids.cryofluid.color){{
             flammability = -1f;
             explosiveness = 1f;
+            hardness = 2;
         }};
 
         scalarRaw = new Item("ore-scalar", Pal2.scalar){{

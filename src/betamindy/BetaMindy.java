@@ -29,6 +29,7 @@ public class BetaMindy extends Mod{
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
     public static HardMode hardmode = new HardMode();
+    public static MusicControl musics = new MusicControl();
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
     //public static UnitGravity gravity = new UnitGravity();
@@ -49,6 +50,7 @@ public class BetaMindy extends Mod{
         super();
         MindySounds.load();
         pushUtil.init();
+        musics.init();
 
         Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false);
         Events.on(ClientLoadEvent.class, e -> {
@@ -71,7 +73,7 @@ public class BetaMindy extends Mod{
             Func<String, String> stringf = value -> Core.bundle.get("mod." + value);
 
             mod.meta.displayName = stringf.get(mod.meta.name + ".name");
-            mod.meta.description = stringf.get(mod.meta.name + ".description");
+            mod.meta.description = Core.bundle.get("mod.betamindy.description") + "\n\n" + Core.bundle.format("mod.betamindy.credits", Core.bundle.get("mod.codev"), Core.bundle.get("mod.contributors"), Core.bundle.get("mod.musics"));
 
             mod.meta.author = "[royal]" + mod.meta.author + "[]";
         }
@@ -92,11 +94,11 @@ public class BetaMindy extends Mod{
             }
         });
 
-        //later, stashed for now
-
         hardmode.init();
         Events.run(Trigger.update, () -> {
             if(state.isPlaying()) hardmode.update();
+            musics.update();
+            //later, stashed for now
             //gravity.update();
         });
         if(!headless){
@@ -113,5 +115,6 @@ public class BetaMindy extends Mod{
 
             //Log.info("@: Loaded content list: @", getClass().getSimpleName(), list.getClass().getSimpleName());
         }
+        hardmode.load();
     }
 }
