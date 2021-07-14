@@ -103,23 +103,23 @@ public class ClearPipe extends Block {
         list.each(other -> {
             if(other.breaking || other == req || !(other.block instanceof ClearPipe)) return;
             if(other.y == req.y){
-                if(other.x - req.x == 2) tiling += 1;
-                else if(other.x - req.x == -2) tiling += 4;
+                if(other.x - req.x == 2) tiling |= 1;
+                else if(other.x - req.x == -2) tiling |= 4;
             }
             else if(other.x == req.x){
-                if(other.y - req.y == 2) tiling += 2;
-                else if(other.y - req.y == -2) tiling += 8;
+                if(other.y - req.y == 2) tiling |= 2;
+                else if(other.y - req.y == -2) tiling |= 8;
             }
         });
         int i = 0;
         for(Point2 point : Geometry.d4){
             int x = req.x + point.x * 2, y = req.y + point.y * 2;
             Tile t = world.tile(x, y);
-            if(t != null && ((1 << i) & tiling) == 0 && (t.build instanceof ClearPipeBuild) && t.build.tile == t) tiling += (1 << i);
+            if(t != null && ((1 << i) & tiling) == 0 && (t.build instanceof ClearPipeBuild) && t.build.tile == t) tiling |= (1 << i);
             i++;
         }
         if(hasBaseRegion) Draw.rect(baseRegion, req.drawx(), req.drawy());
-        Draw.rect(pipeRegions[tiling], req.drawx(), req.drawy());
+        Draw.rect(pipeRegions[tiling % 16], req.drawx(), req.drawy()); //if even all is lost stop the crash at all costs
     }
 
     @Override

@@ -184,7 +184,7 @@ public class Claw extends Block {
                     unit = null;
                 }
             }
-            if(unit != null) unit.apply(MindyStatusEffects.ouch, 45f);
+            if(unit != null) unit.apply(MindyStatusEffects.ouch, 120f);
             unit = null;
             detachSound.at(x, y);
             Fx.unitDrop.at(x, y);

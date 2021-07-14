@@ -1,11 +1,13 @@
 package betamindy.world.blocks.units;
 
 import arc.audio.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 import betamindy.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
@@ -62,6 +64,11 @@ public class BoostPad extends Block {
 
             if(impulseUnit && unit.vel().len2() < 1f) unit.impulseNet(Tmp.v1.trns(unit.rotation, unit.mass() * 8f));
             unit.apply(status, duration);
+        }
+
+        @Override
+        public void drawLight(){
+            Drawf.light(team, x, y, 50f, Color.orange, 0.8f);
         }
     }
 }

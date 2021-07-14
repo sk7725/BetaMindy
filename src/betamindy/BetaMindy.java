@@ -5,6 +5,7 @@ import arc.func.*;
 import arc.struct.*;
 import arc.util.Log;
 import betamindy.graphics.*;
+import betamindy.ui.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
@@ -23,13 +24,14 @@ import static mindustry.Vars.state;
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
-    public static final String omegaServer = "157.90.180.53:25777";
+    public static final String omegaServer = "185.86.230.61:25573";
 
     public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
     public static HardMode hardmode = new HardMode();
     public static MusicControl musics = new MusicControl();
+    public static MindyHints hints = new MindyHints();
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
     //public static UnitGravity gravity = new UnitGravity();
@@ -85,6 +87,8 @@ public class BetaMindy extends Mod{
                 if((temp instanceof ConstructBlock || !temp.hasBuilding()) || temp.icon(Cicon.medium) == Core.atlas.find("error")) return;
                 visibleBlockList.add(temp);
             });
+
+            hints.load();
         });
 
         Events.run(WorldLoadEvent.class, () -> {
