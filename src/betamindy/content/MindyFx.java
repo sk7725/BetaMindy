@@ -148,9 +148,9 @@ public class MindyFx {
     }).layer(Layer.space - 0.02f),
 
     smokeRise = new Effect(150f, 150f, e -> {
-        color(Color.gray, Pal.darkishGray.cpy().a(0), e.fin());
-        float size = 7 + e.fin()*8;
-        rect("circle", e.x+e.fin()*26, e.y+e.fin() * 30, size, size);
+        color(Color.gray, Tmp.c1.set(Pal.darkishGray).a(0f), e.fin());
+        float size = 7f + e.fin()*8f;
+        rect("circle", e.x+e.fin()*26f, e.y+e.fin() * 30f, size, size);
     }),
 
     blueBumperBonk = new Effect(25f, 60f, e -> {
@@ -612,5 +612,25 @@ public class MindyFx {
         Lines.poly(e.x, e.y, Mathf.random(7) + 11, 10f * 2.2f + e.finpow() * 110f, Mathf.random(360f));
         Draw.color();
         Draw.blend();
+    }),
+
+    spike = new Effect(14f, e -> {
+        color(Color.white, e.color, e.fin());
+        Drawf.tri(e.x, e.y, 3f, 7f * e.fout(), e.rotation);
+        Drawf.tri(e.x, e.y, 3f, 2f * e.fout(), e.rotation + 180f);
+        Fill.square(e.x, e.y, 3f / 1.414f, e.rotation + 45f);
+    }),
+
+    spikeBig = new Effect(18f, e -> {
+        color(Color.white, e.color, e.fin());
+        Drawf.tri(e.x, e.y, 7f, 15f * e.fout(), e.rotation);
+        Drawf.tri(e.x, e.y, 7f, 5f * e.fout(), e.rotation + 180f);
+        Drawf.tri(e.x, e.y, 5f, 11f * e.fout(), e.rotation + 20f);
+        Drawf.tri(e.x, e.y, 5f, 11f * e.fout(), e.rotation - 20f);
+        Fill.square(e.x, e.y, 7f / 1.414f, e.rotation + 45f);
+    }),
+
+    zoneStart = new Effect(15f, e -> {
+        Fill.light(e.x, e.y, circleVertices(e.rotation), e.rotation, Pal2.clearWhite, Tmp.c4.set(Color.white).a(e.fout()));
     });
 }

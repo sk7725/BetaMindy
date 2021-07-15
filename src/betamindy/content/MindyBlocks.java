@@ -619,27 +619,21 @@ public class MindyBlocks implements ContentList {
             requirements(Category.defense, with(Items.coal, 8, Items.blastCompound, 32));
         }};
 
-        cryoWall = new ShardWall("cryo-wall"){{
-            //shard = MindyBullets.iceBolt; //TODO later
-            shard = Bullets.cryoShot;
+        cryoWall = new StatusWall("cryo-wall"){{
+            puddle = MindyBullets.icyZoneSmall;
             destroyEffect = MindyFx.iceBurst;
             breakSound = MindySounds.freeze;
-            amount = 6;
-            inaccuracy = 18f;
-            health = 600;
-            requirements(Category.defense, with(Items.titanium, 6, Items.thorium, 3, MindyItems.cryonite, 6));
+            health = 1600;
+            requirements(Category.defense, with(MindyItems.cryonite, 6, MindyItems.vector, 2));
         }};
 
-        cryoWallLarge = new ShardWall("cryo-wall-large"){{
-            //shard = MindyBullets.iceSpear;//TODO
-            shard = Bullets.heavyCryoShot;
+        cryoWallLarge = new StatusWall("cryo-wall-large"){{
             destroyEffect = MindyFx.iceBurstBig;
+            shotEffect = MindyFx.spikeBig;
             breakSound = MindySounds.freeze;
-            amount = 12;
-            inaccuracy = 9f;
-            health = 2400;
+            health = 6400;
             size = 2;
-            requirements(Category.defense, with(Items.titanium, 24,Items.thorium, 12, MindyItems.cryonite, 24));
+            requirements(Category.defense, with(MindyItems.cryonite, 24, MindyItems.vector, 8));
         }};
 
         teamWall = new TeamWall("team-wall"){{

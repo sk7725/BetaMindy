@@ -18,7 +18,7 @@ import mindustry.world.*;
 import static mindustry.Vars.world;
 
 public class MindyBullets implements ContentList {
-    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball;
+    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball, icyZone, icyZoneSmall;
     @Override
     public void load(){
         payBullet = new PayloadBullet(1.6f){{
@@ -175,5 +175,13 @@ public class MindyBullets implements ContentList {
                 }
             }
         };
+
+        icyZone = new StatusBulletType(MindyStatusEffects.icy, 65f){{
+            lifetime = 600f;
+        }};
+
+        icyZoneSmall = new StatusBulletType(MindyStatusEffects.icy, 25f){{
+            lifetime = 300f;
+        }};
     }
 }
