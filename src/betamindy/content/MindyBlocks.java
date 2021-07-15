@@ -50,7 +50,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, clearDuct, claw, phaseClaw,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
     //turrets
@@ -624,27 +624,21 @@ public class MindyBlocks implements ContentList {
             requirements(Category.defense, with(Items.coal, 8, Items.blastCompound, 32));
         }};
 
-        cryoWall = new ShardWall("cryo-wall"){{
-            //shard = MindyBullets.iceBolt; //TODO later
-            shard = Bullets.cryoShot;
+        cryoWall = new StatusWall("cryo-wall"){{
+            puddle = MindyBullets.icyZoneSmall;
             destroyEffect = MindyFx.iceBurst;
             breakSound = MindySounds.freeze;
-            amount = 6;
-            inaccuracy = 18f;
-            health = 600;
-            requirements(Category.defense, with(Items.titanium, 6, Items.thorium, 3, MindyItems.cryonite, 6));
+            health = 1600;
+            requirements(Category.defense, with(MindyItems.cryonite, 6, MindyItems.vector, 2));
         }};
 
-        cryoWallLarge = new ShardWall("cryo-wall-large"){{
-            //shard = MindyBullets.iceSpear;//TODO
-            shard = Bullets.heavyCryoShot;
+        cryoWallLarge = new StatusWall("cryo-wall-large"){{
             destroyEffect = MindyFx.iceBurstBig;
+            shotEffect = MindyFx.spikeBig;
             breakSound = MindySounds.freeze;
-            amount = 12;
-            inaccuracy = 9f;
-            health = 2400;
+            health = 6400;
             size = 2;
-            requirements(Category.defense, with(Items.titanium, 24,Items.thorium, 12, MindyItems.cryonite, 24));
+            requirements(Category.defense, with(MindyItems.cryonite, 24, MindyItems.vector, 8));
         }};
 
         teamWall = new TeamWall("team-wall"){{
@@ -801,8 +795,24 @@ public class MindyBlocks implements ContentList {
 
         fan = new UnitFan("fan"){{
             size = 2;
+            health = 200;
             consumes.power(1.5f);
             requirements(Category.units, with(Items.titanium, 50, Items.silicon, 25, Items.metaglass, 30));
+        }};
+
+        fanMega = new UnitFan("fan-mega"){{
+            size = 3;
+            health = 450;
+            range = 150f;
+            strength = 42f;
+            windParticles = 12;
+            windAlpha = 0.9f;
+            smokeX = 22f;
+            smokeY = 6f;
+            consumes.power(3f);
+            hasLiquids = true;
+            liquidCapacity = 40f;
+            requirements(Category.units, with(Items.titanium, 150, Items.silicon, 50, Items.metaglass, 60, Items.plastanium, 20));
         }};
 
         spikeScrap = new Spike("spike"){{
@@ -924,7 +934,7 @@ public class MindyBlocks implements ContentList {
         omegaRune = new RuneBlock("omega-rune"){
             @Override
             public boolean isHidden(){
-                return super.isHidden() || !(Vars.headless || (Vars.net.active() && Vars.player.con != null && Vars.player.con.address.equals(omegaServer)));
+                return super.isHidden() || !(Vars.headless || Vars.net.client());
             }
 
             {
@@ -932,17 +942,14 @@ public class MindyBlocks implements ContentList {
             }
         };
 
-        //todo pyra
-
         crystalPyra = new Crystal("pyra-crystal", Items.pyratite){{
-            sprites = 1;
+            sprites = 5;
             status = StatusEffects.burning;
             updateEffect = Fx.burning;
         }};
 
         crystalCryo = new Crystal("cryo-crystal", MindyItems.cryonite){{
-            sprites = 4;
-            sizeScl = 8f;
+            sprites = 5;
             status = MindyStatusEffects.icy;
             updateEffect = MindyFx.snowflake;
         }};

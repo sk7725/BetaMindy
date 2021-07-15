@@ -105,7 +105,9 @@ public class HardMode {
             }
             portal.update();
         }
-        //TODO remove test
+
+        //TODO find ways to make this only work on my device
+        /*
         //I am running out of keys to bind to this thing help
         if(Core.input.keyTap(KeyCode.down)) stop(true);
         if(Core.input.keyTap(KeyCode.up)) start();
@@ -117,7 +119,7 @@ public class HardMode {
         }
         if(Core.input.keyTap(KeyCode.slash) && portal != null){
             portal.shootCrystal(2, 3);
-        }
+        }*/
     }
 
     public void draw(){

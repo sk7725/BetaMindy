@@ -49,6 +49,7 @@ public class PresentBox extends Block {
         drawDisabled = false;
         hasItems = true;
         itemCapacity = itemCount;
+        alwaysUnlocked = true;
 
         config(Item.class, (PresentBuild entity, Item item) -> {
             entity.open = true;

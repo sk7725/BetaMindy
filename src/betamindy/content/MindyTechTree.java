@@ -10,6 +10,7 @@ import static mindustry.content.Items.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.TechTree.*;
 import static betamindy.content.MindyBlocks.*;
+import static betamindy.content.MindyItems.*;
 
 public class MindyTechTree implements ContentList{
     static TechTree.TechNode context = null;
@@ -39,8 +40,10 @@ public class MindyTechTree implements ContentList{
             node(drillMini, () -> {
                node(drillMega);
             });
+        });
+        margeNode(pneumaticDrill, () -> {
             node(mynamite, () -> {
-               node(mynamiteLarge);
+                node(mynamiteLarge);
             });
         });
 
@@ -55,37 +58,51 @@ public class MindyTechTree implements ContentList{
         });
 
         margeNode(door, () -> {
-            node(teamWall);
-        });
-
-        margeNode(pyratite, () -> {
-            node(pyraWall, () -> {
-                node(pyraWallLarge);
-            });
-        });
-
-        margeNode(metaglass, () -> {
-            node(metaglassWall, () -> {
-                node(metaglassWallLarge);
-            });
-        });
-
-        margeNode(silicon, () -> {
             node(siliconWall, () -> {
                 node(siliconWallLarge);
             });
+            node(teamWall);
+        });
+        margeNode(copperWall, () -> {
+            node(leadWall, () -> {
+                node(leadWallLarge);
+                node(coalWall, () -> {
+                    node(coalWallLarge);
+                });
+                node(metaglassWall, () -> {
+                    node(metaglassWallLarge);
+                    node(spikeClear);
+                });
+                node(pyraWall, () -> {
+                    node(pyraWallLarge);
+                    node(blastWall, () -> {
+                        node(blastWallLarge);
+                    });
+                    node(spikePyra);
+                });
+            });
+            node(spikeScrap);
+        });
+        margeNode(surgeWall, () -> {
+            node(cryoWall, () -> {
+                node(cryoWallLarge);
+                node(spikeCryo);
+            });
+            node(spikeSurge);
         });
 
-        margeNode(coal, () -> {
-            node(coalWall, () -> {
-                node(coalWallLarge);
+        margeNode(ripple, () -> {
+            node(anchor, () -> {
+                node(bermuda);
             });
         });
-
-        margeNode(blastCompound, () -> {
-            node(blastWall, () -> {
-                node(blastWallLarge);
+        margeNode(wave ,() -> {
+            node(fan, () -> {
+                node(fanMega);
             });
+        });
+        margeNode(tsunami, () -> {
+            node(propaganda);
         });
 
         margeNode(vault, () -> {
@@ -94,8 +111,15 @@ public class MindyTechTree implements ContentList{
             });
         });
 
+        margeNode(microProcessor, () -> {
+            node(heatSink, () -> {
+                node(heatFan);
+                node(heatSinkLarge);
+            });
+        });
         margeNode(memoryCell, () -> {
             node(linkPin);
+            node(nullifier);
         });
 
         margeNode(solarPanel, () -> {
@@ -114,18 +138,22 @@ public class MindyTechTree implements ContentList{
                     node(bumperBlue);
                     node(bumperPlus);
                 });
+                node(claw, () -> {
+                    node(phaseClaw);
+                });
+                node(clearPipe, () -> {
+                    node(clearDuct);
+                });
             });
-        });
-
-        margeNode(switchBlock, () -> {
-            node(present);
         });
 
         margeNode(itemBridge, () -> {
             node(piston, () -> {
                 node(stickyPiston, () -> {
                     node(cloner, () -> {
-                        node(spinner);
+                        node(spinner, () -> {
+                            node(spinnerInert);
+                        });
                     });
                 });
 
@@ -135,10 +163,29 @@ public class MindyTechTree implements ContentList{
                 });
             });
         });
+
+        margeNode(battery, () -> {
+            node(discharger);
+        });
+
+        margeNode(incinerator, () -> {
+            node(fireCan, () -> {
+                node(campfire);
+            });
+        });
+
+        margeNode(pyratite, () -> {
+            node(crystalPyra);
+        });
+
+        margeNode(blastCompound, () -> {
+            nodeProduce(cryonite, () -> {
+                node(crystalCryo);
+            });
+        });
     }
     private static void margeNode(UnlockableContent parent, Runnable children){
-        TechNode parnode = TechTree.all.find(t -> t.content == parent);
-        context = parnode;
+        context = TechTree.all.find(t -> t.content == parent);
         children.run();
     }
 

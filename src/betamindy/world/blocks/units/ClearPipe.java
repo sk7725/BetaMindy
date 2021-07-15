@@ -17,6 +17,7 @@ import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
@@ -103,23 +104,23 @@ public class ClearPipe extends Block {
         list.each(other -> {
             if(other.breaking || other == req || !(other.block instanceof ClearPipe)) return;
             if(other.y == req.y){
-                if(other.x - req.x == 2) tiling += 1;
-                else if(other.x - req.x == -2) tiling += 4;
+                if(other.x - req.x == 2) tiling |= 1;
+                else if(other.x - req.x == -2) tiling |= 4;
             }
             else if(other.x == req.x){
-                if(other.y - req.y == 2) tiling += 2;
-                else if(other.y - req.y == -2) tiling += 8;
+                if(other.y - req.y == 2) tiling |= 2;
+                else if(other.y - req.y == -2) tiling |= 8;
             }
         });
         int i = 0;
         for(Point2 point : Geometry.d4){
             int x = req.x + point.x * 2, y = req.y + point.y * 2;
             Tile t = world.tile(x, y);
-            if(t != null && ((1 << i) & tiling) == 0 && (t.build instanceof ClearPipeBuild) && t.build.tile == t) tiling += (1 << i);
+            if(t != null && ((1 << i) & tiling) == 0 && (t.build instanceof ClearPipeBuild) && t.build.tile == t) tiling |= (1 << i);
             i++;
         }
         if(hasBaseRegion) Draw.rect(baseRegion, req.drawx(), req.drawy());
-        Draw.rect(pipeRegions[tiling], req.drawx(), req.drawy());
+        Draw.rect(pipeRegions[tiling % 16], req.drawx(), req.drawy()); //if even all is lost stop the crash at all costs
     }
 
     @Override
@@ -299,6 +300,12 @@ public class ClearPipe extends Block {
         }
 
         @Override
+        public void drawLight(){
+            super.drawLight();
+            units.each(u -> u.drawLight(this));
+        }
+
+        @Override
         public void onProximityUpdate(){
             super.onProximityUpdate();
             connections = 0;
@@ -474,6 +481,15 @@ public class ClearPipe extends Block {
             Draw.rect(icon, Tmp.v1.x, Tmp.v1.y, w, h, r - 90f);
         }
 
+        public void drawLight(ClearPipeBuild build){
+            if(unit == null) return;
+            UnitType type = unit.unit.type;
+            if(type.lightRadius <= 0) return;
+            if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
+            else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (f - 0.5f)).add(build);
+            Drawf.light(build.team, Tmp.v1.x, Tmp.v1.y, type.lightRadius, type.lightColor, type.lightOpacity);
+        }
+
         public void effects(ClearPipeBuild build){
             if(headless) return;
             Tmp.v2.trns(to * 90f, tilesize * size / 2f).add(build);
@@ -564,7 +580,10 @@ public class ClearPipe extends Block {
                     }
                     Tmp.v1.trns(to * 90f, tilesize * (f - 0.5f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,to * 90f);
-                    if(p == player) playerPipe.unit().set(Tmp.v1);/*Useful.lockCam(Tmp.v1);*/
+                    if(playerPipe != null){
+                        playerPipe.unit().set(Tmp.v1);
+                        if(!headless && mobile && p == player) Core.camera.position.set(Tmp.v1);
+                    }
 
                     if(f > 1f){
                         if(to < 0) to = from;

@@ -2,9 +2,11 @@ package betamindy;
 
 import arc.*;
 import arc.func.*;
+import arc.input.*;
 import arc.struct.*;
-import arc.util.Log;
+import arc.util.*;
 import betamindy.graphics.*;
+import betamindy.ui.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
@@ -15,26 +17,29 @@ import betamindy.content.*;
 import mindustry.net.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 
-import static mindustry.Vars.headless;
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
-    public static final String omegaServer = "157.90.180.53:25777";
+    public static final String omegaServer = "185.86.230.61:25573";
 
     public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
     public static HardMode hardmode = new HardMode();
     public static MusicControl musics = new MusicControl();
+
     public static ItemScoreLib scoreLib = new ItemScoreLib();
     public static OrderedMap<Item, Float> itemScores;
     public static OrderedMap<Liquid, Float> liquidScores;
     public static OrderedMap<UnitType, Float> unitScores;
+
+    public static MindyHints hints = new MindyHints();
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
     //public static UnitGravity gravity = new UnitGravity();
@@ -90,6 +95,29 @@ public class BetaMindy extends Mod{
                 if((temp instanceof ConstructBlock || !temp.hasBuilding()) || temp.icon(Cicon.medium) == Core.atlas.find("error")) return;
                 visibleBlockList.add(temp);
             });
+
+            hints.load();
+            if(!Core.settings.getBool("bloom") && !Core.settings.getBool("nobloomask", false)){
+                Core.app.post(() -> {
+                    BaseDialog dialog = new BaseDialog("@mod.betamindy.name");
+                    dialog.cont.add(Core.bundle.format("ui.bloomplease", Core.bundle.get("setting.bloom.name"))).width(Vars.mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);
+                    dialog.buttons.defaults().size(200f, 54f).pad(2f);
+                    dialog.setFillParent(false);
+                    dialog.cont.row();
+                    dialog.cont.check("@ui.notagain", false, b -> {
+                        if(b) Core.settings.put("nobloomask", true);
+                    }).left().padTop(8f);
+                    dialog.buttons.button("@cancel", dialog::hide);
+                    dialog.buttons.button("@ok", () -> {
+                        dialog.hide();
+                        Core.settings.put("bloom", true);
+                        renderer.toggleBloom(true);
+                    });
+                    dialog.keyDown(KeyCode.escape, dialog::hide);
+                    dialog.keyDown(KeyCode.back, dialog::hide);
+                    dialog.show();
+                });
+            }
         });
 
         Events.run(WorldLoadEvent.class, () -> {

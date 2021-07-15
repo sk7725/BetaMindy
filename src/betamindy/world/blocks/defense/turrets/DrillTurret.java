@@ -9,11 +9,13 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
@@ -69,7 +71,24 @@ public class DrillTurret extends BaseTurret {
 
         stats.add(Stat.range, range / tilesize, StatUnit.blocks);
         stats.addPercent(Stat.mineSpeed, mineSpeed);
-        stats.add(Stat.mineTier, new BlockFilterValue(b -> (b instanceof Floor) && canDrill((Floor)b))); //TODO copypaste BlockFilterValue from 126.2
+        stats.add(Stat.drillTier, table -> {
+            table.left();
+            Seq<Block> list = Vars.content.blocks().select(b -> (b instanceof Floor) && canDrill((Floor)b));
+
+            table.table(l -> {
+                l.left();
+
+                for(int i = 0; i < list.size; i++){
+                    Block item = list.get(i);
+
+                    l.image(item.icon(Cicon.small)).size(8 * 3).padRight(2).padLeft(2).padTop(3).padBottom(3);
+                    l.add(item.localizedName).left().padLeft(1).padRight(4);
+                    if(i % 5 == 4){
+                        l.row();
+                    }
+                }
+            });
+        });
     }
 
     public class DrillTurretBuild extends BaseTurretBuild {

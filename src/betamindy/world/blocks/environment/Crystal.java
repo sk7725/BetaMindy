@@ -98,7 +98,8 @@ public class Crystal extends Block {
         @Override
         public void drawLight(){
             super.drawLight();
-            Drawf.light(x, y, 25f, Tmp.c1.set(item.color).mul(0.7f), 0.25f);
+            Drawf.light(x, y, 30f, Tmp.c1.set(item.color).mul(0.7f), 0.25f);
+            Drawf.light(x, y, 10f, Tmp.c1.set(item.color).mul(0.7f), 0.95f);
         }
 
         @Override

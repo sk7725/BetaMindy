@@ -43,7 +43,7 @@ public class Useful {
     private static final Rect hitrect = new Rect();
     private static final Vec2 tr = new Vec2();
     private static final Seq<Unit> units = new Seq<>();
-    private static final TextField scrollLocker = new TextField();
+    private static final TextField scrollLocker = (Vars.headless) ? null : new TextField();
     //private static IntSet collidedBlocks = new IntSet();
 
     private static Vec2 cameraPos = new Vec2();
