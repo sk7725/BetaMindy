@@ -580,7 +580,10 @@ public class ClearPipe extends Block {
                     }
                     Tmp.v1.trns(to * 90f, tilesize * (f - 0.5f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,to * 90f);
-                    if(p == player) playerPipe.unit().set(Tmp.v1);/*Useful.lockCam(Tmp.v1);*/
+                    if(playerPipe != null){
+                        playerPipe.unit().set(Tmp.v1);
+                        if(!headless && mobile && p == player) Core.camera.position.set(Tmp.v1);
+                    }
 
                     if(f > 1f){
                         if(to < 0) to = from;
