@@ -50,7 +50,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, clearPipe, clearDuct, claw, phaseClaw,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
     //turrets
@@ -790,8 +790,24 @@ public class MindyBlocks implements ContentList {
 
         fan = new UnitFan("fan"){{
             size = 2;
+            health = 200;
             consumes.power(1.5f);
             requirements(Category.units, with(Items.titanium, 50, Items.silicon, 25, Items.metaglass, 30));
+        }};
+
+        fanMega = new UnitFan("fan-mega"){{
+            size = 3;
+            health = 450;
+            range = 150f;
+            strength = 42f;
+            windParticles = 12;
+            windAlpha = 0.9f;
+            smokeX = 22f;
+            smokeY = 6f;
+            consumes.power(3f);
+            hasLiquids = true;
+            liquidCapacity = 40f;
+            requirements(Category.units, with(Items.titanium, 150, Items.silicon, 50, Items.metaglass, 60, Items.plastanium, 20));
         }};
 
         spikeScrap = new Spike("spike"){{
@@ -921,17 +937,14 @@ public class MindyBlocks implements ContentList {
             }
         };
 
-        //todo pyra
-
         crystalPyra = new Crystal("pyra-crystal", Items.pyratite){{
-            sprites = 1;
+            sprites = 5;
             status = StatusEffects.burning;
             updateEffect = Fx.burning;
         }};
 
         crystalCryo = new Crystal("cryo-crystal", MindyItems.cryonite){{
-            sprites = 4;
-            sizeScl = 8f;
+            sprites = 5;
             status = MindyStatusEffects.icy;
             updateEffect = MindyFx.snowflake;
         }};

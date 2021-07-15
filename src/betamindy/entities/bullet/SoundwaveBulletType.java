@@ -33,6 +33,7 @@ public class SoundwaveBulletType extends BulletType {
         hitSize = 15f;
         lightRadius = 0f;
         lightColor = hitColor;
+        buildingDamageMultiplier = 0f; //buildings don't have ears
     }
 
     @Override

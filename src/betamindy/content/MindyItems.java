@@ -29,7 +29,7 @@ public class MindyItems implements ContentList {
             animDelay = 4f;
         }};
 
-        cryonite = new Item("cryonite", Liquids.cryofluid.color){{
+        cryonite = new Item("cryonite", Pal2.ice){{
             flammability = -1f;
             explosiveness = 1f;
             hardness = 2;

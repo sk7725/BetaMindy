@@ -1,5 +1,6 @@
 package betamindy.world.blocks.defense;
 
+import arc.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.content.*;
@@ -7,8 +8,11 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
+import mindustry.world.meta.*;
 
 import static mindustry.Vars.tilesize;
 
@@ -21,6 +25,15 @@ public class StatusWall extends Wall {
     public BulletType puddle = MindyBullets.icyZone;
 
     public StatusWall(String name){ super(name); }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.abilities, table -> {
+            table.image(status.icon(Cicon.medium)).size(18f);
+            table.add(" [accent]" + status.localizedName + "[] " + (int)(statusDuration / 60) + " " + Core.bundle.get("unit.seconds"));
+        });
+    }
 
     public class StatusWallBuild extends WallBuild {
         public void reactTo(Unit unit){
@@ -41,6 +54,12 @@ public class StatusWall extends Wall {
         public boolean collision(Bullet bullet){
             if(bullet.team != team && (bullet.owner instanceof Unit)) reactTo((Unit)bullet.owner);
             return super.collision(bullet);
+        }
+
+        @Override
+        public void drawLight(){
+            super.drawLight();
+            Drawf.light(team, x, y, 16f * size, status.color, 0.2f);
         }
     }
 }

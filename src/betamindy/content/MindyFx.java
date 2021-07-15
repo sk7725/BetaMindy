@@ -616,18 +616,16 @@ public class MindyFx {
 
     spike = new Effect(14f, e -> {
         color(Color.white, e.color, e.fin());
-        Drawf.tri(e.x, e.y, 3f, 7f * e.fout(), e.rotation);
-        Drawf.tri(e.x, e.y, 3f, 2f * e.fout(), e.rotation + 180f);
-        Fill.square(e.x, e.y, 3f / 1.414f, e.rotation + 45f);
+        Fill.square(e.x, e.y, 1.6f * e.fout(), e.rotation + 45f);
+        Tmp.v1.trns(e.rotation, e.fin() * 10f).add(e.x, e.y);
+        Fill.square(Tmp.v1.x, Tmp.v1.y, 1.6f * e.fout(), e.rotation + 45f);
     }),
 
     spikeBig = new Effect(18f, e -> {
         color(Color.white, e.color, e.fin());
-        Drawf.tri(e.x, e.y, 7f, 15f * e.fout(), e.rotation);
-        Drawf.tri(e.x, e.y, 7f, 5f * e.fout(), e.rotation + 180f);
-        Drawf.tri(e.x, e.y, 5f, 11f * e.fout(), e.rotation + 20f);
-        Drawf.tri(e.x, e.y, 5f, 11f * e.fout(), e.rotation - 20f);
-        Fill.square(e.x, e.y, 7f / 1.414f, e.rotation + 45f);
+        Fill.square(e.x, e.y, 3.2f * e.fout(), e.rotation + 45f);
+        Tmp.v1.trns(e.rotation, e.fin() * 16f).add(e.x, e.y);
+        Fill.square(Tmp.v1.x, Tmp.v1.y, 2.6f * e.fout(), e.rotation + 45f);
     }),
 
     zoneStart = new Effect(15f, e -> {

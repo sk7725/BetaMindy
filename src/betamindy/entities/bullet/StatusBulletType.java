@@ -61,7 +61,7 @@ public class StatusBulletType extends BulletType {
         Draw.color();
 
         Draw.z(Layer.groundUnit - 0.01f);
-        Fill.light(b.x, b.y, Lines.circleVertices(maxRange), Mathf.clamp((1-b.fin())*20)*maxRange, Tmp.c4.set(status.color).a(0f), Tmp.c3.set(status.color).a(0.1f+0.25f*Mathf.sin(b.time()*0.02f)));
+        Fill.light(b.x, b.y, Lines.circleVertices(maxRange), Mathf.clamp((1-b.fin())*20)*maxRange, Tmp.c4.set(status.color).a(0f), Tmp.c3.set(status.color).a(0.2f+0.15f*Mathf.sin(b.time()*0.04f)));
         Draw.z(Layer.bullet);
     }
 

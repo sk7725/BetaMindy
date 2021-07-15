@@ -17,6 +17,7 @@ import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
@@ -299,6 +300,12 @@ public class ClearPipe extends Block {
         }
 
         @Override
+        public void drawLight(){
+            super.drawLight();
+            units.each(u -> u.drawLight(this));
+        }
+
+        @Override
         public void onProximityUpdate(){
             super.onProximityUpdate();
             connections = 0;
@@ -472,6 +479,15 @@ public class ClearPipe extends Block {
             Draw.color();
             Draw.z(above ? Layer.turret + 0.1f : Layer.block - 0.1f);
             Draw.rect(icon, Tmp.v1.x, Tmp.v1.y, w, h, r - 90f);
+        }
+
+        public void drawLight(ClearPipeBuild build){
+            if(unit == null) return;
+            UnitType type = unit.unit.type;
+            if(type.lightRadius <= 0) return;
+            if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
+            else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (f - 0.5f)).add(build);
+            Drawf.light(build.team, Tmp.v1.x, Tmp.v1.y, type.lightRadius, type.lightColor, type.lightOpacity);
         }
 
         public void effects(ClearPipeBuild build){

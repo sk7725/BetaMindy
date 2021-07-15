@@ -3,6 +3,7 @@ package betamindy.world.blocks.production;
 import arc.Core;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.io.*;
 import betamindy.world.blocks.environment.*;
 import mindustry.content.*;
@@ -11,7 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.InputHandler;
 import mindustry.logic.*;
-import mindustry.ui.Bar;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.meta.*;
@@ -81,9 +82,25 @@ public class Mynamite extends Block {
         super.setStats();
 
         stats.add(Stat.range, mineRadius, StatUnit.blocks);
-        //TODO copypaste BlockFilterValue from 126.2
-        stats.add(Stat.drillTier, table ->
-            new BlockFilterValue(b -> b instanceof Floor && ((Floor) b).itemDrop != null && ((Floor) b).itemDrop.hardness <= tier && ((Floor) b).itemDrop.hardness >= minTier).display(table.left()));
+
+        stats.add(Stat.drillTier, table -> {
+            table.left();
+            Seq<Block> list = Vars.content.blocks().select(b -> (b instanceof Floor) && ((Floor) b).itemDrop != null && ((Floor) b).itemDrop.hardness <= tier && ((Floor) b).itemDrop.hardness >= minTier);
+
+            table.table(l -> {
+                l.left();
+
+                for(int i = 0; i < list.size; i++){
+                    Block item = list.get(i);
+
+                    l.image(item.icon(Cicon.small)).size(8 * 3).padRight(2).padLeft(2).padTop(3).padBottom(3);
+                    l.add(item.localizedName).left().padLeft(1).padRight(4);
+                    if(i % 5 == 4){
+                        l.row();
+                    }
+                }
+            });
+        });
     }
 
     @Override
