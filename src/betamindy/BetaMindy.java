@@ -13,6 +13,7 @@ import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import betamindy.content.*;
 import mindustry.net.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
@@ -30,6 +31,10 @@ public class BetaMindy extends Mod{
     public static MobileFunctions mobileUtil = new MobileFunctions();
     public static HardMode hardmode = new HardMode();
     public static MusicControl musics = new MusicControl();
+    public static ItemScoreLib scoreLib = new ItemScoreLib();
+    public static OrderedMap<Item, Float> itemScores;
+    public static OrderedMap<Liquid, Float> liquidScores;
+    public static OrderedMap<UnitType, Float> unitScores;
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
     //public static UnitGravity gravity = new UnitGravity();
@@ -116,5 +121,34 @@ public class BetaMindy extends Mod{
             //Log.info("@: Loaded content list: @", getClass().getSimpleName(), list.getClass().getSimpleName());
         }
         hardmode.load();
+
+        scoreLib.loadItems();
+
+        itemScores = scoreLib.scores();
+        liquidScores = scoreLib.liquidScores();
+        unitScores = scoreLib.unitScores();
+
+        Log.info("Scores: ");
+
+        Log.info("  - Items: ");
+        for(Item item : Vars.content.items()){
+            if(itemScores.containsKey(item)){
+                Log.info("    - " + item.localizedName + ": " + itemScores.get(item).toString());
+            }
+        }
+
+        Log.info("  - Liquids: ");
+        for(Liquid liquid : Vars.content.liquids()){
+            if(liquidScores.containsKey(liquid)){
+                Log.info("    - " + liquid.localizedName + ": " + liquidScores.get(liquid).toString());
+            }
+        }
+
+        Log.info("  - Units: ");
+        for(UnitType unit : Vars.content.units()){
+            if(unitScores.containsKey(unit)){
+                Log.info("    - " + unit.localizedName + ": " + unitScores.get(unit).toString());
+            }
+        }
     }
 }

@@ -44,7 +44,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer,
+    silo, warehouse, pressureContainer, itemShop,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -64,6 +64,11 @@ public class MindyBlocks implements ContentList {
 
     @Override
     public void load() {
+        itemShop = new Shop("item-shop"){{
+            requirements(Category.effect, with(Items.copper, 1));
+            size = 3;
+        }};
+
         radiation = new GlowPowder("radiation", 0){{
             color1 = Pal.lancerLaser;
             color2 = Pal.heal;
