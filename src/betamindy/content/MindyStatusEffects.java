@@ -110,7 +110,7 @@ public class MindyStatusEffects implements ContentList {
             reloadMultiplier = 0.5f;
             healthMultiplier = 0.75f;
             transitionDamage = 36f;
-            damage = 0.4f;
+            damage = 0.16f;
 
             init(() -> {
                 opposite(StatusEffects.melting, StatusEffects.burning);

@@ -929,7 +929,7 @@ public class MindyBlocks implements ContentList {
         omegaRune = new RuneBlock("omega-rune"){
             @Override
             public boolean isHidden(){
-                return super.isHidden() || !(Vars.headless || (Vars.net.active() && Vars.player.con != null && Vars.player.con.address.equals(omegaServer)));
+                return super.isHidden() || !(Vars.headless || Vars.net.client());
             }
 
             {
