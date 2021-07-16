@@ -442,7 +442,7 @@ public class ClearPipe extends Block {
             this.from = from;
             to = -1;
             if(datBigBoi(unit)){
-                initf = Math.min(150f, ((net.active() ? unit.unit.hitSize * 1.3f : unit.icon(Cicon.full).width) - maxDrawSize) / 3f) + 15f;
+                initf = Math.min(150f, ((net.active() ? unit.unit.hitSize * 1.3f : unit.unit.icon().width) - maxDrawSize) / 3f) + 15f;
                 f = -initf;
             }
             else{
@@ -461,7 +461,7 @@ public class ClearPipe extends Block {
         }
 
         public boolean datBigBoi(UnitPayload unit){
-            return (net.active() ? unit.unit.hitSize * 1.3f : unit.icon(Cicon.full).width) > maxDrawSize + 16f;
+            return (net.active() ? unit.unit.hitSize * 1.3f : unit.unit.icon().width) > maxDrawSize + 16f;
         }
 
         public void updateSavedTile(){
@@ -484,9 +484,14 @@ public class ClearPipe extends Block {
             to = -1;
         }
 
+        public void vector(Vec2 v, ClearPipeBuild build){
+            if(f <= 0.5f || to < 0) v.trns(from * 90f, tilesize * build.block.size * (0.5f - Math.min(1f, f))).add(build);
+            else v.trns(to * 90f, tilesize * build.block.size * (Math.min(1f, f) - 0.5f)).add(build);
+        }
+
         public void draw(ClearPipeBuild build){
             if(unit == null) return;
-            TextureRegion icon = unit.icon(Cicon.full);
+            TextureRegion icon = unit.unit.icon();
             float w, h, r;
             boolean above = false;
             if(f < 0f){
@@ -503,8 +508,7 @@ public class ClearPipe extends Block {
                 h *= Draw.scl * Draw.yscl;
             }
             else{
-                if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
-                else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (Math.min(1f, f) - 0.5f)).add(build);
+                vector(Tmp.v1, build);
                 w = Math.min(icon.width, maxDrawSize) * Draw.scl * Draw.xscl;
                 h = Math.min(icon.height, maxDrawSize) * Draw.scl * Draw.yscl;
                 r = (f <= 0.5f || to < 0) ? from * 90f + 180f : to * 90f;
@@ -524,8 +528,7 @@ public class ClearPipe extends Block {
             if(unit == null) return;
             UnitType type = unit.unit.type;
             if(type.lightRadius <= 0) return;
-            if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
-            else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (f - 0.5f)).add(build);
+            vector(Tmp.v1, build);
             Drawf.light(build.team, Tmp.v1.x, Tmp.v1.y, type.lightRadius, type.lightColor, type.lightOpacity);
         }
 
@@ -538,8 +541,7 @@ public class ClearPipe extends Block {
         public void dump(ClearPipeBuild build){
             //init
             Player p = player();
-            if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
-            else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (f - 0.5f)).add(build);
+            vector(Tmp.v1, build);
             float r = (f <= 0.5f || to < 0) ? from * 90f + 180f : to * 90f;
             unit.set(Tmp.v1.x, Tmp.v1.y,r);
 

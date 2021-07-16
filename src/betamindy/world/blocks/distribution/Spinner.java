@@ -327,7 +327,7 @@ public class Spinner extends Block {
             Drawf.shadow(x + Tmp.v1.x, y + Tmp.v1.y, tilesize * payload.block().size * 2f);
             Draw.z(Layer.blockOver + 0.1f);
             if(payload.build instanceof SpinDraw) ((SpinDraw) payload.build).drawSpinning(x + Tmp.v1.x, y + Tmp.v1.y, rawAngle() * Mathf.sign(ccw) + dr);
-            else Draw.rect(payload.icon(Cicon.full), x + Tmp.v1.x, y + Tmp.v1.y, (payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f) + dr);
+            else Draw.rect(payload.build.block.icon(Cicon.full), x + Tmp.v1.x, y + Tmp.v1.y, (payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f) + dr);
         }
 
         @Override
