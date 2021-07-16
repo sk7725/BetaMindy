@@ -34,7 +34,7 @@ public class BetaMindy extends Mod{
     public static HardMode hardmode = new HardMode();
     public static MusicControl musics = new MusicControl();
 
-    public static ItemScoreLib scoreLib = new ItemScoreLib();
+    public static ScoreLib scoreLib = new ScoreLib();
     public static OrderedMap<Item, Float> itemScores;
     public static OrderedMap<Liquid, Float> liquidScores;
     public static OrderedMap<UnitType, Float> unitScores;
@@ -75,6 +75,35 @@ public class BetaMindy extends Mod{
     @Override
     public void init(){
         Vars.enableConsole = true;
+
+        scoreLib.loadItems();
+
+        itemScores = scoreLib.scores();
+        liquidScores = scoreLib.liquidScores();
+        unitScores = scoreLib.unitScores();
+
+        Log.info("Scores: ");
+
+        Log.info("  - Items: ");
+        for(Item item : Vars.content.items()){
+            if(itemScores.containsKey(item)){
+                Log.info("    - " + item.localizedName + ": " + itemScores.get(item).toString());
+            }
+        }
+
+        Log.info("  - Liquids: ");
+        for(Liquid liquid : Vars.content.liquids()){
+            if(liquidScores.containsKey(liquid)){
+                Log.info("    - " + liquid.localizedName + ": " + liquidScores.get(liquid).toString());
+            }
+        }
+
+        Log.info("  - Units: ");
+        for(UnitType unit : Vars.content.units()){
+            if(unitScores.containsKey(unit)){
+                Log.info("    - " + unit.localizedName + ": " + unitScores.get(unit).toString());
+            }
+        }
 
         LoadedMod mod = Vars.mods.locateMod("betamindy");
         if(!headless){
@@ -149,34 +178,5 @@ public class BetaMindy extends Mod{
             //Log.info("@: Loaded content list: @", getClass().getSimpleName(), list.getClass().getSimpleName());
         }
         hardmode.load();
-
-        scoreLib.loadItems();
-
-        itemScores = scoreLib.scores();
-        liquidScores = scoreLib.liquidScores();
-        unitScores = scoreLib.unitScores();
-
-        Log.info("Scores: ");
-
-        Log.info("  - Items: ");
-        for(Item item : Vars.content.items()){
-            if(itemScores.containsKey(item)){
-                Log.info("    - " + item.localizedName + ": " + itemScores.get(item).toString());
-            }
-        }
-
-        Log.info("  - Liquids: ");
-        for(Liquid liquid : Vars.content.liquids()){
-            if(liquidScores.containsKey(liquid)){
-                Log.info("    - " + liquid.localizedName + ": " + liquidScores.get(liquid).toString());
-            }
-        }
-
-        Log.info("  - Units: ");
-        for(UnitType unit : Vars.content.units()){
-            if(unitScores.containsKey(unit)){
-                Log.info("    - " + unit.localizedName + ": " + unitScores.get(unit).toString());
-            }
-        }
     }
 }

@@ -1,26 +1,21 @@
 package betamindy.util;
 
-import arc.struct.ObjectMap;
-import arc.struct.OrderedMap;
-import arc.struct.Seq;
+import arc.struct.*;
 import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
 import mindustry.type.*;
-import mindustry.world.Block;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.blocks.production.LiquidConverter;
-import mindustry.world.blocks.units.UnitFactory;
-import mindustry.world.consumers.ConsumeItems;
-import mindustry.world.consumers.ConsumeLiquid;
-import mindustry.world.consumers.ConsumeType;
+import mindustry.world.*;
+import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.production.*;
+import mindustry.world.blocks.units.*;
+import mindustry.world.consumers.*;
 
-//ItemScoreLib originally made by EyeOfDarkness. Ported to v7 and improved by ThePythonGuy3
-public class ItemScoreLib {
-    public OrderedMap<Item, Float> itemScores = new OrderedMap<>(128);
-    public OrderedMap<Liquid, Float> liquidScores = new OrderedMap<>(128);
-    public OrderedMap<UnitType, Float> unitScores = new OrderedMap<>(128);
+//ScoreLib originally made by EyeOfDarkness. Ported to v7 and improved by ThePythonGuy3
+public class ScoreLib {
+    public OrderedMap<Item, Float> itemScores = new OrderedMap<>();
+    public OrderedMap<Liquid, Float> liquidScores = new OrderedMap<>();
+    public OrderedMap<UnitType, Float> unitScores = new OrderedMap<>();
 
     public int scanLayer = 5;
 
@@ -61,12 +56,20 @@ public class ItemScoreLib {
         return score;
     }
 
-    public float getScoreUnit(UnitType unit){
+    public float getScoreUnitWeapons(UnitType unit){
         float score = 0f;
 
         for(Weapon weapon : unit.weapons){
-            score += (getScoreBullet(weapon.bullet) / Math.max(weapon.reload, 0.2f)) * unit.hitSize * 0.5f * unit.range * 0.1f;
+            score += (getScoreBullet(weapon.bullet) / Math.max(weapon.reload, 0.2f)) * unit.hitSize * 0.5f;
         }
+
+        return score;
+    }
+
+    public float getScoreUnit(UnitType unit){
+        float score = getScoreUnitWeapons(unit);
+
+        score += (unit.health * 0.3f + unit.dpsEstimate * 0.2f) * unit.speed * Math.max(unit.mineTier, 1f) * Math.max(unit.abilities.size, 1);
 
         return score;
     }
@@ -231,7 +234,7 @@ public class ItemScoreLib {
 
                         if(unitPlan == null) continue;
 
-                        score = getScoreUnit(unitPlan.unit) * 0.1f;
+                        score = getScoreUnitWeapons(unitPlan.unit) * 0.1f;
 
                         for(ItemStack itemStack : unitPlan.requirements){
                             float tmpScore = score;
@@ -248,18 +251,18 @@ public class ItemScoreLib {
         }
 
         for(int k = 0; k < tmpItemArray.size; k++){
-            if(tmpItemArray.get(k) == null) continue;
+            if(tmpItemArray.get(k) == null || tmpItemArray.get(k).isHidden()) continue;
             itemScores.put(tmpItemArray.get(k), tmpItemScores.get(k));
         }
 
         for(int k = 0; k < tmpLiquidArray.size; k++){
-            if(tmpLiquidArray.get(k) == null) continue;
+            if(tmpLiquidArray.get(k) == null || tmpLiquidArray.get(k).isHidden()) continue;
             liquidScores.put(tmpLiquidArray.get(k), tmpLiquidScores.get(k));
         }
 
         for(int k = 0; k < Vars.content.units().size; k++) {
             UnitType unit = Vars.content.units().get(k);
-            if (unit == null) continue;
+            if (unit == null || unit.isHidden()) continue;
             unitScores.put(unit, getScoreUnit(unit));
         }
     }
