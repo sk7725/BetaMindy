@@ -335,6 +335,11 @@ public class Claw extends Block {
         }
 
         @Override
+        public boolean conductsTo(Building other){
+            return false;
+        }
+
+        @Override
         public void draw(){
             drawClaw(x, y, rotation * 90f);
         }
@@ -354,8 +359,8 @@ public class Claw extends Block {
         }
 
         @Override
-        public void update(){
-            super.update();
+        public void updateTile(){
+            super.updateTile();
             if(blockUnit != null && isControlled()) updatePlayer();
             updateUnit(x, y, rotation * 90f, false, 0f);
         }

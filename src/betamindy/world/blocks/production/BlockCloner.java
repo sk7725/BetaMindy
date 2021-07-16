@@ -158,8 +158,8 @@ public class BlockCloner extends Block {
         }
 
         @Override
-        public void update() {
-            super.update();
+        public void updateTile(){
+            super.updateTile();
             if(parseFront) peekPayload();
             boolean produce = recipe != null && consValid();
             if(produce){

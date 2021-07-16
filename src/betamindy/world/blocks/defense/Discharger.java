@@ -99,8 +99,8 @@ public class Discharger extends Battery {
         }
 
         @Override
-        public void update(){
-            super.update();
+        public void updateTile(){
+            super.updateTile();
             updateVars();
         }
 

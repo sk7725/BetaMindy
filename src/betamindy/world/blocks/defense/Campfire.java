@@ -106,7 +106,7 @@ public class Campfire extends Block {
         }
 
         @Override
-        public void update(){
+        public void updateTile(){
             if(items.empty()) return;
             effects(x, y, false);
 
