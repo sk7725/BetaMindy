@@ -324,7 +324,7 @@ public class Claw extends Block {
             Draw.rect(handRegion, Tmp.v1.x, Tmp.v1.y, angle - clawa - 90f);
             Draw.rect(handOverlay, Tmp.v1.x, Tmp.v1.y, angle - 90f);
 
-            if(heldBuild != null) Draw.rect(heldBuild.icon(Cicon.full), lastV.x + x, lastV.y + y, heldBuild.block().rotate ? heldBuild.build.rotation * 90f : 0f);
+            if(heldBuild != null) Draw.rect(heldBuild.build.block.icon(Cicon.full), lastV.x + x, lastV.y + y, heldBuild.block().rotate ? heldBuild.build.rotation * 90f : 0f);
             Draw.z(lz);
         }
 
@@ -332,6 +332,11 @@ public class Claw extends Block {
             Building n = world.buildWorld(x, y);
             if(n == null || !(n.block instanceof Disabler)) return true;
             return !n.consValid();
+        }
+
+        @Override
+        public boolean conductsTo(Building other){
+            return false;
         }
 
         @Override
@@ -354,8 +359,8 @@ public class Claw extends Block {
         }
 
         @Override
-        public void update(){
-            super.update();
+        public void updateTile(){
+            super.updateTile();
             if(blockUnit != null && isControlled()) updatePlayer();
             updateUnit(x, y, rotation * 90f, false, 0f);
         }

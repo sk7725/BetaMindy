@@ -22,6 +22,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
@@ -38,6 +39,7 @@ public class ClearPipe extends Block {
     public boolean conditional = false;
     public boolean hasBaseRegion = false;  //set automatically
     public boolean hasLightRegion = false; //set automatically
+    public boolean canChangeTeam = false; //"its a feature, not a bug" - might be useful later
 
     public Effect suckEffect = Fx.mineHuge, bigSuckEffect = MindyFx.mineHugeButHuger;
     public Effect suckSmokeEffect = MindyFx.suckSmoke;
@@ -91,6 +93,20 @@ public class ClearPipe extends Block {
     public void setStats(){
         super.setStats();
         stats.add(Stat.speed, (int)(size * speed * 60f) + " " + Core.bundle.get("unit.blocks") + Core.bundle.get("unit.persecond"));
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+        if(conditional){
+            bars.remove("power");
+            ConsumePower cons = consumes.getPower();
+            boolean buffered = cons.buffered;
+            float capacity = cons.capacity;
+
+            bars.add("power", entity -> new Bar(() -> buffered ? Core.bundle.format("bar.poweramount", Float.isNaN(entity.power.status * capacity) ? "<ERROR>" : (int)(entity.power.status * capacity)) :
+                    Core.bundle.get("bar.power"), () -> Mathf.zero(cons.requestedPower(entity)) ? Pal.lightishGray : Pal.powerBar, () -> Mathf.zero(cons.requestedPower(entity)) ? 1f : entity.power.status));
+        }
     }
 
     @Override
@@ -176,6 +192,7 @@ public class ClearPipe extends Block {
             if(dir % 2 == 0){
                 //tall rectangle
                 Units.nearby(x + ox - 4f, y + oy - size * 4f, 8f, size * 8f, u -> {
+                    if(!canChangeTeam && u.team != team) return;
                     if(u.y >= y + oy - size * 4f && u.y <= y + oy + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
                         acceptUnit(u, dir);
                     }
@@ -242,7 +259,7 @@ public class ClearPipe extends Block {
         }
 
         @Override
-        public void update(){
+        public void updateTile(){
             if(connections == 0){
                 suck(0);
                 suck(2);
@@ -379,6 +396,28 @@ public class ClearPipe extends Block {
                 write.bool(u.player() == player);
             }
         }
+
+        @Override
+        public float handleDamage(float amount){
+            return unit().isPlayer() ? 0f : super.handleDamage(amount);
+        }
+
+        @Override
+        public void drawStatus(){
+            if(!isGate()) return;
+            super.drawStatus();
+        }
+
+        public void effects(Vec2 v, float r, boolean big){
+            if(big){
+                bigSpitEffect.at(v, r);
+                popSound.at(v, 0.9f);
+            }
+            else{
+                spitEffect.at(v, r);
+                popSound.at(v);
+            }
+        }
     }
 
     public class UnitinaBottle{
@@ -403,7 +442,7 @@ public class ClearPipe extends Block {
             this.from = from;
             to = -1;
             if(datBigBoi(unit)){
-                initf = Math.min(150f, ((net.active() ? unit.unit.hitSize * 1.3f : unit.icon(Cicon.full).width) - maxDrawSize) / 3f) + 15f;
+                initf = Math.min(150f, ((net.active() ? unit.unit.hitSize * 1.3f : unit.unit.icon().width) - maxDrawSize) / 3f) + 15f;
                 f = -initf;
             }
             else{
@@ -422,7 +461,7 @@ public class ClearPipe extends Block {
         }
 
         public boolean datBigBoi(UnitPayload unit){
-            return (net.active() ? unit.unit.hitSize * 1.3f : unit.icon(Cicon.full).width) > maxDrawSize + 16f;
+            return (net.active() ? unit.unit.hitSize * 1.3f : unit.unit.icon().width) > maxDrawSize + 16f;
         }
 
         public void updateSavedTile(){
@@ -445,9 +484,14 @@ public class ClearPipe extends Block {
             to = -1;
         }
 
+        public void vector(Vec2 v, ClearPipeBuild build){
+            if(f <= 0.5f || to < 0) v.trns(from * 90f, tilesize * build.block.size * (0.5f - Math.min(1f, f))).add(build);
+            else v.trns(to * 90f, tilesize * build.block.size * (Math.min(1f, f) - 0.5f)).add(build);
+        }
+
         public void draw(ClearPipeBuild build){
             if(unit == null) return;
-            TextureRegion icon = unit.icon(Cicon.full);
+            TextureRegion icon = unit.unit.icon();
             float w, h, r;
             boolean above = false;
             if(f < 0f){
@@ -464,8 +508,7 @@ public class ClearPipe extends Block {
                 h *= Draw.scl * Draw.yscl;
             }
             else{
-                if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
-                else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (f - 0.5f)).add(build);
+                vector(Tmp.v1, build);
                 w = Math.min(icon.width, maxDrawSize) * Draw.scl * Draw.xscl;
                 h = Math.min(icon.height, maxDrawSize) * Draw.scl * Draw.yscl;
                 r = (f <= 0.5f || to < 0) ? from * 90f + 180f : to * 90f;
@@ -485,29 +528,20 @@ public class ClearPipe extends Block {
             if(unit == null) return;
             UnitType type = unit.unit.type;
             if(type.lightRadius <= 0) return;
-            if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
-            else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (f - 0.5f)).add(build);
+            vector(Tmp.v1, build);
             Drawf.light(build.team, Tmp.v1.x, Tmp.v1.y, type.lightRadius, type.lightColor, type.lightOpacity);
         }
 
         public void effects(ClearPipeBuild build){
             if(headless) return;
             Tmp.v2.trns(to * 90f, tilesize * size / 2f).add(build);
-            if(datBigBoi()){
-                bigSpitEffect.at(Tmp.v2, to * 90f);
-                popSound.at(Tmp.v2, 0.9f);
-            }
-            else{
-                spitEffect.at(Tmp.v2, to * 90f);
-                popSound.at(Tmp.v2);
-            }
+            build.effects(Tmp.v2, to * 90f, datBigBoi());
         }
 
         public void dump(ClearPipeBuild build){
             //init
             Player p = player();
-            if(f <= 0.5f || to < 0) Tmp.v1.trns(from * 90f, tilesize * build.block.size * (0.5f - f)).add(build);
-            else Tmp.v1.trns(to * 90f, tilesize * build.block.size * (f - 0.5f)).add(build);
+            vector(Tmp.v1, build);
             float r = (f <= 0.5f || to < 0) ? from * 90f + 180f : to * 90f;
             unit.set(Tmp.v1.x, Tmp.v1.y,r);
 
@@ -543,13 +577,19 @@ public class ClearPipe extends Block {
                 }
             }
             else{
-                if(Time.time - lastTime < 0.1f){
+                if(Time.time - lastTime < 0.01f){
                     return false;
                 }
 
                 f += build.delta() * build.speed();
                 Player p = player();
                 if(p == null && playerPipe != null) playerPipe = null;
+
+                if(p == null && unit.unit.spawnedByCore){
+                    Fx.unitDespawn.at(unit.unit.x, unit.unit.y, 0f, unit.unit);
+                    //Useful.unlockCam();
+                    return true;
+                }
 
                 if(f <= 0.5f){
                     Tmp.v1.trns(from * 90f, tilesize * (0.5f - f) * build.block.size).add(build);
@@ -578,7 +618,7 @@ public class ClearPipe extends Block {
 
                         if(to < 0) to = from; //u-turn
                     }
-                    Tmp.v1.trns(to * 90f, tilesize * (f - 0.5f) * build.block.size).add(build);
+                    Tmp.v1.trns(to * 90f, tilesize * (Math.min(f, 1f) - 0.5f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,to * 90f);
                     if(playerPipe != null){
                         playerPipe.unit().set(Tmp.v1);
@@ -631,12 +671,6 @@ public class ClearPipe extends Block {
                             return false;
                         }
                     }
-                }
-
-                if(p == null && unit.unit.spawnedByCore){
-                    Fx.unitDespawn.at(unit.unit.x, unit.unit.y, 0f, unit.unit);
-                    //Useful.unlockCam();
-                    return true;
                 }
             }
             return false;

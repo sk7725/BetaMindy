@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import betamindy.world.blocks.production.payduction.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -29,6 +30,9 @@ public class Disabler extends Block {
             for(Building p : proximity){
                 if(!(p.block instanceof Disabler)) p.control(LAccess.enabled, consValid() ? 0 : 1, 0, 0, 0);
             }
+            if(consValid()) Units.nearby(x - size * tilesize / 2f, y - size * tilesize / 2f, size * tilesize, size * tilesize, u -> {
+                u.apply(StatusEffects.disarmed, 20f);
+            });
         }
 
         @Override
@@ -51,11 +55,6 @@ public class Disabler extends Block {
             Draw.color(zoneColor);
             Fill.square(x, y, 5f * heat);
             Draw.color();
-        }
-
-        @Override
-        public void unitOn(Unit unit){
-            unit.apply(StatusEffects.disarmed, 20f);
         }
     }
 }
