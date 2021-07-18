@@ -106,20 +106,20 @@ public class HardMode {
             portal.update();
         }
 
-        //TODO find ways to make this only work on my device
-        /*
-        //I am running out of keys to bind to this thing help
-        if(Core.input.keyTap(KeyCode.down)) stop(true);
-        if(Core.input.keyTap(KeyCode.up)) start();
-        if(Core.input.keyTap(KeyCode.right) && portal != null){
-            experience += (int)expCap(level()) + 1;
+        if(BetaMindy.uwu){
+            //I am running out of keys to bind to this thing help
+            if(Core.input.keyTap(KeyCode.down)) stop(true);
+            if(Core.input.keyTap(KeyCode.up)) start();
+            if(Core.input.keyTap(KeyCode.right) && portal != null){
+                experience += (int)expCap(level()) + 1;
+            }
+            if(Core.input.keyTap(KeyCode.left) && portal != null){
+                portal.shootLightning();
+            }
+            if(Core.input.keyTap(KeyCode.slash) && portal != null){
+                portal.shootCrystal(2, 3);
+            }
         }
-        if(Core.input.keyTap(KeyCode.left) && portal != null){
-            portal.shootLightning();
-        }
-        if(Core.input.keyTap(KeyCode.slash) && portal != null){
-            portal.shootCrystal(2, 3);
-        }*/
     }
 
     public void draw(){
@@ -180,7 +180,6 @@ public class HardMode {
             ui.showOkText("$ui.hardmode.title", "$ui.hardmode.error", () -> {});
             return;
         }
-        //TODO play cool music
         core = state.rules.defaultTeam.core();
         coreDamage = 0f;
         openPortal(spawn.worldx(), spawn.worldy(), level);
@@ -240,6 +239,11 @@ public class HardMode {
         if(portal != null){
             portal.state = 2;
         }
+    }
+
+    public Color getRandomColor(Color tmp, long seed){
+        int l = Math.min(lc1.length, portal == null ? level() : portal.level / rankLevel);
+        return tmp.set(lc1[l]).lerp(lc2[l], Mathf.randomSeed(seed));
     }
 
     //TODO: add Delete Hardmode Progress setting

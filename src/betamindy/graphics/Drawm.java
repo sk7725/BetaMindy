@@ -20,6 +20,7 @@ import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 import arc.util.*;
+import betamindy.ui.*;
 import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.*;
@@ -85,6 +86,14 @@ public class Drawm {
             Lines.stroke(stroke);
             Lines.poly(x, y, 4, size, 45f);
         }
+    }
+
+    public static void koruh(float x, float y, float size, float r, char c){
+        Draw.rect(AncientKoruh.eng(c), x, y, size, size, r);
+    }
+
+    public static void koruh(float x, float y, float size, float r, String str, int index){
+        Draw.rect(AncientKoruh.eng(str, index), x, y, size, size, r);
     }
 
     public static void portal(float x, float y, float radius, Color color1, Color color2){

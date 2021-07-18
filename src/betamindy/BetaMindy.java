@@ -35,6 +35,7 @@ public class BetaMindy extends Mod{
     public static MindyHints hints = new MindyHints();
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
+    public static boolean uwu = OS.username.equals("sunny");
     //public static UnitGravity gravity = new UnitGravity();
 
     private final ContentList[] mindyContent = {
@@ -90,6 +91,7 @@ public class BetaMindy extends Mod{
             });
 
             hints.load();
+            AncientKoruh.load();
             if(!Core.settings.getBool("bloom") && !Core.settings.getBool("nobloomask", false)){
                 Core.app.post(() -> {
                     BaseDialog dialog = new BaseDialog("@mod.betamindy.name");

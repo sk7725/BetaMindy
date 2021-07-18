@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import betamindy.*;
 import betamindy.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -630,5 +631,17 @@ public class MindyFx {
 
     zoneStart = new Effect(15f, e -> {
         Fill.light(e.x, e.y, circleVertices(e.rotation), e.rotation, Pal2.clearWhite, Tmp.c4.set(Color.white).a(e.fout()));
+    }),
+
+    altarDust = new Effect(45f, e -> {
+        color(BetaMindy.hardmode.getRandomColor(Tmp.c2, e.id), Color.white, e.fin());
+        Tmp.v1.trns(e.rotation + Mathf.sin(e.fin() * 10f), e.fin() * 18f).add(e.x, e.y);
+        Fill.square(Tmp.v1.x, Tmp.v1.y, 0.8f * e.fout(), 45f);
+    }),
+
+    altarDustSmall = new Effect(30f, e -> {
+        color(BetaMindy.hardmode.getRandomColor(Tmp.c2, e.id), Color.white, e.fin());
+        Tmp.v1.trns(e.rotation + Mathf.sin(e.fin() * 10f), e.fin() * 16f).add(e.x, e.y);
+        Fill.square(Tmp.v1.x, Tmp.v1.y, 0.5f * e.fout(), 45f);
     });
 }

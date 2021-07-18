@@ -55,6 +55,11 @@ public class Crystal extends Block {
         }
     }
 
+    @Override
+    public int minimapColor(Tile tile){
+        return item.color.rgba();
+    }
+
     public class CrystalBuild extends Building {
         @Override
         public void updateTile(){

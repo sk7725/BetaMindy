@@ -6,6 +6,7 @@ import arc.struct.*;
 import arc.util.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
+import betamindy.world.blocks.campaign.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
 import betamindy.world.blocks.defense.turrets.pattern.*;
@@ -44,7 +45,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer,
+    silo, warehouse, pressureContainer, altar,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -1001,6 +1002,10 @@ public class MindyBlocks implements ContentList {
             range = 600f;
 
             patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
+        }};
+
+        altar = new Altar("altar"){{
+            requirements(Category.effect, with(Items.scrap, 100));
         }};
     }
 }

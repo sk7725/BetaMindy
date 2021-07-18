@@ -330,7 +330,7 @@ public class ClearPipe extends Block {
             for(int i = 0; i < 4; i++){
                 pipes[i] = null;
                 Tile near = tile.nearby(Geometry.d4x(i) * 2, Geometry.d4y(i) * 2);
-                if(near != null && (near.build instanceof ClearPipeBuild) && near.build.tile.pos() == near.pos()){
+                if(near != null && (near.build instanceof ClearPipeBuild) && near.build.tile.pos() == near.pos() && near.build.team == team){
                     ClearPipeBuild cb = (ClearPipeBuild) near.build;
                     pipes[i] = cb;
                     connections++;

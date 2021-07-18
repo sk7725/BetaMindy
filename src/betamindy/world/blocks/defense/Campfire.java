@@ -45,6 +45,7 @@ public class Campfire extends Block {
 
     /** Whether it can be used as an altar torch */
     public boolean isTorch = false;
+    public TextureRegion torchRegion, torchHeatRegion;
 
     public Campfire(String name){
         super(name);
@@ -61,6 +62,10 @@ public class Campfire extends Block {
         super.load();
         for(int i = 0; i < 3; i++){
             coalRegions[i] = atlas.find(name + i);
+        }
+        if(isTorch){
+            torchRegion = atlas.find(name + "-altar");
+            torchHeatRegion = atlas.find(name + "-altar-heat");
         }
     }
 

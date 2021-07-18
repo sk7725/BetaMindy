@@ -165,7 +165,7 @@ public class Claw extends Block {
             if(tile.build.block.size <= maxBlockSize && tile.build.canPickup() && tile.team() == team && !(tile.block() instanceof Claw)){
                 Building build = tile.build;
                 build.pickedUp();
-                tile.remove();
+                build.tile.remove();
                 heldBuild = new BuildPayload(build);
                 grabSound.at(x, y);
                 grabEffect.at(x, y, 8f);
@@ -399,6 +399,24 @@ public class Claw extends Block {
             }
 
             super.control(type, p1, p2, p3, p4);
+        }
+
+        @Override
+        public double sense(LAccess sensor){
+            switch(sensor){
+                case shootX: return targetV.x + x;
+                case shootY: return targetV.y + y;
+                case shooting: return heldBuild != null ? 2 : (unit != null ? 1 : 0);
+                default: return super.sense(sensor);
+            }
+        }
+
+        @Override
+        public Object senseObject(LAccess sensor){
+            switch(sensor){
+                case payloadType: return heldBuild != null ? heldBuild.block() : unit;
+                default: return super.senseObject(sensor);
+            }
         }
 
         @Override
