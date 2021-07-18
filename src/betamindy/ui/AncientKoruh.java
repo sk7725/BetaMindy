@@ -17,6 +17,11 @@ public class AncientKoruh {
                 icons[j * s.length + i] = s[i][j];
             }
         }
+
+        //prevent crashing if the region is missing because i am never gonna push it yet :P
+        for(int i = 0; i < 30; i++){
+            if(icons[i] == null) icons[i] = atlas.white();
+        }
     }
 
     public static TextureRegion eng(char c){
