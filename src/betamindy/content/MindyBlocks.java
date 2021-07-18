@@ -827,7 +827,6 @@ public class MindyBlocks implements ContentList {
             health = 200;
             damageSelf = 12f;
             status = StatusEffects.burning;
-            lightningChance = 0.05f;
             requirements(Category.defense, with(Items.lead, 6, Items.pyratite, 3));
         }};
 
@@ -837,14 +836,14 @@ public class MindyBlocks implements ContentList {
             damageSelf = 20f;
             breakSound = MindySounds.freeze;
             status = MindyStatusEffects.icy;
-            requirements(Category.defense, with(Items.titanium, 3, Items.phaseFabric, 3, MindyItems.cryonite, 4));
+            requirements(Category.defense, with(MindyItems.cryonite, 4, MindyItems.scalar, 1));
         }};
 
         spikeClear = new Spike("spike-clear"){{
             health = 400;
             damage = 75f;
             celeste = true;
-            requirements(Category.defense, with(Items.metaglass, 3, MindyItems.vector, 3));
+            requirements(Category.defense, with(Items.metaglass, 4, MindyItems.vector, 1));
         }};
 
         spotlight = new FloodLight("spotlight"){{
