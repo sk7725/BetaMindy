@@ -18,7 +18,7 @@ import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 
 public class Shop extends Block{
-    public int defaultAnucoins = 0;
+    public int defaultAnucoins = 500;
     public TextureRegion anucoin;
 
     OrderedMap<Item, Float> itemScores;
@@ -79,6 +79,10 @@ public class Shop extends Block{
         public int anucoins = defaultAnucoins;
         public Cell<Table> anucoinTable;
 
+        public void itemButton(Cell<ScrollPane> pane, Item item){
+            int price = Math.max(Math.round(itemScores.get(item)), 15);
+        }
+
         @Override
         public boolean shouldHideConfigure(Player player) {
             return true;
@@ -120,8 +124,6 @@ public class Shop extends Block{
                             if (itemScores.containsKey(item)) {
                                 e.button(t -> {
                                     t.left();
-                                    int price = Math.max(Math.round(itemScores.get(item)), 15);
-
                                     t.image(new TextureRegion(item.icon(Cicon.medium))).size(40).padRight(10f);
 
                                     t.table(tt -> {
