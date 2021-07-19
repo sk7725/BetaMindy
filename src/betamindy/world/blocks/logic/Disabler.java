@@ -11,6 +11,7 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.world.*;
 
+import static mindustry.Vars.renderer;
 import static mindustry.Vars.tilesize;
 
 public class Disabler extends Block {
@@ -53,8 +54,10 @@ public class Disabler extends Block {
             if(heat < 0.001f) return;
             Draw.z(Layer.buildBeam);
             Draw.color(zoneColor);
+            if(!renderer.animateShields) Draw.blend(Blending.additive);
             Fill.square(x, y, 5f * heat);
             Draw.color();
+            Draw.blend();
         }
     }
 }

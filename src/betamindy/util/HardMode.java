@@ -247,7 +247,7 @@ public class HardMode {
     }
 
     public Color getRandomColor(Color tmp, long seed){
-        int l = Math.min(lc1.length, portal == null ? level() : portal.level / rankLevel);
+        int l = Math.min(lc1.length - 1, (portal == null ? level() : portal.level) / rankLevel);
         return tmp.set(lc1[l]).lerp(lc2[l], Mathf.randomSeed(seed));
     }
 

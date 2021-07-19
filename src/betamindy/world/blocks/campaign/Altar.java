@@ -45,6 +45,7 @@ public class Altar extends Block {
         rotate = false;
         size = 3;
         expanded = true;
+        configurable = true;
     }
 
     @Override
