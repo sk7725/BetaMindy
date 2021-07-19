@@ -53,6 +53,7 @@ public class Campfire extends Block {
         sync = true;
         solid = true;
         hasItems = true;
+        noUpdateDisabled = true;
 
         flags = EnumSet.of(BlockFlag.turret);
     }
@@ -92,6 +93,15 @@ public class Campfire extends Block {
             if(Mathf.chanceDelta(smokeChance)) smokeEffect.at(x + Mathf.range(size / 3f), y + Mathf.range(size / 3f));
 
             if(!headless) control.sound.loop(Sounds.fire, Tmp.v1.set(x, y), 0.1f);
+        }
+
+        public void torchEffects(){
+            if(Mathf.chanceDelta(effectChance)){
+                fireEffect.at(x + Mathf.range(size / 3f), y + Mathf.range(size / 3f), 0f, Color.white, null);
+            }
+            if(Mathf.chanceDelta(smokeChance)) smokeEffect.at(x + Mathf.range(size / 3f), y + Mathf.range(size / 3f));
+
+            if(!headless) control.sound.loop(Sounds.fire, this, 0.1f);
         }
 
         public void fire(float x, float y, float r, float vel){

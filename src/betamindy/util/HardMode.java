@@ -241,6 +241,11 @@ public class HardMode {
         }
     }
 
+    public Color color(){
+        if(portal != null) return portal.color();
+        return lc1[Math.min(level() / rankLevel, lc1.length - 1)];
+    }
+
     public Color getRandomColor(Color tmp, long seed){
         int l = Math.min(lc1.length, portal == null ? level() : portal.level / rankLevel);
         return tmp.set(lc1[l]).lerp(lc2[l], Mathf.randomSeed(seed));

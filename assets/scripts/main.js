@@ -45,6 +45,7 @@ if(Version.number > 6 && !Vars.headless){
         animn = animbois.length;
         try{
             Vars.ui.settings.graphics.sliderPref("animlevel", 2, 0, 3, i => Core.bundle.get("slider.level." + i, "" + i));
+            Core.settings.put("uiscalechanged", false);
         }
         catch(ignore){}
     });
@@ -55,7 +56,7 @@ if(Version.number > 6 && !Vars.headless){
             let l = Core.settings.getInt("animlevel", 2);
             if(l <= 0) return;
             for(let i = 0; i < animn; i++){
-                if(animbois[i].animIcon == null) break;
+                if(animbois[i].animIcon == null) continue;
                 animbois[i].fullIcon = animbois[i].animIcon;
                 if(l >= 2) animbois[i].uiIcon = animbois[i].animIcon;
             }

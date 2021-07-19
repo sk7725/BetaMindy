@@ -29,6 +29,7 @@ import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 
+import static betamindy.BetaMindy.hardmode;
 import static mindustry.Vars.renderer;
 
 public class Drawm {
@@ -205,6 +206,33 @@ public class Drawm {
         Draw.blend();
 
         if(renderer.lights.enabled()) Drawf.light(x, y, radius * 9f, color2, 1f);
+    }
+
+    public static void altarOrb(float x, float y, float radius, float fin){
+        altarOrb(x, y, radius, fin, 45f, hardmode.getRandomColor(Tmp.c1, (long) Time.globalTime), 4);
+    }
+
+    public static void altarOrb(float x, float y, float radius, float f1, float interval, Color c, int spikes){
+        f1 *= Mathf.sin(Time.globalTime, 20f, 0.15f) + 0.8f;
+        float f2 = 1f - (Time.globalTime % interval / interval);
+        Draw.z(Layer.effect - 0.01f);
+        Draw.color(c);
+        Fill.circle(x, y, 1.3f * radius * f1);
+        Draw.z(Layer.effect);
+        Draw.color();
+        Fill.circle(x, y, radius * f1);
+        for(int j = 0; j < spikes; j++){
+            float r = Mathf.randomSeed(j + (int)(Time.globalTime / interval)) * 360f;
+            Draw.z(Layer.effect - 0.01f);
+            Draw.color(c);
+            Tmp.v1.trns(r, f1 * 1.1f * radius).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, 6f * f1, 1.8f * radius * f1 * f2, r);
+
+            Draw.z(Layer.effect);
+            Draw.color();
+            Tmp.v1.trns(r, f1 * 0.8f * radius).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, 3f * f1, 1.5f * radius * f1 * f2, r);
+        }
     }
 
     /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */

@@ -14,6 +14,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
@@ -62,6 +63,7 @@ public class Altar extends Block {
     public class AltarBuild extends Building{
         public int phase = 0;
         public int amount;
+        public boolean charged = false;
 
         public float[] heatTorch = new float[torches];
         public Item[] sacrifice = new Item[torches];
@@ -131,55 +133,71 @@ public class Altar extends Block {
             amount /= 4;
             heat = 0f;
             for(int i = 0; i < torches; i++){
-                sacrifice[i] = FireColor.items.get(Mathf.random(0, Math.min(FireColor.items.size - 1, 6 + rank * 2)));
+                sacrifice[i] = charged ? Items.coal : FireColor.items.get(Mathf.random(0, Math.min(FireColor.items.size - 1, 6 + rank * 2)));
                 made[i] = 0;
                 Tile torch = torch(i);
-                if(torch != null){
+                if(torch != null && !charged){
                     Fx.healWaveMend.at(torch.drawx(), torch.drawy(), 15f, FireColor.from(sacrifice[i]));
                 }
             }
-            MindySounds.easterEgg2.at(this, 0.85f);
+            MindySounds.easterEgg2.at(this, 0.75f);
         }
 
-        public void consumeTorch(Tile torch, int i){
-            if(made[i] >= amount || torch.build == null || torch.build.items.empty()) return;
-            if(torch.build.items.first() != sacrifice[i]) return;
+        /** Returns true if all sacrifice has been met. */
+        public boolean consumeTorch(Tile torch, int i){
+            if(made[i] >= amount) return true;
+            if(torch.build.items.empty()) return false;
+            if(torch.build.items.first() != sacrifice[i]) return false;
             int a = Math.min(torch.build.items.get(sacrifice[i]), amount - made[i] + 3);
             if(a > 3){ //leave some for vanity
                 torch.build.items.remove(sacrifice[i], a - 3);
                 made[i] += a-3;
             }
+            return false;
         }
 
         public void phase1(){
-            heatTorchSum = 1f;
+            heatTorchSum = 0f;
             connections = 0;
-            heat = 0f;
+            int dones = 0;
             for(int i = 0; i < torches; i++){
                 Tile t = torch(i);
                 if(t != null){
                     connections++;
-                    consumeTorch(t, i);
-                    heat += made[i] / (float)amount;
+                    boolean done = charged || consumeTorch(t, i);
+                    t.build.control(LAccess.enabled, done ? 0 : 1, 0, 0, 0);
+                    if(done){
+                        ((CampfireBuild)t.build).torchEffects();
+                        dones++;
+                        heatTorchSum += 1f;
+                    }
+                    else heatTorchSum += made[i] / (float)amount;
                 }
                 else{
                     phase = 0;
+                    MindyFx.altarOrbDespawn.at(x, y, heat);
                     heat = 1f;
                     return;
                 }
             }
-            heat /= (float) torches;
+            heatTorchSum /= (float)torches;
+
+            heat = Mathf.lerpDelta(heat, charged ? 1f : heatTorchSum, 0.03f);
+            if(dones >= torches && heat > 0.999f){
+                if(!charged) MindyFx.portalShockwave.at(x, y, hardmode.color());
+                charged = true;
+            }
 
             if(lastSpawnDir < 0f){
                 Tile t = spawner.getFirstSpawn();
                 if(t == null) lastSpawnDir = Mathf.random(360f);
                 else lastSpawnDir = angleTo(t.worldx(), t.worldy());
             }
-            if(Mathf.chance(0.3f)){
+            if(Mathf.chance(0.4f)){
                 Tmp.v1.trns(Mathf.random(360f), size * tilesize / 1.414f).clamp(-size * tilesize /2f, -size * tilesize / 2f, size * tilesize /2f, size * tilesize / 2f);
                 updateEffect.at(Tmp.v1.x + x, Tmp.v1.y + y, lastSpawnDir);
             }
-            if(Mathf.chance(0.2f)){
+            if(Mathf.chance(0.15f)){
                 Tmp.v1.trns(Mathf.random(360f), 36f + Mathf.random() * 6f);
                 updateEffect2.at(Tmp.v1.x + x, Tmp.v1.y + y, lastSpawnDir);
             }
@@ -201,11 +219,11 @@ public class Altar extends Block {
                         Draw.color();
                         Draw.rect(camp.torchRegion, torch.drawx(), torch.drawy());
                         if(phase >= 1){
-                            Draw.z(Layer.effect - 0.001f);
+                            Draw.z(Layer.bullet);
                             Draw.color(c1, c2, Mathf.absin(Time.time + i * 20f, 11f, 1f));
                             Draw.alpha(made[i] / (float)amount);
                             Draw.rect(camp.torchHeatRegion, torch.drawx(), torch.drawy());
-                            FireColor.fset(sacrifice[i], Mathf.absin(15f, 1f));
+                            FireColor.fset(sacrifice[i], Mathf.absin(15f, 0.5f));
                             float r = Mathf.sin(17f, 2f);
                             Drawm.spark(torch.drawx(), torch.drawy(), 6f - Math.abs(r), 2f, r * 15f);
                         }
@@ -227,7 +245,7 @@ public class Altar extends Block {
                 stroke(1);
                 drawingCircle(Tmp.v1.x, Tmp.v1.y, 12, f, 1f);
                 stroke(0.5f * heatTorch[i]);
-                square(Tmp.v1.x, Tmp.v1.y, 12, Mathf.sin(Time.time / 10 - i)*69 + Mathf.cos(Time.time / 20 + i)*42);
+                square(Tmp.v1.x, Tmp.v1.y, 12, Time.time * -1f);
             }
             if(heatTorchSum > 0.01f || phase > 0){
                 float f1 = 1f;
@@ -263,7 +281,7 @@ public class Altar extends Block {
                     for(int i = off; i < n + off; i++){
                         final Color c = i - off < n / 2 ? c1 : c2;
                         if((phase == 1 && Mathf.randomSeed(i + id + m) < heat) || phase == 2){
-                            Draw.z(Layer.effect);
+                            Draw.z(Layer.bullet);
                             Draw.color(c, Color.white, (i - off) % ((float)n/2) / (float)(n/2));
                         }
                         else{
@@ -278,13 +296,17 @@ public class Altar extends Block {
             }
 
             if(phase >= 1){
-                Draw.z(Layer.effect);
+                Draw.z(Layer.bullet);
+                Draw.blend();
                 for(int j = 0; j < 3; j++){
                     float f1 = phase == 1 ? Mathf.clamp(heat * 3f - j) : 1f;
                     Draw.color(c1, c2, Mathf.absin(Time.time + j * 15f, 11f, 1f));
                     Draw.alpha(f1);
                     Draw.rect(heatRegions[j], x, y);
                 }
+
+                float f1 = phase == 1 ? heat : 1f;
+                Drawm.altarOrb(x, y, 10f, f1);
             }
 
             Draw.reset();

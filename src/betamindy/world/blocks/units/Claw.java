@@ -211,8 +211,7 @@ public class Claw extends Block {
             }
             //drop it on the floor le deja vu lu mu tu su ku
             if(on != null && Build.validPlace(tile.block, tile.team, tx, ty, tile.rotation, false)){
-                int rot = (int)((rotation + 45f) / 90f) % 4;
-                payload.place(on, rot);
+                payload.place(on, tile.rotation);
 
                 if(blockUnit != null && blockUnit.isPlayer()){
                     payload.build.lastAccessed = blockUnit.getControllerName();

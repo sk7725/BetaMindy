@@ -1,7 +1,7 @@
 package betamindy.util;
 
 import arc.struct.*;
-import jdk.incubator.jpackage.internal.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.type.*;

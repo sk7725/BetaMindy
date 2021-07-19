@@ -643,5 +643,10 @@ public class MindyFx {
         color(BetaMindy.hardmode.getRandomColor(Tmp.c2, e.id), Color.white, e.fin());
         Tmp.v1.trns(e.rotation + Mathf.sin(e.fin() * 10f), e.fin() * 16f).add(e.x, e.y);
         Fill.square(Tmp.v1.x, Tmp.v1.y, 0.5f * e.fout(), 45f);
+    }),
+
+    altarOrbDespawn = new Effect(60f, e -> {
+        float f = e.fout() * e.rotation;
+        Drawm.altarOrb(e.x, e.y, 10f, f);
     });
 }

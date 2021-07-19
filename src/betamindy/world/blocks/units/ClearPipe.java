@@ -209,7 +209,7 @@ public class ClearPipe extends Block {
         }
 
         public void acceptUnit(Unit unit, int dir){
-            if(!unit.isAdded()) return;
+            if(!unit.isAdded() || unit.team != team) return;
 
             if(unit.isPlayer()){
                 if(unit() != null && unit().isPlayer() && unit().getPlayer() != unit.getPlayer()){
