@@ -78,7 +78,7 @@ public class Shop extends Block{
 
     public class ShopBuild extends Building{
         public int anucoins = defaultAnucoins;
-        public Cell<String> anucoinString;
+        public Cell<?> anucoinString;
         
         public void updateAnucoins(){
             anucoinString.setElement(String.valueOf(anucoins));
