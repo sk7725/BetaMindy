@@ -78,10 +78,10 @@ public class Shop extends Block{
 
     public class ShopBuild extends Building{
         public int anucoins = defaultAnucoins;
-        public Cell<?> anucoinString;
+        public Cell<Label> anucoinString;
         
         public void updateAnucoins(){
-            anucoinString.setElement(String.valueOf(anucoins));
+            anucoinString.setElement(new Label(String.valueOf(anucoins)));
         }
 
         public void itemButton(Table pane, Item item){
@@ -101,6 +101,7 @@ public class Shop extends Block{
             }, () -> {
                 if(anucoins >= price){
                     anucoins -= price;
+                    updateAnucoins();
                 }
             }).left().growX();
             pane.row();
