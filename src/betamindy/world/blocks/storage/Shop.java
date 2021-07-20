@@ -195,5 +195,17 @@ public class Shop extends Block{
             shopDialog.addCloseListener();
             shopDialog.show();
         }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.i(anucoins);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            anucoins = read.i();
+        }
     }
 }
