@@ -80,7 +80,7 @@ public class Shop extends Block{
         public int anucoins = defaultAnucoins;
         public Cell<Table> anucoinTable;
 
-        public void itemButton(Cell<ScrollPane> pane, Item item){
+        public void itemButton(ScrollPane pane, Item item){
             int price = Math.max(Math.round(itemScores.get(item)), 15);
             
             pane.button(t -> {
