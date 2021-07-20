@@ -109,12 +109,6 @@ public class Shop extends Block{
         }
 
         @Override
-        public void init(Tile tile, Team team, boolean shouldAdd, int rotation){
-            super.init(tile, team, shoulAdd, rotation);
-            if(anucoins == null) anucoins = defaultAnucoins;
-        }
-
-        @Override
         public boolean shouldHideConfigure(Player player) {
             return true;
         }
@@ -125,6 +119,8 @@ public class Shop extends Block{
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
+            
+            if(anucoins == null) anucoins = defaultAnucoins;
 
             String airColor = colorToHex(StatusEffects.shocked.color);
             String groundColor = colorToHex(StatusEffects.melting.color);
