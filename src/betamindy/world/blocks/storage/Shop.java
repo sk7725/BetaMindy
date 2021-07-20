@@ -81,6 +81,24 @@ public class Shop extends Block{
 
         public void itemButton(Cell<ScrollPane> pane, Item item){
             int price = Math.max(Math.round(itemScores.get(item)), 15);
+            
+            pane.button(t -> {
+                t.left();
+                t.image(new TextureRegion(item.icon(Cicon.medium))).size(40).padRight(10f);
+
+                t.table(tt -> {
+                    tt.left();
+                    String color = colorToHex(item.color);
+                    tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x20[]").growX().left();
+                    tt.row();
+                    tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
+                }).growX();
+            }, () -> {
+                if(anucoins >= price){
+                    anucoins -= price;
+                }
+            }).left().growX();
+            pane.row();
         }
 
         @Override
@@ -122,19 +140,7 @@ public class Shop extends Block{
                         for (Item item : Vars.content.items()) {
                             if(item == MindyItems.bittrium) continue;
                             if (itemScores.containsKey(item)) {
-                                e.button(t -> {
-                                    t.left();
-                                    t.image(new TextureRegion(item.icon(Cicon.medium))).size(40).padRight(10f);
-
-                                    t.table(tt -> {
-                                        tt.left();
-                                        String color = colorToHex(item.color);
-                                        tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x20[]").growX().left();
-                                        tt.row();
-                                        tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
-                                    }).growX();
-                                }, () -> {}).left().growX();
-                                e.row();
+                                itemButton(e, item);
                             }
                         }
                     }).center().width(Core.graphics.getWidth() / 4f);
