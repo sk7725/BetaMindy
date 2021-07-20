@@ -78,7 +78,7 @@ public class Shop extends Block{
     }
 
     public class ShopBuild extends Building{
-        public int anucoins = defaultAnucoins;
+        public int anucoins;
         public Cell<Label> anucoinString;
         
         public void updateAnucoins(){
@@ -106,6 +106,12 @@ public class Shop extends Block{
                 }
             }).left().growX();
             pane.row();
+        }
+
+        @Override
+        public void init(Tile tile, Team team, boolean shouldAdd, int rotation){
+            super.init(tile, team, shoulAdd, rotation);
+            if(anucoins == null) anucoins = defaultAnucoins;
         }
 
         @Override
