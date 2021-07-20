@@ -80,6 +80,7 @@ public class Shop extends Block{
     public class ShopBuild extends Building{
         public int anucoins;
         public Cell<Label> anucoinString;
+        public boolean loadedIn = false;
         
         public void updateAnucoins(){
             anucoinString.setElement(new Label(String.valueOf(anucoins)));
@@ -120,7 +121,7 @@ public class Shop extends Block{
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
             
-            if(anucoins == null) anucoins = defaultAnucoins;
+            if(!loadedIn) anucoins = defaultAnucoins;
 
             String airColor = colorToHex(StatusEffects.shocked.color);
             String groundColor = colorToHex(StatusEffects.melting.color);
@@ -209,6 +210,7 @@ public class Shop extends Block{
         public void read(Reads read, byte revision){
             super.read(read, revision);
             anucoins = read.i();
+            loadedIn = true;
         }
     }
 }
