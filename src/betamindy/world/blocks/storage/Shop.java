@@ -78,7 +78,11 @@ public class Shop extends Block{
 
     public class ShopBuild extends Building{
         public int anucoins = defaultAnucoins;
-        public Cell<Table> anucoinTable;
+        public Cell<String> anucoinString;
+        
+        public void updateAnucoins(){
+            anucoinString.setElement(String.valueOf(anucoins));
+        }
 
         public void itemButton(Table pane, Item item){
             int price = Math.max(Math.round(itemScores.get(item)), 15);
@@ -123,10 +127,10 @@ public class Shop extends Block{
 
             shopDialog.row();
 
-            anucoinTable = shopDialog.table(t -> {
+            shopDialog.table(t -> {
                 t.center();
                 t.image(anucoin).size(30f).center().padRight(10f);
-                t.add(String.valueOf(anucoins)).padRight(10f).center();
+                anucoinString = t.add(String.valueOf(anucoins)).padRight(10f).center();
             });
 
             shopDialog.row();
