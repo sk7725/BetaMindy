@@ -647,6 +647,6 @@ public class MindyFx {
 
     altarOrbDespawn = new Effect(60f, e -> {
         float f = e.fout() * e.rotation;
-        Drawm.altarOrb(e.x, e.y, 10f, f);
+        Drawm.altarOrb(e.x, e.y, 7.5f, f);
     });
 }

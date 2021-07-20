@@ -12,5 +12,6 @@ public class Pal2 {
     ice = Color.valueOf("b1f6fa"),
     source = Color.valueOf("54ff73"),
     placeLight = Color.valueOf("af91ff"),
-    exp = Color.valueOf("84ff00");
+    exp = Color.valueOf("84ff00"),
+    portal = Color.valueOf("ef8aff");
 }

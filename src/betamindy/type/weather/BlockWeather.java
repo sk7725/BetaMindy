@@ -2,12 +2,9 @@ package betamindy.type.weather;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
-import arc.util.Log;
-import arc.util.Nullable;
+import arc.math.*;
 import arc.util.Time;
 import arc.util.Tmp;
 import betamindy.*;
@@ -30,6 +27,9 @@ import mindustry.world.blocks.storage.*;
 import static mindustry.Vars.*;
 
 public class BlockWeather extends ParticleWeather {
+    //rand has changed its modifier in 7.0, so we use a different rand to avoid IncompatibleClassChangeError
+    //todo refactor name to "rand" & remove in v7
+    public static final Rand randw = new Rand();
     public Block block = Blocks.router;
     public Team blockTeam = Team.derelict;
     public Effect blockEffect = Fx.explosion, blockFallingEffect = MindyFx.blockFalling;
@@ -73,13 +73,13 @@ public class BlockWeather extends ParticleWeather {
         int total = (int)(Tmp.r1.area() / density * state.intensity);
 
         for(int i = 0; i < total; i++){
-            float scl = rand.random(0.5f, 1f);
-            float scl2 = rand.random(0.5f, 1f);
-            float size = rand.random(sizeMin, sizeMax);
-            float x = (rand.random(0f, world.unitWidth()) + Time.time * windx * scl2);
-            float y = (rand.random(0f, world.unitHeight()) + Time.time * windy * scl);
+            float scl = randw.random(0.5f, 1f);
+            float scl2 = randw.random(0.5f, 1f);
+            float size = randw.random(sizeMin, sizeMax);
+            float x = (randw.random(0f, world.unitWidth()) + Time.time * windx * scl2);
+            float y = (randw.random(0f, world.unitHeight()) + Time.time * windy * scl);
 
-            x += Mathf.sin(y, rand.random(sinSclMin, sinSclMax), rand.random(sinMagMin, sinMagMax));
+            x += Mathf.sin(y, randw.random(sinSclMin, sinSclMax), randw.random(sinMagMin, sinMagMax));
 
             x -= Tmp.r1.x;
             y -= Tmp.r1.y;
@@ -135,21 +135,21 @@ public class BlockWeather extends ParticleWeather {
                               float windx, float windy,
                               float minAlpha, float maxAlpha,
                               float sinSclMin, float sinSclMax, float sinMagMin, float sinMagMax){
-        rand.setSeed(0);
+        randw.setSeed(0);
         Tmp.r1.setCentered(Core.camera.position.x, Core.camera.position.y, Core.graphics.getWidth() / renderer.minScale(), Core.graphics.getHeight() / renderer.minScale());
         Tmp.r1.grow(sizeMax * 1.5f);
         Core.camera.bounds(Tmp.r2);
         int total = (int)(Tmp.r1.area() / density * intensity);
         Draw.color(color, opacity);
         for(int i = 0; i < total; i++){
-            float scl = rand.random(0.5f, 1f);
-            float scl2 = rand.random(0.5f, 1f);
-            float size = rand.random(sizeMin, sizeMax);
-            float x = (rand.random(0f, world.unitWidth()) + Time.time * windx * scl2);
-            float y = (rand.random(0f, world.unitHeight()) + Time.time * windy * scl);
-            float alpha = rand.random(minAlpha, maxAlpha);
+            float scl = randw.random(0.5f, 1f);
+            float scl2 = randw.random(0.5f, 1f);
+            float size = randw.random(sizeMin, sizeMax);
+            float x = (randw.random(0f, world.unitWidth()) + Time.time * windx * scl2);
+            float y = (randw.random(0f, world.unitHeight()) + Time.time * windy * scl);
+            float alpha = randw.random(minAlpha, maxAlpha);
 
-            x += Mathf.sin(y, rand.random(sinSclMin, sinSclMax), rand.random(sinMagMin, sinMagMax));
+            x += Mathf.sin(y, randw.random(sinSclMin, sinSclMax), randw.random(sinMagMin, sinMagMax));
 
             x -= Tmp.r1.x;
             y -= Tmp.r1.y;

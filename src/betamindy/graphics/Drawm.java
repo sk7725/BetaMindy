@@ -17,7 +17,6 @@ package betamindy.graphics;
 import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.graphics.gl.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.ui.*;
@@ -209,7 +208,7 @@ public class Drawm {
     }
 
     public static void altarOrb(float x, float y, float radius, float fin){
-        altarOrb(x, y, radius, fin, 45f, hardmode.getRandomColor(Tmp.c1, (long) Time.globalTime), 4);
+        altarOrb(x, y, radius, fin, 45f, hardmode.getRandomColor(Tmp.c1, (int)(Time.globalTime / 45)), 4);
     }
 
     public static void altarOrb(float x, float y, float radius, float f1, float interval, Color c, int spikes){
@@ -226,7 +225,7 @@ public class Drawm {
             Draw.z(Layer.effect - 0.01f);
             Draw.color(c);
             Tmp.v1.trns(r, f1 * 1.1f * radius).add(x, y);
-            Drawf.tri(Tmp.v1.x, Tmp.v1.y, 6f * f1, 1.8f * radius * f1 * f2, r);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, 6f * f1, 2.1f * radius * f1 * f2, r);
 
             Draw.z(Layer.effect);
             Draw.color();
@@ -280,7 +279,7 @@ public class Drawm {
         Draw.alpha(1f);
     }
 
-    /** Draws a sprite that should be lightwise correct. Provided sprite must be symmetrical. */
+    /** Draws a sprite that should be light-wise correct. Provided sprite must be symmetrical in shape. */
     public static void spinSprite(TextureRegion region, float x, float y, float r){
         r = Mathf.mod(r, 90f);
         Draw.rect(region, x, y, r);
@@ -288,7 +287,6 @@ public class Drawm {
         Draw.rect(region, x, y, r - 90f);
         Draw.alpha(1f);
     }
-    //PR to drills?
 
     /** Outlines a given textureRegion. Run in createIcons. */
     public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name){

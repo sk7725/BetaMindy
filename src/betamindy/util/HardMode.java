@@ -8,6 +8,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -38,7 +39,7 @@ public class HardMode {
     public @Nullable CoreBlock.CoreBuild core = null;
     public float coreDamage = 0f;
     public int experience = 0;
-    public Color[] lc1 = {Pal.sapBullet, Pal.lancerLaser, Color.coral, Pal2.exp, Color.cyan};
+    public Color[] lc1 = {Pal.sapBullet, Pal.lancerLaser, Color.coral, Pal.heal, Color.cyan};
     public Color[] lc2 = {Color.pink, Pal2.placeLight, Pal.accent, Pal2.zeta, Color.pink};
 
     private final static Color tmpc = new Color();
@@ -106,7 +107,7 @@ public class HardMode {
             portal.update();
         }
 
-        if(BetaMindy.uwu){
+        if(BetaMindy.uwu && Core.input.keyDown(KeyCode.shiftRight)){
             //I am running out of keys to bind to this thing help
             if(Core.input.keyTap(KeyCode.down)) stop(true);
             if(Core.input.keyTap(KeyCode.up)) start();
@@ -185,8 +186,6 @@ public class HardMode {
         openPortal(spawn.worldx(), spawn.worldy(), level);
         if(!headless){
             MindySounds.portalOpen.play();
-            ui.hudfrag.toggleHudText(true);
-            ui.hudfrag.setHudText("\n" + Core.bundle.get("ui.hardmode.hudIntro"));
             ui.hudfrag.showToast(new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")), Core.bundle.get("ui.hardmode.intro"));
             BetaMindy.musics.playUntil(0, () -> BetaMindy.hardmode.portal == null, 1, false, true);
         }
@@ -214,8 +213,6 @@ public class HardMode {
                         () -> {}
                 );
             });
-            ui.hudfrag.toggleHudText(false);
-            //ui.showOkText("$ui.hardmode.title", Core.bundle.format(win ? "ui.hardmode.clear" : "ui.hardmode.gameover", win ? portal.maxWave : portal.wave, portal.maxWave), () -> {});
         }
         Groups.bullet.each(b -> {
             if((b.owner instanceof Unit) && ((Unit) b.owner).team == state.rules.waveTeam) b.remove();
@@ -249,6 +246,24 @@ public class HardMode {
     public Color getRandomColor(Color tmp, long seed){
         int l = Math.min(lc1.length - 1, (portal == null ? level() : portal.level) / rankLevel);
         return tmp.set(lc1[l]).lerp(lc2[l], Mathf.randomSeed(seed));
+    }
+
+    public String barText(){
+        if(portal == null || portal.state == 1) return Core.bundle.get("ui.hardmode.hudIntro");
+        if(isBoss()) return Core.bundle.get("bar.boss");
+        return portal.waveStringDull();
+    }
+
+    public float barVal(){
+        if(portal == null) return 0f;
+        if(portal.state == 1) return portal.r / portal.radius;
+        if(portal.state == 2 || portal.wave == portal.maxWave) return 1f;
+        return portal.nextWave / (portal.nextWaveCap - 60f); //for aesthetics
+    }
+
+    public boolean isBoss(){
+        //TODO
+        return false;
     }
 
     //TODO: add Delete Hardmode Progress setting
@@ -327,7 +342,7 @@ public class HardMode {
         public int wave = 0, maxWave = 0;
 
         public int kills = 0, exp = 0;
-        public float nextWave = 0f;
+        public float nextWave = 0f, nextWaveCap = 1f;
 
         public Portal(int l, float x, float y, float r){
             level = l;
@@ -345,9 +360,11 @@ public class HardMode {
         public void runWave(Seq<SpawnGroup> spawns, int wave){
             if(net.client()) return;
 
-            if(level >= 5){
+            //lightning
+            if(lightningWave(wave)){
                 int n = (int)(Mathf.random() * Mathf.sqrt(level) * ((float)wave / maxWave) * 1.6f - 1f);
                 if(n > 16) n = 16;
+                else if(n <= 0) n = 1;
                 for(int i = 0; i < n; i++){
                     Time.run(Mathf.random(Math.min(Mathf.sqrt(level) * 60f, 300f)), () -> {
                         if(state == 2) return;
@@ -412,36 +429,36 @@ public class HardMode {
             }
             else{
                 if(state == 3){
-                    if(Vars.state.enemies <= 0){
+                    //during a wave
+                    if(nextWaveCap - nextWave > 180f && Vars.state.enemies <= 0){
+                        //wait for 3 seconds before checking if all units are dead
                         //you won lol
-                        wave++;
-                        if(!headless) ui.hudfrag.setHudText("\n" + waveString());
                         state = 0;
-                        if(wave > maxWave){
+                        if(wave >= maxWave){
                             stop(true);
                             state = 2;
                             return;
                         }
-                        nextWave = wave == maxWave ? 100f : (maxWave == wave - 1 ? 1000f + level * 55f : 500f + level * 35f);
-                        //TODO boss wave
+                        //todo rewards
                     }
-                    /*
-                    else{
-                        //attack the player itself
-                        //lightning
-                        if(level >= 5 && Mathf.chanceDelta((float)(level % rankLevel) / rankLevel * 0.005f + (level < 10 ? 0.01f : 0.005f) + Math.max(0.006f, (float)(level / rankLevel) * 0.0005f))) shootLightning();
-                    }*/
+                }
+
+                //waiting a wave
+                if(nextWave > 0f){
+                    if(Vars.state.enemies <= 0) nextWave -= Time.delta;
+                    else nextWave -= Time.delta * Mathf.clamp(level * 0.015f);
                 }
                 else{
-                    if(nextWave > 0f) nextWave -= Time.delta;
-                    else{
-                        //next wave
-                        if(wave <= maxWave){
-                            next();
-                            if(!headless) ui.hudfrag.setHudText("\n" + waveString());
-                        }
-                        state = 3;
+                    //next wave
+                    if(wave < maxWave){
+                        wave++;
+                        nextWave = (maxWave == wave - 1 ? 1000f + level * 55f : 500f + level * 35f);
+                        nextWaveCap = nextWave;
+                        //TODO boss wave
+                        next();
+                        if(!headless) BetaMindy.mui.hardfrag.nextWave(this);
                     }
+                    state = 3;
                 }
             }
 
@@ -453,6 +470,62 @@ public class HardMode {
                     if(renderer.bloom == null) heat = 11f;
                 }
             }
+        }
+
+        //lightning may overlap with other disasters
+        public boolean lightningWave(int wave){
+            if(level < 5 || wave <= 1 || wave == maxWave - 1 || wave % 5 == 0) return false;
+            switch(level / rankLevel){
+                case 0:
+                    return wave % 4 == 2;
+                case 1:
+                    return wave % 3 == 0;
+                case 2:
+                    return wave % 6 == 3;
+                case 3:
+                    return wave % 2 == 0;
+                case 4:
+                    return wave % 4 == 0;
+                default:
+                    return wave % 3 == 1;
+            }
+        }
+
+        //0: none 2: asteroid 3: firestorm 4: laser 5: bhol 6: hardmode units
+        public int disaster(int wave){
+            if(wave <= 1 || wave == maxWave - 1) return 0;
+            if(wave % 5 == 0) return 6;
+            if(level < 10) return 0;
+            switch(level / rankLevel){
+                case 1:
+                    //blu
+                    if(wave % 7 == 5) return 2;
+                    break;
+                case 2:
+                    //orange
+                    if(wave % 7 == 0) return 3;
+                    if(wave % 5 == 3) return 2;
+                    break;
+                case 3:
+                    //green
+                    if(wave % 7 == 6 || (level >= 35 && wave > 5 && wave % 5 == 4)) return 4;
+                    if(wave % 7 == 0) return 3;
+                    break;
+                case 4:
+                    //pink
+                    if(wave % 10 == 9) return 5;
+                    if(wave > 5 && wave % 5 == 4) return 4;
+                    if(wave % 7 == 5) return 2;
+                    break;
+                default:
+                    //pink
+                    if(wave % 11 == 9) return 5;
+                    if(wave % 4 == 3) return 4;
+                    if(wave % 7 == 3) return 2;
+                    if(wave % 5 == 4) return 3;
+                    break;
+            }
+            return 0;
         }
 
         public void shootLightning(){
@@ -529,8 +602,23 @@ public class HardMode {
             return Point2.pack((int)(x / tilesize), (int)(y / tilesize));
         }
 
+        public String waveStringDull(){
+            return "[accent]<[] " + Core.bundle.format("save.wave", wave + " / " + maxWave) + " [accent]>[]";
+        }
+
         public String waveString(){
             return "< [#" + color().toString() + "]" + Core.bundle.format("save.wave", wave + " / " + maxWave) + "[] >";
+        }
+
+        public void buildNext(Table table){
+            table.defaults().size(22f).padLeft(3f);
+            if(wave == maxWave) table.image(Core.atlas.find("betamindy-hardmode-portal-icon"));
+            else if(isBoss()) table.image(Core.atlas.find("betamindy-hardmode-boss-icon"));
+
+            if(lightningWave(wave + 1)) table.image(Core.atlas.find("betamindy-disaster1"));
+            int dis = disaster(wave + 1);
+            if(dis != 0) table.image(Core.atlas.find("betamindy-disaster" + dis));
+            //todo more
         }
     }
 }

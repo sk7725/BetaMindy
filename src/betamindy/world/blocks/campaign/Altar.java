@@ -3,6 +3,7 @@ package betamindy.world.blocks.campaign;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.content.*;
@@ -16,6 +17,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 
 import static arc.Core.atlas;
@@ -205,6 +207,13 @@ public class Altar extends Block {
         }
 
         @Override
+        public void buildConfiguration(Table table){
+            //Styles.techLabel
+            //Styles.accenti
+            
+        }
+
+        @Override
         public void draw(){
             super.draw();
             int rank = Math.min(hardmode.level() / HardMode.rankLevel, hardmode.lc1.length - 1);
@@ -307,7 +316,7 @@ public class Altar extends Block {
                 }
 
                 float f1 = phase == 1 ? heat : 1f;
-                Drawm.altarOrb(x, y, 10f, f1);
+                Drawm.altarOrb(x, y, 7.5f, f1);
             }
 
             Draw.reset();
