@@ -80,6 +80,7 @@ public class Shop extends Block{
     public class ShopBuild extends Building{
         public int anucoins = defaultAnucoins;
         public Cell<Label> anucoinString;
+        float buttonWidth = 210f;
         
         public void updateAnucoins(){
             anucoinString.setElement(new Label(String.valueOf(anucoins)));
@@ -192,11 +193,16 @@ public class Shop extends Block{
             });
             shopDialog.row();
             shopDialog.table(t -> {
-                float width = 210f;
-                if(Vars.mobile) width = 60f;
-                t.button("@back", Icon.left, shopDialog::hide).size(210f, 64f);
-                t.button(Core.bundle.get("ui.cart"), Icon.list, () -> {}).size(210f, 64f);
-                t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {}).size(210f, 64f);
+                if(Vars.mobile){
+                    buttonWidth = 64f;
+                    t.button(Icon.left, shopDialog::hide).size(buttonWidth, 64f);
+                    t.button(Icon.list, () -> {}).size(buttonWidth, 64f);
+                    t.button(Icon.add, () -> {}).size(buttonWidth, 64f);
+                } else {
+                    t.button("@back", Icon.left, shopDialog::hide).size(buttonWidth, 64f);
+                    t.button(Core.bundle.get("ui.cart"), Icon.list, () -> {}).size(buttonWidth, 64f);
+                    t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {}).size(buttonWidth, 64f);
+                }
             });
 
             shopDialog.addCloseListener();
