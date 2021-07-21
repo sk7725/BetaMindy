@@ -188,6 +188,8 @@ public class Shop extends Block{
             });
             shopDialog.row();
             shopDialog.table(t -> {
+                float width = 210f;
+                if(Vars.mobile) width = 60f;
                 t.button("@back", Icon.left, shopDialog::hide).size(210f, 64f);
                 t.button(Core.bundle.get("ui.cart"), Icon.list, () -> {}).size(210f, 64f);
                 t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {}).size(210f, 64f);
