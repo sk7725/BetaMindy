@@ -151,7 +151,7 @@ public class Shop extends Block{
                             }
                         }
                     }).center().width(Core.graphics.getWidth() * (Vars.mobile ? 0.8f : 0.25f));
-                }).padRight((Vars.mobile ? 0f : 60f);
+                }).padRight((Vars.mobile ? 0f : 60f));
                 if(!Vars.mobile){
                     tbl.table(tbl1 -> {
                        tbl1.center();
