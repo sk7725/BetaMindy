@@ -35,6 +35,7 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.omegaServer;
+import static betamindy.BetaMindy.uwu;
 import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
@@ -1004,7 +1005,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         altar = new Altar("altar"){{
-            requirements(Category.effect, with(Items.scrap, 100));
+            requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.hidden, with(Items.scrap, 100));
         }};
     }
 }
