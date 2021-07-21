@@ -81,6 +81,7 @@ public class Shop extends Block{
         public int anucoins = defaultAnucoins;
         public Cell<Label> anucoinString;
         float buttonWidth = 210f;
+        boolean mobileUI = false;
         
         public void updateAnucoins(){
             anucoinString.setElement(new Label(String.valueOf(anucoins)));
@@ -120,13 +121,14 @@ public class Shop extends Block{
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
-
+            
             String airColor = colorToHex(StatusEffects.shocked.color);
             String groundColor = colorToHex(StatusEffects.melting.color);
             String navalColor = colorToHex(StatusEffects.wet.color);
             
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
-            
+            mobileUI = width < 800;
+
             shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
             shopDialog.center();
 
@@ -188,7 +190,7 @@ public class Shop extends Block{
                                 e.row();
                             }
                         }
-                    }).center().width(width * (Vars.mobile ? 0.7f : 0.25f));
+                    }).center().width(width * (Vars.mobile ? 0.7f : 0.25f)) ;
                 });
             });
             shopDialog.row();
