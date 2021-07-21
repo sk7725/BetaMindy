@@ -2,8 +2,10 @@ package betamindy.ui;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.*;
+import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import betamindy.*;
@@ -19,24 +21,33 @@ import static betamindy.BetaMindy.hardmode;
 public class HardmodeFragment extends Fragment {
     private Table next;
     private SBar mainBar;
+    public static Drawable background;
 
     @Override
     public void build(Group parent){
         next = new Table();
         next.left();
         mainBar = new SBar(() -> hardmode.barText(), () -> hardmode.isBoss() ? Pal.health : hardmode.color(), () -> Mathf.clamp(hardmode.barVal())).exact(true).blink(Color.white);
+        background = nine("betamindy-kback2", 16, 0.5f);
         parent.fill(table -> {
             table.name = "hardmodebar";
             table.left();
             table.table(t -> {
-                t.background(Tex.inventory);
+                t.background(background);
                 t.top();
+                t.image().color(Pal.accent).pad(0f).height(3f).fillX();
+                t.row();
+                t.image().color(Pal.accentBack).pad(0f).padTop(-0.1f).height(3f).fillX();
+                t.row();
+
                 t.add("Invasion", Styles.techLabel).color(Pal2.portal).pad(4f);
                 t.row();
-                t.image().color(Pal.accent).pad(0f).size(225f, 3f).growX();
+
+                t.image().color(Pal.accent).pad(0f).height(3f).fillX();
                 t.row();
-                t.image().color(Pal.accentBack).pad(0f).padTop(-0.5f).size(225f, 3f).growX();
+                t.image().color(Pal.accentBack).pad(0f).padTop(-0.1f).height(3f).fillX();
                 t.row();
+
                 t.add(mainBar).size(220f, 45f).pad(4f);
                 t.row();
                 t.table(p -> {
@@ -46,7 +57,7 @@ public class HardmodeFragment extends Fragment {
                     p.add("@ui.next").size(50f, 26f);
                     p.add(next).growX().height(26f);
                 }).growX().height(27f);
-            }).size(230f ,128f).visible(() -> hardmode.portal != null).left();
+            }).size(240f ,132f).visible(() -> hardmode.portal != null).left();
         });
     }
 
@@ -60,5 +71,18 @@ public class HardmodeFragment extends Fragment {
     public void reset(){
         mainBar.reset(0f);
         next.clearChildren();
+    }
+
+    public Drawable nine(String name, int border, float scale){
+        Drawable out;
+
+        TextureAtlas.AtlasRegion region = Core.atlas.find(name);
+
+        NinePatch patch = new NinePatch(region, border, border, border, border);
+        int[] pads = region.pads;
+        if(pads != null) patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
+        out = new ScaledNinePatchDrawable(patch, scale);
+
+        return out;
     }
 }

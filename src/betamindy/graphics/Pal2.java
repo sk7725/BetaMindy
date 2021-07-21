@@ -13,5 +13,7 @@ public class Pal2 {
     source = Color.valueOf("54ff73"),
     placeLight = Color.valueOf("af91ff"),
     exp = Color.valueOf("84ff00"),
-    portal = Color.valueOf("ef8aff");
+    expBack = Color.valueOf("4d8f07"),
+    portal = Color.valueOf("ef8aff"),
+    portalBack = Color.valueOf("c744db");
 }

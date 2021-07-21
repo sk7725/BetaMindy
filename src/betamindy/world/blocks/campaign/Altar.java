@@ -1,13 +1,17 @@
 package betamindy.world.blocks.campaign;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
+import betamindy.ui.*;
 import betamindy.util.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.Campfire.*;
@@ -23,6 +27,7 @@ import mindustry.world.*;
 import static arc.Core.atlas;
 import static arc.graphics.g2d.Lines.*;
 import static betamindy.BetaMindy.hardmode;
+import static betamindy.BetaMindy.uwu;
 import static mindustry.Vars.spawner;
 import static mindustry.Vars.tilesize;
 
@@ -96,6 +101,11 @@ public class Altar extends Block {
                 break;
                 case 1: phase1();
             }
+        }
+
+        public boolean canStart(){
+            if(!uwu) return false;//todo not ready yet
+            return phase == 1 && charged && heat > 0.999f;
         }
 
         public void phase0(){
@@ -208,9 +218,60 @@ public class Altar extends Block {
 
         @Override
         public void buildConfiguration(Table table){
-            //Styles.techLabel
-            //Styles.accenti
-            
+            table.table(t -> {
+                if(HardmodeFragment.background != null) t.background(HardmodeFragment.background);
+                t.add("[#ef8aff]Portal[][white].OS[]", Styles.techLabel, 1.2f).pad(4f).padBottom(4f);
+                t.row();
+                t.image().color(Pal2.portal).growX().height(3f).padLeft(6f).padRight(6f);
+                t.row();
+                t.image().color(Pal2.portalBack).growX().height(3f).padLeft(6f).padRight(6f).padTop(-0.1f);
+                t.row();
+                Label lab = new Label(this::phaseText);
+                lab.setFontScale(0.8f);
+                t.add(lab).color(Pal2.portalBack).pad(4f).padTop(0f);
+                t.row();
+
+                t.image().color(Pal.gray).fillX().growX().height(4f);
+                t.row();
+                t.add("//TODO").height(60f); //todo
+                t.row();
+
+                t.table(lv -> {
+                    lv.label(() -> Core.bundle.format("ui.hardmode.lv", hardmode.level())).size(55f, 26f);
+                    lv.add(new SBar(this::expText, () -> Pal2.exp, hardmode::lvlf)).pad(2f).growX();
+                }).fillX().pad(2f);
+                t.row();
+                t.image().color(Pal.gray).fillX().growX().height(4f).padTop(2f).padBottom(2f);
+                t.row();
+
+                t.table(but -> {
+                    but.button("Start", new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")), Styles.transt, () -> {
+                        //todo
+                    }).height(33f).growX().disabled(b -> !canStart()).get().getLabel().setStyle(new Label.LabelStyle(Styles.techLabel));
+                    but.button(Icon.info, Styles.clearFulli, 27f, () -> {
+                        //todo
+                    }).size(33f);
+                }).fillX();
+            }).width(275f);
+        }
+
+        public String expText(){
+            int l = hardmode.level();
+            if(l >= HardMode.maxLevel) return Core.bundle.get("bar.altar.max");
+            float lc = hardmode.expCap(l - 1);
+            return Core.bundle.format("bar.altar.exp", hardmode.experience - lc, hardmode.expCap(l) - lc);
+        }
+
+        public String phaseText(){
+            if(phase == 0){
+                if(heat < 1f) return Core.bundle.format("altar.setup", (int)(heat * 100));
+                return Core.bundle.format("altar.0", (int)(heatTorchSum * 100));
+            }
+            if(phase == 1){
+                if(charged) return Core.bundle.get("altar.done");
+                return Core.bundle.format("altar.1", (int)(heat * 100));
+            }
+            return "...";
         }
 
         @Override

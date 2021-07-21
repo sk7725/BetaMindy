@@ -159,6 +159,7 @@ public class HardMode {
     }
 
     public float expCap(int l){
+        if(l < 0) return 0f;
         if(l > maxLevel) l = maxLevel;
         return (l + 1) * (l + 1) * (l + 1) * 25f;
     }
@@ -195,6 +196,7 @@ public class HardMode {
         if(portal == null) return;
         int current = level();
         float cap = expCap(current);
+        float bf = expCap(current - 1);
         if(win){
             experience += Math.min(portal.exp, cap + 1f);
         }
@@ -208,7 +210,7 @@ public class HardMode {
                         Core.bundle.format("stat.hardmode.waves", win ? lp.maxWave : lp.wave, lp.maxWave) + "\n" +
                         Core.bundle.format("stat.hardmode.kills", lp.kills) + "\n" +
                         Core.bundle.format("stat.hardmode.hardmodeKills", 0) + "\n" +
-                        Core.bundle.format("stat.hardmode.exp", experience, cap, win ? Math.min(lp.exp, cap + 1f) : 0) + "\n" +
+                        (current >= maxLevel ? "" : Core.bundle.format("stat.hardmode.exp", experience - bf, cap - bf, win ? Math.min(lp.exp, cap + 1f) : 0) + "\n") +
                         (experience >= cap ? Core.bundle.get("ui.hardmode.levelup") : ""),
                         () -> {}
                 );
@@ -259,6 +261,14 @@ public class HardMode {
         if(portal.state == 1) return portal.r / portal.radius;
         if(portal.state == 2 || portal.wave == portal.maxWave) return 1f;
         return portal.nextWave / (portal.nextWaveCap - 60f); //for aesthetics
+    }
+
+    public float lvlf(){
+        int lv = level();
+        if(lv >= maxLevel) return 1f;
+        float lb = expCap(lv - 1);
+        float lc = expCap(lv);
+        return (experience - lb) / (lc - lb);
     }
 
     public boolean isBoss(){

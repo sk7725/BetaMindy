@@ -135,11 +135,18 @@ public class Claw extends Block {
                 Tile tile = world.tileWorld(x, y);
                 if(tile == null || tile.build == null) return;
 
-                if(tile.build.getPayload() instanceof UnitPayload){
+                //prevent grabbing unit payloads from solid blocks, because it will fail if the unit is a ground one
+                if(!tile.solid() && (tile.build.getPayload() instanceof UnitPayload)){
                     UnitPayload up = (UnitPayload) tile.build.getPayload();
                     if(up.unit.hitSize <= maxSize){
-                        tile.build.takePayload().dump();
-                        unit = up.unit;
+                        Payload tp = tile.build.takePayload();
+                        if(tp == null) return;
+                        if(!(tp instanceof UnitPayload) || !tp.dump()){
+                            //put it back, put it back!
+                            tile.build.handlePayload(tile.build, tp);
+                            return;
+                        }
+                        unit = ((UnitPayload)tp).unit;
                         grabSound.at(x, y);
                         grabEffect.at(x, y, 8f);
                     }
