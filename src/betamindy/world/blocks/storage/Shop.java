@@ -150,41 +150,43 @@ public class Shop extends Block{
                                 itemButton(e, item);
                             }
                         }
-                    }).center().width(Core.graphics.getWidth() / 4f);
-                }).padRight(60f);
-                tbl.table(tbl1 -> {
-                    tbl1.center();
+                    }).center().width(Core.graphics.getWidth() * (Vars.mobile ? 0.8f : 0.25f));
+                }).padRight((Vars.mobile ? 0f : 60f);
+                if(!Vars.mobile){
+                    tbl.table(tbl1 -> {
+                       tbl1.center();
 
-                    tbl1.add(Core.bundle.get("ui.units"));
-                    tbl1.row();
+                       tbl1.add(Core.bundle.get("ui.units"));
+                       tbl1.row();
 
-                    tbl1.pane(e -> {
-                        for (UnitType unit : Vars.content.units()) {
-                            if (unitScores.containsKey(unit)) {
-                                e.button(t -> {
-                                    t.left();
-                                    int price = Math.max(Math.round(unitScores.get(unit)), 15);
+                       tbl1.pane(e -> {
+                            for (UnitType unit : Vars.content.units()) {
+                                if (unitScores.containsKey(unit)) {
+                                    e.button(t -> {
+                                        t.left();
+                                        int price = Math.max(Math.round(unitScores.get(unit)), 15);
 
-                                    t.image(new TextureRegion(unit.icon(Cicon.medium))).size(40).padRight(10f);
+                                        t.image(new TextureRegion(unit.icon(Cicon.medium))).size(40).padRight(10f);
 
-                                    t.table(tt -> {
-                                        int type = unitTypeMap.get(unit);
-                                        tt.left();
+                                        t.table(tt -> {
+                                            int type = unitTypeMap.get(unit);
+                                            tt.left();
 
-                                        tt.add(unit.localizedName).growX().left();
-                                        tt.row();
+                                            tt.add(unit.localizedName).growX().left();
+                                            tt.row();
 
-                                        tt.add("[accent]" + Core.bundle.get("ui.type") + "[]: " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
-                                        tt.row();
+                                            tt.add("[accent]" + Core.bundle.get("ui.type") + "[]: " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
+                                            tt.row();
 
-                                        tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
-                                    }).growX();
-                                }, () -> {}).left().growX();
-                                e.row();
+                                            tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
+                                        }).growX();
+                                    }, () -> {}).left().growX();
+                                    e.row();
+                                }
                             }
-                        }
-                    }).center().width(Core.graphics.getWidth() / 4f);
-                });
+                        }).center().width(Core.graphics.getWidth() / 4f);
+                    });
+                }
             });
             shopDialog.row();
             shopDialog.table(t -> {
