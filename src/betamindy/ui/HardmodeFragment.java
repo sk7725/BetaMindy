@@ -53,7 +53,7 @@ public class HardmodeFragment extends Fragment {
                 t.table(p -> {
                     p.left();
                     p.defaults().pad(0f).padLeft(4f).padRight(4f);
-                    p.label(() -> Core.bundle.format("ui.hardmode.lv", hardmode.level())).size(50f, 26f);
+                    p.label(() -> Core.bundle.format("ui.hardmode.lv", hardmode.level())).size(70f, 26f);
                     p.add("@ui.next").size(50f, 26f);
                     p.add(next).growX().height(26f);
                 }).growX().height(27f);

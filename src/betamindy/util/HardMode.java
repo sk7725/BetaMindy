@@ -268,7 +268,7 @@ public class HardMode {
         if(lv >= maxLevel) return 1f;
         float lb = expCap(lv - 1);
         float lc = expCap(lv);
-        return (experience - lb) / (lc - lb);
+        return ((float) experience - lb) / (lc - lb);
     }
 
     public boolean isBoss(){

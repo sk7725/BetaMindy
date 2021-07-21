@@ -105,6 +105,7 @@ public class Altar extends Block {
 
         public boolean canStart(){
             if(!uwu) return false;//todo not ready yet
+            if(hardmode.portal != null) return false;
             return phase == 1 && charged && heat > 0.999f;
         }
 
@@ -237,7 +238,7 @@ public class Altar extends Block {
                 t.row();
 
                 t.table(lv -> {
-                    lv.label(() -> Core.bundle.format("ui.hardmode.lv", hardmode.level())).size(55f, 26f);
+                    lv.label(() -> Core.bundle.format("ui.hardmode.lv", hardmode.level())).size(80f, 26f);
                     lv.add(new SBar(this::expText, () -> Pal2.exp, hardmode::lvlf)).pad(2f).growX();
                 }).fillX().pad(2f);
                 t.row();
@@ -245,7 +246,7 @@ public class Altar extends Block {
                 t.row();
 
                 t.table(but -> {
-                    but.button("Start", new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")), Styles.transt, () -> {
+                    but.button("Start", new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")).tint(Pal2.portal), Styles.transt, () -> {
                         //todo
                     }).height(33f).growX().disabled(b -> !canStart()).get().getLabel().setStyle(new Label.LabelStyle(Styles.techLabel));
                     but.button(Icon.info, Styles.clearFulli, 27f, () -> {
