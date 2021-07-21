@@ -123,7 +123,9 @@ public class Shop extends Block{
             String airColor = colorToHex(StatusEffects.shocked.color);
             String groundColor = colorToHex(StatusEffects.melting.color);
             String navalColor = colorToHex(StatusEffects.wet.color);
-
+            
+            float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
+            
             shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
             shopDialog.center();
 
@@ -150,8 +152,10 @@ public class Shop extends Block{
                                 itemButton(e, item);
                             }
                         }
-                    }).center().width((Core.graphics.getWidth() / 2f) * (Vars.mobile ? 0.7f : 0.5f));
+                    }).center().width(width * (Vars.mobile ? 0.7f : 0.25f));
                 }).padRight((Vars.mobile ? 0f : 60f));
+                
+                if(Vars.mobile) tbl.row();
                 tbl.table(tbl1 -> {
                     tbl1.center();
 
@@ -183,7 +187,7 @@ public class Shop extends Block{
                                 e.row();
                             }
                         }
-                    }).center().width((Core.graphics.getWidth() / 2f) * (Vars.mobile ? 0.7f : 0.5f));
+                    }).center().width(width * (Vars.mobile ? 0.7f : 0.25f));
                 });
             });
             shopDialog.row();
