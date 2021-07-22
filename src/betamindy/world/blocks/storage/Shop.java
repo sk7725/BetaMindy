@@ -130,7 +130,7 @@ public class Shop extends Block{
             
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
             float height = Math.max(Core.graphics.getWidth(), Core.graphics.getHeight());
-            mobileUI = width < 800;
+            mobileUI = Vars.mobile;
 
             shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
             shopDialog.center();
