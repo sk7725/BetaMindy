@@ -42,6 +42,9 @@ public class Crystal extends Block {
 
         breakSound = MindySounds.shatter;
         deconstructThreshold = 1f; //deconstructing it is a crime
+        rebuildable = false;
+        hasColor = true;
+        mapColor = item.color; //"do not set manually" h
     }
 
     @Override

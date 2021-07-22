@@ -135,18 +135,19 @@ public class Altar extends Block {
         public void updateTile(){
             if(team != Team.derelict) currentAltar = this;
             if(hardmode.portal != null){
+                phase = 3;
                 if(heat > 0.01f) heat -= delta() / 60f;
                 return; //do not do anything
             }
             switch(phase){
-                default: phase0();
-                break;
                 case 1: phase1();
                 break;
                 case 3:
                     //portal is over
                     heat = 0f;
                     phase = 0;
+                    break;
+                default: phase0();
             }
         }
 
@@ -163,9 +164,8 @@ public class Altar extends Block {
 
         public void startInvasion(){
             charged = false;
-            phase = 3;
-            heat = 1f;
             hardmode.start();
+            heat = 1f;
         }
 
         public void startBoss(int page){
@@ -363,6 +363,7 @@ public class Altar extends Block {
                 if(charged) return Core.bundle.get("altar.done");
                 return Core.bundle.format("altar.1", (int)(heat * 100));
             }
+            if(phase == 3) return Core.bundle.get("altar.3");
             return "...";
         }
 
@@ -551,6 +552,7 @@ public class Altar extends Block {
             this("boss" + rank, () -> hardmode.level() <= rank * 10 + 9, b -> false, AltarBuild::startBoss);//todo boolf
             isBoss = true;
             this.boss = boss;
+            label = () -> "[gray]Lv" + (rank * 10 + 9) + "[]";
         }
 
         public AltarGameMode setLabel(Prov<CharSequence> l){

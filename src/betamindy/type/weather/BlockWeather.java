@@ -72,6 +72,7 @@ public class BlockWeather extends ParticleWeather {
 
         int total = (int)(Tmp.r1.area() / density * state.intensity);
 
+        randw.setSeed((long) Time.time);
         for(int i = 0; i < total; i++){
             float scl = randw.random(0.5f, 1f);
             float scl2 = randw.random(0.5f, 1f);
@@ -129,18 +130,35 @@ public class BlockWeather extends ParticleWeather {
     }
 
     @Override
-    public void drawParticles(TextureRegion region, Color color,
+    public void drawOver(WeatherState state){
+
+        float windx, windy;
+        if(useWindVector){
+            float speed = baseSpeed * state.intensity;
+            windx = state.windVector.x * speed;
+            windy = state.windVector.y * speed;
+        }else{
+            windx = this.xspeed;
+            windy = this.yspeed;
+        }
+
+        if(drawParticles){
+            drawBlocks(region, color, sizeMin, sizeMax, density, state.intensity, state.opacity, windx, windy, minAlpha, maxAlpha, sinSclMin, sinSclMax, sinMagMin, sinMagMax);
+        }
+    }
+
+    public void drawBlocks(TextureRegion region, Color color,
                               float sizeMin, float sizeMax,
                               float density, float intensity, float opacity,
                               float windx, float windy,
                               float minAlpha, float maxAlpha,
                               float sinSclMin, float sinSclMax, float sinMagMin, float sinMagMax){
-        randw.setSeed(0);
         Tmp.r1.setCentered(Core.camera.position.x, Core.camera.position.y, Core.graphics.getWidth() / renderer.minScale(), Core.graphics.getHeight() / renderer.minScale());
         Tmp.r1.grow(sizeMax * 1.5f);
         Core.camera.bounds(Tmp.r2);
         int total = (int)(Tmp.r1.area() / density * intensity);
         Draw.color(color, opacity);
+        randw.setSeed(0);
         for(int i = 0; i < total; i++){
             float scl = randw.random(0.5f, 1f);
             float scl2 = randw.random(0.5f, 1f);
@@ -148,6 +166,7 @@ public class BlockWeather extends ParticleWeather {
             float x = (randw.random(0f, world.unitWidth()) + Time.time * windx * scl2);
             float y = (randw.random(0f, world.unitHeight()) + Time.time * windy * scl);
             float alpha = randw.random(minAlpha, maxAlpha);
+            float r = randw.random(360f);
 
             x += Mathf.sin(y, randw.random(sinSclMin, sinSclMax), randw.random(sinMagMin, sinMagMax));
 
@@ -160,7 +179,7 @@ public class BlockWeather extends ParticleWeather {
 
             if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2)){
                 Draw.alpha(alpha * opacity);
-                Draw.rect(randomBlock ? rollIcon(i) : region, x, y, size, size, Time.time * 4f);
+                Draw.rect(randomBlock ? rollIcon(i) : region, x, y, size, size, Time.time * 4f + r);
             }
         }
     }

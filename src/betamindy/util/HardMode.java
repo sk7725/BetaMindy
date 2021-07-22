@@ -252,14 +252,14 @@ public class HardMode {
 
     public String barText(){
         if(portal == null || portal.state == 1) return Core.bundle.get("ui.hardmode.hudIntro");
-        if(isBoss()) return Core.bundle.get("bar.boss");
+        if(isBoss() && portal.wave == portal.maxWave + 1) return Core.bundle.get("bar.waveboss");
         return portal.waveStringDull();
     }
 
     public float barVal(){
         if(portal == null) return 0f;
         if(portal.state == 1) return portal.r / portal.radius;
-        if(portal.state == 2 || portal.wave == portal.maxWave) return 1f;
+        if(portal.state == 2 || portal.wave >= portal.maxWave) return 1f;
         return portal.nextWave / (portal.nextWaveCap - 120f); //for aesthetics
     }
 
@@ -272,8 +272,7 @@ public class HardMode {
     }
 
     public boolean isBoss(){
-        //TODO
-        return false;
+        return level() % 10 == 9;
     }
 
     //TODO: add Delete Hardmode Progress setting
@@ -365,7 +364,7 @@ public class HardMode {
             this.y = y;
 
             spawns.clear();
-            maxWave = 10 + l / 2;
+            maxWave = 10 + l / 5;
         }
 
         public void runWave(Seq<SpawnGroup> spawns, int wave){
@@ -408,7 +407,7 @@ public class HardMode {
         }
 
         public void next(){
-            int offset = useCustomSpawn ? 0 : level * 2;
+            int offset = useCustomSpawn ? 0 : level * 10;
             if(useCustomSpawn){
                 runWave(spawns, wave);
             }
@@ -445,10 +444,26 @@ public class HardMode {
                         //wait for 3 seconds before checking if all units are dead
                         //you won lol
                         state = 0;
-                        if(wave >= maxWave){
-                            stop(true);
-                            state = 2;
-                            return;
+                        if(isBoss()){
+                            if(wave == maxWave){
+                                nextWave = nextWaveCap = 190f; //no real meaning
+                                wave++;
+                                if(!headless) BetaMindy.mui.hardfrag.nextWave(this);
+                                state = 4; //boss cutscene
+                                //TODO boss wave
+                            }
+                            else if(wave >= maxWave + 1){
+                                stop(true);
+                                state = 2;
+                                return;
+                            }
+                        }
+                        else{
+                            if(wave >= maxWave){
+                                stop(true);
+                                state = 2;
+                                return;
+                            }
                         }
                         //todo rewards
                     }
@@ -463,9 +478,8 @@ public class HardMode {
                     //next wave
                     if(wave < maxWave){
                         wave++;
-                        nextWave = (maxWave == wave - 1 ? 1000f + level * 55f : 500f + level * 35f);
+                        nextWave = (maxWave == wave - 1 ? 1000f + level * 10f : 500f + level * 3f);
                         nextWaveCap = nextWave;
-                        //TODO boss wave
                         next();
                         if(!headless) BetaMindy.mui.hardfrag.nextWave(this);
                     }
@@ -505,8 +519,8 @@ public class HardMode {
         //0: none 2: asteroid 3: firestorm 4: laser 5: bhol 6: hardmode units
         public int disaster(int wave){
             if(wave <= 1 || wave == maxWave - 1) return 0;
-            if(wave % 5 == 0) return 6;
             if(level < 10) return 0;
+            if(wave % 5 == 0) return 6;
             switch(level / rankLevel){
                 case 1:
                     //blu
@@ -623,8 +637,10 @@ public class HardMode {
 
         public void buildNext(Table table){
             table.defaults().size(22f).padLeft(3f);
-            if(wave == maxWave) table.image(Core.atlas.find("betamindy-hardmode-portal-icon"));
-            else if(isBoss()) table.image(Core.atlas.find("betamindy-hardmode-boss-icon"));
+            if(wave == maxWave){
+                if(isBoss()) table.image(Core.atlas.find("betamindy-hardmode-boss-icon"));
+                else table.image(Core.atlas.find("betamindy-hardmode-portal-icon"));
+            }
 
             if(lightningWave(wave + 1)) table.image(Core.atlas.find("betamindy-disaster1"));
             int dis = disaster(wave + 1);
