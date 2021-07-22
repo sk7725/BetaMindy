@@ -83,6 +83,7 @@ public class Shop extends Block{
         public Cell<Label> anucoinString;
         float buttonWidth = 210f;
         boolean mobileUI = false;
+        AtomicReference<Cell<ScrollPane>> scpane = new AtomicReference<Cell<ScrollPane>>();
         
         public void updateAnucoins(){
             anucoinString.setElement(new Label(String.valueOf(anucoins)));
@@ -122,8 +123,6 @@ public class Shop extends Block{
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
-            
-            AtomicReference<Cell<ScrollPane>> scpane;
 
             String airColor = colorToHex(StatusEffects.shocked.color);
             String groundColor = colorToHex(StatusEffects.melting.color);
