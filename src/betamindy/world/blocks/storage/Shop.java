@@ -158,8 +158,8 @@ public class Shop extends Block{
                                 itemButton(e, item);
                             }
                         }
-                    }).center().width(width * (mobileUI ? 0.7f : 0.25f)));
-                    if(mobileUI) scpane.get().height(height / 2f * 0.7f);
+                    }).center().width(width * (mobileUI ? 0.55f : 0.25f)));
+                    if(mobileUI) scpane.get().height(height / 2f * 0.55f);
                 }).padRight((mobileUI ? 0f : 60f));
                 
                 if(mobileUI) tbl.row();
@@ -194,8 +194,8 @@ public class Shop extends Block{
                                 e.row();
                             }
                         }
-                    }).center().width(width * (mobileUI ? 0.7f : 0.25f)));
-                    if(mobileUI) scpane.get().height(height / 2f * 0.7f);
+                    }).center().width(width * (mobileUI ? 0.55f : 0.25f)));
+                    if(mobileUI) scpane.get().height(height / 2f * 0.55f);
                 });
             });
             shopDialog.row();
