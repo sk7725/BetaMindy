@@ -1,14 +1,15 @@
 package betamindy.world.blocks.campaign;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
-import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.ui.*;
@@ -17,6 +18,8 @@ import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.Campfire.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -25,11 +28,11 @@ import mindustry.ui.*;
 import mindustry.world.*;
 
 import static arc.Core.atlas;
+import static arc.Core.settings;
 import static arc.graphics.g2d.Lines.*;
 import static betamindy.BetaMindy.hardmode;
 import static betamindy.BetaMindy.uwu;
-import static mindustry.Vars.spawner;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 //initiator
 public class Altar extends Block {
@@ -43,6 +46,10 @@ public class Altar extends Block {
 
     public Effect updateEffect = MindyFx.altarDust;
     public Effect updateEffect2 = MindyFx.altarDustSmall;
+    public Seq<AltarGameMode> pages;
+    public TextureRegion lockedIcon;
+
+    protected @Nullable AltarBuild currentAltar;
 
     public Altar(String name){
         super(name);
@@ -53,6 +60,27 @@ public class Altar extends Block {
         size = 3;
         expanded = true;
         configurable = true;
+        saveConfig = false;
+        noUpdateDisabled = false;
+
+        config(Integer.class, (AltarBuild build, Integer i) -> {
+            if(i < 1 || i > pages.size) return;
+            if(build.canStart(i - 1)) pages.get(i - 1).start.get(build, i - 1);
+        });
+
+        //TODO the current bosses are a joke
+        pages = Seq.with(new AltarGameMode("invasion", () -> false, b -> b.charged && b.heat > 0.999f, (b, i) -> b.startInvasion()),
+                new AltarGameMode(UnitTypes.dagger, 0),
+                new AltarGameMode(UnitTypes.fortress, 1),
+                new AltarGameMode(UnitTypes.quad, 2),
+                new AltarGameMode(UnitTypes.corvus, 3),
+                new AltarGameMode(UnitTypes.eclipse, 4),
+                new AltarGameMode("endless", () -> (hardmode.level() < 69) && !uwu, b -> false, (b, i) -> {}).setLabel(() -> Core.bundle.format("endless.highscore", settings.getInt("betamindy-endhs", 0))),
+                new AltarGameMode("ancient"));
+
+        Events.on(WorldLoadEvent.class, e -> {
+            currentAltar = null;
+        });
     }
 
     @Override
@@ -61,6 +89,9 @@ public class Altar extends Block {
         for(int i = 0; i < 3; i++){
             heatRegions[i] = atlas.find(name + "-heat" + i);
         }
+
+        pages.each(AltarGameMode::load);
+        lockedIcon = atlas.find("betamindy-mode-locked");
     }
 
     @Override
@@ -68,8 +99,14 @@ public class Altar extends Block {
         return super.canBreak(tile) && ((AltarBuild)tile.build).connections <= 0;
     }
 
+    @Override
+    public boolean canPlaceOn(Tile tile, Team team){
+        return super.canBeBuilt() && (team == Team.derelict || currentAltar == null || !currentAltar.isValid());
+    }
+
     public class AltarBuild extends Building{
         public int phase = 0;
+        public int menuPage = 0;
         public int amount;
         public boolean charged = false;
 
@@ -96,17 +133,43 @@ public class Altar extends Block {
 
         @Override
         public void updateTile(){
+            if(team != Team.derelict) currentAltar = this;
+            if(hardmode.portal != null){
+                if(heat > 0.01f) heat -= delta() / 60f;
+                return; //do not do anything
+            }
             switch(phase){
                 default: phase0();
                 break;
                 case 1: phase1();
+                break;
+                case 3:
+                    //portal is over
+                    heat = 0f;
+                    phase = 0;
             }
         }
 
         public boolean canStart(){
+            return canStart(menuPage);
+        }
+
+        public boolean canStart(int page){
             if(!uwu) return false;//todo not ready yet
-            if(hardmode.portal != null) return false;
-            return phase == 1 && charged && heat > 0.999f;
+            if(team == Team.derelict || hardmode.portal != null || state.rules.defaultTeam.cores().size < 1 || !state.rules.waves || state.rules.attackMode || state.rules.pvp) return false;
+            if(state.isCampaign() && (!state.hasSector() || !state.getSector().isCaptured())) return false;
+            return phase == 1 && pages.get(page).canStart.get(this);
+        }
+
+        public void startInvasion(){
+            charged = false;
+            phase = 3;
+            heat = 1f;
+            hardmode.start();
+        }
+
+        public void startBoss(int page){
+            //todo
         }
 
         public void phase0(){
@@ -219,6 +282,8 @@ public class Altar extends Block {
 
         @Override
         public void buildConfiguration(Table table){
+            table.clearChildren();
+            menuPage = Mathf.clamp(menuPage, 0, pages.size - 1);
             table.table(t -> {
                 if(HardmodeFragment.background != null) t.background(HardmodeFragment.background);
                 t.add("[#ef8aff]Portal[][white].OS[]", Styles.techLabel, 1.2f).pad(4f).padBottom(4f);
@@ -232,26 +297,52 @@ public class Altar extends Block {
                 t.add(lab).color(Pal2.portalBack).pad(4f).padTop(0f);
                 t.row();
 
-                t.image().color(Pal.gray).fillX().growX().height(4f);
+                t.image().color(Pal.gray).fillX().growX().height(4f).padBottom(3f);
                 t.row();
-                t.add("//TODO").height(60f); //todo
+                t.table(s -> {
+                    s.button(Icon.left, Styles.clearTransi, () -> {
+                        if(menuPage > 0){
+                            menuPage--;
+                            buildConfiguration(table);
+                        }
+                    }).disabled(b -> menuPage <= 0).fillY().width(35f).left();
+
+                    s.table(sm -> {
+                        sm.image(() -> pages.get(Mathf.clamp(menuPage, 0, pages.size - 1)).icon()).size(130f);
+                        sm.row();
+                        sm.label(() -> pages.get(Mathf.clamp(menuPage, 0, pages.size - 1)).local()).get().setStyle(Styles.outlineLabel);
+                    }).grow();
+
+                    s.button(Icon.right, Styles.clearTransi, () -> {
+                        if(menuPage < pages.size - 1){
+                            menuPage++;
+                            buildConfiguration(table);
+                        }
+                    }).disabled(b -> menuPage >= pages.size - 1).fillY().width(35f).right();
+                }).fillX().height(160f);
                 t.row();
 
-                t.table(lv -> {
-                    lv.label(() -> Core.bundle.format("ui.hardmode.lv", hardmode.level())).size(80f, 26f);
-                    lv.add(new SBar(this::expText, () -> Pal2.exp, hardmode::lvlf)).pad(2f).growX();
-                }).fillX().pad(2f);
+                if(pages.get(menuPage).name.equals("invasion")){
+                    t.table(lv -> {
+                        lv.label(() -> Core.bundle.format("ui.hardmode.lv", hardmode.level())).size(80f, 26f);
+                        lv.add(new SBar(this::expText, () -> Pal2.exp, hardmode::lvlf, "betamindy-barM", 1, 2).outline(false)).pad(3f).growX().height(22f);
+                    }).fillX().height(27f).pad(2f);
+                }
+                else{
+                    t.label(pages.get(menuPage).label).fillX().height(27f).pad(2f);
+                }
+
                 t.row();
                 t.image().color(Pal.gray).fillX().growX().height(4f).padTop(2f).padBottom(2f);
                 t.row();
 
                 t.table(but -> {
                     but.button("Start", new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")).tint(Pal2.portal), Styles.transt, () -> {
-                        //todo
+                        configure(menuPage + 1);
                     }).height(33f).growX().disabled(b -> !canStart()).get().getLabel().setStyle(new Label.LabelStyle(Styles.techLabel));
-                    but.button(Icon.info, Styles.clearFulli, 27f, () -> {
+                    but.button(Icon.info, Styles.clearTransi, 27f, () -> {
                         //todo
-                    }).size(33f);
+                    }).size(33f).disabled(b -> pages.get(Mathf.clamp(menuPage, 0, pages.size - 1)).locked.get());
                 }).fillX();
             }).width(275f);
         }
@@ -276,6 +367,19 @@ public class Altar extends Block {
         }
 
         @Override
+        public void drawSelect(){
+            super.drawSelect();
+            if(phase == 1){
+                for(int i = 0; i < torches; i++){
+                    Tile torch = torch(i);
+                    if(torch != null){
+                        torch.block().drawPlaceText(made[i]+"/"+amount, torch.x, torch.y, made[i] > 0);
+                    }
+                }
+            }
+        }
+
+        @Override
         public void draw(){
             super.draw();
             int rank = Math.min(hardmode.level() / HardMode.rankLevel, hardmode.lc1.length - 1);
@@ -290,7 +394,7 @@ public class Altar extends Block {
                         Draw.z(Layer.block + 1f);
                         Draw.color();
                         Draw.rect(camp.torchRegion, torch.drawx(), torch.drawy());
-                        if(phase >= 1){
+                        if(phase >= 1 && phase != 3){
                             Draw.z(Layer.bullet);
                             Draw.color(c1, c2, Mathf.absin(Time.time + i * 20f, 11f, 1f));
                             Draw.alpha(made[i] / (float)amount);
@@ -303,9 +407,17 @@ public class Altar extends Block {
                 }
             }
 
-            Draw.z(Layer.blockUnder);
-            Draw.blend(Blending.additive);
-            float f0 = phase == 0 ? heat : 1f;
+            if(phase != 3 && hardmode.portal != null) return; //minimize lag during invasions
+            if(phase == 3){
+                if(heat < 0.02f) return;
+                c1 = c2 = Tmp.c4.set(Pal2.clearWhite).lerp(Color.white, heat);
+                Draw.z(Layer.bullet);
+            }
+            else{
+                Draw.z(Layer.blockUnder);
+                Draw.blend(Blending.additive);
+            }
+            float f0 = phase == 0 || phase == 3 ? heat : 1f;
 
             Draw.color(c1, Mathf.absin(21f, 0.7f) + 0.3f);
             drawingCircle(x, y, 24, Math.min(1f, f0 * (torches + 1)), 1.5f);
@@ -330,6 +442,9 @@ public class Altar extends Block {
                     f3 = Mathf.clamp(heatTorchSum * 3f - 2f);
                     fin = Mathf.clamp(heatTorchSum * torches - torches + 1f);
                 }
+                else if(phase == 3){
+                    f1 = f2 = f3 = fin = heat;
+                }
                 stroke(0.5f);
                 Draw.color(c1, Mathf.absin(13f, 0.6f) + fin * 0.4f);
                 circle(x, y, 36 * f2);
@@ -352,7 +467,12 @@ public class Altar extends Block {
                     int off = (int)(Time.time / 3f) % (n * m);
                     for(int i = off; i < n + off; i++){
                         final Color c = i - off < n / 2 ? c1 : c2;
-                        if((phase == 1 && Mathf.randomSeed(i + id + m) < heat) || phase == 2){
+                        if(phase == 3){
+                            Draw.color(Color.white);
+                            Draw.alpha(heat);
+                            Draw.z(Layer.bullet);
+                        }
+                        else if((phase == 1 && Mathf.randomSeed(i + id + m) < heat) || phase == 2){
                             Draw.z(Layer.bullet);
                             Draw.color(c, Color.white, (i - off) % ((float)n/2) / (float)(n/2));
                         }
@@ -378,7 +498,11 @@ public class Altar extends Block {
                 }
 
                 float f1 = phase == 1 ? heat : 1f;
-                Drawm.altarOrb(x, y, 7.5f, f1);
+                if(phase == 3){
+                    Tmp.v1.trns(lastSpawnDir, (1f - heat) * 60f).add(this);
+                    Drawm.altarOrb(Tmp.v1.x, Tmp.v1.y, 7.5f, heat);
+                }
+                else Drawm.altarOrb(x, y, 7.5f, f1);
             }
 
             Draw.reset();
@@ -399,6 +523,54 @@ public class Altar extends Block {
         @Override
         public float handleDamage(float amount){
             return connections <= 0 ? super.handleDamage(amount) : 0f;
+        }
+    }
+
+    public class AltarGameMode {
+        public TextureRegion icon;
+        public String name;
+        public Boolp locked;
+        public Boolf<AltarBuild> canStart;
+        public Cons2<AltarBuild, Integer> start;
+        private boolean isBoss = false;
+        public UnitType boss;
+        protected Prov<CharSequence> label = () -> "[gray]...[]";
+
+        public AltarGameMode(String name, Boolp locked, Boolf<AltarBuild> canStart, Cons2<AltarBuild, Integer> start){
+            this.name = name;
+            this.locked = locked;
+            this.canStart = canStart;
+            this.start = start;
+        }
+
+        public AltarGameMode(String name){
+            this(name, () -> true, b -> false, (b, i) -> {});
+        }
+
+        public AltarGameMode(UnitType boss, int rank){
+            this("boss" + rank, () -> hardmode.level() <= rank * 10 + 9, b -> false, AltarBuild::startBoss);//todo boolf
+            isBoss = true;
+            this.boss = boss;
+        }
+
+        public AltarGameMode setLabel(Prov<CharSequence> l){
+            label = l;
+            return this;
+        }
+
+        public void load(){
+            icon = atlas.find("betamindy-mode-" + name);
+        }
+
+        public String local(){
+            if(locked.get()) return "[gray]???[]";
+            if(isBoss) return Core.bundle.format("altar.mode.boss", boss.localizedName);
+            return Core.bundle.get("altar.mode." + name);
+        }
+
+        public TextureRegion icon(){
+            if(locked.get()) return lockedIcon;
+            return icon;
         }
     }
 }

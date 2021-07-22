@@ -29,6 +29,8 @@ public class SBar extends Element {
     private NinePatchDrawable bar, top;
     private boolean shouldBlink = false;
     private boolean exact = false;
+    private boolean outline = true;
+    private float spriteWidth = 8f;
 
     public SBar(Prov<String> name, Prov<Color> color, Floatp fraction, String sprite, int w, int h){
         this.fraction = fraction;
@@ -36,6 +38,7 @@ public class SBar extends Element {
             lastValue = value = Mathf.clamp(fraction.get());
             bar = (NinePatchDrawable) drawable(sprite, w, w, h, h);
             top = (NinePatchDrawable) drawable(sprite + "-top", w, w, h, h);
+            spriteWidth = Core.atlas.find(sprite + "-top").width;
         }catch(Exception e){ //getting the fraction may involve referring to invalid data
             lastValue = value = 0f;
         }
@@ -70,6 +73,11 @@ public class SBar extends Element {
 
     public SBar exact(boolean ex){
         exact = ex;
+        return this;
+    }
+
+    public SBar outline(boolean o){
+        outline = o;
         return this;
     }
 
@@ -117,8 +125,6 @@ public class SBar extends Element {
         blink = Mathf.lerpDelta(blink, 0f, 0.1f);
         value = exact ? computed : Mathf.lerpDelta(value, computed, 0.05f);
 
-        float spriteWidth = Core.atlas.find("unitinfo-barS").width;
-
         Draw.colorl(0.1f);
         bar.draw(x, y, width, height);
         Draw.color(color, blinkColor, blink);
@@ -150,7 +156,7 @@ public class SBar extends Element {
 
         Draw.color();
 
-        Font font = Fonts.outline;
+        Font font = outline ? Fonts.outline : Fonts.def;
         GlyphLayout lay = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
         font.getData().setScale(Scl.scl());
         lay.setText(font, name);

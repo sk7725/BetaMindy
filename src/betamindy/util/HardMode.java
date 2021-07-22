@@ -207,7 +207,7 @@ public class HardMode {
             Time.run(300f, () -> {
                 ui.showOkText(Core.bundle.get("ui.hardmode.title") + " " + Core.bundle.format("ui.hardmode.level", lp.level),
                         Core.bundle.get(win ? "ui.hardmode.win" : "ui.hardmode.lose") + "\n" +
-                        Core.bundle.format("stat.hardmode.waves", win ? lp.maxWave : lp.wave, lp.maxWave) + "\n" +
+                        Core.bundle.format("stat.hardmode.waves", lp.wave, lp.maxWave) + "\n" +
                         Core.bundle.format("stat.hardmode.kills", lp.kills) + "\n" +
                         Core.bundle.format("stat.hardmode.hardmodeKills", 0) + "\n" +
                         (current >= maxLevel ? "" : Core.bundle.format("stat.hardmode.exp", experience - bf, cap - bf, win ? Math.min(lp.exp, cap + 1f) : 0) + "\n") +
@@ -260,7 +260,7 @@ public class HardMode {
         if(portal == null) return 0f;
         if(portal.state == 1) return portal.r / portal.radius;
         if(portal.state == 2 || portal.wave == portal.maxWave) return 1f;
-        return portal.nextWave / (portal.nextWaveCap - 60f); //for aesthetics
+        return portal.nextWave / (portal.nextWaveCap - 120f); //for aesthetics
     }
 
     public float lvlf(){
@@ -279,6 +279,7 @@ public class HardMode {
     //TODO: add Delete Hardmode Progress setting
     public void deleteCampaign(){
         Core.settings.remove("betamindy-campaign-exp");
+        Core.settings.remove("betamindy-endhs");
     }
 
     //TODO: should be called from the initiator
