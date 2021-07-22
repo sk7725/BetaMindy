@@ -122,11 +122,14 @@ public class Shop extends Block{
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
             
+            Cell<ScrollPane> scpane;
+
             String airColor = colorToHex(StatusEffects.shocked.color);
             String groundColor = colorToHex(StatusEffects.melting.color);
             String navalColor = colorToHex(StatusEffects.wet.color);
             
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
+            float height = Math.max(Core.graphics.getWidth(), Core.graphics.getHeight());
             mobileUI = width < 800;
 
             shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
@@ -148,24 +151,25 @@ public class Shop extends Block{
                     tbl1.add(Core.bundle.get("ui.items"));
                     tbl1.row();
 
-                    tbl1.pane(e -> {
+                    scpane = tbl1.pane(e -> {
                         for (Item item : Vars.content.items()) {
                             if(item == MindyItems.bittrium) continue;
                             if (itemScores.containsKey(item)) {
                                 itemButton(e, item);
                             }
                         }
-                    }).center().width(width * (Vars.mobile ? 0.7f : 0.25f));
-                }).padRight((Vars.mobile ? 0f : 60f));
+                    }).center().width(width * (mobileUI ? 0.7f : 0.25f));
+                    if(mobileUI) scpane.height(height / 2f * 0.7f);
+                }).padRight((mobileUI ? 0f : 60f));
                 
-                if(Vars.mobile) tbl.row();
+                if(mobileUI) tbl.row();
                 tbl.table(tbl1 -> {
                     tbl1.center();
 
                     tbl1.add(Core.bundle.get("ui.units"));
                     tbl1.row();
 
-                    tbl1.pane(e -> {
+                    scpane = tbl1.pane(e -> {
                         for (UnitType unit : Vars.content.units()) {
                             if (unitScores.containsKey(unit)) {
                                 e.button(t -> {
@@ -190,12 +194,13 @@ public class Shop extends Block{
                                 e.row();
                             }
                         }
-                    }).center().width(width * (Vars.mobile ? 0.7f : 0.25f)) ;
+                    }).center().width(width * (mobileUI ? 0.7f : 0.25f));
+                    if(mobileUI) scpane.height(height / 2f * 0.7f);
                 });
             });
             shopDialog.row();
             shopDialog.table(t -> {
-                if(Vars.mobile){
+                if(mobileUI){
                     buttonWidth = 64f;
                     t.button(Icon.left, shopDialog::hide).size(buttonWidth, 64f);
                     t.button(Icon.list, () -> {}).size(buttonWidth, 64f);
