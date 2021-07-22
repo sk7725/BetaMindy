@@ -18,6 +18,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
+import java.util.concurrent.atomic.*;
 
 public class Shop extends Block{
     public int defaultAnucoins = 500;
@@ -122,7 +123,7 @@ public class Shop extends Block{
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
             
-            Cell<ScrollPane> scpane;
+            AtomicReference<Cell<ScrollPane>> scpane;
 
             String airColor = colorToHex(StatusEffects.shocked.color);
             String groundColor = colorToHex(StatusEffects.melting.color);
@@ -151,15 +152,15 @@ public class Shop extends Block{
                     tbl1.add(Core.bundle.get("ui.items"));
                     tbl1.row();
 
-                    scpane = tbl1.pane(e -> {
+                    scpane.set(tbl1.pane(e -> {
                         for (Item item : Vars.content.items()) {
                             if(item == MindyItems.bittrium) continue;
                             if (itemScores.containsKey(item)) {
                                 itemButton(e, item);
                             }
                         }
-                    }).center().width(width * (mobileUI ? 0.7f : 0.25f));
-                    if(mobileUI) scpane.height(height / 2f * 0.7f);
+                    }).center().width(width * (mobileUI ? 0.7f : 0.25f)));
+                    if(mobileUI) scpane.get().height(height / 2f * 0.7f);
                 }).padRight((mobileUI ? 0f : 60f));
                 
                 if(mobileUI) tbl.row();
@@ -169,7 +170,7 @@ public class Shop extends Block{
                     tbl1.add(Core.bundle.get("ui.units"));
                     tbl1.row();
 
-                    scpane = tbl1.pane(e -> {
+                    scpane.set(tbl1.pane(e -> {
                         for (UnitType unit : Vars.content.units()) {
                             if (unitScores.containsKey(unit)) {
                                 e.button(t -> {
@@ -194,8 +195,8 @@ public class Shop extends Block{
                                 e.row();
                             }
                         }
-                    }).center().width(width * (mobileUI ? 0.7f : 0.25f));
-                    if(mobileUI) scpane.height(height / 2f * 0.7f);
+                    }).center().width(width * (mobileUI ? 0.7f : 0.25f)));
+                    if(mobileUI) scpane.get().height(height / 2f * 0.7f);
                 });
             });
             shopDialog.row();
