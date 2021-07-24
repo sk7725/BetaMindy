@@ -114,6 +114,11 @@ public class Shop extends Block{
         }
 
         @Override
+        public boolean acceptItem(Building source, Item item){
+            return false;
+        }
+
+        @Override
         public boolean shouldHideConfigure(Player player) {
             return true;
         }
