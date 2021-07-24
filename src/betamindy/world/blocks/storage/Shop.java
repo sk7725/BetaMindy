@@ -34,6 +34,8 @@ public class Shop extends Block{
 
         update = solid = hasItems = outputsItems = true;
 
+        itemCapacity = 0;
+
         configurable = true;
     }
 
@@ -116,6 +118,11 @@ public class Shop extends Block{
         @Override
         public boolean acceptItem(Building source, Item item){
             return false;
+        }
+
+        @Override
+        public void updateTile(){
+            super.updateTile();
         }
 
         @Override
