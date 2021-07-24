@@ -64,9 +64,10 @@ public class MindyBlocks implements ContentList {
 
     @Override
     public void load() {
+        //TODO move this to wherever it belongs at
         itemShop = new Shop("item-shop"){{
             requirements(Category.effect, with(Items.copper, 1));
-            size = 3;
+            size = 5;
         }};
 
         radiation = new GlowPowder("radiation", 0){{
