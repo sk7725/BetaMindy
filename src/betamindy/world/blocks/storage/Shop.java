@@ -107,7 +107,7 @@ public class Shop extends Block{
                 if(anucoins >= price){
                     anucoins -= price;
                     updateAnucoins();
-                    items.add(ItemStack.with(item, 15));
+                    items.add(item, 15);
                 }
             }).left().growX();
             pane.row();
