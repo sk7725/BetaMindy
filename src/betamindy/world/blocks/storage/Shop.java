@@ -123,11 +123,7 @@ public class Shop extends Block{
         @Override
         public void updateTile(){
             super.updateTile();
-            items.each((it, am) -> {
-                for(int i = 0; i < am; i++){
-                    offload(it);
-                }
-            });
+            dump();
         }
 
         @Override
