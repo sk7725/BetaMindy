@@ -32,7 +32,7 @@ public class Shop extends Block{
     public Shop(String name){
         super(name);
 
-        update = solid = true;
+        update = solid = hasItems = true;
 
         configurable = true;
     }
