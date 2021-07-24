@@ -99,7 +99,7 @@ public class Shop extends Block{
                 t.table(tt -> {
                     tt.left();
                     String color = colorToHex(item.color);
-                    tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x20[]").growX().left();
+                    tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x15[]").growX().left();
                     tt.row();
                     tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
                 }).growX();
@@ -107,6 +107,7 @@ public class Shop extends Block{
                 if(anucoins >= price){
                     anucoins -= price;
                     updateAnucoins();
+                    items.add(ItemStack.with(item, 15));
                 }
             }).left().growX();
             pane.row();
@@ -201,15 +202,10 @@ public class Shop extends Block{
             shopDialog.row();
             shopDialog.table(t -> {
                 if(mobileUI){
-                    buttonWidth = 64f;
-                    t.button(Icon.left, shopDialog::hide).size(buttonWidth, 64f);
-                    t.button(Icon.list, () -> {}).size(buttonWidth, 64f);
-                    t.button(Icon.add, () -> {}).size(buttonWidth, 64f);
-                } else {
-                    t.button("@back", Icon.left, shopDialog::hide).size(buttonWidth, 64f);
-                    t.button(Core.bundle.get("ui.cart"), Icon.list, () -> {}).size(buttonWidth, 64f);
-                    t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {}).size(buttonWidth, 64f);
+                    buttonWidth = (width / 2f) * 0.55f;
                 }
+                t.button("@back", Icon.left, shopDialog::hide).size(buttonWidth, 64f);
+                t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {}).size(buttonWidth, 64f);
             });
 
             shopDialog.addCloseListener();
