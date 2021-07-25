@@ -10,6 +10,7 @@ import arc.struct.*;
 import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
+import betamindy.graphics.*;
 import mindustry.*;
 import mindustry.content.StatusEffects;
 import mindustry.game.*;
