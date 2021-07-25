@@ -54,6 +54,12 @@ public class Shop extends Block{
     }
 
     @Override
+    public void createIcons(MultiPacker packer){
+        Drawm.generateTeamRegion(packer, this);
+        super.createIcons(packer);
+    }
+
+    @Override
     public void init(){
         super.init();
 
