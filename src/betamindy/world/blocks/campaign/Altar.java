@@ -162,6 +162,11 @@ public class Altar extends Block {
             return phase == 1 && pages.get(page).canStart.get(this);
         }
 
+        public boolean isLocked(int page){
+            if(page < 0 || page >= pages.size) return true;
+            return phase == 0 || pages.get(page).locked.get();
+        }
+
         public void startInvasion(){
             charged = false;
             hardmode.start();
@@ -319,17 +324,17 @@ public class Altar extends Block {
                             buildConfiguration(table);
                         }
                     }).disabled(b -> menuPage >= pages.size - 1).fillY().width(35f).right();
-                }).fillX().height(160f);
+                }).fillX().height(160f).visible(() -> phase > 0);
                 t.row();
 
                 if(pages.get(menuPage).name.equals("invasion")){
                     t.table(lv -> {
                         lv.label(() -> Core.bundle.format("ui.hardmode.lv", hardmode.level())).size(80f, 26f);
                         lv.add(new SBar(this::expText, () -> Pal2.exp, hardmode::lvlf, "betamindy-barM", 1, 2).outline(false)).pad(3f).growX().height(22f);
-                    }).fillX().height(27f).pad(2f);
+                    }).fillX().height(27f).pad(2f).visible(() -> phase > 0);
                 }
                 else{
-                    t.label(pages.get(menuPage).label).fillX().height(27f).pad(2f);
+                    t.label(pages.get(menuPage).label).fillX().height(27f).pad(2f).visible(() -> phase > 0);
                 }
 
                 t.row();
@@ -342,8 +347,8 @@ public class Altar extends Block {
                     }).height(33f).growX().disabled(b -> !canStart()).get().getLabel().setStyle(new Label.LabelStyle(Styles.techLabel));
                     but.button(Icon.info, Styles.clearTransi, 27f, () -> {
                         //todo
-                    }).size(33f).disabled(b -> pages.get(Mathf.clamp(menuPage, 0, pages.size - 1)).locked.get());
-                }).fillX();
+                    }).size(33f).disabled(b -> isLocked(menuPage));
+                }).fillX().visible(() -> phase > 0);
             }).width(275f);
         }
 

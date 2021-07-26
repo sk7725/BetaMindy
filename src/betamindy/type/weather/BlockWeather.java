@@ -9,6 +9,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import betamindy.*;
 import betamindy.content.MindyFx;
+import betamindy.world.blocks.campaign.*;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
@@ -92,7 +93,7 @@ public class BlockWeather extends ParticleWeather {
             Block block1 = block;
             if(randomBlock) {
                 Block temp = Vars.content.blocks().get(Mathf.random(Vars.content.blocks().size - 1));
-                if(temp instanceof ConstructBlock || !temp.hasBuilding() || temp.isHidden() || temp instanceof CoreBlock) return;
+                if(temp instanceof ConstructBlock || !temp.hasBuilding() || temp.isHidden() || temp instanceof CoreBlock || temp instanceof Altar || temp.size > 4) return;
                 block1 = temp;
             }
             if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2) && Mathf.randomBoolean(blockChance * state.intensity)){

@@ -40,7 +40,7 @@ import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor,
+    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
@@ -958,11 +958,33 @@ public class MindyBlocks implements ContentList {
         crystalVector = new ScidustryCrystal("vector-crystal", MindyItems.vectorRaw){{
             alt = true;
             sprites = 6;
+            status = MindyStatusEffects.pause;
         }};
 
         crystalTensor = new EldoofusCrystal("tensor-crystal", MindyItems.tensorRaw){{
             sprites = 6;
             updateEffect = MindyFx.sparkleZeta;
+            status = MindyStatusEffects.amnesia;
+        }};
+
+        crystalSpace = new ShaderCrystal("space-crystal", MindyItems.spaceMatter){{
+            sprites = 2;
+            updateEffect = MindyFx.sparkleSpace;
+            destroyEffect = MindyFx.crystalBreakSpace;
+            shader = MindyShaders.space;
+
+            color1 = Color.magenta;
+            color2 = Color.yellow;
+            glowOpacity = 0.65f;
+            auraOpacity = 0.2f;
+        }};
+
+        crystalBittrium = new ShaderCrystal("bittrium-crystal", MindyItems.bittrium){{
+            sprites = 2;
+            updateEffect = MindyFx.sparkleBittrium;
+            destroyEffect = MindyFx.crystalBreakBittrium;
+            shader = MindyShaders.bittrium;
+            glowOpacity = 0.9f;
         }};
 
         // endgame turrets

@@ -41,6 +41,7 @@ public class HardMode {
     public int experience = 0;
     public Color[] lc1 = {Pal.sapBullet, Pal.lancerLaser, Color.coral, Pal.heal, Color.cyan};
     public Color[] lc2 = {Color.pink, Pal2.placeLight, Pal.accent, Pal2.zeta, Color.pink};
+    private static final Rand rand = new Rand();
 
     private final static Color tmpc = new Color();
     private boolean loaded = false;
@@ -75,13 +76,14 @@ public class HardMode {
             lightning[i] = new PortalLightningBulletType(750f + 150f * i, lc1[i], lc2[i]);
         }
 
-        //crystal rewards todo bittrium crystal
+        //crystal rewards todo matter crystals
         crystals = new BulletType[]{
                 new CrystalBulletType((Crystal)MindyBlocks.crystalPyra),
                 new CrystalBulletType((Crystal)MindyBlocks.crystalCryo),
                 new CrystalBulletType((Crystal)MindyBlocks.crystalScalar),
                 new CrystalBulletType((Crystal)MindyBlocks.crystalVector),
-                new CrystalBulletType((Crystal)MindyBlocks.crystalTensor)
+                new CrystalBulletType((Crystal)MindyBlocks.crystalTensor),
+                new CrystalBulletType((Crystal)MindyBlocks.crystalBittrium)
         };
     }
 
@@ -112,10 +114,10 @@ public class HardMode {
             if(Core.input.keyTap(KeyCode.down)) stop(true);
             if(Core.input.keyTap(KeyCode.up)) start();
             if(Core.input.keyTap(KeyCode.right) && portal != null){
-                experience += (int)expCap(level()) + 1;
+                experience += (int)(expCap(level()) - expCap(level() - 1));
             }
             if(Core.input.keyTap(KeyCode.left) && portal != null){
-                portal.shootLightning();
+                portal.nextWave = 0f;
             }
             if(Core.input.keyTap(KeyCode.slash) && portal != null){
                 portal.shootCrystal(2, 3);
@@ -346,6 +348,7 @@ public class HardMode {
         public int state; //0: idle 1: opening 2: closing 3: wave
         public int level;
         private float heat = 0f;
+        public boolean endless = false;
 
         public Seq<SpawnGroup> spawns = new Seq<>(); //todo used for special spawns
         public boolean useCustomSpawn = false;
@@ -382,13 +385,16 @@ public class HardMode {
                     });
                 }
             }
+            int disaster = disaster(wave);
             //if(net.active()) Call.effectReliable(MindyFx.portalShockwave, x, y, 0f, color());
             //else MindyFx.portalShockwave.at(x, y, 0f, color());
 
             for(SpawnGroup group : spawns){
                 if(group.type == null) continue;
 
-                //todo add hardmode units to the batch
+                //if(disaster == 6){
+                    //todo add hardmode units to the batch
+                //}
                 int spawned = group.getSpawned(wave);
                 for(int i = 0; i < spawned; i++){
                     Time.run(Mathf.range(120f), () -> {
@@ -444,6 +450,19 @@ public class HardMode {
                         //wait for 3 seconds before checking if all units are dead
                         //you won lol
                         state = 0;
+
+                        int reward = reward(wave);
+                        if(reward == 1){
+                            coreDamage = Math.max(0, coreDamage - maxCoreDamage / 2);
+                            if(core != null){
+                                MindyFx.coreHeal.at(core, core.block.size);
+                                MindySounds.portalOpen.at(core, 1.7f);
+                            }
+                        }
+                        else if(reward == 2){
+                            rewardCrystal();
+                        }
+
                         if(isBoss()){
                             if(wave == maxWave){
                                 nextWave = nextWaveCap = 190f; //no real meaning
@@ -465,7 +484,6 @@ public class HardMode {
                                 return;
                             }
                         }
-                        //todo rewards
                     }
                 }
 
@@ -499,7 +517,7 @@ public class HardMode {
 
         //lightning may overlap with other disasters
         public boolean lightningWave(int wave){
-            if(level < 5 || wave <= 1 || wave == maxWave - 1 || wave % 5 == 0) return false;
+            if(level < 5 || wave <= 1 || wave >= maxWave - 1 || wave % 5 == 0) return false;
             switch(level / rankLevel){
                 case 0:
                     return wave % 4 == 2;
@@ -518,7 +536,7 @@ public class HardMode {
 
         //0: none 2: asteroid 3: firestorm 4: laser 5: bhol 6: hardmode units
         public int disaster(int wave){
-            if(wave <= 1 || wave == maxWave - 1) return 0;
+            if(wave <= 1 || wave >= maxWave - 1) return 0;
             if(level < 10) return 0;
             if(wave % 5 == 0) return 6;
             switch(level / rankLevel){
@@ -550,6 +568,17 @@ public class HardMode {
                     if(wave % 5 == 4) return 3;
                     break;
             }
+            return 0;
+        }
+
+        //unlike disasters, this is given at the end of the wave, and may misleadingly look like it is given in the start of the next wave
+        //1: heal 2: crystal
+        public int reward(int wave){
+            if(wave <= 1 || wave >= maxWave - 1) return 0;
+            if(wave % 5 == 0) return 1;
+            rand.setSeed(level + 69);
+            if(rand.random(6) < 1) return 1;
+            if(level > 10 && rand.random(20 - Mathf.clamp(level / 5, 0, 10)) < 1) return 2;
             return 0;
         }
 
@@ -644,7 +673,9 @@ public class HardMode {
 
             if(lightningWave(wave + 1)) table.image(Core.atlas.find("betamindy-disaster1"));
             int dis = disaster(wave + 1);
+            int rew = reward(wave + 1);
             if(dis != 0) table.image(Core.atlas.find("betamindy-disaster" + dis));
+            if(rew != 0) table.image(Core.atlas.find("betamindy-reward" + rew));
             //todo more
         }
     }

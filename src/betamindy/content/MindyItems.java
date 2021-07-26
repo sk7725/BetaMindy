@@ -16,7 +16,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class MindyItems implements ContentList {
-    public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source, cryonite;
+    public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source, cryonite, spaceMatter;
 
     public void load(){
         bittrium = new AnimatedItem("bittrium", Color.valueOf("00ffff")){{
@@ -76,6 +76,12 @@ public class MindyItems implements ContentList {
 
             animDelay = 4f;
             sprites = 10;
+        }};
+
+        //todo animation
+        spaceMatter = new Item("space-matter", Color.valueOf("7c067c")){{
+            hardness = 9;
+            cost = 4;
         }};
 
         /*

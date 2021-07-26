@@ -17,6 +17,7 @@ package betamindy.graphics;
 import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.ui.*;
@@ -63,6 +64,15 @@ public class Drawm {
         Draw.shader();
 
         Draw.reset();
+    }
+
+    public static void shaderRect(float x, float y, float z, TextureRegion region, float r, Shader shader){
+        Draw.draw(z, () -> {
+            Draw.shader(shader);
+            Draw.rect(region, x, y, r);
+            Draw.shader();
+            Draw.reset();
+        });
     }
 
     public static void spark(float x, float y, float size, float width, float r){

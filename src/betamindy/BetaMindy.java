@@ -8,6 +8,7 @@ import arc.util.*;
 import betamindy.graphics.*;
 import betamindy.ui.*;
 import betamindy.util.*;
+import betamindy.world.blocks.campaign.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
@@ -53,7 +54,6 @@ public class BetaMindy extends Mod{
 
     public BetaMindy() {
         super();
-        MindySounds.load();
         pushUtil.init();
         musics.init();
 
@@ -64,6 +64,15 @@ public class BetaMindy extends Mod{
                 if(!Core.settings.getBool("nonmoddedservers")) Vars.defaultServers.clear();
                 Vars.defaultServers.add(new ServerGroup("[white][accent]Modded BetaMindy Server[][]", new String[]{omegaServer}));
             }));
+        });
+
+        Events.on(FileTreeInitEvent.class, e -> Core.app.post(() -> {
+            MindyShaders.load();
+            MindySounds.load();
+        }));
+
+        Events.on(DisposeEvent.class, e -> {
+            MindyShaders.dispose();
         });
     }
 
@@ -87,7 +96,7 @@ public class BetaMindy extends Mod{
         //used for block weather
         Events.run(ClientLoadEvent.class, () -> {
             Vars.content.blocks().each(temp -> {
-                if((temp instanceof ConstructBlock || !temp.hasBuilding()) || temp.icon(Cicon.medium) == Core.atlas.find("error")) return;
+                if(((temp instanceof ConstructBlock) || (temp instanceof Altar) || !temp.hasBuilding()) || !temp.icon(Cicon.full).found()) return;
                 visibleBlockList.add(temp);
             });
 

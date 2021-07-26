@@ -29,8 +29,9 @@ public class Crystal extends Block {
     public TextureRegion[] regions;
     public TextureRegion[] shineRegion;
     public float sizeScl = 10f;
+    public float glowOpacity = 1f;
 
-    public Crystal(String name, Item item){
+    public Crystal(String name, Item item, int amount){
         super(name);
         update = true;
         solid = true;
@@ -38,13 +39,17 @@ public class Crystal extends Block {
         drawDisabled = false;
         enableDrawStatus = false;
         this.item = item;
-        requirements(Category.effect, with(item, 20f));
+        requirements(Category.effect, with(item, amount));
 
         breakSound = MindySounds.shatter;
         deconstructThreshold = 1f; //deconstructing it is a crime
         rebuildable = false;
         hasColor = true;
         mapColor = item.color; //"do not set manually" h
+    }
+
+    public Crystal(String name, Item item){
+        this(name, item, 20);
     }
 
     @Override
@@ -85,7 +90,7 @@ public class Crystal extends Block {
 
             Draw.z(Layer.blockOver - 0.1f);
             Draw.blend(Blending.additive);
-            Draw.color(item.color, 0.5f);
+            Draw.color(item.color, 0.2f);
             Draw.rect("circle-shadow", ox, oy, sizeScl * 1.7f, sizeScl * 1.7f);
             Draw.blend();
             Draw.color();
@@ -98,7 +103,7 @@ public class Crystal extends Block {
 
             if(Vars.renderer.bloom == null) return;
             Draw.z(Layer.bullet - 0.01f);
-            Draw.color(item.color);
+            Draw.color(item.color, glowOpacity);
             Draw.rect(shineRegion[sprite], ox, oy, sizeScl, sizeScl, r);
             Draw.color();
         }

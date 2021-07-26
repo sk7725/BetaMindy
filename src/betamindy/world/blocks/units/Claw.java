@@ -282,7 +282,7 @@ public class Claw extends Block {
 
             if(dst > range){
                 Tmp.v1.set(toV).setLength(range).add(x, y).sub(unit);
-                unit.move(Tmp.v1.x, Tmp.v1.y);
+                if(!spinning || dst < range + 16f) unit.move(Tmp.v1.x, Tmp.v1.y);
                 //unit.vel.setZero();
                 if(unit.dst(x, y) > range + 4f || tension > maxTension){
                     detach(unit.x, unit.y);
@@ -338,6 +338,12 @@ public class Claw extends Block {
             Building n = world.buildWorld(x, y);
             if(n == null || !(n.block instanceof Disabler)) return true;
             return !n.consValid();
+        }
+
+        @Override
+        public void pickedUp(){
+            super.pickedUp();
+            detach(x, y);
         }
 
         @Override
