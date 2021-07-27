@@ -430,7 +430,7 @@ public class MindyFx {
         Lines.stroke(e.fslope());
         Angles.randLenVectors(e.id, 3, 7f + 5f * e.fin(), (x, y) -> {
             vgld[0]++;
-            color(Tmp.c1.fromHsv((Mathf.randomSeed(vgld[0], -60f, 130f) + 360f) % 360f, 1f, 1f).a(1f));
+            color(Tmp.c1.fromHsv((Mathf.randomSeed(vgld[0], -60f, 130f) + 360f) % 360f, 0.8f, 1f).a(1f));
             Lines.poly(e.x+x, e.y+y, 4, e.fslope()*0.7f+0.55f * Mathf.randomSeed(vgld[0]));
         });
     }),
@@ -471,10 +471,10 @@ public class MindyFx {
 
     crystalBreakSpace = new Effect(90f, e -> {
         e.scaled(25f, s -> {
-            vgld[0] = 0;
+            vgld[0] = e.id;
             randLenVectors(e.id, e.id % 4 + 4, 2f + 19f * s.finpow(), (x, y) -> {
                 vgld[0]++;
-                color(Tmp.c1.fromHsv((Mathf.randomSeed(vgld[0], -60f, 130f) + 360f) % 360f, 1f, 1f).a(1f));
+                color(Tmp.c1.fromHsv((Mathf.randomSeed(vgld[0], -60f, 130f) + 360f) % 360f, 0.8f, 1f).a(1f));
                 shard(e.x + x, e.y + y, 5f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 4f * s.fout(), Mathf.angle(x, y));
             });
         });
@@ -720,5 +720,12 @@ public class MindyFx {
             lineAngleCenter(e.x + x, e.y + y + 10f * e.finpow(), 0f, 4.5f);
             lineAngleCenter(e.x + x, e.y + y + 10f * e.finpow(), 90f, 4.5f);
         });
-    });
+    }),
+
+    openBox = new Effect(70f, e -> {
+        color(Color.white, e.fout(0.5f));
+        float heat = e.fin();
+        rect("betamindy-box-lid0", e.x + heat * 15f , e.y + heat * (0.7f - heat) * 27f, heat * 360f * Mathf.randomSeed(e.id) + e.rotation);
+        rect("betamindy-box-lid1", e.x + heat * -15f, e.y + heat * (0.7f - heat) * 27f, heat * 360f * Mathf.randomSeed(e.id+1) + e.rotation);
+    }).layer(Layer.turret);
 }

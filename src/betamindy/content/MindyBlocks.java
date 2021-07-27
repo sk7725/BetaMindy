@@ -46,7 +46,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer, altar,
+    silo, warehouse, pressureContainer, altar, box,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -1024,6 +1024,10 @@ public class MindyBlocks implements ContentList {
             range = 600f;
 
             patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
+        }};
+
+        box = new Box("box"){{
+            requirements(Category.effect, BuildVisibility.shown, with(Items.graphite, 1));
         }};
 
         altar = new Altar("altar"){{

@@ -219,7 +219,7 @@ public class ClearPipe extends Block {
                 }
                 Player p = unit.getPlayer();
                 unit.remove();
-                if(!net.client()) p.unit(unit());
+                /*if(!net.client())*/ p.unit(unit());
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir, this));
             }
             else{
@@ -255,7 +255,7 @@ public class ClearPipe extends Block {
 
         @Override
         public boolean canControl(){
-            return unit().isPlayer() || (control.input.controlledType == UnitTypes.block && world.buildWorld(player.x, player.y) == self());
+            return headless || unit().isPlayer() || (control.input.controlledType == UnitTypes.block && world.buildWorld(player.x, player.y) == self());
         }
 
         @Override
@@ -269,7 +269,7 @@ public class ClearPipe extends Block {
             }
             if(heat >= 0f) heat -= 0.005f * delta();
 
-            if(unit().isPlayer() && unit().getPlayer() == player){
+            if(!headless && unit().isPlayer() && unit().getPlayer() == player){
                 int input = Useful.dwas();
                 if(input >= 0 && lastPlayerKey != input){
                     configure(input);
@@ -371,7 +371,7 @@ public class ClearPipe extends Block {
             if(u.f < 0f) u.initf = read.f();
             if(read.bool()){
                 u.savedTile = world.tile(read.i());
-                if(!read.bool()) return u;
+                if(!read.bool() || headless) return u;
                 player.set(u.savedTile.worldx(), u.savedTile.worldy());
                 Core.app.post(() -> {
                     Core.camera.position.set(this);
@@ -568,7 +568,7 @@ public class ClearPipe extends Block {
                 //special animation playing for fat units, do nothing
                 f += Time.delta;
                 Tmp.v1.trns(from * 90f, tilesize * build.block.size / 2f).add(build);
-                if(player() == player) playerPipe.unit().set(Tmp.v1);
+                if(player() != null && !net.active()) playerPipe.unit().set(Tmp.v1); //this is 99% aesthetics, and may cause rubberbanding issues for servers
                 if(Mathf.chance(suckSmokeChance)) suckSmokeEffect.at(Tmp.v2.trns(from * 90f, -3f).add(Tmp.v1), from * 90f);
                 /*Useful.lockCam(Tmp.v1.trns(from * 90f + 180f, size * build.block.size / 2f).add(build));*/
                 if(f >= 0f){
