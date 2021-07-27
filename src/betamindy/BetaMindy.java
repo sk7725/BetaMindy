@@ -56,6 +56,7 @@ public class BetaMindy extends Mod{
         super();
         pushUtil.init();
         musics.init();
+        MindySounds.load();
 
         Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false);
         Events.on(ClientLoadEvent.class, e -> {
@@ -68,7 +69,6 @@ public class BetaMindy extends Mod{
 
         Events.on(FileTreeInitEvent.class, e -> Core.app.post(() -> {
             MindyShaders.load();
-            MindySounds.load();
         }));
 
         Events.on(DisposeEvent.class, e -> {

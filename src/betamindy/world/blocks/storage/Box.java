@@ -24,7 +24,7 @@ public class Box extends Block {
     public TextureRegion boxRegion, baseRegion, bottle, bottleTop;
 
     public Effect openEffect = MindyFx.openBox;
-    public Sound openSound = Sounds.cutter; //todo
+    public Sound openSound = Sounds.none; //todo
     public Box(String name){
         super(name);
         solid = true;

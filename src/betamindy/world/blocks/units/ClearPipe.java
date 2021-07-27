@@ -209,7 +209,7 @@ public class ClearPipe extends Block {
         }
 
         public void acceptUnit(Unit unit, int dir){
-            if(!unit.isAdded() || unit.team != team) return;
+            if(!unit.isValid() || unit.dead() || !unit.isAdded() || unit.team != team) return;
 
             if(unit.isPlayer()){
                 if(unit() != null && unit().isPlayer() && unit().getPlayer() != unit.getPlayer()){
@@ -583,7 +583,7 @@ public class ClearPipe extends Block {
 
                 f += build.delta() * build.speed();
                 Player p = player();
-                if(p == null && playerPipe != null) playerPipe = null;
+                if(p == null && playerPipe != null && !net.active()) playerPipe = null;
 
                 if(p == null && unit.unit.spawnedByCore){
                     Fx.unitDespawn.at(unit.unit.x, unit.unit.y, 0f, unit.unit);
@@ -595,7 +595,7 @@ public class ClearPipe extends Block {
                     Tmp.v1.trns(from * 90f, tilesize * (0.5f - f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,from * 90f + 180f);
                     //not halfway yet
-                    if(playerPipe != null){
+                    if(p != null){
                         int input = playerPipe.lastPlayerKey;
                         if(input >= 0 && from != input && build.validPipe(input)){
                             to = input;
@@ -620,7 +620,7 @@ public class ClearPipe extends Block {
                     }
                     Tmp.v1.trns(to * 90f, tilesize * (Math.min(f, 1f) - 0.5f) * build.block.size).add(build);
                     unit.set(Tmp.v1.x, Tmp.v1.y,to * 90f);
-                    if(playerPipe != null){
+                    if(p != null){
                         playerPipe.unit().set(Tmp.v1);
                         if(!headless && mobile && p == player) Core.camera.position.set(Tmp.v1);
                     }
