@@ -19,12 +19,12 @@ import mindustry.world.*;
 import static arc.Core.atlas;
 
 public class Box extends Block {
-    public int sprites = 4;
+    public int sprites = 7;
     public TextureRegion[] topRegions;
     public TextureRegion boxRegion, baseRegion, bottle, bottleTop;
 
     public Effect openEffect = MindyFx.openBox;
-    public Sound openSound = Sounds.none; //todo
+    public Sound openSound = MindySounds.boxOpen;
     public Box(String name){
         super(name);
         solid = true;
@@ -63,7 +63,7 @@ public class Box extends Block {
             if(open) return;
             open = true;
             openEffect.at(x, y, (sprite() % 2) * 80f + Mathf.random(10f));
-            openSound.at(this);
+            openSound.at(x, y, Mathf.random(0.8f, 1.2f));
         }
 
         public int sprite(){
