@@ -16,6 +16,7 @@ repositories{
 }
 
 dependencies{
+    annotationProcessor 'com.github.Anuken:jabel:34e4c172e65b3928cd9eabe1993654ea79c409cd'
     implementation "com.github.Anuken.Mindustry:core:$pVer"
 }
 
@@ -74,3 +75,15 @@ task dexify(type: Jar){
 }
 
 task buildDex dependsOn "build", "dexify"
+
+tasks.withType(JavaCompile){
+    targetCompatibility = 8
+    sourceCompatibility = JavaVersion.VERSION_14
+    options.encoding = "UTF-8"
+    options.forkOptions.jvmArgs.addAll([
+            '--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED'
+    ])
+    options.compilerArgs.addAll(['--release', '8'])
+    compileJava.options.fork = true
+}
