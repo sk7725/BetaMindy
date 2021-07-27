@@ -63,6 +63,7 @@ public class ClearPipe extends Block {
         noUpdateDisabled = false;
         drawDisabled = conditional;
         rotate = false;
+        sync = true;
 
         config(Integer.class, (ClearPipeBuild build, Integer i) -> {
             if(0 <= i && i < 4) build.lastPlayerKey = i;
@@ -201,6 +202,7 @@ public class ClearPipe extends Block {
             else{
                 //wide rectangle
                 Units.nearby(x + ox - size * 4f, y + oy - 4f, size * 8f, 8f, u -> {
+                    if(!canChangeTeam && u.team != team) return;
                     if(u.x >= x + ox - size * 4f && u.x <= x + ox + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
                         acceptUnit(u, dir);
                     }
@@ -209,7 +211,7 @@ public class ClearPipe extends Block {
         }
 
         public void acceptUnit(Unit unit, int dir){
-            if(!unit.isValid() || unit.dead() || !unit.isAdded() || unit.team != team) return;
+            if(!unit.isValid() || unit.dead() || !unit.isAdded() || unit.team != team || unit.hasEffect(MindyStatusEffects.ouch)) return;
 
             if(unit.isPlayer()){
                 if(unit() != null && unit().isPlayer() && unit().getPlayer() != unit.getPlayer()){
@@ -219,7 +221,10 @@ public class ClearPipe extends Block {
                 }
                 Player p = unit.getPlayer();
                 unit.remove();
-                /*if(!net.client())*/ p.unit(unit());
+                if(!net.client()){
+                    p.unit(unit());
+                    if(net.active()) Call.unitControl(player, unit());
+                }
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir, this));
             }
             else{
