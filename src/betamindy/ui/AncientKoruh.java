@@ -11,10 +11,12 @@ public class AncientKoruh {
         TextureRegion sheet = atlas.find("betamindy-koruh-font");
         TextureRegion sheetUI = atlas.find("betamindy-koruh-ui"); //sheetUI is in the ui folder and thus the UI atlas (idk)
 
-        TextureRegion[][] s = sheet.split(16, 16);
-        for(int i = 0; i < s.length; i++){
-            for(int j = 0; j < s[0].length; j++){ //if it isnt a perfect rectangle, it wont go well
-                icons[j * s.length + i] = s[i][j];
+        if(sheet.found()){
+            TextureRegion[][] s = sheet.split(16, 16);
+            for(int i = 0; i < s.length; i++){
+                for(int j = 0; j < s[0].length; j++){ //if it isnt a perfect rectangle, it wont go well
+                    icons[Math.min(j * s.length + i, 29)] = s[i][j];
+                }
             }
         }
 
