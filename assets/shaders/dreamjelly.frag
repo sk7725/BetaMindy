@@ -84,7 +84,7 @@ vec3 starLayer(vec2 uv,float scale,vec2 parallax,mat2 rotate,float sizevary,floa
     float gay = localisednoise(uv+vec2(1.0));
     if(gay>chance){return col;}
     vec2 pos = vec2(gay,localisednoise(uv+vec2(2.0)))*0.7+vec2(0.15-0.5);
-    float size = sizevary*(zigzag((u_time / 60f)*scale*0.5+5.0*localisednoise(uv+vec2(9.0))));
+    float size = sizevary*(zigzag((u_time / 60.)*scale*0.5+5.0*localisednoise(uv+vec2(9.0))));
     size+=1.0;
     if(sdOpenBox(rotate*(mod(uv,vec2(1.0)) - vec2(0.5)+pos), vec2(0.08*size), vec2(0.04*size) )<0.){
         col = hue(localisednoise(uv)*PI);
