@@ -52,6 +52,8 @@ public class ClearPipe extends Block {
     public Sound popSound = MindySounds.pipePop;
     public Sound suckSound = MindySounds.pipeIn;
     public Sound squeezeSound = MindySounds.pipeSqueeze;
+    public final int timerConfigure = timers++;
+    public final static float configInterval = 60f;
     //public float squeezeSoundLength = 120f;
 
     public ClearPipe(String name){
@@ -193,21 +195,28 @@ public class ClearPipe extends Block {
             if(dir % 2 == 0){
                 //tall rectangle
                 Units.nearby(x + ox - 4f, y + oy - size * 4f, 8f, size * 8f, u -> {
-                    if(!canChangeTeam && u.team != team) return;
                     if(u.y >= y + oy - size * 4f && u.y <= y + oy + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
-                        acceptUnit(u, dir);
+                        acceptAttempt(u, dir);
                     }
                 });
             }
             else{
                 //wide rectangle
                 Units.nearby(x + ox - size * 4f, y + oy - 4f, size * 8f, 8f, u -> {
-                    if(!canChangeTeam && u.team != team) return;
                     if(u.x >= x + ox - size * 4f && u.x <= x + ox + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
-                        acceptUnit(u, dir);
+                        acceptAttempt(u, dir);
                     }
                 });
             }
+        }
+
+        public void acceptAttempt(Unit u, int dir){
+            if(!canChangeTeam && u.team != team) return;
+            if(net.active()){
+                if(u.isLocal() && connections == 1 && timer(timerConfigure, configInterval)) configure(true);
+                return;
+            }
+            acceptUnit(u, dir);
         }
 
         public void acceptUnit(Unit unit, int dir){
@@ -220,11 +229,9 @@ public class ClearPipe extends Block {
                     return;
                 }
                 Player p = unit.getPlayer();
+                if(p == null) return;
                 unit.remove();
-                if(!net.client()){
-                    p.unit(unit());
-                    if(net.active()) Call.unitControl(player, unit());
-                }
+                p.unit(unit());//wrap this with !net.client?
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir, this));
             }
             else{
@@ -254,6 +261,17 @@ public class ClearPipe extends Block {
         }
 
         @Override
+        public void configured(Unit builder, Object value){
+            if((value instanceof Boolean) && builder != null && builder.isPlayer()){
+                if(connections != 1) return; //do not let players inside 1-block pipes as that's unneeded and just promotes lag
+                if((Boolean)value){
+                    acceptUnit(builder, rotation);
+                }
+            }
+            super.configured(builder, value);
+        }
+
+        @Override
         public Unit unit(){
             return (Unit)blockUnit;
         }
@@ -276,7 +294,7 @@ public class ClearPipe extends Block {
 
             if(!headless && unit().isPlayer() && unit().getPlayer() == player){
                 int input = Useful.dwas();
-                if(input >= 0 && lastPlayerKey != input){
+                if(input >= 0 && lastPlayerKey != input && timer(timerConfigure, configInterval)){
                     configure(input);
                     lastPlayerKey = input;
                 }
@@ -355,6 +373,7 @@ public class ClearPipe extends Block {
         public void read(Reads read, byte revision){
             super.read(read, revision);
             int size = read.s();
+            units.clear();
             for(int i = 0; i < size; i++){
                 units.add(readUnit(read));
             }

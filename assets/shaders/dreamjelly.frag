@@ -99,7 +99,7 @@ void main(){
     vec2 uv = gl_FragCoord.xy/u_resolution.xy * 3.;
     //vec2 uv = v_texCoords.xy; // test nope
     uv.x*=(u_resolution.x/u_resolution.y);
-    vec2 parrallax = u_offset.xy/50.0 + u_time / 60f; // set this to the camera position in the mod
+    vec2 parrallax = u_offset.xy/50.0 + u_time / 60.; // set this to the camera position in the mod
 
     //pixellate
     //uv -= mod(uv,0.009);
