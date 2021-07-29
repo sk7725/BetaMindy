@@ -80,6 +80,6 @@ tasks.withType(JavaCompile){
     sourceCompatibility = 14
     options.encoding = "UTF-8"
     options.compilerArgs += ["-Xlint:deprecation"]
-    options.compilerArgs += ["--enable-preview"]
+    options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
     compileJava.options.fork = true
 }
