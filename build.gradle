@@ -78,12 +78,12 @@ task buildDex dependsOn "build", "dexify"
 
 tasks.withType(JavaCompile){
     targetCompatibility = 8
-    sourceCompatibility = JavaVersion.VERSION_14
+    sourceCompatibility = 14
     options.encoding = "UTF-8"
-    options.forkOptions.jvmArgs.addAll([
-        '--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
-        '--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED'
-    ])
-    options.compilerArgs.addAll(['--release', '8'])
+    options.compilerArgs += ["-Xlint:deprecation"]
+    options.compilerArgs.addAll(['--release', '8', '--enable-preview])
     compileJava.options.fork = true
+    if(JavaVersion.current() != JavaVersion.VERSION_1_8){
+        options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
+    }
 }
