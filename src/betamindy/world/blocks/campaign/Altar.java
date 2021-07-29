@@ -62,6 +62,7 @@ public class Altar extends Block {
         configurable = true;
         saveConfig = false;
         noUpdateDisabled = false;
+        sync = true;
 
         config(Integer.class, (AltarBuild build, Integer i) -> {
             if(i < 1 || i > pages.size) return;
@@ -205,17 +206,18 @@ public class Altar extends Block {
 
             if(heatTorchSum > 0.999f && heat > 0.999f){
                 phase = 1;
-                initTorch();
+                initTorch(hardmode.experience);
             }
         }
 
-        public void initTorch(){
+        public void initTorch(int seed){
+            phase = 1;
             int rank = hardmode.level() / HardMode.rankLevel;
             amount = rank >= 7 ? 12800 : 100 << rank;
             amount /= 4;
             heat = 0f;
             for(int i = 0; i < torches; i++){
-                sacrifice[i] = charged ? Items.coal : FireColor.items.get(Mathf.random(0, Math.min(FireColor.items.size - 1, 6 + rank * 2)));
+                sacrifice[i] = charged ? Items.coal : FireColor.items.get(Mathf.randomSeed(((long) seed) * torches + i, 0, Math.min(FireColor.items.size - 1, 6 + rank * 2)));
                 made[i] = 0;
                 Tile torch = torch(i);
                 if(torch != null && !charged){

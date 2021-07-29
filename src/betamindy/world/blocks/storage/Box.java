@@ -21,9 +21,10 @@ import static arc.Core.atlas;
 public class Box extends Block {
     public int sprites = 7;
     public TextureRegion[] topRegions;
-    public TextureRegion boxRegion, baseRegion, bottle, bottleTop;
+    public TextureRegion boxRegion, baseRegion, boxTopRegion, bottle, bottleTop;
 
-    public Effect openEffect = MindyFx.openBox;
+    public Effect destroyEffect = MindyFx.openBox;
+    public Effect despawnEffect = MindyFx.despawnBox;
     public Sound openSound = MindySounds.boxOpen;
     public Box(String name){
         super(name);
@@ -39,6 +40,7 @@ public class Box extends Block {
         //alwaysUnlocked = true;
         unloadable = true;
         rebuildable = false;
+        breakSound = MindySounds.boxOpen;
     }
     //todo unlock this block when shop is researched
 
@@ -47,6 +49,7 @@ public class Box extends Block {
         super.load();
         baseRegion = atlas.find(name + "-base", "betamindy-box-base");
         boxRegion = atlas.find(name + "-box", "betamindy-box-box"); //shut
+        boxTopRegion = atlas.find(name + "-boxtop", "betamindy-box-boxtop");
         topRegions = new TextureRegion[sprites];
         for(int i = 0; i < sprites; i++){
             topRegions[i] = atlas.find(name + i, name);
@@ -62,7 +65,7 @@ public class Box extends Block {
         public void openBox(){
             if(open) return;
             open = true;
-            openEffect.at(x, y, (sprite() % 2) * 80f + Mathf.random(10f));
+            //openEffect.at(x, y, (sprite() % 2) * 80f + Mathf.random(10f));
             openSound.at(x, y, Mathf.random(0.8f, 1.2f));
         }
 
@@ -72,7 +75,6 @@ public class Box extends Block {
 
         @Override
         public void updateTile(){
-            super.updateTile();
             if(items.any() && timer(timerDump, dumpTime)){
                 if(dump()) openBox();
             }
@@ -80,33 +82,44 @@ public class Box extends Block {
                 hadLiquid = true;
                 dumpLiquid(liquids.current());
             }
+            else{
+                if(open && items.empty()){
+                    //despawn
+                    despawnEffect.at(x, y, 0f, topRegions[sprite()]);
+                    tile.remove();
+                    remove();
+                }
+            }
+        }
+
+        @Override
+        public void drawSelect(){
+            Draw.z(Layer.block + 0.01f);
+            Draw.rect(baseRegion, x, y);
+            if(items.any()){
+                TextureRegion icon = items.first().icon(Cicon.small);
+                for(int i = 0; i < items.total() * 5 / itemCapacity; i++){
+                    Draw.rect(icon, x + Mathf.randomSeed(id + i) * 3f * size - 1.5f, y + Mathf.randomSeed(id + i + 10) * 3f * size - 1.5f, 4f, 4f);
+                }
+            }
+            if(liquids.total() > 0.001f || hadLiquid){
+                int p = Mathf.randomSeed(id, 0, 3);
+                Tmp.v1.trns(45f + 90f * p, 2.121f * size).add(this);
+                if(liquids.total() > 0.01f){
+                    Draw.color(Color.white, liquids.current().color, liquids.total() / liquidCapacity * 0.6f);
+                }
+                Draw.rect(bottle, Tmp.v1.x, Tmp.v1.y);
+                Draw.color();
+                Draw.rect(bottleTop, Tmp.v1.x, Tmp.v1.y);
+            }
+            Draw.rect(boxRegion, x, y, (sprite() % 2) * 90f);
+            Draw.z(Layer.blockOver);
+            Draw.rect(boxTopRegion, x, y, (sprite() % 2) * 90f);
         }
 
         @Override
         public void draw(){
-            if(open){
-                Draw.rect(baseRegion, x, y);
-                if(items.any()){
-                    TextureRegion icon = items.first().icon(Cicon.small);
-                    for(int i = 0; i < items.total() * 5 / itemCapacity; i++){
-                        Draw.rect(icon, x + Mathf.randomSeed(id + i) * 3f * size - 1.5f, y + Mathf.randomSeed(id + i + 10) * 3f * size - 1.5f, 4f, 4f);
-                    }
-                }
-                if(liquids.total() > 0.001f || hadLiquid){
-                    int p = Mathf.randomSeed(id, 0, 3);
-                    Tmp.v1.trns(45f + 90f * p, 2.121f * size).add(this);
-                    if(liquids.total() > 0.01f){
-                        Draw.color(Color.white, liquids.current().color, liquids.total() / liquidCapacity * 0.6f);
-                    }
-                    Draw.rect(bottle, Tmp.v1.x, Tmp.v1.y);
-                    Draw.color();
-                    Draw.rect(bottleTop, Tmp.v1.x, Tmp.v1.y);
-                }
-                Draw.rect(boxRegion, x, y, (sprite() % 2) * 90f);
-            }
-            else{
-                Draw.rect(topRegions[sprite()], x, y);
-            }
+            Draw.rect(topRegions[sprite()], x, y);
         }
 
         @Override
@@ -158,6 +171,11 @@ public class Box extends Block {
         public void write(Writes write){
             super.write(write);
             write.bool(open);
+        }
+
+        @Override
+        public void onDestroyed(){
+            destroyEffect.at(x, y);
         }
     }
 }

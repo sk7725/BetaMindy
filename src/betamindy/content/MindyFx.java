@@ -725,7 +725,17 @@ public class MindyFx {
     openBox = new Effect(70f, e -> {
         color(Color.white, e.fout(0.5f));
         float heat = e.fin();
-        rect("betamindy-box-lid0", e.x + heat * 15f , e.y + heat * (0.7f - heat) * 27f, heat * 360f * Mathf.randomSeed(e.id) + e.rotation);
-        rect("betamindy-box-lid1", e.x + heat * -15f, e.y + heat * (0.7f - heat) * 27f, heat * 360f * Mathf.randomSeed(e.id+1) + e.rotation);
-    }).layer(Layer.turret);
+        rect("betamindy-box-lid0", e.x + heat * 15f , e.y + heat * (0.7f - heat) * 27f, (heat + 1f) * 360f * Mathf.randomSeed(e.id));
+        rect("betamindy-box-lid1", e.x + heat * -15f, e.y + heat * (0.7f - heat) * 27f, (heat + 1f) * 360f * Mathf.randomSeed(e.id+1));
+    }).layer(Layer.turret),
+
+    despawnBox = new Effect(60f, e -> {
+        if((int)(Time.globalTime / 10f) % 2 == 0) return;
+        if(e.data instanceof TextureRegion reg){
+            rect(reg, e.x, e.y);
+        }
+        else{
+            rect(MindyBlocks.box.region, e.x, e.y);
+        }
+    }).layer(Layer.blockOver);
 }
