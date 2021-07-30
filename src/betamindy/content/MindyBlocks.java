@@ -964,14 +964,14 @@ public class MindyBlocks implements ContentList {
         }};
 
         crystalSpace = new ShaderCrystal("space-crystal", MindyItems.spaceMatter){{
-            sprites = 2;
+            sprites = 6;
             updateEffect = MindyFx.sparkleSpace;
             destroyEffect = MindyFx.crystalBreakSpace;
             shader = MindyShaders.space;
 
             color1 = Color.magenta;
             color2 = Color.yellow;
-            glowOpacity = 0.65f;
+            glowOpacity = 0.75f;
             auraOpacity = 0.2f;
         }};
 
@@ -979,6 +979,7 @@ public class MindyBlocks implements ContentList {
             sprites = 2;
             updateEffect = MindyFx.sparkleBittrium;
             destroyEffect = MindyFx.crystalBreakBittrium;
+            status = MindyStatusEffects.bittriumBane;
             shader = MindyShaders.bittrium;
             glowOpacity = 0.9f;
         }};

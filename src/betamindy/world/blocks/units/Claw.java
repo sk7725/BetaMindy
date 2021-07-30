@@ -415,20 +415,20 @@ public class Claw extends Block {
 
         @Override
         public double sense(LAccess sensor){
-            switch(sensor){
-                case shootX: return targetV.x + x;
-                case shootY: return targetV.y + y;
-                case shooting: return heldBuild != null ? 2 : (unit != null ? 1 : 0);
-                default: return super.sense(sensor);
-            }
+            return switch(sensor){
+                case shootX -> World.conv(targetV.x + x);
+                case shootY -> World.conv(targetV.y + y);
+                case shooting -> heldBuild != null ? 2 : (unit != null ? 1 : 0);
+                default -> super.sense(sensor);
+            };
         }
 
         @Override
         public Object senseObject(LAccess sensor){
-            switch(sensor){
-                case payloadType: return heldBuild != null ? heldBuild.block() : unit;
-                default: return super.senseObject(sensor);
-            }
+            return switch(sensor){
+                case payloadType -> heldBuild != null ? heldBuild.block() : unit;
+                default -> super.senseObject(sensor);
+            };
         }
 
         @Override

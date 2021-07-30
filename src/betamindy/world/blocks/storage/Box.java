@@ -107,7 +107,7 @@ public class Box extends Block {
                 int p = Mathf.randomSeed(id, 0, 3);
                 Tmp.v1.trns(45f + 90f * p, 2.121f * size).add(this);
                 if(liquids.total() > 0.01f){
-                    Draw.color(Color.white, liquids.current().color, liquids.total() / liquidCapacity * 0.6f);
+                    Draw.color(Color.white, liquids.current().color, Mathf.clamp(liquids.total() / liquidCapacity));
                 }
                 Draw.rect(bottle, Tmp.v1.x, Tmp.v1.y);
                 Draw.color();

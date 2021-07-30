@@ -13,11 +13,12 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.StatusEffect;
 import mindustry.ui.*;
+import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.hardmode;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane;
 
     public void load(){
         //marker for portal-spawned enemies
@@ -214,6 +215,35 @@ public class MindyStatusEffects implements ContentList {
 
             {
                 color = Pal2.source;
+            }
+        };
+
+        bittriumBane = new StatusEffect("bittbane"){
+            @Override
+            public void draw(Unit unit){
+                if(unit.type.outlineRegion == null || !unit.type.outlineRegion.found()) return;
+                Draw.z(Layer.effect);
+                Draw.color(Color.cyan, Color.pink, Mathf.absin(Time.globalTime, 8f, 1f));
+                Draw.rect(unit.type.outlineRegion, unit.x, unit.y, unit.rotation - 90);
+                Draw.color();
+            }
+
+            {
+                color = Color.cyan;
+                effect = MindyFx.sparkleBittrium;
+                damageMultiplier = Float.POSITIVE_INFINITY;
+                healthMultiplier = 0.000001f;
+                reloadMultiplier = 0.25f;
+                speedMultiplier = 1.25f;
+            }
+
+            @Override
+            public void setStats(){
+                super.setStats();
+                stats.remove(Stat.damageMultiplier);
+                stats.add(Stat.damageMultiplier, "[cyan]NULL[]");
+                stats.remove(Stat.healthMultiplier);
+                stats.add(Stat.healthMultiplier, "[pink]NULL[]");
             }
         };
     }

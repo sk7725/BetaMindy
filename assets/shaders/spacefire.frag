@@ -16,5 +16,5 @@ void main(){
     vec3 color1 = vec3(0.900,0.1,0.7);
     vec3 color2 = vec3(0.300,0.9,0.05);
     vec3 fin = color1 * formafinal + color2 * formafinal2;
-    gl_FragColor = vec4(color.rgb / 2. + fin, color.a);
+    gl_FragColor = vec4(color.rgb + fin / 1.5, color.a);
 }
