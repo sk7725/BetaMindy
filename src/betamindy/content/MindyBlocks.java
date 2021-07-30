@@ -535,10 +535,6 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, with(Items.titanium, 5, Items.thorium, 5));
         }};
 
-        present = new PresentBox("present"){{
-            requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
-        }};
-
         leadWall = new Wall("lead-wall"){{
             health = 360;
             requirements(Category.defense, with(Items.lead, 6));
@@ -1027,7 +1023,11 @@ public class MindyBlocks implements ContentList {
         }};
 
         box = new Box("box"){{
-            requirements(Category.effect, BuildVisibility.shown, with(Items.graphite, 1));
+            requirements(Category.effect, BuildVisibility.shown, with(Items.graphite, 5));
+        }};
+
+        present = new PresentBox("present"){{
+            requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
         }};
 
         altar = new Altar("altar"){{

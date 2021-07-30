@@ -261,7 +261,7 @@ public class Useful {
         Events.fire(new EventType.UnitUnloadEvent(u.unit));
         player.unit(u.unit);
         if(net.active()) Call.unitControl(player, u.unit);
-        u.unit.apply(MindyStatusEffects.ouch, 60f);
+        u.unit.apply(MindyStatusEffects.ouch, 10f);
 
         return true;
     }

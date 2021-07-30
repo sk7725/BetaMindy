@@ -39,6 +39,7 @@ if(Version.number > 6 && !Vars.headless){
         setProp("betamindy-tensor-crystal");
         setProp("betamindy-space-crystal");
         setProp("betamindy-bittrium-crystal");
+        setProp("betamindy-box");
 
         swapBreakSound("betamindy-cryo-wall");
         swapBreakSound("betamindy-cryo-wall-large");

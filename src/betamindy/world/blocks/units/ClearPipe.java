@@ -53,7 +53,8 @@ public class ClearPipe extends Block {
     public Sound suckSound = MindySounds.pipeIn;
     public Sound squeezeSound = MindySounds.pipeSqueeze;
     public final int timerConfigure = timers++;
-    public final static float configInterval = 60f;
+    public final int timerControl = timers++;
+    public final static float configInterval = 30f;
     //public float squeezeSoundLength = 120f;
 
     public ClearPipe(String name){
@@ -195,7 +196,7 @@ public class ClearPipe extends Block {
             if(dir % 2 == 0){
                 //tall rectangle
                 Units.nearby(x + ox - 4f, y + oy - size * 4f, 8f, size * 8f, u -> {
-                    if(u.y >= y + oy - size * 4f && u.y <= y + oy + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
+                    if(!u.vel.isZero() && u.y >= y + oy - size * 4f && u.y <= y + oy + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
                         acceptAttempt(u, dir);
                     }
                 });
@@ -203,7 +204,7 @@ public class ClearPipe extends Block {
             else{
                 //wide rectangle
                 Units.nearby(x + ox - size * 4f, y + oy - 4f, size * 8f, 8f, u -> {
-                    if(u.x >= x + ox - size * 4f && u.x <= x + ox + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
+                    if(!u.vel.isZero() && u.x >= x + ox - size * 4f && u.x <= x + ox + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
                         acceptAttempt(u, dir);
                     }
                 });
@@ -213,14 +214,17 @@ public class ClearPipe extends Block {
         public void acceptAttempt(Unit u, int dir){
             if(!canChangeTeam && u.team != team) return;
             if(net.active()){
-                if(u.isLocal() && connections == 1 && timer(timerConfigure, configInterval)) configure(true);
+                if(u.isLocal() && connections == 1 && timer(timerConfigure, configInterval)){
+                    u.vel.setZero();
+                    configure(true);
+                }
                 return;
             }
             acceptUnit(u, dir);
         }
 
         public void acceptUnit(Unit unit, int dir){
-            if(!unit.isValid() || unit.dead() || !unit.isAdded() || unit.team != team || unit.hasEffect(MindyStatusEffects.ouch)) return;
+            if(!unit.isValid() || unit.dead() || !unit.isAdded() || unit.team != team) return;
 
             if(unit.isPlayer()){
                 if(unit() != null && unit().isPlayer() && unit().getPlayer() != unit.getPlayer()){
@@ -231,13 +235,15 @@ public class ClearPipe extends Block {
                 Player p = unit.getPlayer();
                 if(p == null) return;
                 unit.remove();
-                p.unit(unit());//wrap this with !net.client?
+                if(!net.client()) p.unit(unit());//wrap this with !net.client?
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir, this));
             }
             else{
                 unit.remove();
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir));
             }
+
+            unit.vel.setZero();
 
             if(!headless){
                 if(!units.peek().datBigBoi()){
@@ -294,7 +300,7 @@ public class ClearPipe extends Block {
 
             if(!headless && unit().isPlayer() && unit().getPlayer() == player){
                 int input = Useful.dwas();
-                if(input >= 0 && lastPlayerKey != input && timer(timerConfigure, configInterval)){
+                if(input >= 0 && lastPlayerKey != input && timer(timerControl, 25f)){
                     configure(input);
                     lastPlayerKey = input;
                 }
@@ -575,13 +581,18 @@ public class ClearPipe extends Block {
             }
 
             unit.unit.vel.trns(r, ejectStrength / 2f);
+            final Unit u = unit.unit;
 
             if(p == null){
-                unit.dump();
+                if(unit.dump()){
+                    Core.app.post(() -> u.vel.trns(r, ejectStrength / 2f));
+                }
             }
             else{
                 //Useful.unlockCam();
-                Useful.dumpPlayerUnit(unit, p);
+                if(Useful.dumpPlayerUnit(unit, p)){
+                    Core.app.post(() -> u.vel.trns(r, ejectStrength / 2f));
+                }
             }
         }
 

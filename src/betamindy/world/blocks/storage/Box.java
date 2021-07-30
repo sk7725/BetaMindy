@@ -1,9 +1,11 @@
 package betamindy.world.blocks.storage;
 
+import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
@@ -17,6 +19,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 
 import static arc.Core.atlas;
+import static mindustry.Vars.*;
 
 public class Box extends Block {
     public int sprites = 7;
@@ -82,18 +85,16 @@ public class Box extends Block {
                 hadLiquid = true;
                 dumpLiquid(liquids.current());
             }
-            else{
-                if(open && items.empty()){
-                    //despawn
-                    despawnEffect.at(x, y, 0f, topRegions[sprite()]);
-                    tile.remove();
-                    remove();
-                }
+
+            if((open || hadLiquid) && items.empty() && liquids.total() <= 0.1f){
+                //despawn
+                despawnEffect.at(x, y, 0f, topRegions[sprite()]);
+                tile.remove();
+                remove();
             }
         }
 
-        @Override
-        public void drawSelect(){
+        public void drawOpen(){
             Draw.z(Layer.block + 0.01f);
             Draw.rect(baseRegion, x, y);
             if(items.any()){
@@ -114,11 +115,19 @@ public class Box extends Block {
             }
             Draw.rect(boxRegion, x, y, (sprite() % 2) * 90f);
             Draw.z(Layer.blockOver);
-            Draw.rect(boxTopRegion, x, y, (sprite() % 2) * 90f);
+            Draw.rect(boxTopRegion, x, y, (sprite() % 2) * -90f);
+            Draw.reset();
         }
 
         @Override
         public void draw(){
+            if(!Core.scene.hasMouse()){
+                Building b = world.buildWorld(Core.input.mouseWorld().x, Core.input.mouseWorld().y);
+                if(b != null && b.tile == tile){
+                    drawOpen();
+                    return;
+                }
+            }
             Draw.rect(topRegions[sprite()], x, y);
         }
 
