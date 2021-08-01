@@ -57,7 +57,7 @@ public class HardMode {
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             if(!loaded) reset();
-            else loaded = false;
+            loaded = false;
         });
 
         Events.on(EventType.UnitDestroyEvent.class, e -> {
@@ -301,16 +301,21 @@ public class HardMode {
             write.s(portal.level);
             write.i(portal.pos());
             write.f(portal.radius);
-            write.f(portal.state == 1 || portal.state == 2 ? portal.r : portal.nextWave);
+            write.f(portal.r);
+
             write.s(portal.wave);
             write.i(portal.kills);
             write.i(portal.exp);
+            write.f(portal.nextWave);
+
             write.bool(false);//for useCustomSpawn r/w later
         }
     }
 
     public void read(Reads read, byte revision){
-        loaded = true;
+        reset();
+        if(world.isGenerating()) loaded = true; //do not set loaded to true when receiving a block snapshot (i think)
+        Log.info("Loaded hardmode data! isGenerating : " + world.isGenerating());
         if(state.isCampaign()){
             experience = Core.settings.getInt("betamindy-campaign-exp", 0);
         }
@@ -329,11 +334,15 @@ public class HardMode {
             float pRadius = read.f();
             portal = new Portal(pl, pPos.x * tilesize, pPos.y * tilesize, pRadius);
             portal.state = ps;
-            if(ps == 1 || ps == 2) portal.r = read.f();
-            else portal.nextWave = read.f();
+            portal.r = read.f();
+
             portal.wave = read.s();
+            portal.maxWave = 10 + pl / 5;
             portal.kills = read.i();
             portal.exp = read.i();
+            portal.nextWave = read.f();
+            portal.nextWaveCap = (portal.maxWave == portal.wave - 1 ? 1000f + pl * 10f : 500f + pl * 3f);
+
             read.bool();
         }
         else{
@@ -431,6 +440,7 @@ public class HardMode {
                 r = Mathf.lerpDelta(r, state == 1 ? radius : 0f, 0.02f);
                 if(state == 1 && Mathf.equal(r, radius, 0.1f)){
                     state = 0;
+                    r = radius;
                     Useful.cutsceneEnd();
                     BetaMindy.musics.go();
                     return;
@@ -442,6 +452,21 @@ public class HardMode {
                 }
 
                 if(!headless) Useful.cutscene(Tmp.v6.set(x, y));
+            }
+            else if(state == 4){
+                //boss start cutscene
+                r = Mathf.lerpDelta(r, 0f, 0.006f);
+                if(Mathf.zero(r, 0.01f)){
+                    //todo
+                    state = 5;
+                    if(!headless) ui.showOkText("@ui.hardmode.title", "@ui.hardmode.demoend", () -> {});
+                    Time.run(120f, () -> {
+                        stop(false);
+                    });
+                }
+            }
+            else if(state == 5){
+                //todo boss
             }
             else{
                 if(state == 3){
@@ -469,7 +494,7 @@ public class HardMode {
                                 wave++;
                                 if(!headless) BetaMindy.mui.hardfrag.nextWave(this);
                                 state = 4; //boss cutscene
-                                //TODO boss wave
+                                r = radius;
                             }
                             else if(wave >= maxWave + 1){
                                 stop(true);
@@ -508,7 +533,7 @@ public class HardMode {
             if(!headless){
                 control.sound.loop(MindySounds.portalLoop, this, 0.7f);
                 if(heat > 0f) heat -= Time.delta;
-                if(Mathf.chanceDelta(0.01f)){
+                if(state != 4 && Mathf.chanceDelta(0.01f)){
                     Useful.lightningCircle(x, y, r, 6, color());
                     if(renderer.bloom == null) heat = 11f;
                 }
@@ -628,8 +653,20 @@ public class HardMode {
 
         public void draw(){
             int i = Math.min(level / rankLevel, lc1.length - 1);
-            if(renderer.bloom == null) Drawm.portal(x, y, r, tmpc.set(lc1[i]).lerp(Color.white, Mathf.clamp(heat / 11f)), lc2[i]);
-            else Drawm.portal(x, y, r, lc1[i], lc2[i]);
+            if(state == 4){
+                float f = Mathf.clamp(3f * (r / radius) - 2f);
+                float f2 = Mathf.clamp(1.5f * r / radius);
+                Drawm.portal(x, y, f2 * radius, tmpc.set(Pal.remove).lerp(Color.white, f), tmpc);
+            }
+            else{
+                if(renderer.bloom == null){
+                    Drawm.portal(x, y, r, tmpc.set(lc1[i]).lerp(Color.white, Mathf.clamp(heat / 11f)), lc2[i]);
+                }
+                else{
+                    Drawm.portal(x, y, r, lc1[i], lc2[i]);
+                }
+            }
+
             if(renderer.lights.enabled()) Drawf.light(x, y, r * 2.5f, lc1[i], 1f);
         }
 
@@ -678,5 +715,8 @@ public class HardMode {
             if(rew != 0) table.image(Core.atlas.find("betamindy-reward" + rew));
             //todo more
         }
+    }
+    public class RuleCache {
+        //todo
     }
 }

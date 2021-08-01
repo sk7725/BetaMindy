@@ -235,7 +235,7 @@ public class ClearPipe extends Block {
                 Player p = unit.getPlayer();
                 if(p == null) return;
                 unit.remove();
-                if(!net.client()) p.unit(unit());//wrap this with !net.client?
+                p.unit(unit()); //wrap this with !net.client? no.
                 units.add(new UnitinaBottle(new UnitPayload(unit), dir, this));
             }
             else{
@@ -591,7 +591,10 @@ public class ClearPipe extends Block {
             else{
                 //Useful.unlockCam();
                 if(Useful.dumpPlayerUnit(unit, p)){
-                    Core.app.post(() -> u.vel.trns(r, ejectStrength / 2f));
+                    Core.app.post(() -> {
+                        u.vel.trns(r, ejectStrength / 2f);
+                        if(u.isRemote()) u.move(u.vel.x, u.vel.y);
+                    });
                 }
             }
         }

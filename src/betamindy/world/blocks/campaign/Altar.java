@@ -10,6 +10,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.ui.*;
@@ -105,6 +106,7 @@ public class Altar extends Block {
         return super.canBeBuilt() && (team == Team.derelict || currentAltar == null || !currentAltar.isValid());
     }
 
+    //todo: configure-sync the level of the portal spawned for multiplayer campaign
     public class AltarBuild extends Building{
         public int phase = 0;
         public int menuPage = 0;
@@ -157,7 +159,6 @@ public class Altar extends Block {
         }
 
         public boolean canStart(int page){
-            if(!uwu) return false;//todo not ready yet
             if(team == Team.derelict || hardmode.portal != null || state.rules.defaultTeam.cores().size < 1 || !state.rules.waves || state.rules.attackMode || state.rules.pvp) return false;
             if(state.isCampaign() && (!state.hasSector() || !state.getSector().isCaptured())) return false;
             return phase == 1 && pages.get(page).canStart.get(this);
@@ -531,6 +532,17 @@ public class Altar extends Block {
         @Override
         public float handleDamage(float amount){
             return connections <= 0 ? super.handleDamage(amount) : 0f;
+        }
+
+        //note: the version must ALSO be increased for r/w changes made on the HardMode class!!
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
         }
     }
 
