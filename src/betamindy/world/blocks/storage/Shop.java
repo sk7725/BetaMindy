@@ -102,7 +102,7 @@ public class Shop extends PayloadAcceptor {
         String airColor = colorToHex(StatusEffects.shocked.color);
         String groundColor = colorToHex(StatusEffects.melting.color);
         String navalColor = colorToHex(StatusEffects.wet.color);
-        
+
         public void updateAnucoins(){
             anucoinString.setElement(new Label(String.valueOf(anucoins)));
         }
@@ -233,6 +233,11 @@ public class Shop extends PayloadAcceptor {
                 }
             }).left().growX().disabled(!shopItem.unlocked.get(this));
             pane.row();
+        }
+
+        @Override
+        public boolean acceptPayload(Building source, Payload payload) {
+            return false;
         }
 
         @Override
