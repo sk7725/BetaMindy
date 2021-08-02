@@ -115,16 +115,6 @@ public class Shop extends PayloadAcceptor {
             if(payload instanceof BuildPayload){
                 ((BuildPayload)payload).build.items.add(item, amount);
 
-                if(((BuildPayload) payload).build.items.total() > 60){
-                    BuildPayload newPayload = new BuildPayload(MindyBlocks.bigBox, team);
-
-                    ((BuildPayload) payload).build.items.each((Item ii, int aa) -> {
-                        newPayload.build.items.add(ii, aa);
-                    });
-
-                    payload = newPayload;
-                }
-
                 return true;
             }
 

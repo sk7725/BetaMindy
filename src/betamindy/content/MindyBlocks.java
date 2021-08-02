@@ -66,24 +66,6 @@ public class MindyBlocks implements ContentList {
 
     @Override
     public void load() {
-        //TODO move this to wherever it belongs at
-        itemShop = new Shop("item-shop"){{
-            requirements(Category.effect, with(Items.copper, 1));
-            size = 3;
-        }};
-
-        unitShop = new Shop("unit-shop"){{
-            requirements(Category.effect, with(Items.copper, -1));
-            size = 5;
-            shopType = 1;
-        }};
-
-        extraShop = new Shop("extra-shop"){{
-            requirements(Category.effect, with(Items.copper, 1));
-            size = 3;
-            shopType = 2;
-        }};
-
         radiation = new GlowPowder("radiation", 0){{
             color1 = Pal.lancerLaser;
             color2 = Pal.heal;
@@ -1051,6 +1033,23 @@ public class MindyBlocks implements ContentList {
 
         altar = new Altar("altar"){{
             requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.hidden, with(Items.scrap, 100));
+        }};
+
+        itemShop = new Shop("item-shop"){{
+            requirements(Category.effect, with(Items.copper, 1));
+            size = 3;
+        }};
+
+        unitShop = new Shop("unit-shop"){{
+            requirements(Category.effect, with(Items.copper, -1));
+            size = 5;
+            shopType = 1;
+        }};
+
+        extraShop = new Shop("extra-shop"){{
+            requirements(Category.effect, with(Items.copper, 1));
+            size = 3;
+            shopType = 2;
         }};
     }
 }
