@@ -44,7 +44,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer, itemShop,
+    silo, warehouse, pressureContainer, itemShop, unitShop, extraShop,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -65,9 +65,21 @@ public class MindyBlocks implements ContentList {
     @Override
     public void load() {
         //TODO move this to wherever it belongs at
-        itemShop = new Shop("shop"){{
+        itemShop = new Shop("item-shop"){{
+            requirements(Category.effect, with(Items.copper, 1));
+            size = 3;
+        }};
+
+        unitShop = new Shop("unit-shop"){{
             requirements(Category.effect, with(Items.copper, 1));
             size = 5;
+            shopType = 1;
+        }};
+
+        extraShop = new Shop("extra-shop"){{
+            requirements(Category.effect, with(Items.copper, 1));
+            size = 3;
+            shopType = 2;
         }};
 
         radiation = new GlowPowder("radiation", 0){{

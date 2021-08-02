@@ -1,7 +1,6 @@
 package betamindy.world.blocks.storage;
 
 import arc.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.ui.*;
@@ -11,34 +10,37 @@ import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
+import betamindy.type.*;
+import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.*;
-import mindustry.content.StatusEffects;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
-import mindustry.world.*;
-import java.util.concurrent.atomic.*;
+import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.production.*;
 
-public class Shop extends Block{
+public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
     public TextureRegion anucoin;
+    /** 0 = item, 1 = unit, 3 = extra */
+    public int shopType = 0;
 
     OrderedMap<Item, Float> itemScores;
     OrderedMap<UnitType, Float> unitScores;
+    OrderedMap<String, ShopItem> shopItems;
     OrderedMap<UnitType, Integer> unitTypeMap = new OrderedMap<>();
     BaseDialog shopDialog;
 
     public Shop(String name){
         super(name);
 
-        update = solid = hasItems = true;
+        update = solid = hasItems = outputsPayload = sync = rotate = configurable = true;
+        acceptsItems = false;
 
         itemCapacity = 0;
-
-        configurable = true;
     }
 
     public int checkUnitType(UnitType unit){
@@ -68,6 +70,7 @@ public class Shop extends Block{
         Runnable ee = () -> {
             itemScores = BetaMindy.itemScores;
             unitScores = BetaMindy.unitScores;
+            shopItems = BetaMindy.shopItems;
 
             for (UnitType unit : Vars.content.units()) {
                 if (unitScores.containsKey(unit)) {
@@ -88,20 +91,37 @@ public class Shop extends Block{
         anucoin = Core.atlas.find("betamindy-anucoin");
     }
 
-    public class ShopBuild extends Building{
+    public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload>{
         public int anucoins = defaultAnucoins;
         public Cell<Label> anucoinString;
         float buttonWidth = 210f;
-        boolean mobileUI = false;
-        AtomicReference<Cell<ScrollPane>> scpane = new AtomicReference<Cell<ScrollPane>>();
+        public UnitType unit;
+        public float scl;
+
+        String airColor = colorToHex(StatusEffects.shocked.color);
+        String groundColor = colorToHex(StatusEffects.melting.color);
+        String navalColor = colorToHex(StatusEffects.wet.color);
         
         public void updateAnucoins(){
             anucoinString.setElement(new Label(String.valueOf(anucoins)));
         }
 
+        public boolean addItemPayload(Item item, int amount){
+            if(payload == null){
+                payload = new BuildPayload(Blocks.container, team);
+            }
+
+            if(payload instanceof BuildPayload){
+                ((BuildPayload)payload).build.items.add(item, amount);
+                return true;
+            }
+
+            return false;
+        }
+
         public void itemButton(Table pane, Item item){
             int price = Math.max(Math.round(itemScores.get(item)), 15);
-            
+
             pane.button(t -> {
                 t.left();
                 t.image(new TextureRegion(item.icon(Cicon.medium))).size(40).padRight(10f);
@@ -115,11 +135,83 @@ public class Shop extends Block{
                 }).growX();
             }, () -> {
                 if(anucoins >= price){
-                    anucoins -= price;
-                    updateAnucoins();
-                    items.add(item, 15);
+                    if(addItemPayload(item, 15)){
+                        anucoins -= price;
+                        updateAnucoins();
+
+                        payVector.setZero();
+                        payRotation = rotdeg();
+                    }
                 }
             }).left().growX();
+            pane.row();
+        }
+
+        public void unitButton(Table pane, UnitType unit){
+            int price = Math.max(Math.round(unitScores.get(unit)), 15);
+
+            pane.button(t -> {
+                t.left();
+
+                t.image(new TextureRegion(unit.icon(Cicon.medium))).size(40).padRight(10f);
+
+                t.table(tt -> {
+                    int type = unitTypeMap.get(unit);
+                    tt.left();
+
+                    tt.add(unit.localizedName).growX().left();
+                    tt.row();
+
+                    tt.add("[accent]" + Core.bundle.get("ui.type") + "[]: " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
+                    tt.row();
+
+                    tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
+                }).growX();
+            }, () -> {
+                if(anucoins >= price && payload == null) {
+                    anucoins -= price;
+                    updateAnucoins();
+                    payload = new UnitPayload(unit.create(team));
+
+                    payVector.setZero();
+                    payRotation = rotdeg();
+                }
+            }).left().growX();
+            pane.row();
+        }
+
+        public void extraButton(Table pane, ShopItem shopItem){
+            int price = shopItem.cost;
+
+            pane.button(t -> {
+                int type = shopItem.type;
+
+                t.left();
+
+                t.add(shopItem.name).growX().left();
+                t.row();
+
+                t.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
+            }, () -> {
+                if(anucoins >= price) {
+                    if(shopItem.type == 0) {
+                        boolean success = true;
+                        for(ItemStack stack : shopItem.bundleItems){
+                            if(!addItemPayload(stack.item, stack.amount)) success = false;
+                        }
+
+                        if(success) {
+                            anucoins -= price;
+                            updateAnucoins();
+                        }
+                    } else if(shopItem.type == 1){
+                        shopItem.runnable.get(this);
+
+                        anucoins -= price;
+                        updateAnucoins();
+                    }
+                }
+            }).left().growX().disabled(!shopItem.unlocked.get(this));
             pane.row();
         }
 
@@ -131,7 +223,7 @@ public class Shop extends Block{
         @Override
         public void updateTile(){
             super.updateTile();
-            dump();
+            moveOutPayload();
         }
 
         @Override
@@ -145,14 +237,9 @@ public class Shop extends Block{
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
-
-            String airColor = colorToHex(StatusEffects.shocked.color);
-            String groundColor = colorToHex(StatusEffects.melting.color);
-            String navalColor = colorToHex(StatusEffects.wet.color);
             
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
             float height = Math.max(Core.graphics.getWidth(), Core.graphics.getHeight());
-            mobileUI = Vars.mobile;
 
             shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
             shopDialog.center();
@@ -167,62 +254,55 @@ public class Shop extends Block{
 
             shopDialog.row();
             shopDialog.table(tbl -> {
-                tbl.table(tbl1 -> {
-                    tbl1.center();
+                if(shopType == 0) {
+                    tbl.table(tbl1 -> {
+                        tbl1.center();
 
-                    tbl1.add(Core.bundle.get("ui.items"));
-                    tbl1.row();
+                        tbl1.add(Core.bundle.get("ui.items"));
+                        tbl1.row();
 
-                    scpane.set(tbl1.pane(e -> {
-                        for (Item item : Vars.content.items()) {
-                            if(item == MindyItems.bittrium) continue;
-                            if (itemScores.containsKey(item)) {
-                                itemButton(e, item);
+                        tbl1.pane(e -> {
+                            for (Item item : Vars.content.items()) {
+                                if (item == MindyItems.bittrium) continue;
+                                if (itemScores.containsKey(item)) {
+                                    itemButton(e, item);
+                                }
                             }
-                        }
-                    }).center().width(width * (mobileUI ? 0.55f : 0.25f)));
-                    if(mobileUI) scpane.get().height(height / 2f * 0.55f);
-                }).padRight((mobileUI ? 0f : 60f));
-                
-                if(mobileUI) tbl.row();
-                tbl.table(tbl1 -> {
-                    tbl1.center();
+                        }).center().width(width * 0.6f);
+                    });
+                } else if(shopType == 1) {
+                    tbl.table(tbl1 -> {
+                        tbl1.center();
 
-                    tbl1.add(Core.bundle.get("ui.units"));
-                    tbl1.row();
+                        tbl1.add(Core.bundle.get("ui.units"));
+                        tbl1.row();
 
-                    scpane.set(tbl1.pane(e -> {
-                        for (UnitType unit : Vars.content.units()) {
-                            if (unitScores.containsKey(unit)) {
-                                e.button(t -> {
-                                    t.left();
-                                    int price = Math.max(Math.round(unitScores.get(unit)), 15);
-
-                                    t.image(new TextureRegion(unit.icon(Cicon.medium))).size(40).padRight(10f);
-
-                                    t.table(tt -> {
-                                        int type = unitTypeMap.get(unit);
-                                        tt.left();
-
-                                        tt.add(unit.localizedName).growX().left();
-                                        tt.row();
-
-                                        tt.add("[accent]" + Core.bundle.get("ui.type") + "[]: " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
-                                        tt.row();
-
-                                        tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
-                                    }).growX();
-                                }, () -> {}).left().growX();
-                                e.row();
+                        tbl1.pane(e -> {
+                            for (UnitType unit : Vars.content.units()) {
+                                if (unitScores.containsKey(unit)) {
+                                    unitButton(e, unit);
+                                }
                             }
-                        }
-                    }).center().width(width * (mobileUI ? 0.55f : 0.25f)));
-                    if(mobileUI) scpane.get().height(height / 2f * 0.55f);
-                });
+                        }).center().width(width * 0.6f);
+                    });
+                } else if(shopType == 2) {
+                    tbl.table(tbl1 -> {
+                        tbl1.center();
+
+                        tbl1.add(Core.bundle.get("ui.extra"));
+                        tbl1.row();
+
+                        tbl1.pane(e -> {
+                            for (ShopItem shopItem : BetaMindy.shopItems.values()) {
+                                extraButton(e, shopItem);
+                            }
+                        }).center().width(width * 0.6f);
+                    });
+                }
             });
             shopDialog.row();
             shopDialog.table(t -> {
-                if(mobileUI){
+                if(Vars.mobile){
                     buttonWidth = (width / 2f) * 0.55f;
                 }
                 t.button("@back", Icon.left, shopDialog::hide).size(buttonWidth, 64f);
