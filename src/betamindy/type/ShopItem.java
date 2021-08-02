@@ -6,7 +6,7 @@ import betamindy.world.blocks.storage.*;
 import mindustry.type.*;
 
 public class ShopItem {
-    public String name = "Item";
+    public String name;
     public int cost = 10;
 
     /** 0 = bundle, 1 = runnable*/

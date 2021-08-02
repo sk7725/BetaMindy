@@ -21,6 +21,7 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
+import mindustry.world.modules.ItemModule;
 
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
@@ -108,11 +109,22 @@ public class Shop extends PayloadAcceptor {
 
         public boolean addItemPayload(Item item, int amount){
             if(payload == null){
-                payload = new BuildPayload(Blocks.container, team);
+                payload = new BuildPayload(MindyBlocks.box, team);
             }
 
             if(payload instanceof BuildPayload){
                 ((BuildPayload)payload).build.items.add(item, amount);
+
+                if(((BuildPayload) payload).build.items.total() > 60){
+                    BuildPayload newPayload = new BuildPayload(MindyBlocks.bigBox, team);
+
+                    ((BuildPayload) payload).build.items.each((Item ii, int aa) -> {
+                        newPayload.build.items.add(ii, aa);
+                    });
+
+                    payload = newPayload;
+                }
+
                 return true;
             }
 
@@ -184,11 +196,28 @@ public class Shop extends PayloadAcceptor {
             int price = shopItem.cost;
 
             pane.button(t -> {
-                int type = shopItem.type;
-
                 t.left();
 
-                t.add(shopItem.name).growX().left();
+                t.add(Core.bundle.has("shopItem." + shopItem.name + ".name") ? Core.bundle.get("shopItem." + shopItem.name + ".name") : shopItem.name).growX().left();
+
+                if(Core.bundle.has("shopItem." + shopItem.name + ".description")){
+                    t.row();
+
+                    t.add(Core.bundle.get("shopItem." + shopItem.name + ".description")).growX().left().color(Color.gray);
+                }
+
+                if(shopItem.type == 0) {
+                    for(ItemStack stack : shopItem.bundleItems){
+                        t.row();
+
+                        t.table(tt -> {
+                            tt.left();
+                            tt.image(stack.item.icon(Cicon.small)).left();
+                            tt.add(String.valueOf(stack.amount)).left();
+                        }).left();
+                    }
+                }
+
                 t.row();
 
                 t.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
@@ -206,6 +235,7 @@ public class Shop extends PayloadAcceptor {
                         }
                     } else if(shopItem.type == 1){
                         shopItem.runnable.get(this);
+                        shopDialog.hide();
 
                         anucoins -= price;
                         updateAnucoins();

@@ -71,7 +71,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         unitShop = new Shop("unit-shop"){{
-            requirements(Category.effect, with(Items.copper, 1));
+            requirements(Category.effect, with(Items.copper, -1));
             size = 5;
             shopType = 1;
         }};
