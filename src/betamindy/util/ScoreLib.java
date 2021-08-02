@@ -45,15 +45,15 @@ public class ScoreLib {
     }
 
     public float getScoreBullet(BulletType bullet){
-        float score = (
+        return (
                 bullet.healPercent / 100f +
                         bullet.buildingDamageMultiplier * bullet.damage +
                         bullet.splashDamage * bullet.splashDamageRadius * 0.1f +
                         (bullet.pierce ? Math.max(bullet.pierceCap, 1.5f) : 1f) +
-                        (bullet.status == null ? 1f : bullet.status.damage * bullet.statusDuration)
+                        (bullet.status == null ? 1f : bullet.status.damage * bullet.statusDuration) +
+                        bullet.healPercent
         ) / (bullet.ammoMultiplier * 0.9f + bullet.inaccuracy * 0.5f);
 
-        return score;
     }
 
     public float getScoreUnitWeapons(UnitType unit){

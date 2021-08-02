@@ -3,9 +3,11 @@ package betamindy.world.blocks.storage;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.input.KeyCode;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.Align;
 import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
@@ -23,9 +25,12 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.modules.ItemModule;
 
+import static mindustry.Vars.mobile;
+
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
     public TextureRegion anucoin;
+
     /** 0 = item, 1 = unit, 3 = extra */
     public int shopType = 0;
 
@@ -39,9 +44,8 @@ public class Shop extends PayloadAcceptor {
         super(name);
 
         update = solid = hasItems = outputsPayload = sync = rotate = configurable = true;
-        acceptsItems = false;
-
-        itemCapacity = 0;
+        acceptsItems = true;
+        unloadable = false;
     }
 
     public int checkUnitType(UnitType unit){
@@ -242,7 +246,7 @@ public class Shop extends PayloadAcceptor {
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return false;
+            return itemScores.containsKey(item);
         }
 
         @Override
@@ -258,6 +262,47 @@ public class Shop extends PayloadAcceptor {
 
         @Override
         public void drawConfigure() {}
+
+        public void buildSellDialog(int[] price, Seq<ItemStack> items, Runnable confirmed){
+            String text1 = Core.bundle.get("ui.sellAccept") + ":";
+            String text2 = Core.bundle.get("ui.sellAccept2") + " [accent]" + price[0] + " " + Core.bundle.get("ui.anucoin.multiple") + "[]";
+            BaseDialog dialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
+            dialog.cont.add(text1).width(mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);
+            dialog.cont.row();
+            dialog.cont.pane(p -> {
+                for(ItemStack stack : items){
+                    p.left();
+                    p.table(t -> {
+                        t.left();
+                        t.table(tt -> {
+                            tt.left();
+                            tt.image(stack.item.icon(Cicon.medium)).left();
+                            tt.add("x" + stack.amount).left();
+                        }).growX().left();
+
+                        t.add(" [accent]" + (int)((itemScores.get(stack.item) * stack.amount) / 30f) + "[]").padRight(5f).left();
+                        t.image(anucoin).left();
+                    }).left().growX();
+                    p.row();
+                }
+            }).height(mobile ? 200f : 250f).width(mobile ? 400f : 500f);
+            dialog.cont.row();
+            dialog.cont.add(text2).width(mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);
+            dialog.buttons.defaults().size(200f, 54f).pad(2f);
+            dialog.setFillParent(false);
+            dialog.buttons.button("@cancel", dialog::hide);
+            dialog.buttons.button("@ok", () -> {
+                dialog.hide();
+                confirmed.run();
+            });
+            dialog.keyDown(KeyCode.enter, () -> {
+                dialog.hide();
+                confirmed.run();
+            });
+            dialog.keyDown(KeyCode.escape, dialog::hide);
+            dialog.keyDown(KeyCode.back, dialog::hide);
+            dialog.show();
+        }
 
         @Override
         public void buildConfiguration(Table table) {
@@ -331,7 +376,25 @@ public class Shop extends PayloadAcceptor {
                     buttonWidth = (width / 2f) * 0.55f;
                 }
                 t.button("@back", Icon.left, shopDialog::hide).size(buttonWidth, 64f);
-                t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {}).size(buttonWidth, 64f);
+                t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {
+                    int[] price = new int[]{0};
+                    Seq<ItemStack> itemStack = new Seq<>();
+
+                    items.each((Item ii, int aa) -> {
+                        if(!itemScores.containsKey(ii)) return;
+                        price[0] += itemScores.get(ii) * aa / 30f;
+                        itemStack.add(new ItemStack().set(ii, aa));
+                    });
+
+                    buildSellDialog(price, itemStack, () -> {
+                        for(ItemStack stack : itemStack){
+                            items.remove(stack.item, stack.amount);
+                        }
+
+                        anucoins += price[0];
+                        updateAnucoins();
+                    });
+                }).size(buttonWidth, 64f).disabled(e -> items.total() == 0);
             });
 
             shopDialog.addCloseListener();
