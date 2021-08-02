@@ -135,11 +135,18 @@ public class Claw extends Block {
                 Tile tile = world.tileWorld(x, y);
                 if(tile == null || tile.build == null) return;
 
-                if(tile.build.getPayload() instanceof UnitPayload){
+                //prevent grabbing unit payloads from solid blocks, because it will fail if the unit is a ground one
+                if(!tile.solid() && (tile.build.getPayload() instanceof UnitPayload)){
                     UnitPayload up = (UnitPayload) tile.build.getPayload();
                     if(up.unit.hitSize <= maxSize){
-                        tile.build.takePayload().dump();
-                        unit = up.unit;
+                        Payload tp = tile.build.takePayload();
+                        if(tp == null) return;
+                        if(!(tp instanceof UnitPayload) || !tp.dump()){
+                            //put it back, put it back!
+                            tile.build.handlePayload(tile.build, tp);
+                            return;
+                        }
+                        unit = ((UnitPayload)tp).unit;
                         grabSound.at(x, y);
                         grabEffect.at(x, y, 8f);
                     }
@@ -165,7 +172,7 @@ public class Claw extends Block {
             if(tile.build.block.size <= maxBlockSize && tile.build.canPickup() && tile.team() == team && !(tile.block() instanceof Claw)){
                 Building build = tile.build;
                 build.pickedUp();
-                tile.remove();
+                build.tile.remove();
                 heldBuild = new BuildPayload(build);
                 grabSound.at(x, y);
                 grabEffect.at(x, y, 8f);
@@ -211,8 +218,7 @@ public class Claw extends Block {
             }
             //drop it on the floor le deja vu lu mu tu su ku
             if(on != null && Build.validPlace(tile.block, tile.team, tx, ty, tile.rotation, false)){
-                int rot = (int)((rotation + 45f) / 90f) % 4;
-                payload.place(on, rot);
+                payload.place(on, tile.rotation);
 
                 if(blockUnit != null && blockUnit.isPlayer()){
                     payload.build.lastAccessed = blockUnit.getControllerName();
@@ -276,7 +282,7 @@ public class Claw extends Block {
 
             if(dst > range){
                 Tmp.v1.set(toV).setLength(range).add(x, y).sub(unit);
-                unit.move(Tmp.v1.x, Tmp.v1.y);
+                if(!spinning || dst < range + 16f) unit.move(Tmp.v1.x, Tmp.v1.y);
                 //unit.vel.setZero();
                 if(unit.dst(x, y) > range + 4f || tension > maxTension){
                     detach(unit.x, unit.y);
@@ -332,6 +338,12 @@ public class Claw extends Block {
             Building n = world.buildWorld(x, y);
             if(n == null || !(n.block instanceof Disabler)) return true;
             return !n.consValid();
+        }
+
+        @Override
+        public void pickedUp(){
+            super.pickedUp();
+            detach(x, y);
         }
 
         @Override
@@ -399,6 +411,24 @@ public class Claw extends Block {
             }
 
             super.control(type, p1, p2, p3, p4);
+        }
+
+        @Override
+        public double sense(LAccess sensor){
+            return switch(sensor){
+                case shootX -> World.conv(targetV.x + x);
+                case shootY -> World.conv(targetV.y + y);
+                case shooting -> heldBuild != null ? 2 : (unit != null ? 1 : 0);
+                default -> super.sense(sensor);
+            };
+        }
+
+        @Override
+        public Object senseObject(LAccess sensor){
+            return switch(sensor){
+                case payloadType -> heldBuild != null ? heldBuild.block() : unit;
+                default -> super.senseObject(sensor);
+            };
         }
 
         @Override

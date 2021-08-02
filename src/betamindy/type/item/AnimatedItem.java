@@ -51,6 +51,7 @@ public class AnimatedItem extends Item {
                 }
             }
         }
+        animIcon.set(animRegions[0]);
     }
 
     //should be called in Trigger.update

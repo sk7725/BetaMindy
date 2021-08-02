@@ -22,6 +22,7 @@ import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.struct.*;
 import arc.util.*;
+import betamindy.content.*;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.core.*;
@@ -259,6 +260,8 @@ public class Useful {
         u.unit.add();
         Events.fire(new EventType.UnitUnloadEvent(u.unit));
         player.unit(u.unit);
+        if(net.active()) Call.unitControl(player, u.unit);
+        u.unit.apply(MindyStatusEffects.ouch, 10f);
 
         return true;
     }

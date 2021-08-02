@@ -20,6 +20,7 @@ import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 import arc.util.*;
+import betamindy.ui.*;
 import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.*;
@@ -28,6 +29,7 @@ import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 
+import static betamindy.BetaMindy.hardmode;
 import static mindustry.Vars.renderer;
 
 public class Drawm {
@@ -64,6 +66,15 @@ public class Drawm {
         Draw.reset();
     }
 
+    public static void shaderRect(float x, float y, float z, TextureRegion region, float r, Shader shader){
+        Draw.draw(z, () -> {
+            Draw.shader(shader);
+            Draw.rect(region, x, y, r);
+            Draw.shader();
+            Draw.reset();
+        });
+    }
+
     public static void spark(float x, float y, float size, float width, float r){
         Drawf.tri(x, y, width, size, r);
         Drawf.tri(x, y, width, size, r+180f);
@@ -85,6 +96,14 @@ public class Drawm {
             Lines.stroke(stroke);
             Lines.poly(x, y, 4, size, 45f);
         }
+    }
+
+    public static void koruh(float x, float y, float size, float r, char c){
+        Draw.rect(AncientKoruh.eng(c), x, y, size, size, r);
+    }
+
+    public static void koruh(float x, float y, float size, float r, String str, int index){
+        Draw.rect(AncientKoruh.eng(str, index), x, y, size, size, r);
     }
 
     public static void portal(float x, float y, float radius, Color color1, Color color2){
@@ -198,6 +217,33 @@ public class Drawm {
         if(renderer.lights.enabled()) Drawf.light(x, y, radius * 9f, color2, 1f);
     }
 
+    public static void altarOrb(float x, float y, float radius, float fin){
+        altarOrb(x, y, radius, fin, 45f, hardmode.getRandomColor(Tmp.c1, (int)(Time.globalTime / 45)), 4);
+    }
+
+    public static void altarOrb(float x, float y, float radius, float f1, float interval, Color c, int spikes){
+        f1 *= Mathf.sin(Time.globalTime, 20f, 0.15f) + 0.8f;
+        float f2 = 1f - (Time.globalTime % interval / interval);
+        Draw.z(Layer.effect - 0.01f);
+        Draw.color(c);
+        Fill.circle(x, y, 1.3f * radius * f1);
+        Draw.z(Layer.effect);
+        Draw.color();
+        Fill.circle(x, y, radius * f1);
+        for(int j = 0; j < spikes; j++){
+            float r = Mathf.randomSeed(j + (int)(Time.globalTime / interval)) * 360f;
+            Draw.z(Layer.effect - 0.01f);
+            Draw.color(c);
+            Tmp.v1.trns(r, f1 * 1.1f * radius).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, 6f * f1, 2.1f * radius * f1 * f2, r);
+
+            Draw.z(Layer.effect);
+            Draw.color();
+            Tmp.v1.trns(r, f1 * 0.8f * radius).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, 3f * f1, 1.5f * radius * f1 * f2, r);
+        }
+    }
+
     /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */
     public static void generateTeamRegion(MultiPacker packer, Block b){
         PixmapRegion teamr = Core.atlas.getPixmap(b.name + "-team");
@@ -243,7 +289,7 @@ public class Drawm {
         Draw.alpha(1f);
     }
 
-    /** Draws a sprite that should be lightwise correct. Provided sprite must be symmetrical. */
+    /** Draws a sprite that should be light-wise correct. Provided sprite must be symmetrical in shape. */
     public static void spinSprite(TextureRegion region, float x, float y, float r){
         r = Mathf.mod(r, 90f);
         Draw.rect(region, x, y, r);
@@ -251,7 +297,6 @@ public class Drawm {
         Draw.rect(region, x, y, r - 90f);
         Draw.alpha(1f);
     }
-    //PR to drills?
 
     /** Outlines a given textureRegion. Run in createIcons. */
     public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name){

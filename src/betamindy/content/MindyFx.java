@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import betamindy.*;
 import betamindy.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -23,6 +24,7 @@ import static arc.math.Angles.randLenVectors;
 import static betamindy.graphics.Drawm.shard;
 import static betamindy.graphics.Drawm.spark;
 import static mindustry.Vars.renderer;
+import static mindustry.Vars.tilesize;
 
 public class MindyFx {
     private static final int[] vgld = {0}; //VERY_GOOD_LANGUAGE_DESIGN
@@ -394,9 +396,7 @@ public class MindyFx {
     sparkleZeta = new Effect(60f, e -> {
         color(Pal2.zeta);
         Lines.stroke(e.fout());
-        vgld[0] = 0;
         Angles.randLenVectors(e.id, e.id % 3 + 2, 7f + 5f * e.fin(), (x, y) -> {
-            vgld[0]++;
             Lines.poly(e.x+x, e.y+y, 4, e.fin()*0.6f+0.45f);
         });
     }),
@@ -407,6 +407,81 @@ public class MindyFx {
         Angles.randLenVectors(e.id, 5, 7f + 5f * e.fin(), (x, y) -> {
             vgld[0]++;
             Drawm.drawBit(vgld[0] % 2 == 1, e.x+x, e.y+y, 1f, e.fout());
+        });
+    }),
+
+    sparkleBittrium = new Effect(60f, e -> {
+        color(Color.cyan, Color.pink, e.fin());
+        vgld[0] = e.id;
+        Angles.randLenVectors(e.id, 2, 7f + 5f * e.fin(), (x, y) -> {
+            vgld[0]++;
+            Drawm.drawBit(vgld[0] % 2 == 1, e.x+x, e.y+y, 1f, e.fout());
+        });
+
+        color(Color.cyan, Color.pink, e.fout());
+        Lines.stroke(e.fout());
+        Angles.randLenVectors(e.id - 1, e.id % 3 + 1, 7f + 5f * e.fin(), (x, y) -> {
+            Lines.poly(e.x+x, e.y+y, 4, e.fin()*0.6f+0.45f);
+        });
+    }),
+
+    sparkleSpace = new Effect(60f, e -> {
+        vgld[0] = e.id;
+        Lines.stroke(e.fslope());
+        Angles.randLenVectors(e.id, 3, 7f + 5f * e.fin(), (x, y) -> {
+            vgld[0]++;
+            color(Tmp.c1.fromHsv((Mathf.randomSeed(vgld[0], -60f, 130f) + 360f) % 360f, 0.8f, 1f).a(1f));
+            Lines.poly(e.x+x, e.y+y, 4, e.fslope()*0.7f+0.55f * Mathf.randomSeed(vgld[0]));
+        });
+    }),
+
+    crystalBreak = new Effect(90f, e -> {
+        e.scaled(25f, s -> {
+            color(Color.white, e.color, s.finpow());
+            vgld[0] = 0;
+            randLenVectors(e.id, e.id % 4 + 4, 2f + 19f * s.finpow(), (x, y) -> {
+                vgld[0]++;
+                shard(e.x + x, e.y + y, 5f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 4f * s.fout(), Mathf.angle(x, y));
+            });
+        });
+
+        color(Color.white, e.color, e.fin());
+        randLenVectors(e.id, 20, 4f + 13f * e.finpow(), 6f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 0.6f);
+        });
+    }),
+
+    crystalBreakBittrium = new Effect(90f, e -> {
+        e.scaled(25f, s -> {
+            vgld[0] = 0;
+            randLenVectors(e.id, e.id % 4 + 4, 2f + 19f * s.finpow(), (x, y) -> {
+                vgld[0]++;
+                color(Color.white, vgld[0] % 2 == 0 ? Color.cyan : Color.pink, s.finpow());
+                shard(e.x + x, e.y + y, 5f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 4f * s.fout(), Mathf.angle(x, y));
+            });
+        });
+
+        vgld[0] = e.id;
+        randLenVectors(e.id, 20, 4f + 13f * e.finpow(), 6f, (x, y) -> {
+            vgld[0]++;
+            color(Color.white, vgld[0] % 2 == 0 ? Color.cyan : Color.pink, e.fin());
+            Fill.square(e.x + x, e.y + y, e.fout() * 0.6f, 0f);
+        });
+    }),
+
+    crystalBreakSpace = new Effect(90f, e -> {
+        e.scaled(25f, s -> {
+            vgld[0] = e.id;
+            randLenVectors(e.id, e.id % 4 + 4, 2f + 19f * s.finpow(), (x, y) -> {
+                vgld[0]++;
+                color(Tmp.c1.fromHsv((Mathf.randomSeed(vgld[0], -60f, 130f) + 360f) % 360f, 0.8f, 1f).a(1f));
+                shard(e.x + x, e.y + y, 5f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 4f * s.fout(), Mathf.angle(x, y));
+            });
+        });
+
+        color();
+        randLenVectors(e.id, 20, 4f + 13f * e.finpow(), 6f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 0.6f);
         });
     }),
 
@@ -561,22 +636,6 @@ public class MindyFx {
         t.draw(e.color, e.rotation * e.fout());
     }),
 
-    crystalBreak = new Effect(90f, e -> {
-        e.scaled(25f, s -> {
-            color(Color.white, e.color, s.finpow());
-            vgld[0] = 0;
-            randLenVectors(e.id, e.id % 4 + 4, 2f + 19f * s.finpow(), (x, y) -> {
-                vgld[0]++;
-                shard(e.x + x, e.y + y, 5f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 4f * s.fout(), Mathf.angle(x, y));
-            });
-        });
-
-        color(Color.white, e.color, e.fin());
-        randLenVectors(e.id, 20, 4f + 13f * e.finpow(), 6f, (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, e.fout() * 0.6f);
-        });
-    }),
-
     tarnationCharge = new Effect(130f, 180f, e -> {
         color(Pal.lancerLaser, Color.white, e.fin());
         stroke(5f * e.fin());
@@ -630,5 +689,53 @@ public class MindyFx {
 
     zoneStart = new Effect(15f, e -> {
         Fill.light(e.x, e.y, circleVertices(e.rotation), e.rotation, Pal2.clearWhite, Tmp.c4.set(Color.white).a(e.fout()));
-    });
+    }),
+
+    altarDust = new Effect(45f, e -> {
+        color(BetaMindy.hardmode.getRandomColor(Tmp.c2, e.id), Color.white, e.fin());
+        Tmp.v1.trns(e.rotation + Mathf.sin(e.fin() * 10f), e.fin() * 18f).add(e.x, e.y);
+        Fill.square(Tmp.v1.x, Tmp.v1.y, 0.8f * e.fout(), 45f);
+    }),
+
+    altarDustSmall = new Effect(30f, e -> {
+        color(BetaMindy.hardmode.getRandomColor(Tmp.c2, e.id), Color.white, e.fin());
+        Tmp.v1.trns(e.rotation + Mathf.sin(e.fin() * 10f), e.fin() * 16f).add(e.x, e.y);
+        Fill.square(Tmp.v1.x, Tmp.v1.y, 0.5f * e.fout(), 45f);
+    }),
+
+    altarOrbDespawn = new Effect(60f, e -> {
+        float f = e.fout() * e.rotation;
+        Drawm.altarOrb(e.x, e.y, 7.5f, f);
+    }),
+
+    coreHeal = new Effect(100f, e -> {
+        color(Pal.heal, Color.yellow, e.fin());
+        float r = e.rotation * tilesize / 2f;
+        stroke(e.fout() * 2f);
+        square(e.x, e.y, r);
+
+        stroke(1.5f);
+        alpha(e.fout());
+        randLenVectors(e.id, 14, r, (x, y) -> {
+            lineAngleCenter(e.x + x, e.y + y + 10f * e.finpow(), 0f, 4.5f);
+            lineAngleCenter(e.x + x, e.y + y + 10f * e.finpow(), 90f, 4.5f);
+        });
+    }),
+
+    openBox = new Effect(70f, e -> {
+        color(Color.white, e.fout(0.5f));
+        float heat = e.fin();
+        rect("betamindy-box-lid0", e.x + heat * 15f , e.y + heat * (0.7f - heat) * 27f, (heat + 1f) * 360f * Mathf.randomSeed(e.id));
+        rect("betamindy-box-lid1", e.x + heat * -15f, e.y + heat * (0.7f - heat) * 27f, (heat + 1f) * 360f * Mathf.randomSeed(e.id+1));
+    }).layer(Layer.turret),
+
+    despawnBox = new Effect(60f, e -> {
+        if((int)(Time.globalTime / 10f) % 2 == 0) return;
+        if(e.data instanceof TextureRegion reg){
+            rect(reg, e.x, e.y);
+        }
+        else{
+            rect(MindyBlocks.box.region, e.x, e.y);
+        }
+    }).layer(Layer.blockOver);
 }

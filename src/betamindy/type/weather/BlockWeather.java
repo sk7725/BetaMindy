@@ -2,16 +2,14 @@ package betamindy.type.weather;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.Texture;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
-import arc.util.Log;
-import arc.util.Nullable;
+import arc.math.*;
 import arc.util.Time;
 import arc.util.Tmp;
 import betamindy.*;
 import betamindy.content.MindyFx;
+import betamindy.world.blocks.campaign.*;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
@@ -30,6 +28,9 @@ import mindustry.world.blocks.storage.*;
 import static mindustry.Vars.*;
 
 public class BlockWeather extends ParticleWeather {
+    //rand has changed its modifier in 7.0, so we use a different rand to avoid IncompatibleClassChangeError
+    //todo refactor name to "rand" & remove in v7
+    public static final Rand randw = new Rand();
     public Block block = Blocks.router;
     public Team blockTeam = Team.derelict;
     public Effect blockEffect = Fx.explosion, blockFallingEffect = MindyFx.blockFalling;
@@ -72,14 +73,15 @@ public class BlockWeather extends ParticleWeather {
 
         int total = (int)(Tmp.r1.area() / density * state.intensity);
 
+        randw.setSeed((long) Time.time);
         for(int i = 0; i < total; i++){
-            float scl = rand.random(0.5f, 1f);
-            float scl2 = rand.random(0.5f, 1f);
-            float size = rand.random(sizeMin, sizeMax);
-            float x = (rand.random(0f, world.unitWidth()) + Time.time * windx * scl2);
-            float y = (rand.random(0f, world.unitHeight()) + Time.time * windy * scl);
+            float scl = randw.random(0.5f, 1f);
+            float scl2 = randw.random(0.5f, 1f);
+            float size = randw.random(sizeMin, sizeMax);
+            float x = (randw.random(0f, world.unitWidth()) + Time.time * windx * scl2);
+            float y = (randw.random(0f, world.unitHeight()) + Time.time * windy * scl);
 
-            x += Mathf.sin(y, rand.random(sinSclMin, sinSclMax), rand.random(sinMagMin, sinMagMax));
+            x += Mathf.sin(y, randw.random(sinSclMin, sinSclMax), randw.random(sinMagMin, sinMagMax));
 
             x -= Tmp.r1.x;
             y -= Tmp.r1.y;
@@ -91,7 +93,7 @@ public class BlockWeather extends ParticleWeather {
             Block block1 = block;
             if(randomBlock) {
                 Block temp = Vars.content.blocks().get(Mathf.random(Vars.content.blocks().size - 1));
-                if(temp instanceof ConstructBlock || !temp.hasBuilding() || temp.isHidden() || temp instanceof CoreBlock) return;
+                if(temp instanceof ConstructBlock || !temp.hasBuilding() || temp.isHidden() || temp instanceof CoreBlock || temp instanceof Altar || temp.size > 4) return;
                 block1 = temp;
             }
             if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2) && Mathf.randomBoolean(blockChance * state.intensity)){
@@ -129,27 +131,45 @@ public class BlockWeather extends ParticleWeather {
     }
 
     @Override
-    public void drawParticles(TextureRegion region, Color color,
+    public void drawOver(WeatherState state){
+
+        float windx, windy;
+        if(useWindVector){
+            float speed = baseSpeed * state.intensity;
+            windx = state.windVector.x * speed;
+            windy = state.windVector.y * speed;
+        }else{
+            windx = this.xspeed;
+            windy = this.yspeed;
+        }
+
+        if(drawParticles){
+            drawBlocks(region, color, sizeMin, sizeMax, density, state.intensity, state.opacity, windx, windy, minAlpha, maxAlpha, sinSclMin, sinSclMax, sinMagMin, sinMagMax);
+        }
+    }
+
+    public void drawBlocks(TextureRegion region, Color color,
                               float sizeMin, float sizeMax,
                               float density, float intensity, float opacity,
                               float windx, float windy,
                               float minAlpha, float maxAlpha,
                               float sinSclMin, float sinSclMax, float sinMagMin, float sinMagMax){
-        rand.setSeed(0);
         Tmp.r1.setCentered(Core.camera.position.x, Core.camera.position.y, Core.graphics.getWidth() / renderer.minScale(), Core.graphics.getHeight() / renderer.minScale());
         Tmp.r1.grow(sizeMax * 1.5f);
         Core.camera.bounds(Tmp.r2);
         int total = (int)(Tmp.r1.area() / density * intensity);
         Draw.color(color, opacity);
+        randw.setSeed(0);
         for(int i = 0; i < total; i++){
-            float scl = rand.random(0.5f, 1f);
-            float scl2 = rand.random(0.5f, 1f);
-            float size = rand.random(sizeMin, sizeMax);
-            float x = (rand.random(0f, world.unitWidth()) + Time.time * windx * scl2);
-            float y = (rand.random(0f, world.unitHeight()) + Time.time * windy * scl);
-            float alpha = rand.random(minAlpha, maxAlpha);
+            float scl = randw.random(0.5f, 1f);
+            float scl2 = randw.random(0.5f, 1f);
+            float size = randw.random(sizeMin, sizeMax);
+            float x = (randw.random(0f, world.unitWidth()) + Time.time * windx * scl2);
+            float y = (randw.random(0f, world.unitHeight()) + Time.time * windy * scl);
+            float alpha = randw.random(minAlpha, maxAlpha);
+            float r = randw.random(360f);
 
-            x += Mathf.sin(y, rand.random(sinSclMin, sinSclMax), rand.random(sinMagMin, sinMagMax));
+            x += Mathf.sin(y, randw.random(sinSclMin, sinSclMax), randw.random(sinMagMin, sinMagMax));
 
             x -= Tmp.r1.x;
             y -= Tmp.r1.y;
@@ -160,7 +180,7 @@ public class BlockWeather extends ParticleWeather {
 
             if(Tmp.r3.setCentered(x, y, size).overlaps(Tmp.r2)){
                 Draw.alpha(alpha * opacity);
-                Draw.rect(randomBlock ? rollIcon(i) : region, x, y, size, size, Time.time * 4f);
+                Draw.rect(randomBlock ? rollIcon(i) : region, x, y, size, size, Time.time * 4f + r);
             }
         }
     }

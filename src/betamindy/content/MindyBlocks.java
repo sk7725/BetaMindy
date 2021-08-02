@@ -6,6 +6,7 @@ import arc.struct.*;
 import arc.util.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
+import betamindy.world.blocks.campaign.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
 import betamindy.world.blocks.defense.turrets.pattern.*;
@@ -34,17 +35,18 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.omegaServer;
+import static betamindy.BetaMindy.uwu;
 import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor,
+    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer, itemShop, unitShop, extraShop,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -551,10 +553,6 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, with(Items.titanium, 5, Items.thorium, 5));
         }};
 
-        present = new PresentBox("present"){{
-            requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
-        }};
-
         leadWall = new Wall("lead-wall"){{
             health = 360;
             requirements(Category.defense, with(Items.lead, 6));
@@ -844,7 +842,6 @@ public class MindyBlocks implements ContentList {
             health = 200;
             damageSelf = 12f;
             status = StatusEffects.burning;
-            lightningChance = 0.05f;
             requirements(Category.defense, with(Items.lead, 6, Items.pyratite, 3));
         }};
 
@@ -854,14 +851,14 @@ public class MindyBlocks implements ContentList {
             damageSelf = 20f;
             breakSound = MindySounds.freeze;
             status = MindyStatusEffects.icy;
-            requirements(Category.defense, with(Items.titanium, 3, Items.phaseFabric, 3, MindyItems.cryonite, 4));
+            requirements(Category.defense, with(MindyItems.cryonite, 4, MindyItems.scalar, 1));
         }};
 
         spikeClear = new Spike("spike-clear"){{
             health = 400;
             damage = 75f;
             celeste = true;
-            requirements(Category.defense, with(Items.metaglass, 3, MindyItems.vector, 3));
+            requirements(Category.defense, with(Items.metaglass, 4, MindyItems.vector, 1));
         }};
 
         spotlight = new FloodLight("spotlight"){{
@@ -975,11 +972,34 @@ public class MindyBlocks implements ContentList {
         crystalVector = new ScidustryCrystal("vector-crystal", MindyItems.vectorRaw){{
             alt = true;
             sprites = 6;
+            status = MindyStatusEffects.pause;
         }};
 
         crystalTensor = new EldoofusCrystal("tensor-crystal", MindyItems.tensorRaw){{
             sprites = 6;
             updateEffect = MindyFx.sparkleZeta;
+            status = MindyStatusEffects.amnesia;
+        }};
+
+        crystalSpace = new ShaderCrystal("space-crystal", MindyItems.spaceMatter){{
+            sprites = 6;
+            updateEffect = MindyFx.sparkleSpace;
+            destroyEffect = MindyFx.crystalBreakSpace;
+            shader = MindyShaders.space;
+
+            color1 = Color.magenta;
+            color2 = Color.yellow;
+            glowOpacity = 0.75f;
+            auraOpacity = 0.2f;
+        }};
+
+        crystalBittrium = new ShaderCrystal("bittrium-crystal", MindyItems.bittrium){{
+            sprites = 2;
+            updateEffect = MindyFx.sparkleBittrium;
+            destroyEffect = MindyFx.crystalBreakBittrium;
+            status = MindyStatusEffects.bittriumBane;
+            shader = MindyShaders.bittrium;
+            glowOpacity = 0.9f;
         }};
 
         // endgame turrets
@@ -1019,6 +1039,18 @@ public class MindyBlocks implements ContentList {
             range = 600f;
 
             patterns = new TurretPattern[]{Patterns.starBlazing, Patterns.starBlazing, Patterns.chaosBuster, Patterns.starBlazing};
+        }};
+
+        box = new Box("box"){{
+            requirements(Category.effect, BuildVisibility.shown, with(Items.graphite, 5));
+        }};
+
+        present = new PresentBox("present"){{
+            requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
+        }};
+
+        altar = new Altar("altar"){{
+            requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.hidden, with(Items.scrap, 100));
         }};
     }
 }

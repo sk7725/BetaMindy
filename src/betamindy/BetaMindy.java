@@ -9,6 +9,7 @@ import betamindy.graphics.*;
 import betamindy.type.ShopItem;
 import betamindy.ui.*;
 import betamindy.util.*;
+import betamindy.world.blocks.campaign.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
@@ -43,8 +44,10 @@ public class BetaMindy extends Mod{
     public static OrderedMap<String, ShopItem> shopItems = new OrderedMap<>();
 
     public static MindyHints hints = new MindyHints();
+    public static MindyUILoader mui = new MindyUILoader();
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
+    public static boolean uwu = OS.username.equals("sunny");
     //public static UnitGravity gravity = new UnitGravity();
 
     private final ContentList[] mindyContent = {
@@ -62,9 +65,9 @@ public class BetaMindy extends Mod{
 
     public BetaMindy() {
         super();
-        MindySounds.load();
         pushUtil.init();
         musics.init();
+        MindySounds.load();
 
         Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false);
         Events.on(ClientLoadEvent.class, e -> {
@@ -73,6 +76,14 @@ public class BetaMindy extends Mod{
                 if(!Core.settings.getBool("nonmoddedservers")) Vars.defaultServers.clear();
                 Vars.defaultServers.add(new ServerGroup("[white][accent]Modded BetaMindy Server[][]", new String[]{omegaServer}));
             }));
+        });
+
+        Events.on(FileTreeInitEvent.class, e -> Core.app.post(() -> {
+            MindyShaders.load();
+        }));
+
+        Events.on(DisposeEvent.class, e -> {
+            MindyShaders.dispose();
         });
     }
 
@@ -125,32 +136,12 @@ public class BetaMindy extends Mod{
         //used for block weather
         Events.run(ClientLoadEvent.class, () -> {
             Vars.content.blocks().each(temp -> {
-                if((temp instanceof ConstructBlock || !temp.hasBuilding()) || temp.icon(Cicon.medium) == Core.atlas.find("error")) return;
+                if(((temp instanceof ConstructBlock) || (temp instanceof Altar) || !temp.hasBuilding()) || !temp.icon(Cicon.full).found()) return;
                 visibleBlockList.add(temp);
             });
 
             hints.load();
-            if(!Core.settings.getBool("bloom") && !Core.settings.getBool("nobloomask", false)){
-                Core.app.post(() -> {
-                    BaseDialog dialog = new BaseDialog("@mod.betamindy.name");
-                    dialog.cont.add(Core.bundle.format("ui.bloomplease", Core.bundle.get("setting.bloom.name"))).width(Vars.mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);
-                    dialog.buttons.defaults().size(200f, 54f).pad(2f);
-                    dialog.setFillParent(false);
-                    dialog.cont.row();
-                    dialog.cont.check("@ui.notagain", false, b -> {
-                        if(b) Core.settings.put("nobloomask", true);
-                    }).left().padTop(8f);
-                    dialog.buttons.button("@cancel", dialog::hide);
-                    dialog.buttons.button("@ok", () -> {
-                        dialog.hide();
-                        Core.settings.put("bloom", true);
-                        renderer.toggleBloom(true);
-                    });
-                    dialog.keyDown(KeyCode.escape, dialog::hide);
-                    dialog.keyDown(KeyCode.back, dialog::hide);
-                    dialog.show();
-                });
-            }
+            mui.init();
         });
 
         Events.run(WorldLoadEvent.class, () -> {

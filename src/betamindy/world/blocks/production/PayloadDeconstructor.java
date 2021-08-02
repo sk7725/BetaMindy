@@ -10,6 +10,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import betamindy.content.*;
 import betamindy.graphics.*;
+import betamindy.util.*;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -36,9 +37,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
     public Effect finishEffect = Fx.none;
 
     public final ItemStack[] defaultStack = {new ItemStack(Items.scrap, 25)};
-    public ObjectMap<UnitType, ItemStack[]> unitCosts = new ObjectMap<UnitType, ItemStack[]>(33);
-    public UnitFactory[] factories;
-    public Reconstructor[] recons;
+
 
     public PayloadDeconstructor(String name){
         super(name);
@@ -75,56 +74,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
     @Override
     public void init(){
         super.init();
-
-        Seq<UnitFactory> facs = new Seq<UnitFactory>();
-        Seq<Reconstructor> recs = new Seq<Reconstructor>();
-        Vars.content.blocks().each((Block b) -> {
-            if(b instanceof UnitFactory) facs.add((UnitFactory)b);
-            else if(b instanceof Reconstructor) recs.add((Reconstructor)b);
-        });
-        factories = facs.toArray(UnitFactory.class);
-        recons = recs.toArray(Reconstructor.class);
-        print("InitCost start!");
-        Vars.content.units().each(this::initCost);
-    }
-
-    public void print(String pain){
-        Vars.mods.getScripts().log("BetaMindy", pain);
-    }
-
-    public void initCost(UnitType u){
-        unitCosts.put(u, calcCost(u));
-    }
-
-    public ItemStack[] mergeArray(ItemStack[] first, ItemStack[] second){
-        ItemStack[] both = Arrays.copyOf(first, first.length + second.length);
-        System.arraycopy(second, 0, both, first.length, second.length);
-        return both;
-    }
-
-    /** Recursively generates a buildCost for units */
-    public ItemStack[] calcCost(UnitType u){
-        boolean t1 = true;
-        for(Reconstructor b : recons){
-            UnitType[] r =  b.upgrades.find(u0 -> u0[1] == u);
-            if(r != null){
-                t1 = false;
-                ItemStack[] cost = calcCost(r[0]);
-                if(b.consumes.has(ConsumeType.item)){
-                    return mergeArray(cost, b.consumes.getItem().items);
-                }
-                else return cost;
-            }
-        }
-
-        if(t1){
-            for(UnitFactory b : factories){
-                for(UnitFactory.UnitPlan plan : b.plans){
-                    if(plan.unit == u) return plan.requirements;
-                }
-            }
-        }
-        return defaultStack;
+        UnitLib.init();
     }
 
     public ItemStack[] payloadCost(Payload pay){
@@ -132,7 +82,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
             return ((BuildPayload)pay).block().requirements;
         }
         else if(pay instanceof UnitPayload){
-            return unitCosts.get(((UnitPayload)pay).unit.type);
+            return UnitLib.costs.get(((UnitPayload)pay).unit.type);
         }
         return defaultStack;
     }
