@@ -22,6 +22,7 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import rhino.ImporterTopLevel;
 
 import static mindustry.Vars.*;
 

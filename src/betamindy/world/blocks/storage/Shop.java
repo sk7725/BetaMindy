@@ -23,7 +23,6 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
-import mindustry.world.modules.ItemModule;
 
 import static mindustry.Vars.mobile;
 
