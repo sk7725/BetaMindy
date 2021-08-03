@@ -200,7 +200,7 @@ public class Shop extends PayloadAcceptor {
                 }
 
                 if(shopItem.type == 0) {
-                    for(ItemStack stack : shopItem.bundleItems){
+                    for(ItemStack stack : shopItem.packageItems){
                         t.row();
 
                         t.table(tt -> {
@@ -218,7 +218,7 @@ public class Shop extends PayloadAcceptor {
                 if(anucoins >= price) {
                     if(shopItem.type == 0) {
                         boolean success = true;
-                        for(ItemStack stack : shopItem.bundleItems){
+                        for(ItemStack stack : shopItem.packageItems){
                             if(!addItemPayload(stack.item, stack.amount)) success = false;
                         }
 
