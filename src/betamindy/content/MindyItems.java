@@ -59,7 +59,7 @@ public class MindyItems implements ContentList {
             cost = 2;
         }};
 
-        tensor = new AnimatedItem("tensor",Color.valueOf("7ef2cf")){{
+        tensor = new AnimatedItem("tensor",Color.valueOf("00bfa2")){{
             hardness = 8;
             cost = 3;
 
