@@ -2,7 +2,6 @@ package betamindy;
 
 import arc.*;
 import arc.func.*;
-import arc.input.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.graphics.*;
@@ -19,10 +18,8 @@ import betamindy.content.*;
 import mindustry.net.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
-import rhino.ImporterTopLevel;
 
 import static mindustry.Vars.*;
 
