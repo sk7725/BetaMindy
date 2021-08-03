@@ -14,6 +14,7 @@ public class ShopItem {
 
     public Cons<Shop.ShopBuild> runnable;
     public ItemStack[] packageItems;
+
     public Boolf<Shop.ShopBuild> unlocked = e -> true;
 
     public ShopItem(String name, int cost){

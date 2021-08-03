@@ -218,6 +218,7 @@ public class Shop extends PayloadAcceptor {
                 if(anucoins >= price) {
                     if(shopItem.type == 0) {
                         boolean success = true;
+
                         for(ItemStack stack : shopItem.packageItems){
                             if(!addItemPayload(stack.item, stack.amount)) success = false;
                         }
@@ -280,6 +281,7 @@ public class Shop extends PayloadAcceptor {
                         }).growX().left();
 
                         t.add(" [accent]" + (int)Math.min((itemScores.get(stack.item) * stack.amount) / 30f, stack.amount / 2f) + "[]").padRight(5f).left();
+
                         t.image(anucoin).left();
                     }).left().growX();
                     p.row();
@@ -381,7 +383,9 @@ public class Shop extends PayloadAcceptor {
 
                     items.each((Item ii, int aa) -> {
                         if(!itemScores.containsKey(ii)) return;
+
                         price[0] += (int)Math.min((itemScores.get(ii) * aa) / 30f, aa / 2f);
+
                         itemStack.add(new ItemStack().set(ii, aa));
                     });
 
