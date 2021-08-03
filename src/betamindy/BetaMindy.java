@@ -6,6 +6,7 @@ import arc.input.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.graphics.*;
+import betamindy.type.ShopItem;
 import betamindy.ui.*;
 import betamindy.util.*;
 import betamindy.world.blocks.campaign.*;
@@ -16,6 +17,7 @@ import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import betamindy.content.*;
 import mindustry.net.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
@@ -33,6 +35,14 @@ public class BetaMindy extends Mod{
     public static MobileFunctions mobileUtil = new MobileFunctions();
     public static HardMode hardmode = new HardMode();
     public static MusicControl musics = new MusicControl();
+
+    public static ScoreLib scoreLib = new ScoreLib();
+    public static OrderedMap<Item, Float> itemScores;
+    public static OrderedMap<Liquid, Float> liquidScores;
+    public static OrderedMap<UnitType, Float> unitScores;
+
+    public static OrderedMap<String, ShopItem> shopItems = new OrderedMap<>();
+
     public static MindyHints hints = new MindyHints();
     public static MindyUILoader mui = new MindyUILoader();
 
@@ -49,7 +59,8 @@ public class BetaMindy extends Mod{
         new MindyBlocks(),
         new MindyTechTree(),
         new MindyWeathers(),
-        new FireColor()
+        new FireColor(),
+        new ShopItems()
     };
 
     public BetaMindy() {
@@ -79,6 +90,35 @@ public class BetaMindy extends Mod{
     @Override
     public void init(){
         Vars.enableConsole = true;
+
+        scoreLib.loadItems();
+
+        itemScores = scoreLib.scores();
+        liquidScores = scoreLib.liquidScores();
+        unitScores = scoreLib.unitScores();
+
+        Log.info("Scores: ");
+
+        Log.info("  - Items: ");
+        for(Item item : Vars.content.items()){
+            if(itemScores.containsKey(item)){
+                Log.info("    - " + item.localizedName + ": " + itemScores.get(item).toString());
+            }
+        }
+
+        Log.info("  - Liquids: ");
+        for(Liquid liquid : Vars.content.liquids()){
+            if(liquidScores.containsKey(liquid)){
+                Log.info("    - " + liquid.localizedName + ": " + liquidScores.get(liquid).toString());
+            }
+        }
+
+        Log.info("  - Units: ");
+        for(UnitType unit : Vars.content.units()){
+            if(unitScores.containsKey(unit)){
+                Log.info("    - " + unit.localizedName + ": " + unitScores.get(unit).toString());
+            }
+        }
 
         LoadedMod mod = Vars.mods.locateMod("betamindy");
         if(!headless){
