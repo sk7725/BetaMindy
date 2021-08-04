@@ -29,7 +29,7 @@ public class ShopItems implements ContentList {
             packageItems = ItemStack.with(Items.copper, 1200, Items.lead, 350, Items.graphite, 300, Items.silicon, 325, Items.surgeAlloy, 325);
         }};
 
-        package4 = new ShopItem("minamite-package", 5500){{
+        package4 = new ShopItem("mynamite-package", 5500){{
             packageItems = ItemStack.with(Items.thorium, 180, Items.blastCompound, 400);
         }};
 
