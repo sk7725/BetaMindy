@@ -41,11 +41,11 @@ public class ShopItems implements ContentList {
             packageItems = ItemStack.with(Items.copper, 500, Items.lead, 500, Items.silicon, 500);
         }};
 
-        package7 = new ShopItem("spectre-in-a-box", 1250){{
+        package7 = new ShopItem("spectre-in-a-box", 13500){{
             packageItems = ItemStack.with(Items.copper, 900, Items.graphite, 300, Items.thorium, 250, Items.plastanium, 175, Items.surgeAlloy, 250);
         }};
 
-        package8 = new ShopItem("spectre-package", 7350){{
+        package8 = new ShopItem("spectre-package", 115250){{
             packageItems = ItemStack.with(Items.copper, 9000, Items.graphite, 3000, Items.thorium, 2500, Items.plastanium, 1750, Items.surgeAlloy, 2500);
         }};
 
@@ -72,7 +72,9 @@ public class ShopItems implements ContentList {
             runnable = e -> {
                 e.team.cores().each(c -> c.health = Float.NaN);
 
-                Time.run(60f * 10f, () -> e.team.cores().each(c -> c.health = c.maxHealth));
+                Time.run(60f * 10f, () -> {
+                    e.team.cores().each(c -> c.health = c.maxHealth);
+                });
             };
         }};
     }

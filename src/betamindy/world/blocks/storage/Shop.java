@@ -21,6 +21,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 
