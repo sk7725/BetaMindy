@@ -6,6 +6,8 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.type.*;
 
+import static java.lang.Float.*;
+
 public class ShopItems implements ContentList {
     public ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10;
     public ShopItem runnable1, runnable2;
@@ -49,11 +51,11 @@ public class ShopItems implements ContentList {
             packageItems = ItemStack.with(Items.copper, 9000, Items.graphite, 3000, Items.thorium, 2500, Items.plastanium, 1750, Items.surgeAlloy, 2500);
         }};
 
-        package9 = new ShopItem("foundation-in-a-box", 2560){{
+        package9 = new ShopItem("foundation-in-a-box", 41000){{
             packageItems = ItemStack.with(Items.copper, 3000, Items.lead, 3000, Items.silicon, 2000);
         }};
 
-        package10 = new ShopItem("nucleus-in-a-box", 7000){{
+        package10 = new ShopItem("nucleus-in-a-box", 120250){{
             packageItems = ItemStack.with(Items.copper, 8000, Items.lead, 8000, Items.silicon, 5000, Items.thorium, 4000);
         }};
 
@@ -67,7 +69,7 @@ public class ShopItems implements ContentList {
                 boolean[] ret = new boolean[]{true};
 
                 e.team.cores().each(c -> {
-                    if(c.health == c.maxHealth) ret[0] = false;
+                    if(c.health == c.maxHealth || isNaN(c.health)) ret[0] = false;
                 });
 
                 return ret[0];
@@ -83,6 +85,16 @@ public class ShopItems implements ContentList {
                 Time.run(60f * 10f, () -> {
                     e.team.cores().each(c -> c.health = c.maxHealth);
                 });
+            };
+
+            unlocked = e -> {
+                boolean[] ret = new boolean[]{true};
+
+                e.team.cores().each(c -> {
+                    if(isNaN(c.health)) ret[0] = false;
+                });
+
+                return ret[0];
             };
         }};
     }

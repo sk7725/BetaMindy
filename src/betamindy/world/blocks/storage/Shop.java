@@ -281,7 +281,7 @@ public class Shop extends PayloadAcceptor {
                             tt.add("x" + stack.amount).left();
                         }).growX().left();
 
-                        t.add(" [accent]" + (int)Math.min((itemScores.get(stack.item) * stack.amount) / 30f, stack.amount / 2f) + "[]").padRight(5f).left();
+                        t.add(" [accent]" + (int)Math.max((itemScores.get(stack.item) * stack.amount) / 30f, Math.max(stack.amount / 2f, 1)) + "[]").padRight(5f).left();
 
                         t.image(anucoin).left();
                     }).left().growX();
@@ -385,7 +385,7 @@ public class Shop extends PayloadAcceptor {
                     items.each((Item ii, int aa) -> {
                         if(!itemScores.containsKey(ii)) return;
 
-                        price[0] += (int)Math.min((itemScores.get(ii) * aa) / 30f, aa / 2f);
+                        price[0] += (int)Math.max((itemScores.get(ii) * aa) / 30f, Math.max(aa / 2f, 1));
 
                         itemStack.add(new ItemStack().set(ii, aa));
                     });
