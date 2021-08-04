@@ -49,11 +49,11 @@ public class ShopItems implements ContentList {
             packageItems = ItemStack.with(Items.copper, 9000, Items.graphite, 3000, Items.thorium, 2500, Items.plastanium, 1750, Items.surgeAlloy, 2500);
         }};
 
-        package9 = new ShopItem("foundation-in-a-box", 4000){{
+        package9 = new ShopItem("foundation-in-a-box", 2560){{
             packageItems = ItemStack.with(Items.copper, 3000, Items.lead, 3000, Items.silicon, 2000);
         }};
 
-        package10 = new ShopItem("nucleus-in-a-box", 5000){{
+        package10 = new ShopItem("nucleus-in-a-box", 7000){{
             packageItems = ItemStack.with(Items.copper, 8000, Items.lead, 8000, Items.silicon, 5000, Items.thorium, 4000);
         }};
 
