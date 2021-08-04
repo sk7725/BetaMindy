@@ -7,7 +7,7 @@ import mindustry.ctype.*;
 import mindustry.type.*;
 
 public class ShopItems implements ContentList {
-    public ShopItem package1, package2, package3, package4, package5, package6;
+    public ShopItem package1, package2, package3, package4, package5, package6, package7;
     public ShopItem runnable1, runnable2;
 
     @Override
@@ -39,6 +39,14 @@ public class ShopItems implements ContentList {
 
         package6 = new ShopItem("unit-package", 8000){{
             packageItems = ItemStack.with(Items.copper, 500, Items.lead, 500, Items.silicon, 500);
+        }};
+
+        package7 = new ShopItem("spectre-in-a-box", 3750){{
+            packageItems = ItemStack.with(Items.copper, 900, Items.graphite, 300, Items.thorium, 250, Items.plastanium, 175, Items.surgeAlloy, 250);
+        }};
+
+        package8 = new ShopItem("spectre-bundle", 40000){{
+            packageItems = ItemStack.with(Items.copper, 9000, Items.graphite, 3000, Items.thorium, 2500, Items.plastanium, 1750, Items.surgeAlloy, 2500);
         }};
 
         /* Runnables */
