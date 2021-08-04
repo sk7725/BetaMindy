@@ -7,7 +7,7 @@ import mindustry.ctype.*;
 import mindustry.type.*;
 
 public class ShopItems implements ContentList {
-    public ShopItem package1, package2, package3, package4, package5, package6, package7;
+    public ShopItem package1, package2, package3, package4, package5, package6, package7, package8;
     public ShopItem runnable1, runnable2;
 
     @Override
