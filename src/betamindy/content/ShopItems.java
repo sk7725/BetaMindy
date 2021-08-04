@@ -45,7 +45,7 @@ public class ShopItems implements ContentList {
             packageItems = ItemStack.with(Items.copper, 900, Items.graphite, 300, Items.thorium, 250, Items.plastanium, 175, Items.surgeAlloy, 250);
         }};
 
-        package8 = new ShopItem("spectre-bundle", 40000){{
+        package8 = new ShopItem("spectre-package", 40000){{
             packageItems = ItemStack.with(Items.copper, 9000, Items.graphite, 3000, Items.thorium, 2500, Items.plastanium, 1750, Items.surgeAlloy, 2500);
         }};
 
