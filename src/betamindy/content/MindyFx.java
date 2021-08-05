@@ -135,6 +135,20 @@ public class MindyFx {
         Fill.circle(e.x + Angles.trnsx(ang, len), e.y + Angles.trnsy(ang, len), 2f * e.fout());
     }),
 
+    driftBlock = new Effect(35f, e -> {
+        color(Pal.lancerLaser);
+        stroke(e.fout() * 4f);
+        Tmp.v1.trns(e.rotation, e.finpow() * 8f);
+        Lines.square(Tmp.v1.x + e.x, Tmp.v1.y + e.y, e.fin() * 8f, e.finpow() * 135f);
+    }),
+
+    driftFire = new Effect(50, e -> {
+        float len = e.finpow() * 22f;
+        float ang = e.rotation + 180f + Mathf.randomSeedRange(e.id, 30f);
+        color(e.color, Color.white, e.fin());
+        Fill.circle(e.x + Angles.trnsx(ang, len), e.y + Angles.trnsy(ang, len), 2f * e.fout());
+    }),
+
     starPoof = new Effect(50f, e -> {
         float rot = (e.data == null) ? 0f : (float)e.data;
         color(Color.white, e.fout());
@@ -737,5 +751,31 @@ public class MindyFx {
         else{
             rect(MindyBlocks.box.region, e.x, e.y);
         }
-    }).layer(Layer.blockOver);
+    }).layer(Layer.blockOver),
+
+    unitShinyTrail = new Effect(60f, e -> {
+        if(e.data instanceof UnitType unit){
+            float z = unit.flying ? (unit.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : unit.groundLayer + Mathf.clamp(unit.hitSize / 4000f, 0, 0.01f);
+            z(z - 0.002f);
+            blend(Blending.additive);
+            mixcol(e.color, 1f);
+            alpha(e.fout() * 0.7f);
+            rect(unit.shadowRegion, e.x, e.y, e.rotation - 90);
+            reset();
+            blend();
+        }
+    }),
+
+    unitBittTrail = new Effect(90f, e -> {
+        if(e.data instanceof UnitType unit){
+            float z = unit.flying ? (unit.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : unit.groundLayer + Mathf.clamp(unit.hitSize / 4000f, 0, 0.01f);
+            z(z - 0.002f);
+            blend(Blending.additive);
+            mixcol(Tmp.c1.set(Color.cyan).lerp(Color.pink, Mathf.absin(Time.time - e.time, 5f, 1f)), 1f);
+            alpha(e.fout() * 0.7f);
+            rect(unit.shadowRegion, e.x, e.y, e.rotation - 90);
+            reset();
+            blend();
+        }
+    });
 }

@@ -7,7 +7,7 @@ import arc.input.KeyCode;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import arc.util.Align;
+import arc.util.*;
 import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
@@ -21,15 +21,18 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
-import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 
+import static arc.Core.atlas;
 import static mindustry.Vars.mobile;
 
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
-    public TextureRegion anucoin;
+    public TextureRegion anucoin, spinRegion;
+    public TextureRegion[] spinTeamRegions;
+    public float spinSpeed = 0.1f;
+    public float spinShadowRadius = 4f;
 
     /** 0 = item, 1 = unit, 3 = extra */
     public int shopType = 0;
@@ -64,6 +67,7 @@ public class Shop extends PayloadAcceptor {
 
     @Override
     public void createIcons(MultiPacker packer){
+        Drawm.customTeamRegion(packer, name + "-spin");
         Drawm.generateTeamRegion(packer, this);
         super.createIcons(packer);
     }
@@ -93,7 +97,14 @@ public class Shop extends PayloadAcceptor {
     public void load() {
         super.load();
 
-        anucoin = Core.atlas.find("betamindy-anucoin");
+        anucoin = atlas.find("betamindy-anucoin");
+        spinRegion = atlas.find(name + "-spin");
+        spinTeamRegions = Drawm.loadCustomTeamRegion(name + "-spin");
+    }
+
+    @Override
+    public TextureRegion[] icons(){
+        return teamRegion.found() ? new TextureRegion[]{region, topRegion, teamRegions[Team.sharded.id], spinTeamRegions[Team.sharded.id], spinRegion} : new TextureRegion[]{region, topRegion};
     }
 
     public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload>{
@@ -229,7 +240,7 @@ public class Shop extends PayloadAcceptor {
                             updateAnucoins();
                         }
                     } else if(shopItem.type == 1){
-                        shopItem.runnable.get(this);
+                        shopItem.purchased.get(this);
                         shopDialog.hide();
 
                         anucoins -= price;
@@ -254,6 +265,38 @@ public class Shop extends PayloadAcceptor {
         public void updateTile(){
             super.updateTile();
             moveOutPayload();
+        }
+
+        @Override
+        public void draw(){
+            Draw.rect(region, x, y);
+            Draw.rect(outRegion, x, y, rotdeg());
+
+            drawPayload();
+            Draw.z(Layer.blockOver + 0.001f);
+            Draw.rect(topRegion, x, y);
+            drawTeamTop();
+            Draw.reset();
+        }
+
+        @Override
+        public void drawTeamTop(){
+            if(block.teamRegion.found()){
+                float r = Time.time * spinSpeed + id * 17f;
+
+                Draw.z(Layer.blockOver + 0.0011f);
+                if(block.teamRegions[team.id] == block.teamRegion) Draw.color(team.color);
+                Draw.rect(block.teamRegions[team.id], x, y);
+                Draw.z(Layer.blockOver + 0.002f);
+                Drawm.spinSprite(spinTeamRegions[team.id], x, y, r);
+
+                Draw.color();
+                Draw.rect(spinRegion, x, y, r);
+                Draw.z(Layer.blockOver + 0.0015f);
+                Drawf.shadow(x, y, spinShadowRadius);
+            }
+
+            carried = false; //why, Anuke?
         }
 
         @Override

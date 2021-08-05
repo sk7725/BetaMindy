@@ -318,7 +318,7 @@ public class Altar extends Block {
                     s.table(sm -> {
                         sm.image(() -> pages.get(Mathf.clamp(menuPage, 0, pages.size - 1)).icon()).size(130f);
                         sm.row();
-                        sm.label(() -> pages.get(Mathf.clamp(menuPage, 0, pages.size - 1)).local()).get().setStyle(Styles.outlineLabel);
+                        sm.label(() -> pages.get(Mathf.clamp(menuPage, 0, pages.size - 1)).local()).get().setStyle(new Label.LabelStyle(Styles.outlineLabel));
                     }).grow();
 
                     s.button(Icon.right, Styles.clearTransi, () -> {

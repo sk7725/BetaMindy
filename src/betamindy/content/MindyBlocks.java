@@ -52,7 +52,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
     //turrets
@@ -671,6 +671,23 @@ public class MindyBlocks implements ContentList {
         boostPad = new BoostPad("boostpad"){{
             size = 2;
             requirements(Category.units, with(Items.lead, 24, Items.silicon, 10, Items.phaseFabric, 30));
+            lightColor = Color.orange;
+            lightRadius = 50f;
+        }};
+
+        driftPad = new DirectionalPad("driftpad"){{
+            size = 2;
+            requirements(Category.units, with(Items.copper, 24, Items.metaglass, 20, Items.phaseFabric, 20));
+            lightColor = Pal.lancerLaser;
+            lightRadius = 50f;
+            sprites = 5;
+
+            friend = (BoostPad) boostPad;
+            status = MindyStatusEffects.drift;
+            duration = cooldown = 14f;
+            boostEffect = MindyFx.driftBlock;
+            boostSound = Sounds.flame2;//todo
+            impulseAmount = 9f;
         }};
 
         //frostPad = new FrostPad("frostpad"){

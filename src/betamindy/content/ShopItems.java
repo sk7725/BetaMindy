@@ -63,7 +63,7 @@ public class ShopItems implements ContentList {
         runnable1 = new ShopItem("first-aids", 1500){{
             type = 1;
 
-            runnable = e -> e.team.cores().each(c -> c.health = c.maxHealth);
+            purchased = e -> e.team.cores().each(c -> c.health = c.maxHealth);
 
             unlocked = e -> {
                 boolean[] ret = new boolean[]{true};
@@ -79,7 +79,7 @@ public class ShopItems implements ContentList {
         runnable2 = new ShopItem("invi-core", 10250){{
             type = 1;
 
-            runnable = e -> {
+            purchased = e -> {
                 e.team.cores().each(c -> c.health = Float.NaN);
 
                 Time.run(60f * 10f, () -> {

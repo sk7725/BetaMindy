@@ -12,7 +12,7 @@ public class ShopItem {
     /** 0 = package, 1 = runnable*/
     public int type = 0;
 
-    public Cons<Shop.ShopBuild> runnable;
+    public Cons<Shop.ShopBuild> purchased;
     public ItemStack[] packageItems;
 
     public Boolf<Shop.ShopBuild> unlocked = e -> true;

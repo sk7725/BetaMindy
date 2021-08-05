@@ -24,6 +24,7 @@ public class BumperBlue extends Bumper {
         solidifes = true;
         canOverdrive = true;
         ignoreHeat = true;
+        sync = true;
     }
 
     public class BumperBlueBuild extends BumperBuild {

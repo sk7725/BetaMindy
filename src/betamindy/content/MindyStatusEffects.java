@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.graphics.Pal2;
+import betamindy.util.*;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.units.WeaponMount;
@@ -18,7 +19,7 @@ import mindustry.world.meta.*;
 import static betamindy.BetaMindy.hardmode;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift;
 
     public void load(){
         //marker for portal-spawned enemies
@@ -79,13 +80,37 @@ public class MindyStatusEffects implements ContentList {
             speedMultiplier = -1f;
         }};
 
+        drift = new StatusEffect("drift"){
+            @Override
+            public void update(Unit unit, float time){
+                MindyFx.unitShinyTrail.at(unit.x, unit.y, unit.rotation, color, unit.type);
+                unit.vel.setAngle(Angles.moveToward(unit.vel.angle(), unit.rotation, 5.5f * Time.delta));
+                if(unit.type.canBoost) unit.elevation = 1f;
+            }
+
+            {
+                color = Color.valueOf("2acdff");
+                effect = Fx.none;
+                speedMultiplier = 0f;
+                dragMultiplier = 0.00001f;
+            }
+        };
+
         booster = new StatusEffect("booster"){
             @Override
             public void update(Unit unit, float time){
+                boolean drifting = unit.hasEffect(drift);
+
                 if(Mathf.chanceDelta(effectChance)){
                     Tmp.v1.rnd(unit.type.hitSize /2f);
-                    effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, unit.rotation);
+                    if(drifting){
+                        MindyFx.driftFire.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, unit.rotation, drift.color);
+                    }
+                    else{
+                        effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, unit.rotation);
+                    }
                 }
+                if(!drifting) MindyFx.unitShinyTrail.at(unit.x, unit.y, unit.rotation, color, unit.type);
             }
 
             {
@@ -220,12 +245,9 @@ public class MindyStatusEffects implements ContentList {
 
         bittriumBane = new StatusEffect("bittbane"){
             @Override
-            public void draw(Unit unit){
-                if(unit.type.outlineRegion == null || !unit.type.outlineRegion.found()) return;
-                Draw.z(Layer.effect);
-                Draw.color(Color.cyan, Color.pink, Mathf.absin(Time.globalTime, 8f, 1f));
-                Draw.rect(unit.type.outlineRegion, unit.x, unit.y, unit.rotation - 90);
-                Draw.color();
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+                if(Useful.interval(3f, 0f)) MindyFx.unitBittTrail.at(unit.x, unit.y, unit.rotation, unit.type);
             }
 
             {
@@ -234,7 +256,7 @@ public class MindyStatusEffects implements ContentList {
                 damageMultiplier = Float.POSITIVE_INFINITY;
                 healthMultiplier = 0.000001f;
                 reloadMultiplier = 0.25f;
-                speedMultiplier = 1.25f;
+                speedMultiplier = 1.5f;
             }
 
             @Override

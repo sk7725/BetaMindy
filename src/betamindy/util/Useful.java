@@ -50,6 +50,12 @@ public class Useful {
     private static Vec2 cameraPos = new Vec2();
     private static boolean camLock;
 
+    /** Returns true once every few ticks. Unreliable, use only in trivial stuff like graphics. */
+    public static boolean interval(float duration, float offset){
+        if(Time.time + offset < Time.delta) return false;
+        return ((int) ((Time.time + offset - Time.delta) / duration)) < ((int) ((Time.time + offset) / duration));
+    }
+
     /** Applies stuff to units in a line. Does not affect buildings. Anuke why do you do this to me */
     public static void applyLine(Cons<Unit> acceptor, @Nullable Building source, Effect effect, float x, float y, float angle, float length, boolean wall){
         if(wall) length = findPathLength(x, y, angle, length, source);

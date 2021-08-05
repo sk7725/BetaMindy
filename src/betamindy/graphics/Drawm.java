@@ -273,9 +273,46 @@ public class Drawm {
         b.load();
     }
 
+    /** ONly for blocks with 2 or more team regions.
+     * Generates all team regions for this region. Call #loadCustomTeamRegion(String) in load() afterwards to get the region. Must be followed by a #generateTeamRegion. */
+    public static void customTeamRegion(MultiPacker packer, String name){
+        PixmapRegion teamr = Core.atlas.getPixmap(name + "-team");
+
+        for(Team team : Team.all){
+            if(team.hasPalette){
+                Pixmap out = new Pixmap(teamr.width, teamr.height, teamr.pixmap.getFormat());
+                out.setBlending(Pixmap.Blending.none);
+                Color pixel = new Color();
+                for(int x = 0; x < teamr.width; x++){
+                    for(int y = 0; y < teamr.height; y++){
+                        int color = teamr.getPixel(x, y);
+                        int index = color == 0xffffffff ? 0 : color == 0xdcc6c6ff ? 1 : color == 0x9d7f7fff ? 2 : -1;
+                        out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
+                    }
+                }
+                packer.add(PageType.main, name + "-team-" + team.name, out);
+
+                //for 6.0 compatibility only! TODO remove in 7.0
+                if(Version.number <= 6){
+                    Core.atlas.addRegion(name + "-team-" + team.name, new TextureRegion(new Texture(out)));
+                }
+            }
+        }
+    }
+
     /** @return the sharded team texture region for this block */
     public static TextureRegion getTeamRegion(Block b){
         return Core.atlas.find(b.name + "-team-sharded");
+    }
+
+    /** Loads the custom team regions. */
+    public static TextureRegion[] loadCustomTeamRegion(String name){
+        TextureRegion[] ret = new TextureRegion[Team.all.length];
+        TextureRegion def = Core.atlas.find(name + "-team");
+        for(Team team : Team.all){
+            ret[team.id] = def.found() && team.hasPalette ? Core.atlas.find(name + "-team-" + team.name, def) : def;
+        }
+        return ret;
     }
 
     /** Draws a sprite that should be lightwise correct, using 4 sprites each colored with a different lighting angle. */

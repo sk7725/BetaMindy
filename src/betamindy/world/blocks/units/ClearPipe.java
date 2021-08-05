@@ -196,7 +196,7 @@ public class ClearPipe extends Block {
             if(dir % 2 == 0){
                 //tall rectangle
                 Units.nearby(x + ox - 4f, y + oy - size * 4f, 8f, size * 8f, u -> {
-                    if(!u.vel.isZero() && u.y >= y + oy - size * 4f && u.y <= y + oy + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
+                    if(u.y >= y + oy - size * 4f && u.y <= y + oy + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
                         acceptAttempt(u, dir);
                     }
                 });
@@ -204,7 +204,7 @@ public class ClearPipe extends Block {
             else{
                 //wide rectangle
                 Units.nearby(x + ox - size * 4f, y + oy - 4f, size * 8f, 8f, u -> {
-                    if(!u.vel.isZero() && u.x >= x + ox - size * 4f && u.x <= x + ox + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
+                    if(u.x >= x + ox - size * 4f && u.x <= x + ox + size * 4f && Angles.within(u.vel.angle(), dir * 90f + 180f, 60f)){
                         acceptAttempt(u, dir);
                     }
                 });
@@ -592,6 +592,7 @@ public class ClearPipe extends Block {
                 //Useful.unlockCam();
                 if(Useful.dumpPlayerUnit(unit, p)){
                     Core.app.post(() -> {
+                        u.rotation = r;
                         u.vel.trns(r, ejectStrength / 2f);
                         if(u.isRemote()) u.move(u.vel.x, u.vel.y);
                     });
