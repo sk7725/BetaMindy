@@ -21,9 +21,9 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
-import mindustry.world.modules.ItemModule;
 
 import static mindustry.Vars.mobile;
 
@@ -201,7 +201,7 @@ public class Shop extends PayloadAcceptor {
                 }
 
                 if(shopItem.type == 0) {
-                    for(ItemStack stack : shopItem.bundleItems){
+                    for(ItemStack stack : shopItem.packageItems){
                         t.row();
 
                         t.table(tt -> {
@@ -219,7 +219,8 @@ public class Shop extends PayloadAcceptor {
                 if(anucoins >= price) {
                     if(shopItem.type == 0) {
                         boolean success = true;
-                        for(ItemStack stack : shopItem.bundleItems){
+
+                        for(ItemStack stack : shopItem.packageItems){
                             if(!addItemPayload(stack.item, stack.amount)) success = false;
                         }
 
@@ -280,7 +281,8 @@ public class Shop extends PayloadAcceptor {
                             tt.add("x" + stack.amount).left();
                         }).growX().left();
 
-                        t.add(" [accent]" + (int)((itemScores.get(stack.item) * stack.amount) / 30f) + "[]").padRight(5f).left();
+                        t.add(" [accent]" + (int)Math.max((itemScores.get(stack.item) * stack.amount) / 30f, Math.max(stack.amount / 2f, 1)) + "[]").padRight(5f).left();
+
                         t.image(anucoin).left();
                     }).left().growX();
                     p.row();
@@ -382,7 +384,9 @@ public class Shop extends PayloadAcceptor {
 
                     items.each((Item ii, int aa) -> {
                         if(!itemScores.containsKey(ii)) return;
-                        price[0] += itemScores.get(ii) * aa / 30f;
+
+                        price[0] += (int)Math.max((itemScores.get(ii) * aa) / 30f, Math.max(aa / 2f, 1));
+
                         itemStack.add(new ItemStack().set(ii, aa));
                     });
 

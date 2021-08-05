@@ -2,7 +2,6 @@ package betamindy;
 
 import arc.*;
 import arc.func.*;
-import arc.input.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.graphics.*;
@@ -13,16 +12,17 @@ import betamindy.world.blocks.campaign.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
+import mindustry.game.Team;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
 import betamindy.content.*;
 import mindustry.net.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 
+import static java.lang.Float.*;
 import static mindustry.Vars.*;
 
 public class BetaMindy extends Mod{
@@ -78,9 +78,11 @@ public class BetaMindy extends Mod{
             }));
         });
 
-        Events.on(FileTreeInitEvent.class, e -> Core.app.post(() -> {
-            MindyShaders.load();
+        Events.on(WorldLoadEvent.class, e -> Team.sharded.cores().each(c -> {
+            if(isNaN(c.health)) c.health = c.maxHealth;
         }));
+
+        Events.on(FileTreeInitEvent.class, e -> Core.app.post(MindyShaders::load));
 
         Events.on(DisposeEvent.class, e -> {
             MindyShaders.dispose();
