@@ -12,6 +12,7 @@ import betamindy.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.Team;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.Cicon;
@@ -766,6 +767,26 @@ public class MindyFx {
         }
     }),
 
+    sparkTrail = new Effect(90f, e -> {
+        blend(Blending.additive);
+        color();
+        alpha(e.fout());
+        float r = Mathf.sin(17f, 3f);
+        Drawm.spark(e.x, e.y, (6f - Math.abs(r)) * e.rotation * e.fout() / 8f, 0.25f * e.rotation * e.fout(), r * 15f);
+        reset();
+        blend();
+    }),
+
+    sparkTrailHigh = new Effect(90f, e -> {
+        blend(Blending.additive);
+        color();
+        alpha(e.fout());
+        float r = Mathf.sin(17f, 3f);
+        spark(e.x, e.y, (6f - Math.abs(r)) * e.rotation * e.fout() / 8f, 0.25f * e.rotation * e.fout(), r * 15f);
+        reset();
+        blend();
+    }).layer(Layer.flyingUnit),
+
     unitBittTrail = new Effect(90f, e -> {
         if(e.data instanceof UnitType unit){
             float z = unit.flying ? (unit.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : unit.groundLayer + Mathf.clamp(unit.hitSize / 4000f, 0, 0.01f);
@@ -777,5 +798,15 @@ public class MindyFx {
             reset();
             blend();
         }
+    }),
+
+    lightFade = new Effect(90f, 120f, e -> {
+        float x = e.x;
+        float y = e.y;
+        if(e.data instanceof Unit u){
+            x = u.x;
+            y = u.y;
+        }
+        Drawf.light(x, y, e.rotation * e.fout(0.2f), e.color, 1f);
     });
 }

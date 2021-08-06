@@ -31,8 +31,8 @@ public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
     public TextureRegion anucoin, spinRegion;
     public TextureRegion[] spinTeamRegions;
-    public float spinSpeed = 0.1f;
-    public float spinShadowRadius = 4f;
+    public float spinSpeed = 0.2f;
+    public float spinShadowRadius = 15f;
 
     /** 0 = item, 1 = unit, 3 = extra */
     public int shopType = 0;

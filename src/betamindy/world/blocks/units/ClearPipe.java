@@ -33,6 +33,8 @@ public class ClearPipe extends Block {
     public static final byte[] pipePriority = {2, 1, 3, 0};
     public static final byte[][] shadowTypes = {{0, 0}, {1, 2}, {1, 3}, {3, 0}, {1, 0}, {2, 0}, {3, 1}, {4, 1}, {1, 1}, {3, 3}, {2, 1}, {4, 0}, {3, 2}, {4, 3} ,{4, 2} ,{5, 0}};
     public static final byte[][][] pipeOpening = {{{2, 0}, {2, 1}}, {{0, 2}, {1, 2}}, {{-1, 0}, {-1, 1}}, {{0, -1}, {1, -1}}};
+    public static final StatusEffect immuneStatus = MindyStatusEffects.ouch;
+
     public float speed = 1f / 6f;
     public float ejectStrength = 6f;
     /** Whether to only input units when consValid() */
@@ -212,7 +214,7 @@ public class ClearPipe extends Block {
         }
 
         public void acceptAttempt(Unit u, int dir){
-            if(!canChangeTeam && u.team != team) return;
+            if((!canChangeTeam && u.team != team) || u.hasEffect(immuneStatus)) return;
             if(net.active()){
                 if(u.isLocal() && connections == 1 && timer(timerConfigure, configInterval)){
                     u.vel.setZero();
@@ -568,6 +570,7 @@ public class ClearPipe extends Block {
             build.effects(Tmp.v2, to * 90f, datBigBoi());
         }
 
+        /** This is only called when the building is removed! */
         public void dump(ClearPipeBuild build){
             //init
             Player p = player();
@@ -673,13 +676,16 @@ public class ClearPipe extends Block {
                         }
 
                         //dump unit
+                        //offset unit so ground units don't commit die
+                        Tmp.v1.trns(to * 90f, tilesize * (build.block.size / 2f + 0.5f)).add(build);
+                        unit.set(Tmp.v1.x, Tmp.v1.y,to * 90f);
 
                         //clear removed state of unit so it can be synced
                         if(net.client()){
                             netClient.clearRemovedEntity(unit.unit.id);
                         }
 
-                        unit.unit.vel.trns(to * 90f, ejectStrength);
+                        final Unit dumped = unit.unit;
 
                         if(p == null){
                             //standard dump...?
@@ -691,6 +697,8 @@ public class ClearPipe extends Block {
                                 }
                             }else if(build.isOpen(to, true) && unit.dump()){
                                 effects(build);
+                                dumped.apply(immuneStatus, 10f);
+                                dumped.vel.trns(to * 90f, ejectStrength);
                                 return true;
                             }
 
@@ -702,6 +710,12 @@ public class ClearPipe extends Block {
                             //Useful.unlockCam();
                             if(unit.unit.type == null) return true;
                             if(build.isOpen(to, true) && Useful.dumpPlayerUnit(unit, p)){
+                                dumped.vel.trns(to * 90f, ejectStrength);
+                                dumped.apply(immuneStatus, 10f);
+                                if(p.isRemote()){
+                                    //impulseNet behavior
+                                    if(p.unit() != null) p.unit().move(dumped.vel.x, dumped.vel.y);
+                                }
                                 effects(build);
                                 return true;
                             }

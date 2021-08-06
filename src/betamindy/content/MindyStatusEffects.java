@@ -5,8 +5,9 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.*;
-import betamindy.graphics.Pal2;
+import betamindy.graphics.*;
 import betamindy.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.units.WeaponMount;
@@ -19,7 +20,7 @@ import mindustry.world.meta.*;
 import static betamindy.BetaMindy.hardmode;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift, caffeinated, glowing;
 
     public void load(){
         //marker for portal-spawned enemies
@@ -266,6 +267,59 @@ public class MindyStatusEffects implements ContentList {
                 stats.add(Stat.damageMultiplier, "[cyan]NULL[]");
                 stats.remove(Stat.healthMultiplier);
                 stats.add(Stat.healthMultiplier, "[pink]NULL[]");
+            }
+        };
+
+        caffeinated = new StatusEffect("caffeinated"){{
+            //in v5, I needed to use hacky cheats for something like these.
+            buildSpeedMultiplier = 2.5f;
+            reloadMultiplier = 2f;
+            effect = Fx.steam;
+            color = Pal2.coffee;
+        }};
+
+        glowing = new StatusEffect("glowing"){
+            @Override
+            public void draw(Unit unit){
+                Draw.z(unit.type.flying && !unit.type.lowAltitude ? Layer.flyingUnit + 1f : Layer.effect);
+                if(unit.type.drawCell){
+                    Draw.mixcol(color, 1f);
+                    Draw.rect(unit.type.cellRegion, unit.x, unit.y, unit.rotation - 90);
+                    Draw.mixcol();
+                }
+                Draw.color(color);
+                float r = Mathf.sin(17f, 3f);
+                Drawm.spark(unit.x, unit.y, (6f - Math.abs(r)) * unit.hitSize / 8f, 0.25f * unit.hitSize, r * 15f);
+
+                /*
+                Draw.z(Layer.groundUnit - 1f);
+                Draw.alpha(0.7f);
+                Draw.rect("circle-shadow", unit.x, unit.y, unit.hitSize * 0.7f - r, unit.hitSize * 0.7f - r);
+                */
+
+                Drawf.light(unit.x, unit.y, 80f + unit.type.lightRadius, color, 1f);
+                Draw.reset();
+            }
+            @Override
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+                if(unit.type.flying && !unit.type.lowAltitude){
+                    MindyFx.sparkTrailHigh.at(unit.x, unit.y, unit.hitSize, color);
+                }
+                else{
+                    MindyFx.sparkTrail.at(unit.x, unit.y, unit.hitSize, color);
+                }
+
+                if(time <= 3f * Time.delta){
+                    //get ready for it to fade
+                    MindyFx.lightFade.at(unit.x, unit.y, 80f + unit.type.lightRadius, color, unit);
+                }
+            }
+
+            {
+                color = Color.white;
+                effect = MindyFx.sparkle;
+                effectChance = 0.035f; //for the record, default is 0.15f
             }
         };
     }

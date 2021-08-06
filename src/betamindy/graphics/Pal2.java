@@ -15,5 +15,6 @@ public class Pal2 {
     exp = Color.valueOf("84ff00"),
     expBack = Color.valueOf("4d8f07"),
     portal = Color.valueOf("ef8aff"),
-    portalBack = Color.valueOf("c744db");
+    portalBack = Color.valueOf("c744db"),
+    coffee = Color.valueOf("80623c");
 }
