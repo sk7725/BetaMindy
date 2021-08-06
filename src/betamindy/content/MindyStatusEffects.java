@@ -20,7 +20,9 @@ import mindustry.world.meta.*;
 import static betamindy.BetaMindy.hardmode;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift, caffeinated, glowing;
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift,
+    //drinks
+    caffeinated, herbed, blossoming, flowered, glowing;
 
     public void load(){
         //marker for portal-spawned enemies
@@ -276,6 +278,41 @@ public class MindyStatusEffects implements ContentList {
             reloadMultiplier = 2f;
             effect = Fx.steam;
             color = Pal2.coffee;
+        }};
+
+        herbed = new StatusEffect("herbed"){{
+            reloadMultiplier = 0.8f;
+            healthMultiplier = 1.2f;
+            damage = -0.15f;
+            effect = MindyFx.herbSteam;
+            color = Color.valueOf("abd857");
+        }};
+
+        //todo
+        blossoming = new StatusEffect("blossoming"){
+            @Override
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+
+            }
+
+            {
+                speedMultiplier = 1.1f;
+                reloadMultiplier = 1.1f;
+                damageMultiplier = 0.5f;
+                healthMultiplier = 0.75f;
+                color = Pal2.cherry;
+                effect = MindyFx.petals;
+            }
+        };
+
+        flowered = new StatusEffect("flowered"){{
+            healthMultiplier = 1.1f;
+            damage = -0.06f;
+            reloadMultiplier = 1.1f;
+            speedMultiplier = 1.1f;
+            color = Pal2.cherry;
+            effect = MindyFx.petals;
         }};
 
         glowing = new StatusEffect("glowing"){

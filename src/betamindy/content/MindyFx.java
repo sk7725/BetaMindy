@@ -800,6 +800,23 @@ public class MindyFx {
         }
     }),
 
+    herbSteam = new Effect(35f, e -> {
+        color(MindyStatusEffects.herbed.color, Color.lightGray, 0.7f * e.fin() + 0.3f);
+
+        randLenVectors(e.id, 2, 2f + e.fin() * 7f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.2f + e.fslope() * 1.5f);
+        });
+    }),
+
+    petals = new Effect(40f, e -> {
+        color(Color.white, e.fout(0.5f));
+        vgld[0] = e.id;
+        randLenVectors(e.id, 3, 8f + e.fin() * 3f, (x, y) -> {
+            vgld[0]++;
+            Drawm.petal(e.x + x, e.y + y, 4f, Mathf.randomSeed(vgld[0], 360f), (e.lifetime - e.time) * Mathf.randomSeed(-vgld[0], 2f, 5f));
+        });
+    }).layer(Layer.flyingUnit + 0.1f),
+
     lightFade = new Effect(90f, 120f, e -> {
         float x = e.x;
         float y = e.y;

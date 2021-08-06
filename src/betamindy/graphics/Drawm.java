@@ -106,6 +106,10 @@ public class Drawm {
         Draw.rect(AncientKoruh.eng(str, index), x, y, size, size, r);
     }
 
+    public static void petal(float x, float y, float size, float r, float roll){
+        flipSprite(Core.atlas.find("betamindy-petal"), x, y, r, roll, size, size, Color.white, Pal2.darkPink);
+    }
+
     public static void portal(float x, float y, float radius, Color color1, Color color2){
         if(Vars.renderer.bloom == null){
             Tmp.c2.set(color1).lerp(color2, Mathf.sin(Time.globalTime / 35f) * 0.5f + 0.5f);
@@ -333,6 +337,46 @@ public class Drawm {
         Draw.alpha(r / 90f);
         Draw.rect(region, x, y, r - 90f);
         Draw.alpha(1f);
+    }
+
+    /** Filps a sprite like a coin.
+     * @param region Note that this region is flipped left-right, the y-axis being the axis.
+     * @param rotation Technically the yaw.
+     * @param roll Negative values tilt the sprite to the east (cw), positive to the west (ccw).
+     */
+    public static void flipSprite(TextureRegion region, float x, float y, float rotation, float roll){
+        flipSprite(region, x, y, rotation, roll, region.width * Draw.scl * Draw.xscl, region.height * Draw.scl * Draw.yscl);
+    }
+
+    public static void flipSprite(TextureRegion region, float x, float y, float rotation, float roll, float w, float h){
+        flipSprite(region, x, y, rotation, roll, w, h, Color.white, Pal.darkestGray);
+    }
+
+    public static void flipSprite(TextureRegion region, float x, float y, float rotation, float roll, float w, float h, Color lightColor, Color darkColor){
+        roll = Mathf.wrapAngleAroundZero(roll);
+        float croll = roll * Mathf.clamp(Mathf.cosDeg(rotation - 45f) * 1.42f, -1f, 1f);
+
+        prepareRollColor(croll, lightColor, darkColor);
+        Draw.rect(region, x, y, w * Mathf.cosDeg(roll), h, rotation);
+        Draw.mixcol();
+    }
+
+    private static void prepareRollColor(float roll, Color lightColor, Color darkColor){
+        if(Mathf.zero(roll)) return;
+        float f = Mathf.sinDeg(roll);
+        if(roll < 0f){
+            f = -f;
+            roll += 180f;
+        }
+
+        if(roll > 90f){
+            //dark+
+            Draw.mixcol(darkColor, f);
+        }
+        else{
+            //light+
+            Draw.mixcol(lightColor, f);
+        }
     }
 
     /** Outlines a given textureRegion. Run in createIcons. */
