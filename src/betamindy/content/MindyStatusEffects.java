@@ -1,15 +1,19 @@
 package betamindy.content;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.graphics.*;
+import betamindy.type.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.ctype.ContentList;
+import mindustry.entities.*;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -18,6 +22,7 @@ import mindustry.ui.*;
 import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.hardmode;
+import static mindustry.Vars.tilesize;
 
 public class MindyStatusEffects implements ContentList {
     public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift,
@@ -144,6 +149,7 @@ public class MindyStatusEffects implements ContentList {
             init(() -> {
                 opposite(StatusEffects.melting, StatusEffects.burning);
 
+                if(Version.number > 6) return; //todo remove & fix transition handler in v7
                 affinity(StatusEffects.blasted, ((unit, time, newTime, result) -> {
                     unit.damagePierce(transitionDamage);
                     result.set(icy, time);
@@ -288,24 +294,6 @@ public class MindyStatusEffects implements ContentList {
             color = Color.valueOf("abd857");
         }};
 
-        //todo
-        blossoming = new StatusEffect("blossoming"){
-            @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
-
-            }
-
-            {
-                speedMultiplier = 1.1f;
-                reloadMultiplier = 1.1f;
-                damageMultiplier = 0.5f;
-                healthMultiplier = 0.75f;
-                color = Pal2.cherry;
-                effect = MindyFx.petals;
-            }
-        };
-
         flowered = new StatusEffect("flowered"){{
             healthMultiplier = 1.1f;
             damage = -0.06f;
@@ -314,6 +302,22 @@ public class MindyStatusEffects implements ContentList {
             color = Pal2.cherry;
             effect = MindyFx.petals;
         }};
+
+        blossoming = new InflictStatusEffect("blossoming", flowered){
+            {
+                speedMultiplier = 1.1f;
+                reloadMultiplier = 1.1f;
+                damageMultiplier = 0.5f;
+                healthMultiplier = 0.75f;
+                color = Pal2.cherry;
+                effect = MindyFx.petals;
+
+                effect2 = MindyFx.cherrySteam;
+                onInterval = MindyFx.perfume;
+                effectInterval = 140f;
+                inflictDuration = 480f;
+            }
+        };
 
         glowing = new StatusEffect("glowing"){
             @Override
@@ -325,7 +329,7 @@ public class MindyStatusEffects implements ContentList {
                     Draw.mixcol();
                 }
                 Draw.color(color);
-                float r = Mathf.sin(17f, 3f);
+                float r = Mathf.sin(27f, 3f);
                 Drawm.spark(unit.x, unit.y, (6f - Math.abs(r)) * unit.hitSize / 8f, 0.25f * unit.hitSize, r * 15f);
 
                 /*
@@ -351,6 +355,12 @@ public class MindyStatusEffects implements ContentList {
                     //get ready for it to fade
                     MindyFx.lightFade.at(unit.x, unit.y, 80f + unit.type.lightRadius, color, unit);
                 }
+            }
+
+            @Override
+            public void setStats(){
+                super.setStats();
+                stats.add(Stat.range, "[#00ff00]+[]" + (int)(80f / tilesize) + " " + Core.bundle.get("unit.blocks"));
             }
 
             {

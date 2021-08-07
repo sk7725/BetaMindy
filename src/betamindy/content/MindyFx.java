@@ -808,14 +808,40 @@ public class MindyFx {
         });
     }),
 
+    cherrySteam = new Effect(35f, e -> {
+        color(Color.pink, Color.lightGray, 0.7f * e.fin() + 0.3f);
+
+        randLenVectors(e.id, 2, 2f + e.fin() * 7f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 0.2f + e.fslope() * 1.5f);
+        });
+    }),
+
     petals = new Effect(40f, e -> {
         color(Color.white, e.fout(0.5f));
         vgld[0] = e.id;
         randLenVectors(e.id, 3, 8f + e.fin() * 3f, (x, y) -> {
             vgld[0]++;
-            Drawm.petal(e.x + x, e.y + y, 4f, Mathf.randomSeed(vgld[0], 360f), (e.lifetime - e.time) * Mathf.randomSeed(-vgld[0], 2f, 5f));
+            Drawm.petal(e.x + x, e.y + y, 4f, Mathf.randomSeed(vgld[0], 360f), e.fout() * 150f * Mathf.randomSeed(-vgld[0], 0.5f, 2.5f));
         });
     }).layer(Layer.flyingUnit + 0.1f),
+
+    perfume = new Effect(100f, e -> {
+        color(e.color, 0.7f * e.fout());
+        float r = e.rotation * e.finpow();
+        stroke(Math.min(r, 10f * e.fout() + 7f));
+        circle(e.x, e.y, r);
+    }).layer(Layer.flyingUnitLow - 0.5f),
+
+    pretty = new Effect(50f, e -> {
+        vgld[0] = e.id;
+        blend(Blending.additive);
+        randLenVectors(e.id, e.id % 2 + 1, 10f, (x, y) -> {
+            vgld[0]++;
+            color(Tmp.c1.set(e.color).shiftHue(Mathf.randomSeed(vgld[0], 50f)), e.fout());
+            Fill.circle(e.x + x, e.y + y, Mathf.randomSeed(-vgld[0], 3f, 5f));
+        });
+        blend();
+    }).layer(Layer.flyingUnit + 0.2f),
 
     lightFade = new Effect(90f, 120f, e -> {
         float x = e.x;
@@ -824,6 +850,6 @@ public class MindyFx {
             x = u.x;
             y = u.y;
         }
-        Drawf.light(x, y, e.rotation * e.fout(0.2f), e.color, 1f);
+        Drawf.light(x, y, e.rotation * e.fout(0.1f), e.color, e.fout(0.1f));
     });
 }
