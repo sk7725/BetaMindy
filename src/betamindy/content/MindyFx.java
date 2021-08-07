@@ -210,7 +210,10 @@ public class MindyFx {
 
     powerDust = new Effect(45f, e -> {
         color(e.color, Color.white, e.fout());
-        Fill.square(e.x + Mathf.range(e.fout()), e.y + Mathf.range(e.fout()), e.fout() * 1.5f, 45f);
+        Rand rand = new Rand((long) (e.id + Time.time * 10));
+        float dx = rand.chance(0.5d) ? rand.random(-e.fout(), e.fout()) : -rand.random(-e.fout(), e.fout());
+        float dy = rand.chance(0.5d) ? rand.random(-e.fout(), e.fout()) : -rand.random(-e.fout(), e.fout());
+        Fill.square(e.x + dx, e.y + dy, e.fout() * 1.5f, 45f);
     }),
 
     fire = new Effect(50f, e -> {

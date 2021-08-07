@@ -5,6 +5,7 @@ import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.Time;
 import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.world.blocks.distribution.*;
@@ -149,7 +150,11 @@ public class Discharger extends Battery {
                 //Draw.z(Layer.blockOver);
                 Draw.color(lightningColor, heat);
                 Draw.blend(Blending.additive);
-                Draw.rect(shieldRegion, x + Mathf.range(heat * 0.8f), y + Mathf.range(heat * 0.8f), dr);
+                float range = heat * 0.8f;
+                Rand rand = new Rand((long) (id + Time.time * 10));
+                float dx=rand.chance(0.5f)?rand.range(range):-rand.range(range);
+                float dy=rand.chance(0.5f)?rand.range(range):-rand.range(range);
+                Draw.rect(shieldRegion, x + dx, y + dy, dr);
                 Draw.color();
                 Draw.blend();
             }
