@@ -14,6 +14,7 @@ import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
 import mindustry.content.*;
+import mindustry.entities.units.*;
 import mindustry.graphics.*;
 import mindustry.*;
 import mindustry.game.*;
@@ -29,7 +30,7 @@ import static mindustry.Vars.mobile;
 
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
-    public TextureRegion anucoin, spinRegion;
+    public TextureRegion coinRegion, spinRegion;
     public TextureRegion[] spinTeamRegions;
     public float spinSpeed = 0.2f;
     public float spinShadowRadius = 15f;
@@ -97,7 +98,7 @@ public class Shop extends PayloadAcceptor {
     public void load() {
         super.load();
 
-        anucoin = atlas.find("betamindy-anucoin");
+        coinRegion = atlas.find("betamindy-anucoin");
         spinRegion = atlas.find(name + "-spin");
         spinTeamRegions = Drawm.loadCustomTeamRegion(name + "-spin");
     }
@@ -107,7 +108,28 @@ public class Shop extends PayloadAcceptor {
         return teamRegion.found() ? new TextureRegion[]{region, topRegion, teamRegions[Team.sharded.id], spinTeamRegions[Team.sharded.id], spinRegion} : new TextureRegion[]{region, topRegion};
     }
 
-    public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload>{
+    @Override
+    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+        Draw.rect(region, req.drawx(), req.drawy());
+        Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
+        Draw.rect(topRegion, req.drawx(), req.drawy());
+
+        if(req.worldContext && Vars.player != null && teamRegion != null && teamRegion.found()){
+            int tid = Vars.player.team().id;
+            if(teamRegions[tid] == teamRegion) Draw.color(Vars.player.team().color);
+            Draw.rect(teamRegions[tid], req.drawx(), req.drawy());
+            Draw.rect(spinTeamRegions[tid], req.drawx(), req.drawy());
+            Draw.rect(spinRegion, req.drawx(), req.drawy());
+            Draw.color();
+        }
+        else if(teamRegion != null && teamRegion.found()){
+            Draw.rect(teamRegions[Team.sharded.id], req.drawx(), req.drawy());
+            Draw.rect(spinTeamRegions[Team.sharded.id], req.drawx(), req.drawy());
+            Draw.rect(spinRegion, req.drawx(), req.drawy());
+        }
+    }
+
+    public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload> implements CoinBuild{
         public int anucoins = defaultAnucoins;
         public Cell<Label> anucoinString;
         float buttonWidth = 210f;
@@ -117,6 +139,26 @@ public class Shop extends PayloadAcceptor {
         String airColor = colorToHex(StatusEffects.shocked.color);
         String groundColor = colorToHex(StatusEffects.melting.color);
         String navalColor = colorToHex(StatusEffects.wet.color);
+
+        @Override
+        public int coins(){
+            return anucoins;
+        }
+
+        @Override
+        public void handleCoin(Building source, int amount){
+            anucoins += amount; //debts can be a thing here
+        }
+
+        @Override
+        public int acceptCoin(Building source, int amount){
+            return amount;
+        }
+
+        @Override
+        public boolean outputCoin(){
+            return anucoins > 0;
+        }
 
         public void updateAnucoins(){
             anucoinString.setElement(new Label(String.valueOf(anucoins)));
@@ -326,7 +368,7 @@ public class Shop extends PayloadAcceptor {
 
                         t.add(" [accent]" + (int)Math.max((itemScores.get(stack.item) * stack.amount) / 30f, Math.max(stack.amount / 2f, 1)) + "[]").padRight(5f).left();
 
-                        t.image(anucoin).left();
+                        t.image(coinRegion).left();
                     }).left().growX();
                     p.row();
                 }
@@ -363,7 +405,7 @@ public class Shop extends PayloadAcceptor {
 
             shopDialog.table(t -> {
                 t.center();
-                t.image(anucoin).size(30f).center().padRight(10f);
+                t.image(coinRegion).size(30f).center().padRight(10f);
                 anucoinString = t.add(String.valueOf(anucoins)).padRight(10f).center();
             });
 

@@ -353,29 +353,28 @@ public class Drawm {
     }
 
     public static void flipSprite(TextureRegion region, float x, float y, float rotation, float roll, float w, float h, Color lightColor, Color darkColor){
-        roll = Mathf.wrapAngleAroundZero(roll);
-        float croll = roll * Mathf.clamp(Mathf.cosDeg(rotation - 45f) * 1.42f, -1f, 1f);
+        roll = Mathf.wrapAngleAroundZero(Mathf.degreesToRadians * roll);
 
-        prepareRollColor(croll, lightColor, darkColor);
-        Draw.rect(region, x, y, w * Mathf.cosDeg(roll), h, rotation);
+        prepareRollColor(roll, lightColor, darkColor, Mathf.clamp(Mathf.cosDeg(rotation - 45f) * 1.42f, -1f, 1f));
+        Draw.rect(region, x, y, w * Mathf.cos(roll), h, rotation);
         Draw.mixcol();
     }
 
-    private static void prepareRollColor(float roll, Color lightColor, Color darkColor){
+    private static void prepareRollColor(float roll, Color lightColor, Color darkColor, float a){
         if(Mathf.zero(roll)) return;
-        float f = Mathf.sinDeg(roll);
-        if(roll < 0f){
+        float f = Mathf.sin(roll) * 0.7f;
+        if(roll > Mathf.pi / 2f || roll < -Mathf.pi / 2f){
             f = -f;
-            roll += 180f;
         }
+        f *= a;
 
-        if(roll > 90f){
+        if(f > 0){
             //dark+
             Draw.mixcol(darkColor, f);
         }
         else{
             //light+
-            Draw.mixcol(lightColor, f);
+            Draw.mixcol(lightColor, -f);
         }
     }
 
