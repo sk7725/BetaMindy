@@ -14,6 +14,7 @@ import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
 import mindustry.content.*;
+import mindustry.entities.units.*;
 import mindustry.graphics.*;
 import mindustry.*;
 import mindustry.game.*;
@@ -105,6 +106,27 @@ public class Shop extends PayloadAcceptor {
     @Override
     public TextureRegion[] icons(){
         return teamRegion.found() ? new TextureRegion[]{region, topRegion, teamRegions[Team.sharded.id], spinTeamRegions[Team.sharded.id], spinRegion} : new TextureRegion[]{region, topRegion};
+    }
+
+    @Override
+    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+        Draw.rect(region, req.drawx(), req.drawy());
+        Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
+        Draw.rect(topRegion, req.drawx(), req.drawy());
+
+        if(req.worldContext && Vars.player != null && teamRegion != null && teamRegion.found()){
+            int tid = Vars.player.team().id;
+            if(teamRegions[tid] == teamRegion) Draw.color(Vars.player.team().color);
+            Draw.rect(teamRegions[tid], req.drawx(), req.drawy());
+            Draw.rect(spinTeamRegions[tid], req.drawx(), req.drawy());
+            Draw.rect(spinRegion, req.drawx(), req.drawy());
+            Draw.color();
+        }
+        else if(teamRegion != null && teamRegion.found()){
+            Draw.rect(teamRegions[Team.sharded.id], req.drawx(), req.drawy());
+            Draw.rect(spinTeamRegions[Team.sharded.id], req.drawx(), req.drawy());
+            Draw.rect(spinRegion, req.drawx(), req.drawy());
+        }
     }
 
     public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload>{

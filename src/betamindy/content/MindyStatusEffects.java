@@ -27,7 +27,9 @@ import static mindustry.Vars.tilesize;
 public class MindyStatusEffects implements ContentList {
     public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift,
     //drinks
-    caffeinated, herbed, blossoming, flowered, glowing;
+    caffeinated, herbed, blossoming, flowered, glowing,
+    //inflicts
+    reverseBiased, forwardBiased, selfishRepair, decay;
 
     public void load(){
         //marker for portal-spawned enemies
@@ -369,5 +371,67 @@ public class MindyStatusEffects implements ContentList {
                 effectChance = 0.035f; //for the record, default is 0.15f
             }
         };
+
+        reverseBiased = new StatusEffect("reverse-biased"){
+            @Override
+            public void update(Unit unit, float time){
+                if(Mathf.chanceDelta(effectChance)){
+                    Useful.lightningCircle(unit.x, unit.y, Math.max(unit.hitSize / 2f + 4f, 8f), Math.max(4, (int) unit.hitSize / 9 + 2), color);
+                }
+                if(unit.isShooting()) unit.damagePierce(damage);
+                if(unit.type.canBoost && !unit.type.flying) unit.elevation = Math.max(unit.elevation - 0.1f * Time.delta, 0f);
+            }
+
+            {
+                dragMultiplier = 3f;
+                buildSpeedMultiplier = 0.5f;
+                reloadMultiplier = 0.8f;
+                color = Pal.remove;
+                effect = Fx.none;
+                damage = 5f;
+            }
+        };
+
+        forwardBiased = new InflictStatusEffect("forward-biased", reverseBiased){
+            @Override
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+                if(Mathf.chanceDelta(effectChance)){
+                    Useful.lightningCircle(unit.x, unit.y, Math.max(unit.hitSize / 2f + 4f, 8f), Math.max(4, (int) unit.hitSize / 9 + 2), color);
+                }
+            }
+
+            {
+                ally = false;
+                inflictDuration = 60f;
+                range = 60f;
+                effectInterval = 60f;
+                onInterval = MindyFx.empBlast;
+                dragMultiplier = 0.5f;
+                buildSpeedMultiplier = 1.5f;
+                reloadMultiplier = 1.1f;
+                color = Pal.accent;
+                effect = Fx.none;
+            }
+        };
+
+        selfishRepair = new StatusEffect("selfish-repair"){{
+            color = Pal.heal;
+            damage = -2f;
+            effectChance = 0.9f;
+            effect = MindyFx.undecay;
+        }};
+
+        decay = new InflictStatusEffect("selfless-decay", selfishRepair){{
+            damage = 2.5f;
+            range = 50f;
+            ally = false;
+            color = Pal.accentBack;
+            inflictDuration = 120f;
+            effectChance = 0.9f;
+            effect = MindyFx.decay;
+            effect2 = Fx.blastExplosion;
+            effect2Chance = 0.05f;
+        }};
     }
 }

@@ -21,6 +21,8 @@ public class InflictStatusEffect extends StatusEffect {
     public float range = 80f;
     public StatusEffect inflicts;
     public float inflictDuration = 600f;
+    /** Whether the allies or the enemies are inflicted. */
+    public boolean ally = true;
 
     public Effect effect2 = Fx.none;
     public Effect onInflict = Fx.none;
@@ -36,12 +38,23 @@ public class InflictStatusEffect extends StatusEffect {
     @Override
     public void update(Unit unit, float time){
         super.update(unit, time);
-        Units.nearby(unit.team, unit.x, unit.y, 80f, u -> {
-            if(u != unit && !u.hasEffect(this)){
-                if(onInflict != Fx.none && !u.hasEffect(inflicts)) onInflict.at(unit.x, unit.y, inflicts.color);
-                u.apply(inflicts, inflictDuration);
-            }
-        });
+        if(ally){
+            Units.nearby(unit.team, unit.x, unit.y, range, u -> {
+                if(u != unit && !u.hasEffect(this)){
+                    if(onInflict != Fx.none && !u.hasEffect(inflicts)) onInflict.at(u.x, u.y, inflicts.color);
+                    u.apply(inflicts, inflictDuration);
+                }
+            });
+        }
+        else{
+            Units.nearbyEnemies(unit.team, unit.x - range, unit.y - range, range * 2f, range * 2f, u -> {
+                if(u.within(unit, range)){
+                    if(onInflict != Fx.none && !u.hasEffect(inflicts)) onInflict.at(u.x, u.y, inflicts.color);
+                    u.apply(inflicts, inflictDuration);
+                }
+            });
+        }
+
 
         if(onInterval != Fx.none && Useful.interval(effectInterval, unit.id % effectInterval)){
             onInterval.at(unit.x, unit.y, range, inflicts.color);
@@ -56,14 +69,14 @@ public class InflictStatusEffect extends StatusEffect {
     public void setStats(){
         super.setStats();
         //stats.add(Stat.range, range / tilesize, StatUnit.blocks);
-        stats.add(Stat.affinities, table -> {
+        stats.add(ally || damage != 0 ? Stat.affinities : Stat.damage, table -> {
             table.left();
             table.row();
             //table.image(inflicts.icon(Cicon.medium)).size(18f);
             table.button("[accent]" + inflicts.localizedName + "[]", new TextureRegionDrawable(inflicts.icon(Cicon.medium)), Styles.cleart, 40f, () -> {
                 ui.content.show(inflicts);
             }).left().size(180f, 46f);
-            table.image().size(4f, 46f).color(Pal.accent).padRight(9f).padLeft(9f);
+            table.image().size(4f, 46f).color(ally ? Pal.accent : Pal.remove).padRight(9f).padLeft(9f);
             table.table(t -> {
                 t.left();
                 t.add("[lightgray]"+Stat.range.localized()+":[] "+ (int)(range / tilesize) + " " + Core.bundle.get("unit.blocks")).left();

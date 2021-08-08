@@ -158,11 +158,11 @@ public class SBar extends Element {
 
         Font font = outline ? Fonts.outline : Fonts.def;
         GlyphLayout lay = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
-        font.getData().setScale(Scl.scl());
+        //font.getData().setScale(Scl.scl());
         lay.setText(font, name);
         font.setColor(Color.white);
         font.draw(name, x + width / 2f - lay.width / 2f, y + height / 2f + lay.height / 2f + 1);
-        font.getData().setScale(Scl.scl());
+        //font.getData().setScale(Scl.scl());
 
         Pools.free(lay);
         Draw.reset();
