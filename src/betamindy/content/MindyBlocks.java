@@ -46,7 +46,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -1067,6 +1067,18 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, with(Items.copper, 1));
             size = 3;
             shopType = 2;
+        }};
+
+        anucoinNode = new AnucoinNode("anucoin-node"){{
+            requirements(Category.effect, BuildVisibility.hidden, with(Items.copper, 1));
+
+            size = 3;
+        }};
+
+        tradingPost = new TradingPost("trading-post"){{
+            requirements(Category.effect, with(Items.copper, 1));
+
+            size = 3;
         }};
     }
 }
