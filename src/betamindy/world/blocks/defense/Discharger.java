@@ -150,11 +150,10 @@ public class Discharger extends Battery {
                 //Draw.z(Layer.blockOver);
                 Draw.color(lightningColor, heat);
                 Draw.blend(Blending.additive);
-                float range = heat * 0.8f;
-                Rand rand = new Rand((long) (id + Time.time * 10));
-                float dx=rand.chance(0.5f)?rand.range(range):-rand.range(range);
-                float dy=rand.chance(0.5f)?rand.range(range):-rand.range(range);
-                Draw.rect(shieldRegion, x + dx, y + dy, dr);
+                long seed = (long) (id + Time.time * 10);
+                float dx = Mathf.randomSeedRange(seed, heat * 0.8f);
+                float dy = Mathf.randomSeedRange(seed + 10, heat * 0.8f);
+                Draw.rect(shieldRegion, x + dx, y  + dy, dr);
                 Draw.color();
                 Draw.blend();
             }
