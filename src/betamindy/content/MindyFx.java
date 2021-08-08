@@ -764,8 +764,8 @@ public class MindyFx {
             rect(unit.shadowRegion, e.x, e.y, e.rotation - 90);
             reset();
             blend();
-            //Drawf.light(e.x, e.y, unit.hitSize, e.color, e.fout());
-            Drawf.light(null, e.x, e.y, unit.shadowRegion, e.color, e.fout() * 0.7f);
+            Drawf.light(e.x, e.y, unit.hitSize * 1.3f, e.color, e.fout());
+            //Drawf.light(null, e.x, e.y, unit.shadowRegion, e.color, e.fout() * 0.7f);
         }
     }),
 
@@ -799,8 +799,8 @@ public class MindyFx {
             rect(unit.shadowRegion, e.x, e.y, e.rotation - 90);
             reset();
             blend();
-            //Drawf.light(e.x, e.y, unit.hitSize, Color.cyan, e.fout());
-            Drawf.light(null, e.x, e.y, unit.shadowRegion, Color.cyan, e.fout() * 0.7f);
+            Drawf.light(e.x, e.y, unit.hitSize * 1.3f, Color.cyan, e.fout());
+            //Drawf.light(null, e.x, e.y, unit.shadowRegion, Color.cyan, e.fout() * 0.7f);
         }
     }),
 

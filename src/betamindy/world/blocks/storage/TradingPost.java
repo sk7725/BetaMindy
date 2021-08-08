@@ -9,7 +9,6 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
-import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
@@ -19,7 +18,7 @@ import static mindustry.Vars.*;
 import static betamindy.BetaMindy.*;
 
 public class TradingPost extends Block {
-    public TextureRegion anucoin;
+    public TextureRegion coinRegion;
 
     public TradingPost(String name){
         super(name);
@@ -43,11 +42,31 @@ public class TradingPost extends Block {
     public void load() {
         super.load();
 
-        anucoin = Core.atlas.find("betamindy-anucoin");
+        coinRegion = Core.atlas.find("betamindy-anucoin");
     }
 
-    public class TradingPostBuild extends Building{
+    public class TradingPostBuild extends Building implements CoinBuild{
         public int anucoins;
+
+        @Override
+        public int coins(){
+            return anucoins;
+        }
+
+        @Override
+        public int acceptCoin(Building source, int amount){
+            return 0;
+        }
+
+        @Override
+        public void handleCoin(Building source, int amount){
+            anucoins += amount;
+        }
+
+        @Override
+        public boolean outputCoin(){
+            return anucoins > 0;
+        }
 
         @Override
         public boolean acceptItem(Building source, Item item){
@@ -102,7 +121,7 @@ public class TradingPost extends Block {
 
                         t.add(" [accent]" + (int)Math.max((itemScores.get(stack.item) * stack.amount) / 30f, Math.max(stack.amount / 2f, 1)) + "[]").padRight(5f).left();
 
-                        t.image(anucoin).left();
+                        t.image(coinRegion).left();
                     }).left().growX();
                     p.row();
                 }
