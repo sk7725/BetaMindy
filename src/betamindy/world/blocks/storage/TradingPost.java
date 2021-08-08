@@ -34,7 +34,7 @@ public class TradingPost extends Block {
         super.setBars();
 
         bars.add("anucoins", entity -> new Bar(
-                () -> Core.bundle.get("anucoins.multiple") + ": " + ((TradingPostBuild) entity).anucoins,
+                () -> Core.bundle.get("ui.anucoin.multiple") + ": " + ((TradingPostBuild) entity).anucoins,
                 () -> Color.coral,
                 () -> ((TradingPostBuild) entity).anucoins / 500f));
     }
@@ -60,6 +60,9 @@ public class TradingPost extends Block {
         }
 
         @Override
+        public void drawConfigure(){ }
+
+        @Override
         public void buildConfiguration(Table table) {
             int[] price = new int[]{0};
             Seq<ItemStack> itemStack = new Seq<>();
@@ -83,7 +86,7 @@ public class TradingPost extends Block {
             String text1 = Core.bundle.get("ui.sellAccept") + ":";
             String text2 = Core.bundle.get("ui.sellAccept2") + " [accent]" + price[0] + " " + Core.bundle.get("ui.anucoin.multiple") + "[]";
 
-            BaseDialog dialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
+            BaseDialog dialog = new BaseDialog(Core.bundle.get("ui.trading.title"));
             dialog.cont.add(text1).width(mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);
             dialog.cont.row();
             dialog.cont.pane(p -> {
