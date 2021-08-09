@@ -2,17 +2,13 @@ package betamindy.world.blocks.storage;
 
 import arc.*;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.input.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.graphics.Drawm;
 import mindustry.gen.*;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
