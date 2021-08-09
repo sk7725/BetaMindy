@@ -28,10 +28,23 @@ if(Version.number > 6 && !Vars.headless){
         catch(ignore){}
     }
 
+    //does the breakEffect
+        function setBreakFx(name){
+            try{
+                let b = Vars.content.getByName(ContentType.block, name);
+                b.breakEffect = b.destroyEffect;
+                b.instantDeconstruct = true;
+            }
+            catch(ignore){}
+        }
+
     let animbois = null;
     let animn = 0;
 
     Events.on(ClientLoadEvent, () => {
+        setBreakFx("betamindy-spore-slime");
+        setBreakFx("betamindy-spore-slime-sided");
+        setBreakFx("betamindy-surge-slime");
         setProp("betamindy-pyra-crystal");
         setProp("betamindy-cryo-crystal");
         setProp("betamindy-scalar-crystal");

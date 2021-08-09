@@ -416,14 +416,14 @@ public class MindyBlocks implements ContentList {
             health = 40;
             requirements(Category.distribution, with(Items.sporePod, 6));
 
-            color = Color.valueOf("9E78DC");
+            color = Pal2.sporeSlime;
         }};
 
         sporeSlimeSided = new SidedSlimeBlock("spore-slime-sided", 0){{
             health = 120;
             requirements(Category.distribution, with(Items.sporePod, 3, Items.lead, 3));
 
-            color = Color.valueOf("9E78DC");
+            color = Pal2.sporeSlime;
         }};
 
         surgeSlime = new SlimeBlock("surge-slime", 0){{

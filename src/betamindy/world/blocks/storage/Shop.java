@@ -4,6 +4,8 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.KeyCode;
+import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -13,6 +15,7 @@ import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
+import betamindy.world.blocks.payloads.*;
 import mindustry.content.*;
 import mindustry.entities.units.*;
 import mindustry.graphics.*;
@@ -22,6 +25,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 
@@ -300,13 +304,27 @@ public class Shop extends PayloadAcceptor {
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return itemScores.containsKey(item);
+            return false;
         }
 
         @Override
         public void updateTile(){
             super.updateTile();
             moveOutPayload();
+        }
+
+        @Override
+        public void dumpPayload(){
+            super.dumpPayload();
+            if(payload != null && payload instanceof BuildPayload bp){
+                int off = size / 2 + 1;
+                Tile other = tile.nearby(Geometry.d4x(rotation) * off, Geometry.d4y(rotation) * off);
+                Log.info(other);
+                if(other == null || !RBuild.validPlace(bp.block(), other.x, other.y, true)) return;
+                //place da box
+                bp.place(other, rotation);
+                payload = null;
+            }
         }
 
         @Override
@@ -319,6 +337,11 @@ public class Shop extends PayloadAcceptor {
             Draw.rect(topRegion, x, y);
             drawTeamTop();
             Draw.reset();
+        }
+
+        @Override
+        public void drawLight(){
+            Drawf.light(team, x, y, lightRadius, Pal.accent, 0.65f + Mathf.absin(20f, 0.1f));
         }
 
         @Override
@@ -463,6 +486,7 @@ public class Shop extends PayloadAcceptor {
                     buttonWidth = (width / 2f) * 0.55f;
                 }
                 t.button("@back", Icon.left, shopDialog::hide).size(buttonWidth, 64f);
+                /*
                 t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {
                     int[] price = new int[]{0};
                     Seq<ItemStack> itemStack = new Seq<>();
@@ -484,6 +508,7 @@ public class Shop extends PayloadAcceptor {
                         updateAnucoins();
                     });
                 }).size(buttonWidth, 64f).disabled(e -> items.total() == 0);
+                */
             });
 
             shopDialog.addCloseListener();

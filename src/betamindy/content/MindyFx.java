@@ -884,5 +884,14 @@ public class MindyFx {
             color(getColor(), Pal.heal, e.fin());
             Fill.circle(e.x + x, e.y + y, e.fslope() * 1.5f);
         });
-    }).layer(Layer.flyingUnit + 0.1f);
+    }).layer(Layer.flyingUnit + 0.1f),
+
+    slimeBreak = new Effect(23f, e -> {
+        vgld[0] = e.id;
+        randLenVectors(e.id, 6, 4f + e.finpow() * 15f, (x, y) -> {
+            vgld[0]++;
+            color(e.color);
+            Fill.circle(e.x + x, e.y + y, e.fout() * (1f + 2.5f * Mathf.randomSeed(vgld[0])));
+        });
+    }).layer(Layer.shields);
 }
