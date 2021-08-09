@@ -978,6 +978,40 @@ public class MindyFx {
         */
     }).layer(Layer.bullet),
 
+    astroCharge = new Effect(60f, e -> {
+        Draw.color(Color.white);
+        Fill.circle(e.x, e.y, 16f * e.fin());
+        Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 16f * e.fin(), 8f);
+
+        Draw.color(Pal.surge);
+        Fill.circle(e.x, e.y, 13f * e.fin());
+
+        Draw.color(Color.black);
+        Fill.circle(e.x, e.y, 12f * e.fin());
+
+        Draw.color(Color.white);
+        Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 15f * e.fin(), 6f, true);
+
+        Draw.reset();
+    }),
+
+    voidStarDespawn = new Effect(60, e -> {
+        Draw.color(Color.white);
+        Fill.circle(e.x, e.y, 16 * e.fout());
+        Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 16 * e.fout(), 8f);
+
+        Draw.color(Pal.surge);
+        Fill.circle(e.x, e.y, 13 * e.fout());
+
+        Draw.color(Color.black);
+        Fill.circle(e.x, e.y, 12 * e.fout());
+
+        Draw.color(Color.white);
+        Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 13 * e.fout(), 6f, true);
+
+        Draw.reset();
+    }).layer(Layer.bullet),
+
     sniperShoot = new Effect(50f, e -> {
         float r = Mathf.randomSeed(e.id, 360f);
         color(Pal.lancerLaser);

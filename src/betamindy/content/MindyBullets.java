@@ -18,7 +18,7 @@ import mindustry.world.*;
 import static mindustry.Vars.world;
 
 public class MindyBullets implements ContentList {
-    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball, icyZone, icyZoneSmall;
+    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball, icyZone, icyZoneSmall, voidStar;
     @Override
     public void load(){
         payBullet = new PayloadBullet(1.6f){{
@@ -183,5 +183,47 @@ public class MindyBullets implements ContentList {
         icyZoneSmall = new StatusBulletType(MindyStatusEffects.icy, 25f){{
             lifetime = 300f;
         }};
+
+        voidStar = new BasicBulletType(){
+            {
+                collides = false;
+                lifetime = 280;
+                speed = 2;
+                damage = 0;
+                despawnEffect = MindyFx.voidStarDespawn;
+            }
+
+            public float dist(Bullet b, float x, float y){
+                return Mathf.sqrt((float)(Math.pow(Math.abs(b.x - x), 2f) + Math.pow(Math.abs(b.y - y), 2f)));
+            }
+
+            @Override
+            public void draw(Bullet b){
+                Draw.color(Color.white);
+                Fill.circle(b.x, b.y, 16 + Mathf.sinDeg(b.fin() * 360));
+                Drawm.spikeRing(b.x, b.y, 10, b.fin() * 240f, 16f + Mathf.sinDeg(b.fin() * 360f * 2f), 8f);
+
+                Draw.color(Pal.surge);
+                Fill.circle(b.x, b.y, 13);
+
+                Draw.color(Color.black);
+                Fill.circle(b.x, b.y, 12 + Mathf.sinDeg(b.fin() * 720));
+
+                Draw.color(Color.white);
+                Drawm.spikeRing(b.x, b.y, 10, b.fin() * 240f, 15f + Mathf.sinDeg(b.fin() * 360f * 2f), 6f, true);
+
+                Draw.reset();
+            }
+
+            @Override
+            public void update(Bullet b){
+                Units.nearbyEnemies(b.team, b.x - 120f, b.y - 120f, 240f, 240f, e -> {
+                    float dist = dist(b, e.x, e.y);
+                    if(e.dead() || dist > 120f) return;
+
+                    Lightning.create(b, Color.white, (120f - dist), b.x, b.y, Angles.angle(b.x, b.y, e.x, e.y), (int)(dist / 2f));
+                });
+            }
+        };
     }
 }

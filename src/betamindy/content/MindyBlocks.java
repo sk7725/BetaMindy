@@ -54,7 +54,7 @@ public class MindyBlocks implements ContentList {
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
     //turrets
-    hopeBringer, anchor, bermuda, propaganda, spear, justice, ray, tarnation, credit, taxation, brokerage, mortgage,
+    hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, astro, magicTurret, credit, taxation, brokerage, mortgage,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
@@ -296,6 +296,8 @@ public class MindyBlocks implements ContentList {
                     }}
             );
         }};
+
+        //sting = new PowerTurret(I)
 
         payCannon = new PayloadTurret("payload-cannon"){{
             health = 2050;
@@ -1081,6 +1083,30 @@ public class MindyBlocks implements ContentList {
                 buildingDamageMultiplier = 0.3f;
             }};
         }};
+
+        astro = new UnitTurret("astro"){
+            {
+                requirements(Category.turret, with(Items.thorium, 12000, Items.silicon, 25500, Items.titanium, 8250, MindyItems.bittrium, 5000));
+                size = 6;
+                chargeTime = 61f;
+                chargeEffect = MindyFx.astroCharge;
+                shootType = MindyBullets.voidStar;
+                powerUse = 65f;
+                rotateSpeed = 0.8f;
+                heatColor = Color.valueOf("7474ed");
+                range = 400f;
+                reloadTime = 600f;
+                recoilAmount = 10f;
+                restitution = 0.03f;
+                shootCone = 20f;
+                shootShake = 5f;
+                //TODO find a better sound: chargeSound = MindySounds.astroCharge;
+                shootSound = MindySounds.astroShoot;
+                targetAir = true;
+                chargeEffects = 1;
+                health = 240 * size * size;
+            }
+        };
 
         hopeBringer = new MultiTurret("hopebringer"){{
             requirements(Category.turret, with(MindyItems.bittrium, 9999));//TODO
