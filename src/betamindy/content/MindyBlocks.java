@@ -297,6 +297,8 @@ public class MindyBlocks implements ContentList {
             );
         }};
 
+        //sting = new PowerTurret(I)
+
         payCannon = new PayloadTurret("payload-cannon"){{
             health = 2050;
             size = 5;
@@ -1094,10 +1096,11 @@ public class MindyBlocks implements ContentList {
                 heatColor = Color.valueOf("7474ed");
                 range = 400f;
                 reloadTime = 600f;
-                recoilAmount = 100f;
-                restitution = 5f;
+                recoilAmount = 10f;
+                restitution = 0.03f;
                 shootCone = 20f;
                 shootShake = 5f;
+                //TODO find a better sound: chargeSound = MindySounds.astroCharge;
                 shootSound = MindySounds.astroShoot;
                 targetAir = true;
                 chargeEffects = 1;

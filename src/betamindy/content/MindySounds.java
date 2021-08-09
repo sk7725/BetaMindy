@@ -7,8 +7,8 @@ import arc.audio.*;
 import mindustry.*;
 
 public class MindySounds {
-    public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan, pipePop, pipeSqueeze, pipeIn, easterEgg1, easterEgg2, portalOpen, portalLoop, portalClose, lightningStrike, shatter, boxOpen, astroShoot;
-    public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan", "pipepop", "pipesqueeze", "pipein", "strawberrydeath", "strawberrypredeath", "portalopen", "portalloop", "portalclose", "lstrike", "shatter", "boxopen", "astro"};
+    public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan, pipePop, pipeSqueeze, pipeIn, easterEgg1, easterEgg2, portalOpen, portalLoop, portalClose, lightningStrike, shatter, boxOpen, astroCharge, astroShoot;
+    public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan", "pipepop", "pipesqueeze", "pipein", "strawberrydeath", "strawberrypredeath", "portalopen", "portalloop", "portalclose", "lstrike", "shatter", "boxopen", "astroCharge", "astroShoot"};
     private static int num = 0;
 
     public static void load() {
@@ -32,6 +32,7 @@ public class MindySounds {
         lightningStrike = l();
         shatter = l();
         boxOpen = l();
+        astroCharge = l();
         astroShoot = l();
     }
 /*
