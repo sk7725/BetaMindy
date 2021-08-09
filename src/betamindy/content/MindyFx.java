@@ -948,5 +948,39 @@ public class MindyFx {
         Drawm.coin(Tmp.v1.x, Tmp.v1.y, 3f, e.rotation + 90f, e.finpow() * 180f);
         mixcol();
         Drawf.light(Tmp.v1.x, Tmp.v1.y, 3f, e.color, e.fout(0.75f));
-    }).layer(Layer.bullet);
+    }).layer(Layer.bullet),
+
+    astroCharge = new Effect(60f, e -> {
+        Draw.color(Color.white);
+        Fill.circle(e.x, e.y, 16f * e.fin());
+        Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 16f * e.fin(), 8f);
+
+        Draw.color(Pal.surge);
+        Fill.circle(e.x, e.y, 13f * e.fin());
+
+        Draw.color(Color.black);
+        Fill.circle(e.x, e.y, 12f * e.fin());
+
+        Draw.color(Color.white);
+        Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 15f * e.fin(), 6f, true);
+
+        Draw.reset();
+    }),
+
+    voidStarDespawn = new Effect(60, e -> {
+        Draw.color(Color.white);
+        Fill.circle(e.x, e.y, 16 * e.fout());
+        Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 16 * e.fout(), 8f);
+
+        Draw.color(Pal.surge);
+        Fill.circle(e.x, e.y, 13 * e.fout());
+
+        Draw.color(Color.black);
+        Fill.circle(e.x, e.y, 12 * e.fout());
+
+        Draw.color(Color.white);
+        Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 13 * e.fout(), 6f, true);
+
+        Draw.reset();
+    });
 }

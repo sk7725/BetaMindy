@@ -257,6 +257,31 @@ public class Drawm {
         }
     }
 
+    public static void spikeRing(float x, float y, int spikes, float rotation, float radius, float width, float height, boolean invert){
+        float ang = 0;
+        float xAdd, yAdd;
+
+        for(int i = 0; i < spikes; i++){
+            xAdd = x + Mathf.cosDeg(ang + rotation) * radius;
+            yAdd = y + Mathf.sinDeg(ang + rotation) * radius;
+
+            Drawf.tri(xAdd, yAdd, width, height, ang + rotation + (invert ? 180f : 0f));
+            ang += 360f / spikes;
+        }
+    }
+
+    public static void spikeRing(float x, float y, int spikes, float rotation, float radius, float width, float height, float size){
+        spikeRing(x, y, spikes, rotation, radius, width, height, false);
+    }
+
+    public static void spikeRing(float x, float y, int spikes, float rotation, float radius, float size, boolean invert){
+        spikeRing(x, y, spikes, rotation, radius, size, size, invert);
+    }
+
+    public static void spikeRing(float x, float y, int spikes, float rotation, float radius, float size){
+        spikeRing(x, y, spikes, rotation, radius, size, false);
+    }
+
     /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */
     public static void generateTeamRegion(MultiPacker packer, Block b){
         PixmapRegion teamr = Core.atlas.getPixmap(b.name + "-team");
