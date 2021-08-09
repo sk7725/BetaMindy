@@ -110,6 +110,15 @@ public class Drawm {
         flipSprite(Core.atlas.find("betamindy-petal"), x, y, r, roll, size, size, Color.white, Pal2.darkPink);
     }
 
+    public static void coin(float x, float y, float size, float r, float roll){
+        //"anucoin" is for ui, "coin" is for anything other than ui
+        flipSprite(Core.atlas.find("betamindy-coin"), x, y, r, roll, size, size, Color.white, Pal2.darkCoin);
+    }
+
+    public static void coinSimple(float x, float y, float size, float r, float roll){
+        flipSpriteSimple(Core.atlas.find("betamindy-coin"), x, y, r, roll, size, size);
+    }
+
     public static void portal(float x, float y, float radius, Color color1, Color color2){
         if(Vars.renderer.bloom == null){
             Tmp.c2.set(color1).lerp(color2, Mathf.sin(Time.globalTime / 35f) * 0.5f + 0.5f);
@@ -358,6 +367,11 @@ public class Drawm {
         prepareRollColor(roll, lightColor, darkColor, Mathf.clamp(Mathf.cosDeg(rotation - 45f) * 1.42f, -1f, 1f));
         Draw.rect(region, x, y, w * Mathf.cos(roll), h, rotation);
         Draw.mixcol();
+    }
+
+    public static void flipSpriteSimple(TextureRegion region, float x, float y, float rotation, float roll, float w, float h){
+        roll = Mathf.wrapAngleAroundZero(Mathf.degreesToRadians * roll);
+        Draw.rect(region, x, y, w * Mathf.cos(roll), h, rotation);
     }
 
     private static void prepareRollColor(float roll, Color lightColor, Color darkColor, float a){
