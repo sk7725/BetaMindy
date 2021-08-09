@@ -895,13 +895,13 @@ public class MindyFx {
         });
     }).layer(Layer.shields),
 
-    lineShot = new Effect(9f, e -> {
+    lineShot = new Effect(14f, 600f, e -> {
         if(!(e.data instanceof Position)) return;
 
         Position pos = e.data();
 
         color(e.color);
-        stroke(1.3f * e.fout());
+        stroke(0.8f * e.fout());
         line(e.x, e.y, pos.getX(), pos.getY());
     }).layer(Layer.bullet),
 
@@ -921,33 +921,61 @@ public class MindyFx {
         alpha(e.fout(0.75f));
         Tmp.v1.trns(Mathf.randomSeed(e.id + 1, -15f, 15f) + e.rotation, 15f * e.finpow()).add(e.x, e.y);
         Drawm.coin(Tmp.v1.x, Tmp.v1.y, 3f, e.finpow() * 117f, e.finpow() * 180f);
-        mixcol(e.color, 1f);
+        mixcol(Color.white, 1f);
         alpha(Mathf.clamp(e.fout() * 2f - 1f));
         Drawm.coinSimple(Tmp.v1.x, Tmp.v1.y, 3f, e.finpow() * 117f, e.finpow() * 180f);
         reset();
         Drawf.light(Tmp.v1.x, Tmp.v1.y, 3f, e.color, e.fout(0.75f));
     }),
 
+    coinSuperHit = new Effect(35, e -> {
+        color(Color.white, e.color, e.fin());
+        stroke(e.fout() * 1.2f);
+        circle(e.x, e.y, e.finpow() * 7f + 1f);
+        color(e.color);
+
+        randLenVectors(e.id, 7, e.finpow() * 15f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 4 + 1f);
+        });
+
+        z(Layer.effect + 2f);
+
+        randLenVectors(-e.id, 7, e.finpow() * 25f + 4f, e.rotation, 20f, (x, y) -> {
+            color();
+            alpha(e.fout(0.75f));
+            Drawm.coin(e.x + x, e.y + y, 3f, e.finpow() * 117f, e.finpow() * 180f);
+            mixcol(Color.white, 1f);
+            alpha(Mathf.clamp(e.fout() * 2f - 1f));
+            Drawm.coinSimple(e.x + x, e.y + y, 3f, e.finpow() * 117f, e.finpow() * 180f);
+            reset();
+            Drawf.light(e.x + x, e.y + y, 3f, e.color, e.fout(0.75f));
+        });
+    }),
+
     coinDespawn = new Effect(20, e -> {
-        e.scaled(9, s -> {
+        e.scaled(14f, s -> {
             color(e.color);
 
             randLenVectors(e.id, 4, s.finpow() * 5f, (x, y) -> {
-                Fill.square(e.x + x, e.y + y, s.fout() * 1.5f, 45f);
+                Fill.square(e.x + x, e.y + y, s.fout(), 45f);
             });
         });
 
+        color();
         Tmp.v1.trns(e.rotation, 21f * e.fin()).add(e.x, e.y);
         mixcol(e.color, 1f);
-        alpha(Mathf.clamp(e.fout() * 1.5f - 0.5f));
-        Drawm.coinSimple(Tmp.v1.x, Tmp.v1.y, 3f, e.rotation, e.finpow() * 180f);
+        alpha(e.fout(0.4f));
+        Drawm.coinSimple(Tmp.v1.x, Tmp.v1.y, 3f, e.rotation + 90f, e.finpow() * 180f);
 
+        /*
         z(Layer.bullet - 2f);
         reset();
         alpha(e.fout(0.75f));
         Drawm.coin(Tmp.v1.x, Tmp.v1.y, 3f, e.rotation + 90f, e.finpow() * 180f);
         mixcol();
         Drawf.light(Tmp.v1.x, Tmp.v1.y, 3f, e.color, e.fout(0.75f));
+        */
     }).layer(Layer.bullet),
 
     astroCharge = new Effect(60f, e -> {
@@ -982,5 +1010,15 @@ public class MindyFx {
         Drawm.spikeRing(e.x, e.y, 10, e.fin() * 240f, 13 * e.fout(), 6f, true);
 
         Draw.reset();
+    }).layer(Layer.bullet),
+
+    sniperShoot = new Effect(50f, e -> {
+        float r = Mathf.randomSeed(e.id, 360f);
+        color(Pal.lancerLaser);
+        spark(e.x, e.y, e.finpow() * 16f + 8f, 4f * e.fout(), r);
+        stroke(1.5f * e.fout());
+        circle(e.x, e.y, e.finpow() * 16f + 1f);
+        color();
+        spark(e.x, e.y, e.finpow() * 8f + 4f, 2f * e.fout(), r);
     });
 }

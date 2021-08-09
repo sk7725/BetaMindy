@@ -1,5 +1,6 @@
 package betamindy.entities.bullet;
 
+import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import betamindy.content.*;
@@ -14,6 +15,7 @@ public class InstantHitBulletType extends BulletType {
     private static Unit result;
 
     public float pierceDamage = 0f;
+    public float hitRange = 1f;
     public Effect lineEffect = MindyFx.lineShot;
     public Effect cHitEffect = Fx.despawn;
     public Effect cFailEffect = Fx.none;
@@ -27,6 +29,7 @@ public class InstantHitBulletType extends BulletType {
         this.damage = damage;
         pierceDamage = damage;
         hitEffect = despawnEffect = Fx.none;
+        speed = 0.01f;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class InstantHitBulletType extends BulletType {
 
         cdist = 0f;
         result = null;
-        float range = 1f;
+        float range = hitRange;
 
         Units.nearbyEnemies(b.team, px - range, py - range, range*2f, range*2f, e -> {
             if(e.dead()) return;
@@ -65,7 +68,7 @@ public class InstantHitBulletType extends BulletType {
         if(result != null){
             b.collision(result, px, py);
             result.damagePierce(pierceDamage);
-            end.trns(rot, cdist * 0.8f).add(px, py);
+            end.trns(rot, cdist * 0.4f).add(px, py);
             chit = true;
         }else{
             Building build = Vars.world.buildWorld(px, py);
