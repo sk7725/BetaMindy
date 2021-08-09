@@ -3,11 +3,9 @@ package betamindy.content;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.struct.Seq;
 import arc.util.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
-import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.ctype.ContentList;
 import mindustry.entities.*;
@@ -194,8 +192,6 @@ public class MindyBullets implements ContentList {
                 damage = 0;
                 despawnEffect = MindyFx.voidStarDespawn;
             }
-
-            public Seq<Building> collided = new Seq<>();
 
             public float dist(Bullet b, float x, float y){
                 return Mathf.sqrt((float)(Math.pow(Math.abs(b.x - x), 2f) + Math.pow(Math.abs(b.y - y), 2f)));
