@@ -3,7 +3,6 @@ package betamindy.content;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
-import arc.util.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.campaign.*;
@@ -34,7 +33,6 @@ import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
-import static betamindy.BetaMindy.omegaServer;
 import static betamindy.BetaMindy.uwu;
 import static mindustry.type.ItemStack.with;
 
@@ -56,7 +54,7 @@ public class MindyBlocks implements ContentList {
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
     //turrets
-    hopeBringer, anchor, bermuda, propaganda, spear, justice, ray, tarnation, bill,
+    hopeBringer, anchor, bermuda, propaganda, spear, justice, ray, tarnation, credit, taxation, brokerage, mortgage,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
@@ -108,14 +106,58 @@ public class MindyBlocks implements ContentList {
             emitLight = true;
         }};
 
-        bill = new CoinTurret("bill"){{
+        credit = new CoinTurret("credit"){{
             requirements(Category.turret, with(Items.lead, 20, Items.graphite, 20));
 
-            reloadTime = 9f;
+            reloadTime = 5f;
             range = 80f;
             health = 220 * size * size;
-            shootType = new CoinBulletType(10f);
+            shootType = new CoinBulletType(8f);
             inaccuracy = 2f;
+        }};
+
+        taxation = new CoinTurret("taxation"){{
+            requirements(Category.turret, with(Items.lead, 110, Items.graphite, 95, Items.titanium, 50));
+
+            size = 2;
+            reloadTime = 45f;
+            maxAmmo = 60;
+            shots = 15;
+            range = 55f;
+            health = 440 * size * size;
+
+            shootType = new CoinBulletType(15f){{
+                hitRange = 9f;
+            }};
+            inaccuracy = 1.8f;
+            velocityInaccuracy = 0.05f;
+            shootSound = Sounds.shootBig;
+            shootShake = 3f;
+            burstSpacing = 1f;
+            shootLength = 6.5f;
+        }};
+
+        brokerage = new CoinTurret("brokerage"){{
+            requirements(Category.turret, with(Items.lead, 160, Items.metaglass, 100, Items.thorium, 70, Items.plastanium, 50));
+
+            size = 2;
+            maxAmmo = 80;
+            ammoPerShot = 10;
+            reloadTime = 245f;
+            //todo make it not aim at units inside minRange
+            minRange = 100f;//todo display this everywhere setStats(), dselect(), dplace() etc
+            range = 400f;
+            health = 220 * size * size;
+            unitSort = (u, x, y) -> -u.maxHealth;
+
+            shootType = new CoinBulletType(150f, 400f, Pal.lancerLaser){{
+                cHitEffect = MindyFx.coinSuperHit;
+                hitRange = 2f;
+            }};
+            inaccuracy = 0f;
+            shootEffect = MindyFx.sniperShoot;
+            shootShake = 4f;
+            shootSound = Sounds.shotgun;
         }};
 
         anchor = new ItemTurret("anchor"){{
