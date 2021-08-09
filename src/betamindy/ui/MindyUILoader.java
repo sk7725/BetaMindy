@@ -13,6 +13,7 @@ public class MindyUILoader {
 
     public void init(){
         AncientKoruh.load();
+        AnucoinTex.load();
 
         Core.app.post(() -> {
             hardfrag = new HardmodeFragment();

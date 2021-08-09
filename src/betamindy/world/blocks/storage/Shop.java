@@ -15,6 +15,7 @@ import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
+import betamindy.ui.*;
 import betamindy.world.blocks.payloads.*;
 import mindustry.content.*;
 import mindustry.entities.units.*;
@@ -34,7 +35,7 @@ import static mindustry.Vars.mobile;
 
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
-    public TextureRegion coinRegion, spinRegion;
+    public TextureRegion spinRegion;
     public TextureRegion[] spinTeamRegions;
     public float spinSpeed = 0.2f;
     public float spinShadowRadius = 15f;
@@ -102,7 +103,6 @@ public class Shop extends PayloadAcceptor {
     public void load() {
         super.load();
 
-        coinRegion = atlas.find("betamindy-anucoin");
         spinRegion = atlas.find(name + "-spin");
         spinTeamRegions = Drawm.loadCustomTeamRegion(name + "-spin");
     }
@@ -391,7 +391,7 @@ public class Shop extends PayloadAcceptor {
 
                         t.add(" [accent]" + (int)Math.max((itemScores.get(stack.item) * stack.amount) / 30f, Math.max(stack.amount / 2f, 1)) + "[]").padRight(5f).left();
 
-                        t.image(coinRegion).left();
+                        t.image(AnucoinTex.uiCoin).left();
                     }).left().growX();
                     p.row();
                 }
@@ -428,7 +428,7 @@ public class Shop extends PayloadAcceptor {
 
             shopDialog.table(t -> {
                 t.center();
-                t.image(coinRegion).size(30f).center().padRight(10f);
+                t.image(AnucoinTex.uiCoin).size(30f).center().padRight(10f);
                 anucoinString = t.add(String.valueOf(anucoins)).padRight(10f).center();
             });
 

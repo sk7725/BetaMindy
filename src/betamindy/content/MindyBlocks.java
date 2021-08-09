@@ -112,7 +112,7 @@ public class MindyBlocks implements ContentList {
             reloadTime = 5f;
             range = 80f;
             health = 220 * size * size;
-            shootType = new CoinBulletType(8f);
+            shootType = new CoinBulletType(7f);
             inaccuracy = 2f;
         }};
 
@@ -121,8 +121,9 @@ public class MindyBlocks implements ContentList {
 
             size = 2;
             reloadTime = 45f;
-            maxAmmo = 60;
+            maxAmmo = 120;
             shots = 15;
+            ammoPerShot = 2;
             range = 55f;
             health = 440 * size * size;
 
@@ -141,8 +142,8 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, with(Items.lead, 160, Items.metaglass, 100, Items.thorium, 70, Items.plastanium, 50));
 
             size = 2;
-            maxAmmo = 80;
-            ammoPerShot = 10;
+            maxAmmo = 180;
+            ammoPerShot = 20;
             reloadTime = 245f;
             //todo make it not aim at units inside minRange
             minRange = 100f;//todo display this everywhere setStats(), dselect(), dplace() etc

@@ -8,6 +8,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import betamindy.ui.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -18,7 +19,6 @@ import static mindustry.Vars.*;
 import static betamindy.BetaMindy.*;
 
 public class TradingPost extends Block {
-    public TextureRegion coinRegion;
 
     public TradingPost(String name){
         super(name);
@@ -41,8 +41,6 @@ public class TradingPost extends Block {
     @Override
     public void load() {
         super.load();
-
-        coinRegion = Core.atlas.find("betamindy-anucoin");
     }
 
     public class TradingPostBuild extends Building implements CoinBuild{
@@ -121,7 +119,7 @@ public class TradingPost extends Block {
 
                         t.add(" [accent]" + (int)Math.max((itemScores.get(stack.item) * stack.amount) / 30f, Math.max(stack.amount / 2f, 1)) + "[]").padRight(5f).left();
 
-                        t.image(coinRegion).left();
+                        t.image(AnucoinTex.uiCoin).left();
                     }).left().growX();
                     p.row();
                 }
