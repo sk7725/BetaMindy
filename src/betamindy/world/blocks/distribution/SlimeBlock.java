@@ -3,6 +3,8 @@ package betamindy.world.blocks.distribution;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import betamindy.content.*;
+import mindustry.entities.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -16,12 +18,15 @@ public class SlimeBlock extends Block {
     public Color color;
     public TextureRegion coreRegion, topRegion;
     public boolean useTopRegion = false;
+    public Effect destroyEffect = MindyFx.slimeBreak;
+
     public SlimeBlock(String name, int stype){
         super(name);
         slimeType = stype;
         update = true;
         solid = true;
         rotate = false;
+        hasColor = true;
     }
 
     @Override
@@ -29,6 +34,12 @@ public class SlimeBlock extends Block {
         super.load();
         coreRegion = atlas.find(name + "-core");
         if(useTopRegion) topRegion = atlas.find(name + "-top");
+        mapColor = color;
+    }
+
+    @Override
+    public int minimapColor(Tile tile){
+        return color.rgba();
     }
 
     @Override
@@ -74,6 +85,11 @@ public class SlimeBlock extends Block {
                 Draw.reset();
             }
             else Draw.rect(region, x, y, dr);
+        }
+
+        @Override
+        public void onDestroyed(){
+            destroyEffect.at(x, y, color);
         }
     }
 }

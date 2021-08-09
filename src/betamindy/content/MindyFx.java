@@ -884,5 +884,69 @@ public class MindyFx {
             color(getColor(), Pal.heal, e.fin());
             Fill.circle(e.x + x, e.y + y, e.fslope() * 1.5f);
         });
-    }).layer(Layer.flyingUnit + 0.1f);
+    }).layer(Layer.flyingUnit + 0.1f),
+
+    slimeBreak = new Effect(23f, e -> {
+        vgld[0] = e.id;
+        randLenVectors(e.id, 6, 4f + e.finpow() * 15f, (x, y) -> {
+            vgld[0]++;
+            color(e.color);
+            Fill.circle(e.x + x, e.y + y, e.fout() * (1f + 2.5f * Mathf.randomSeed(vgld[0])));
+        });
+    }).layer(Layer.shields),
+
+    lineShot = new Effect(9f, e -> {
+        if(!(e.data instanceof Position)) return;
+
+        Position pos = e.data();
+
+        color(e.color);
+        stroke(1.3f * e.fout());
+        line(e.x, e.y, pos.getX(), pos.getY());
+    }).layer(Layer.bullet),
+
+    coinHit = new Effect(25, e -> {
+        e.scaled(14, s -> {
+            color(e.color);
+            stroke(s.fout() * 1.2f);
+
+            randLenVectors(e.id, 5, s.finpow() * 12f, (x, y) -> {
+                float ang = Mathf.angle(x, y);
+                lineAngle(e.x + x, e.y + y, ang, s.fout() * 4 + 1f);
+            });
+        });
+
+        z(Layer.effect + 2f);
+        color();
+        alpha(e.fout(0.75f));
+        Tmp.v1.trns(Mathf.randomSeed(e.id + 1, -15f, 15f) + e.rotation, 15f * e.finpow()).add(e.x, e.y);
+        Drawm.coin(Tmp.v1.x, Tmp.v1.y, 3f, e.finpow() * 117f, e.finpow() * 180f);
+        mixcol(e.color, 1f);
+        alpha(Mathf.clamp(e.fout() * 2f - 1f));
+        Drawm.coinSimple(Tmp.v1.x, Tmp.v1.y, 3f, e.finpow() * 117f, e.finpow() * 180f);
+        reset();
+        Drawf.light(Tmp.v1.x, Tmp.v1.y, 3f, e.color, e.fout(0.75f));
+    }),
+
+    coinDespawn = new Effect(20, e -> {
+        e.scaled(9, s -> {
+            color(e.color);
+
+            randLenVectors(e.id, 4, s.finpow() * 5f, (x, y) -> {
+                Fill.square(e.x + x, e.y + y, s.fout() * 1.5f, 45f);
+            });
+        });
+
+        Tmp.v1.trns(e.rotation, 21f * e.fin()).add(e.x, e.y);
+        mixcol(e.color, 1f);
+        alpha(Mathf.clamp(e.fout() * 1.5f - 0.5f));
+        Drawm.coinSimple(Tmp.v1.x, Tmp.v1.y, 3f, e.rotation, e.finpow() * 180f);
+
+        z(Layer.bullet - 2f);
+        reset();
+        alpha(e.fout(0.75f));
+        Drawm.coin(Tmp.v1.x, Tmp.v1.y, 3f, e.rotation + 90f, e.finpow() * 180f);
+        mixcol();
+        Drawf.light(Tmp.v1.x, Tmp.v1.y, 3f, e.color, e.fout(0.75f));
+    }).layer(Layer.bullet);
 }

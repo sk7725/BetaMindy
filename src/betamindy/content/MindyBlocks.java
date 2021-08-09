@@ -56,7 +56,7 @@ public class MindyBlocks implements ContentList {
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
     //turrets
-    hopeBringer, anchor, bermuda, propaganda, spear, justice, ray, tarnation,
+    hopeBringer, anchor, bermuda, propaganda, spear, justice, ray, tarnation, bill,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
@@ -106,6 +106,16 @@ public class MindyBlocks implements ContentList {
             lightRadius = 16f;
             lightColor = Color.red;
             emitLight = true;
+        }};
+
+        bill = new CoinTurret("bill"){{
+            requirements(Category.turret, with(Items.lead, 20, Items.graphite, 20));
+
+            reloadTime = 9f;
+            range = 80f;
+            health = 220 * size * size;
+            shootType = new CoinBulletType(10f);
+            inaccuracy = 2f;
         }};
 
         anchor = new ItemTurret("anchor"){{
@@ -416,14 +426,14 @@ public class MindyBlocks implements ContentList {
             health = 40;
             requirements(Category.distribution, with(Items.sporePod, 6));
 
-            color = Color.valueOf("9E78DC");
+            color = Pal2.sporeSlime;
         }};
 
         sporeSlimeSided = new SidedSlimeBlock("spore-slime-sided", 0){{
             health = 120;
             requirements(Category.distribution, with(Items.sporePod, 3, Items.lead, 3));
 
-            color = Color.valueOf("9E78DC");
+            color = Pal2.sporeSlime;
         }};
 
         surgeSlime = new SlimeBlock("surge-slime", 0){{

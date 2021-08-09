@@ -18,5 +18,7 @@ public class Pal2 {
     portalBack = Color.valueOf("c744db"),
     coffee = Color.valueOf("80623c"),
     cherry = Color.valueOf("ffd6f7"),
-    darkPink = Color.valueOf("cc6eaf");
+    darkPink = Color.valueOf("cc6eaf"),
+    darkCoin = Color.valueOf("d99f6b"),
+    sporeSlime = Color.valueOf("9e78dc");
 }

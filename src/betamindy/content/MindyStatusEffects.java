@@ -25,9 +25,9 @@ import static betamindy.BetaMindy.hardmode;
 import static mindustry.Vars.tilesize;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift,
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift, debugger,
     //drinks
-    caffeinated, herbed, blossoming, flowered, glowing,
+    caffeinated, herbed, blossoming, flowered, glowing, absorbing, sporeSlimed,
     //inflicts
     reverseBiased, forwardBiased, selfishRepair, decay;
 
@@ -432,6 +432,16 @@ public class MindyStatusEffects implements ContentList {
             effect = MindyFx.decay;
             effect2 = Fx.blastExplosion;
             effect2Chance = 0.05f;
+        }};
+
+        absorbing = new LayerStatusEffect("absorbing"){{
+            color = Pal.engine;
+            useTeamColor = true;
+            healthMultiplier = 5f;
+        }};
+
+        sporeSlimed = new LayerStatusEffect("spore-slimed"){{
+            color = Pal2.sporeSlime;
         }};
     }
 }
