@@ -133,9 +133,13 @@ public class Shop extends PayloadAcceptor {
         }
     }
 
+    @Override
+    public String emoji(){
+        return AnucoinTex.emoji;
+    }
+
     public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload> implements CoinBuild{
         public int anucoins = defaultAnucoins;
-        public Cell<Label> anucoinString;
         float buttonWidth = 210f;
         public UnitType unit;
         public float scl;
@@ -162,10 +166,6 @@ public class Shop extends PayloadAcceptor {
         @Override
         public boolean outputCoin(){
             return anucoins > 0;
-        }
-
-        public void updateAnucoins(){
-            anucoinString.setElement(new Label(String.valueOf(anucoins)));
         }
 
         public boolean addItemPayload(Item item, int amount){
@@ -200,7 +200,7 @@ public class Shop extends PayloadAcceptor {
                 if(anucoins >= price){
                     if(addItemPayload(item, 15)){
                         anucoins -= price;
-                        updateAnucoins();
+                        //updateAnucoins();
 
                         payVector.setZero();
                         payRotation = rotdeg();
@@ -233,7 +233,7 @@ public class Shop extends PayloadAcceptor {
             }, () -> {
                 if(anucoins >= price && payload == null) {
                     anucoins -= price;
-                    updateAnucoins();
+                    //updateAnucoins();
                     payload = new UnitPayload(unit.create(team));
 
                     payVector.setZero();
@@ -283,14 +283,14 @@ public class Shop extends PayloadAcceptor {
 
                         if(success) {
                             anucoins -= price;
-                            updateAnucoins();
+                            //updateAnucoins();
                         }
                     } else if(shopItem.type == 1){
                         shopItem.purchased.get(this);
                         shopDialog.hide();
 
                         anucoins -= price;
-                        updateAnucoins();
+                        //updateAnucoins();
                     }
                 }
             }).left().growX().disabled(!shopItem.unlocked.get(this));
@@ -428,8 +428,20 @@ public class Shop extends PayloadAcceptor {
 
             shopDialog.table(t -> {
                 t.center();
-                t.image(AnucoinTex.uiCoin).size(30f).center().padRight(10f);
-                anucoinString = t.add(String.valueOf(anucoins)).padRight(10f).center();
+                Image image = t.image(AnucoinTex.uiCoin).size(30f).center().padRight(10f).get();
+                image.clicked(() -> {
+                    if(Core.input.keyDown(KeyCode.shiftLeft) || mobile){
+                        if(Core.app.getClipboardText().equals(AnucoinTex.emoji)){
+                            Core.app.setClipboardText(AnucoinTex.emojiBit);
+                            Vars.ui.showInfoFade("[pink]"+Core.bundle.get("copied")+"[]");
+                        }
+                        else{
+                            Core.app.setClipboardText(AnucoinTex.emoji);
+                            Vars.ui.showInfoFade("@copied");
+                        }
+                    }
+                });
+                t.label(() -> String.valueOf(anucoins)).padRight(10f).center();
             });
 
             shopDialog.row();

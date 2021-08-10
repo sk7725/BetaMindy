@@ -19,6 +19,7 @@ public class Pal2 {
     coffee = Color.valueOf("80623c"),
     cherry = Color.valueOf("ffd6f7"),
     darkPink = Color.valueOf("cc6eaf"),
+    coin = Color.valueOf("f3e979"),
     darkCoin = Color.valueOf("d99f6b"),
     sporeSlime = Color.valueOf("9e78dc");
 }

@@ -44,7 +44,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -110,7 +110,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, with(Items.lead, 20, Items.graphite, 20));
 
             reloadTime = 5f;
-            range = 80f;
+            range = 112f;
             health = 220 * size * size;
             shootType = new CoinBulletType(7f);
             inaccuracy = 2f;
@@ -124,7 +124,7 @@ public class MindyBlocks implements ContentList {
             maxAmmo = 120;
             shots = 15;
             ammoPerShot = 2;
-            range = 55f;
+            range = 65f;
             health = 440 * size * size;
 
             shootType = new CoinBulletType(15f){{
@@ -145,8 +145,8 @@ public class MindyBlocks implements ContentList {
             maxAmmo = 180;
             ammoPerShot = 20;
             reloadTime = 245f;
-            //todo make it not aim at units inside minRange
-            minRange = 100f;//todo display this everywhere setStats(), dselect(), dplace() etc
+            minRange = 100f;
+            hasMinRange = true;
             range = 400f;
             health = 220 * size * size;
             unitSort = (u, x, y) -> -u.maxHealth;
@@ -1158,6 +1158,10 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, with(Items.copper, 1));
 
             size = 3;
+        }};
+
+        coinSource = new CoinSource("coin-source"){{
+            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
         }};
     }
 }

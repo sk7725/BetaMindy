@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.input.*;
+import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -32,10 +33,10 @@ public class TradingPost extends Block {
     public void setBars() {
         super.setBars();
 
-        bars.add("anucoins", entity -> new Bar(
-                () -> Core.bundle.get("ui.anucoin.multiple") + ": " + ((TradingPostBuild) entity).anucoins,
+        bars.add("anucoins", (TradingPostBuild entity) -> new Bar(
+                () -> Core.bundle.format("bar.anucoin", entity.anucoins),
                 () -> Color.coral,
-                () -> ((TradingPostBuild) entity).anucoins / 500f));
+                () -> Mathf.clamp(entity.anucoins / 500f)));
     }
 
     @Override

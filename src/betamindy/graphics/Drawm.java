@@ -112,11 +112,11 @@ public class Drawm {
 
     public static void coin(float x, float y, float size, float r, float roll){
         //"anucoin" is for ui, "coin" is for anything other than ui
-        flipSprite(Core.atlas.find("betamindy-coin"), x, y, r, roll, size, size, Color.white, Pal2.darkCoin);
+        flipSprite(AnucoinTex.coin, x, y, r, roll, size, size, Color.white, Pal2.darkCoin);
     }
 
     public static void coinSimple(float x, float y, float size, float r, float roll){
-        flipSpriteSimple(Core.atlas.find("betamindy-coin"), x, y, r, roll, size, size);
+        flipSpriteSimple(AnucoinTex.coin, x, y, r, roll, size, size);
     }
 
     public static void portal(float x, float y, float radius, Color color1, Color color2){
@@ -379,11 +379,11 @@ public class Drawm {
      * @param roll Negative values tilt the sprite to the east (cw), positive to the west (ccw).
      */
     public static void flipSprite(TextureRegion region, float x, float y, float rotation, float roll){
-        flipSprite(region, x, y, rotation, roll, region.width * Draw.scl * Draw.xscl, region.height * Draw.scl * Draw.yscl);
+        flipSprite(region, x, y, rotation, roll, Color.white, Pal.darkestGray);
     }
 
-    public static void flipSprite(TextureRegion region, float x, float y, float rotation, float roll, float w, float h){
-        flipSprite(region, x, y, rotation, roll, w, h, Color.white, Pal.darkestGray);
+    public static void flipSprite(TextureRegion region, float x, float y, float rotation, float roll, Color lightColor, Color darkColor){
+        flipSprite(region, x, y, rotation, roll, region.width * Draw.scl * Draw.xscl, region.height * Draw.scl * Draw.yscl, lightColor, darkColor);
     }
 
     public static void flipSprite(TextureRegion region, float x, float y, float rotation, float roll, float w, float h, Color lightColor, Color darkColor){
