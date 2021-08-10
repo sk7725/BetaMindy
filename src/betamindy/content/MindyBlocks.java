@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.struct.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
+import betamindy.type.*;
 import betamindy.world.blocks.campaign.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
@@ -1134,18 +1135,19 @@ public class MindyBlocks implements ContentList {
         itemShop = new Shop("item-shop"){{
             requirements(Category.effect, with(Items.copper, 1));
             size = 3;
+            sellAllItems = true;
         }};
 
         unitShop = new Shop("unit-shop"){{
             requirements(Category.effect, with(Items.copper, 1));
             size = 5;
-            shopType = 1;
+            sellAllUnits = true;
         }};
 
         extraShop = new Shop("extra-shop"){{
             requirements(Category.effect, with(Items.copper, 1));
             size = 3;
-            shopType = 2;
+            purchases = new PurchaseItem[]{ShopItems.package1};
         }};
 
         anucoinNode = new AnucoinNode("anucoin-node"){{

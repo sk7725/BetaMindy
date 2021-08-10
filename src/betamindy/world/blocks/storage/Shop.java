@@ -15,6 +15,7 @@ import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
+import betamindy.type.shop.*;
 import betamindy.ui.*;
 import betamindy.world.blocks.payloads.*;
 import mindustry.content.*;
@@ -40,12 +41,12 @@ public class Shop extends PayloadAcceptor {
     public float spinSpeed = 0.2f;
     public float spinShadowRadius = 15f;
 
-    /** 0 = item, 1 = unit, 3 = extra */
-    public int shopType = 0;
+    public @Nullable PurchaseItem[] purchases;
+    public boolean sellAllItems = false;
+    public boolean sellAllUnits = false;
 
     OrderedMap<Item, Float> itemScores;
     OrderedMap<UnitType, Float> unitScores;
-    OrderedMap<String, ShopItem> shopItems;
     OrderedMap<UnitType, Integer> unitTypeMap = new OrderedMap<>();
     BaseDialog shopDialog;
 
@@ -85,7 +86,6 @@ public class Shop extends PayloadAcceptor {
         Runnable ee = () -> {
             itemScores = BetaMindy.itemScores;
             unitScores = BetaMindy.unitScores;
-            shopItems = BetaMindy.shopItems;
 
             for (UnitType unit : Vars.content.units()) {
                 if (unitScores.containsKey(unit)) {
@@ -187,21 +187,19 @@ public class Shop extends PayloadAcceptor {
 
             pane.button(t -> {
                 t.left();
-                t.image(new TextureRegion(item.icon(Cicon.medium))).size(40).padRight(10f);
+                t.image(item.icon(Cicon.medium)).size(40).padRight(10f);
 
                 t.table(tt -> {
                     tt.left();
                     String color = colorToHex(item.color);
                     tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x15[]").growX().left();
                     tt.row();
-                    tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
+                    tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
                 }).growX();
             }, () -> {
                 if(anucoins >= price){
                     if(addItemPayload(item, 15)){
                         anucoins -= price;
-                        //updateAnucoins();
-
                         payVector.setZero();
                         payRotation = rotdeg();
                     }
@@ -216,7 +214,7 @@ public class Shop extends PayloadAcceptor {
             pane.button(t -> {
                 t.left();
 
-                t.image(new TextureRegion(unit.icon(Cicon.medium))).size(40).padRight(10f);
+                t.image(unit.icon(Cicon.medium)).size(40).padRight(10f);
 
                 t.table(tt -> {
                     int type = unitTypeMap.get(unit);
@@ -228,7 +226,7 @@ public class Shop extends PayloadAcceptor {
                     tt.add("[accent]" + Core.bundle.get("ui.type") + "[]: " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
                     tt.row();
 
-                    tt.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
+                    tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
                 }).growX();
             }, () -> {
                 if(anucoins >= price && payload == null) {
@@ -243,57 +241,31 @@ public class Shop extends PayloadAcceptor {
             pane.row();
         }
 
-        public void extraButton(Table pane, ShopItem shopItem){
-            int price = shopItem.cost;
+        public void extraButton(Table pane, PurchaseItem item){
+            int price = item.cost;
 
             pane.button(t -> {
                 t.left();
-
-                t.add(Core.bundle.has("shopItem." + shopItem.name + ".name") ? Core.bundle.get("shopItem." + shopItem.name + ".name") : shopItem.name).growX().left();
-
-                if(Core.bundle.has("shopItem." + shopItem.name + ".description")){
-                    t.row();
-
-                    t.add(Core.bundle.get("shopItem." + shopItem.name + ".description")).growX().left().color(Color.gray);
-                }
-
-                if(shopItem.type == 0) {
-                    for(ItemStack stack : shopItem.packageItems){
-                        t.row();
-
-                        t.table(tt -> {
-                            tt.left();
-                            tt.image(stack.item.icon(Cicon.small)).left();
-                            tt.add(String.valueOf(stack.amount)).left();
-                        }).left();
-                    }
-                }
-
-                t.row();
-
-                t.add(Core.bundle.get("ui.price") + ": " + price + " [accent]" + (price == 1 ? Core.bundle.get("ui.anucoin.single") : Core.bundle.get("ui.anucoin.multiple")) + "[]").left();
+                item.buildButton(t);
             }, () -> {
-                if(anucoins >= price) {
-                    if(shopItem.type == 0) {
-                        boolean success = true;
-
-                        for(ItemStack stack : shopItem.packageItems){
-                            if(!addItemPayload(stack.item, stack.amount)) success = false;
-                        }
-
-                        if(success) {
+                //todo configure
+                if(anucoins >= price){
+                    if(item instanceof ShopItem shopitem){
+                        if(shopitem.shop(this)){
                             anucoins -= price;
-                            //updateAnucoins();
+                            payVector.setZero();
+                            payRotation = rotdeg();
                         }
-                    } else if(shopItem.type == 1){
-                        shopItem.purchased.get(this);
-                        shopDialog.hide();
-
-                        anucoins -= price;
-                        //updateAnucoins();
                     }
+                    else{
+                        if(item.purchase(this)){
+                            anucoins -= price;
+                        }
+                    }
+
+                    if(item.abort) shopDialog.hide();
                 }
-            }).left().growX().disabled(!shopItem.unlocked.get(this));
+            }).left().growX().disabled(!item.unlocked.get(this));
             pane.row();
         }
 
@@ -446,7 +418,22 @@ public class Shop extends PayloadAcceptor {
 
             shopDialog.row();
             shopDialog.table(tbl -> {
-                if(shopType == 0) {
+                if(purchases != null) {
+                    tbl.table(tbl1 -> {
+                        tbl1.center();
+
+                        tbl1.add(Core.bundle.get("ui.extra"));
+                        tbl1.row();
+
+                        tbl1.pane(e -> {
+                            for (PurchaseItem shopItem : purchases) {
+                                extraButton(e, shopItem);
+                            }
+                        }).center().width(width * 0.6f);
+                    });
+                    tbl.row();
+                }
+                if(sellAllItems){
                     tbl.table(tbl1 -> {
                         tbl1.center();
 
@@ -462,7 +449,9 @@ public class Shop extends PayloadAcceptor {
                             }
                         }).center().width(width * 0.6f);
                     });
-                } else if(shopType == 1) {
+                    tbl.row();
+                }
+                if(sellAllUnits){
                     tbl.table(tbl1 -> {
                         tbl1.center();
 
@@ -477,19 +466,7 @@ public class Shop extends PayloadAcceptor {
                             }
                         }).center().width(width * 0.6f);
                     });
-                } else if(shopType == 2) {
-                    tbl.table(tbl1 -> {
-                        tbl1.center();
-
-                        tbl1.add(Core.bundle.get("ui.extra"));
-                        tbl1.row();
-
-                        tbl1.pane(e -> {
-                            for (ShopItem shopItem : BetaMindy.shopItems.values()) {
-                                extraButton(e, shopItem);
-                            }
-                        }).center().width(width * 0.6f);
-                    });
+                    tbl.row();
                 }
             });
             shopDialog.row();

@@ -5,7 +5,7 @@ import arc.func.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.graphics.*;
-import betamindy.type.ShopItem;
+import betamindy.type.PurchaseItem;
 import betamindy.ui.*;
 import betamindy.util.*;
 import betamindy.world.blocks.campaign.*;
@@ -40,8 +40,6 @@ public class BetaMindy extends Mod{
     public static OrderedMap<Item, Float> itemScores;
     public static OrderedMap<Liquid, Float> liquidScores;
     public static OrderedMap<UnitType, Float> unitScores;
-
-    public static OrderedMap<String, ShopItem> shopItems = new OrderedMap<>();
 
     public static MindyHints hints = new MindyHints();
     public static MindyUILoader mui = new MindyUILoader();
