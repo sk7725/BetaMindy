@@ -19,6 +19,7 @@ public class ItemItem extends ShopItem{
         this.amount = amount;
 
         localizedName = "[#" + item.color.toString() + "]" + item.localizedName + "[]";
+        unlocked = e -> !((ShopBuild)e).disabledBox();
     }
 
     public ItemItem(Item item){

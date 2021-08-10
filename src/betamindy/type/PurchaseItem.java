@@ -14,7 +14,6 @@ import static arc.Core.atlas;
 public abstract class PurchaseItem {
     public String name;
     public String localizedName, description;
-    public TextureRegion icon;
     public int cost = 10;
     /** Whether to leave the purchase dialog after purchasing this item. */
     public boolean abort = false;
@@ -27,12 +26,6 @@ public abstract class PurchaseItem {
 
         localizedName = local();
         description = Core.bundle.getOrNull("shopItem." + name + ".description");
-    }
-
-    public void load(){
-        if(icon == null){
-            icon = atlas.find("betamindy-" + name);
-        }
     }
 
     public String local(){

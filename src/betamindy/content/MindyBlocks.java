@@ -6,6 +6,7 @@ import arc.struct.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
+import betamindy.type.shop.*;
 import betamindy.world.blocks.campaign.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.turrets.*;
@@ -35,6 +36,7 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.uwu;
+import static betamindy.content.ShopItems.*;
 import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
@@ -45,7 +47,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource, testShop,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -298,6 +300,30 @@ public class MindyBlocks implements ContentList {
                     }}
             );
         }};
+
+        astro = new UnitTurret("astro"){
+            {
+                requirements(Category.turret, with(Items.thorium, 12000, Items.silicon, 25500, Items.titanium, 8250, MindyItems.bittrium, 5000));
+                size = 6;
+                chargeTime = 61f;
+                chargeEffect = MindyFx.astroCharge;
+                shootType = MindyBullets.voidStar;
+                powerUse = 65f;
+                rotateSpeed = 0.8f;
+                heatColor = Color.valueOf("7474ed");
+                range = 400f;
+                reloadTime = 600f;
+                recoilAmount = 10f;
+                restitution = 0.03f;
+                shootCone = 20f;
+                shootShake = 5f;
+                //TODO find a better sound: chargeSound = MindySounds.astroCharge;
+                shootSound = MindySounds.astroShoot;
+                targetAir = true;
+                chargeEffects = 1;
+                health = 240 * size * size;
+            }
+        };
 
         //sting = new PowerTurret(I)
 
@@ -1057,7 +1083,7 @@ public class MindyBlocks implements ContentList {
             glowOpacity = 0.9f;
         }};
 
-        // endgame turrets
+        // endgame turrets : ONLY the 5 Disaster Turrets specified in the trello!
         tarnation = new PowerTurret("tarnation"){{
             requirements(Category.turret, with(Items.lead, 6000, Items.thorium, 5500, Items.silicon, 3950, Items.plastanium, 1800, Items.surgeAlloy, 1024, MindyItems.bittrium, 128));
             range = 540f;
@@ -1085,30 +1111,6 @@ public class MindyBlocks implements ContentList {
                 buildingDamageMultiplier = 0.3f;
             }};
         }};
-
-        astro = new UnitTurret("astro"){
-            {
-                requirements(Category.turret, with(Items.thorium, 12000, Items.silicon, 25500, Items.titanium, 8250, MindyItems.bittrium, 5000));
-                size = 6;
-                chargeTime = 61f;
-                chargeEffect = MindyFx.astroCharge;
-                shootType = MindyBullets.voidStar;
-                powerUse = 65f;
-                rotateSpeed = 0.8f;
-                heatColor = Color.valueOf("7474ed");
-                range = 400f;
-                reloadTime = 600f;
-                recoilAmount = 10f;
-                restitution = 0.03f;
-                shootCone = 20f;
-                shootShake = 5f;
-                //TODO find a better sound: chargeSound = MindySounds.astroCharge;
-                shootSound = MindySounds.astroShoot;
-                targetAir = true;
-                chargeEffects = 1;
-                health = 240 * size * size;
-            }
-        };
 
         hopeBringer = new MultiTurret("hopebringer"){{
             requirements(Category.turret, with(MindyItems.bittrium, 9999));//TODO
@@ -1147,7 +1149,14 @@ public class MindyBlocks implements ContentList {
         extraShop = new Shop("extra-shop"){{
             requirements(Category.effect, with(Items.copper, 1));
             size = 3;
-            purchases = new PurchaseItem[]{ShopItems.package1};
+            purchases = new PurchaseItem[]{firstAids, invincibleCore, package1, package2, package3, package4, package5, package6, package7, package8, package9, package10};
+        }};
+
+        testShop = new Shop("test-shop"){{
+            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
+            size = 3;
+            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 500, 50f)};
+            sellAllItems = sellAllUnits = true;
         }};
 
         anucoinNode = new AnucoinNode("anucoin-node"){{

@@ -33,6 +33,7 @@ import mindustry.world.blocks.production.*;
 
 import static arc.Core.atlas;
 import static mindustry.Vars.mobile;
+import static mindustry.Vars.player;
 
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
@@ -173,12 +174,41 @@ public class Shop extends PayloadAcceptor {
                 payload = new BuildPayload(MindyBlocks.box, team);
             }
 
-            if(payload instanceof BuildPayload){
-                ((BuildPayload)payload).build.items.add(item, amount);
+            if(payload instanceof BuildPayload bp){
+                if(bp.build.items == null) return false;
+                bp.build.items.add(item, amount);
 
                 return true;
             }
 
+            return false;
+        }
+
+        public boolean addLiquidPayload(Liquid liquid, float amount){
+            if(payload == null){
+                payload = new BuildPayload(MindyBlocks.box, team);
+            }
+
+            if(payload instanceof BuildPayload bp){
+                if(bp.build.liquids == null || (bp.build.liquids.currentAmount() > 0.2f && bp.build.liquids.current() != liquid)) return false;
+                bp.build.liquids.add(liquid, amount);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public boolean disabledBox(){
+            return payload != null && (!(payload instanceof BuildPayload bp) || bp.build.items == null);
+        }
+
+        public boolean disabledLiquid(Liquid liquid){
+            if(payload == null) return true;
+
+            if(payload instanceof BuildPayload bp){
+                return bp.build.liquids != null && (!(bp.build.liquids.currentAmount() > 0.2f) || bp.build.liquids.current() == liquid);
+            }
             return false;
         }
 
@@ -204,7 +234,7 @@ public class Shop extends PayloadAcceptor {
                         payRotation = rotdeg();
                     }
                 }
-            }).left().growX();
+            }).left().growX().disabled(b -> disabledBox());
             pane.row();
         }
 
@@ -220,10 +250,10 @@ public class Shop extends PayloadAcceptor {
                     int type = unitTypeMap.get(unit);
                     tt.left();
 
-                    tt.add(unit.localizedName).growX().left();
+                    tt.add(unit.localizedName).growX().left().color(player == null || player.team() == null || player.team().id == Team.derelict.id ? Pal.accent : player.team().color);
                     tt.row();
 
-                    tt.add("[accent]" + Core.bundle.get("ui.type") + "[]: " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
+                    tt.add(Core.bundle.get("ui.type") + ": " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
                     tt.row();
 
                     tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
@@ -237,7 +267,7 @@ public class Shop extends PayloadAcceptor {
                     payVector.setZero();
                     payRotation = rotdeg();
                 }
-            }).left().growX();
+            }).left().growX().disabled(b -> payload != null);
             pane.row();
         }
 
@@ -265,7 +295,7 @@ public class Shop extends PayloadAcceptor {
 
                     if(item.abort) shopDialog.hide();
                 }
-            }).left().growX().disabled(!item.unlocked.get(this));
+            }).left().growX().disabled(b -> !item.unlocked.get(this));
             pane.row();
         }
 

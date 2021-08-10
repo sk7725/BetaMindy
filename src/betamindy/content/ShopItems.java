@@ -11,7 +11,7 @@ import static java.lang.Float.*;
 
 public class ShopItems implements ContentList {
     public static PackageShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10;
-    public static PurchaseItem runnable1, runnable2;
+    public static PurchaseItem firstAids, invincibleCore;
 
     @Override
     public void load(){
@@ -61,7 +61,7 @@ public class ShopItems implements ContentList {
         }};
 
         /* Runnables */
-        runnable1 = new PurchaseRunnable("first-aids", 1500){{
+        firstAids = new PurchaseRunnable("first-aids", 1500){{
             purchased = e -> {
                 e.team.cores().each(c -> c.health = c.maxHealth);
                 return true;
@@ -78,7 +78,7 @@ public class ShopItems implements ContentList {
             };
         }};
 
-        runnable2 = new PurchaseRunnable("invi-core", 10250){{
+        invincibleCore = new PurchaseRunnable("invi-core", 10250){{
             purchased = e -> {
                 e.team.cores().each(c -> c.health = Float.NaN);
 
