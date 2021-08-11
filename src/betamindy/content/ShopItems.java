@@ -1,17 +1,28 @@
 package betamindy.content;
 
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
+import arc.struct.*;
 import arc.util.*;
+import betamindy.graphics.*;
 import betamindy.type.*;
 import betamindy.type.shop.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 
 import static java.lang.Float.*;
+import static mindustry.Vars.ui;
 
 public class ShopItems implements ContentList {
     public static PackageShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10;
-    public static PurchaseItem firstAids, invincibleCore;
+    public static PurchaseItem firstAids, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail;
 
     @Override
     public void load(){
@@ -98,5 +109,83 @@ public class ShopItems implements ContentList {
                 return ret[0];
             };
         }};
+
+        milk = new PurchaseRunnable("milk", 15){
+            @Override
+            public boolean purchase(Building source, Unit player){
+                if(player == null || player.dead()) return false;
+                player.clearStatuses();
+                return true;
+            }
+
+            @Override
+            public void buildButton(Button t){
+                t.left();
+                TextureRegion region = Core.atlas.find("betamindy-" + name);
+                if(region.found()){
+                    t.image(region).size(40).padRight(10f);
+                }
+
+                t.table(tt -> {
+                    tt.left();
+                    tt.add(localizedName).growX().left();
+                    if(description != null){
+                        tt.row();
+                        tt.add(description).growX().left().color(Color.gray);
+                    }
+                    tt.row();
+                    tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
+                }).growX();
+            }
+        };
+
+        coffee = new PurchaseDrink("coffee", 15, MindyStatusEffects.caffeinated);
+        herbTea = new PurchaseDrink("herb-tea", 25, MindyStatusEffects.herbed);
+        flowerTea = new PurchaseDrink("flower-tea", 60, MindyStatusEffects.blossoming){{
+            duration = 60 * 60 * 3;
+        }};
+
+        pancake = new PurchaseDrink("pancake", 20, MindyStatusEffects.absorbing){{
+            duration = 60 * 60 * 1.5f;
+        }};
+        glowstick = new PurchaseDrink("glowstick", 28, MindyStatusEffects.glowing);
+        sporeJuice = new PurchaseDrink("spore-juice", 10, MindyStatusEffects.sporeSlimed){{
+            duration = 60 * 60 * 5;
+        }};
+        //todo bane of resolution drink
+
+        cocktail = new PurchaseRunnable("cocktail", 18){
+            final Seq<StatusEffect> statusList = Vars.content.statusEffects().copy().removeAll(se -> se.permanent);
+            @Override
+            public boolean purchase(Building source, Unit player){
+                if(player == null || player.dead()) return false;
+                player.apply(statusList.random(MindyStatusEffects.ouch), 60 * 60 * 5);
+                return true;
+            }
+
+            @Override
+            public void buildButton(Button t){
+                t.left();
+                TextureRegion region = Core.atlas.find("betamindy-" + name);
+                if(region.found()){
+                    t.image(region).size(40).padRight(10f);
+                }
+
+                t.table(tt -> {
+                    tt.left();
+                    tt.add(localizedName).growX().left().color(Pal2.zeta);
+                    tt.row();
+                    tt.table(b -> {
+                        b.left();
+                        b.button("???", Styles.cleart, () -> {
+                            ui.content.show(statusList.random(MindyStatusEffects.ouch));
+                        }).left().size(180f, 27f);
+                        b.add(" [lightgray](5:00)[]");
+                    }).left();
+                    tt.row();
+                    tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
+                }).growX();
+            }
+        };
     }
 }

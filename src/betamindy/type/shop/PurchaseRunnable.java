@@ -12,7 +12,7 @@ public class PurchaseRunnable extends PurchaseItem {
     }
 
     @Override
-    public boolean purchase(Building source){
+    public boolean purchase(Building source, Unit player){
         return purchased.get(source);
     }
 }

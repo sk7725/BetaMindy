@@ -28,13 +28,10 @@ public class PackageShopItem extends ShopItem {
 
     @Override
     public boolean shop(ShopBuild source){
-        boolean success = super.purchase(source);
-        if(!success) return false;
-
+        boolean success = true;
         for(ItemStack stack : packageItems){
             if(!source.addItemPayload(stack.item, stack.amount)) success = false;
         }
-
         return success;
     }
 }

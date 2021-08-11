@@ -40,9 +40,9 @@ public class LiquidItem extends ShopItem{
 
         t.table(tt -> {
             tt.left();
-            tt.add(localizedName + " [accent] "+amount+"L[]").growX().left();
+            tt.add(localizedName + " [accent]"+amount+"L[]").growX().left();
             tt.row();
-            tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();;
+            tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
         }).growX();
     }
 }

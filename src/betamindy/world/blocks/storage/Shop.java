@@ -50,13 +50,36 @@ public class Shop extends PayloadAcceptor {
     OrderedMap<UnitType, Float> unitScores;
     OrderedMap<UnitType, Integer> unitTypeMap = new OrderedMap<>();
     BaseDialog shopDialog;
+    float[] scrollPos = {0, 0, 0};
 
     public Shop(String name){
         super(name);
 
         update = solid = hasItems = outputsPayload = sync = rotate = configurable = true;
+        saveConfig = false;
         acceptsItems = true;
         unloadable = false;
+
+        config(Item.class, (ShopBuild tile, Item item) -> {
+            int price = Math.max(Math.round(itemScores.get(item)), 15);
+            if(tile.anucoins >= price){
+                if(tile.addItemPayload(item, 15)){
+                    tile.anucoins -= price;
+                    tile.payVector.setZero();
+                    tile.payRotation = tile.rotdeg();
+                }
+            }
+        });
+        config(UnitType.class, (ShopBuild tile, UnitType unit) -> {
+            int price = Math.max(Math.round(unitScores.get(unit)), 15);
+            if(tile.anucoins >= price && tile.payload == null) {
+                tile.anucoins -= price;
+                tile.payload = new UnitPayload(unit.create(tile.team));
+
+                tile.payVector.setZero();
+                tile.payRotation = tile.rotdeg();
+            }
+        });
     }
 
     public int checkUnitType(UnitType unit){
@@ -204,12 +227,12 @@ public class Shop extends PayloadAcceptor {
         }
 
         public boolean disabledLiquid(Liquid liquid){
-            if(payload == null) return true;
+            if(payload == null) return false;
 
             if(payload instanceof BuildPayload bp){
-                return bp.build.liquids != null && (!(bp.build.liquids.currentAmount() > 0.2f) || bp.build.liquids.current() == liquid);
+                return bp.build.liquids == null || ((bp.build.liquids.currentAmount() > 0.2f) && bp.build.liquids.current() != liquid);
             }
-            return false;
+            return true;
         }
 
         public void itemButton(Table pane, Item item){
@@ -228,11 +251,7 @@ public class Shop extends PayloadAcceptor {
                 }).growX();
             }, () -> {
                 if(anucoins >= price){
-                    if(addItemPayload(item, 15)){
-                        anucoins -= price;
-                        payVector.setZero();
-                        payRotation = rotdeg();
-                    }
+                    configure(item);
                 }
             }).left().growX().disabled(b -> disabledBox());
             pane.row();
@@ -260,43 +279,49 @@ public class Shop extends PayloadAcceptor {
                 }).growX();
             }, () -> {
                 if(anucoins >= price && payload == null) {
-                    anucoins -= price;
-                    //updateAnucoins();
-                    payload = new UnitPayload(unit.create(team));
-
-                    payVector.setZero();
-                    payRotation = rotdeg();
+                    configure(unit);
                 }
             }).left().growX().disabled(b -> payload != null);
             pane.row();
         }
 
-        public void extraButton(Table pane, PurchaseItem item){
+        public void extraButton(Table pane, PurchaseItem item, int i){
             int price = item.cost;
 
             pane.button(t -> {
                 t.left();
                 item.buildButton(t);
             }, () -> {
-                //todo configure
                 if(anucoins >= price){
-                    if(item instanceof ShopItem shopitem){
-                        if(shopitem.shop(this)){
-                            anucoins -= price;
-                            payVector.setZero();
-                            payRotation = rotdeg();
-                        }
-                    }
-                    else{
-                        if(item.purchase(this)){
-                            anucoins -= price;
-                        }
-                    }
+                    configure(i);
 
                     if(item.abort) shopDialog.hide();
                 }
             }).left().growX().disabled(b -> !item.unlocked.get(this));
             pane.row();
+        }
+
+        @Override
+        public void configured(Unit builder, Object value){
+            if(value instanceof Integer){
+                int i = (Integer)value;
+                if(purchases == null || i < 0 || i >= purchases.length) return;
+                PurchaseItem item = purchases[i];
+                if(anucoins >= item.cost){
+                    if(item instanceof ShopItem shopitem){
+                        if(shopitem.shop(this)){
+                            anucoins -= item.cost;
+                            payVector.setZero();
+                            payRotation = rotdeg();
+                        }
+                    }else{
+                        if(item.purchase(this, builder)){
+                            anucoins -= item.cost;
+                        }
+                    }
+                }
+            }
+            else super.configured(builder, value);
         }
 
         @Override
@@ -447,58 +472,80 @@ public class Shop extends PayloadAcceptor {
             });
 
             shopDialog.row();
-            shopDialog.table(tbl -> {
+            //shopDialog.pane(tbl -> {
+            ScrollPane itemPane = new ScrollPane(new Table(tbl -> {
+                float sy = 0f;
+                tbl.center();
                 if(purchases != null) {
-                    tbl.table(tbl1 -> {
-                        tbl1.center();
-
-                        tbl1.add(Core.bundle.get("ui.extra"));
-                        tbl1.row();
-
-                        tbl1.pane(e -> {
-                            for (PurchaseItem shopItem : purchases) {
-                                extraButton(e, shopItem);
-                            }
-                        }).center().width(width * 0.6f);
-                    });
+                    tbl.table(marker -> {
+                        marker.image().color(Pal2.coin).height(4f).growX();
+                        marker.add(Core.bundle.get("ui.extra")).color(Pal2.coin).pad(3f);
+                        marker.image().color(Pal2.coin).height(4f).growX();
+                    }).fillX().growX();
                     tbl.row();
+
+                    for(int i = 0; i < purchases.length; i++){
+                        extraButton(tbl, purchases[i], i);
+                    }
                 }
                 if(sellAllItems){
-                    tbl.table(tbl1 -> {
-                        tbl1.center();
-
-                        tbl1.add(Core.bundle.get("ui.items"));
-                        tbl1.row();
-
-                        tbl1.pane(e -> {
-                            for (Item item : Vars.content.items()) {
-                                if (item == MindyItems.bittrium) continue;
-                                if (itemScores.containsKey(item)) {
-                                    itemButton(e, item);
-                                }
-                            }
-                        }).center().width(width * 0.6f);
-                    });
+                    scrollPos[1] = tbl.getPrefHeight();
+                    tbl.table(marker -> {
+                        marker.image().color(Pal2.coin).height(4f).growX();
+                        marker.add(Core.bundle.get("ui.items")).color(Pal2.coin).pad(3f);
+                        marker.image().color(Pal2.coin).height(4f).growX();
+                    }).fillX().growX();
                     tbl.row();
+
+                    for (Item item : Vars.content.items()) {
+                        if (item == MindyItems.bittrium) continue;
+                        if (itemScores.containsKey(item)) {
+                            itemButton(tbl, item);
+                        }
+                    }
                 }
                 if(sellAllUnits){
-                    tbl.table(tbl1 -> {
-                        tbl1.center();
-
-                        tbl1.add(Core.bundle.get("ui.units"));
-                        tbl1.row();
-
-                        tbl1.pane(e -> {
-                            for (UnitType unit : Vars.content.units()) {
-                                if (unitScores.containsKey(unit)) {
-                                    unitButton(e, unit);
-                                }
-                            }
-                        }).center().width(width * 0.6f);
-                    });
+                    scrollPos[2] = tbl.getPrefHeight();
+                    tbl.table(marker -> {
+                        marker.image().color(Pal2.coin).height(4f).growX();
+                        marker.add(Core.bundle.get("ui.units")).color(Pal2.coin).pad(3f);
+                        marker.image().color(Pal2.coin).height(4f).growX();
+                    }).fillX().growX();
                     tbl.row();
+
+                    for (UnitType unit : Vars.content.units()) {
+                        if (unitScores.containsKey(unit)) {
+                            unitButton(tbl, unit);
+                        }
+                    }
                 }
-            });
+                Log.info("scrollPos:" + scrollPos[0] + "," + scrollPos[1] + "," + scrollPos[2]);
+            }));
+
+            if((purchases != null && (sellAllItems || sellAllUnits)) || (sellAllItems && sellAllUnits)){
+                shopDialog.table(topbar -> {
+                    topbar.left();
+                    topbar.defaults().padRight(10f).size(110f, 40f).left();
+                    if(purchases != null){
+                        topbar.button("@ui.extra", () -> {
+                            itemPane.setScrollY(scrollPos[0]);
+                        });
+                    }
+                    if(sellAllItems){
+                        topbar.button("@ui.items", () -> {
+                            itemPane.setScrollY(scrollPos[1]);
+                        });
+                    }
+                    if(sellAllUnits){
+                        topbar.button("@ui.units", () -> {
+                            itemPane.setScrollY(scrollPos[2]);
+                        });
+                    }
+                }).center().width(width * 0.6f);
+                shopDialog.row();
+            }
+
+            shopDialog.add(itemPane).center().width(width * 0.6f);
             shopDialog.row();
             shopDialog.table(t -> {
                 if(Vars.mobile){

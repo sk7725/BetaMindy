@@ -25,14 +25,14 @@ public abstract class PurchaseItem {
         this.cost = cost;
 
         localizedName = local();
-        description = Core.bundle.getOrNull("shopItem." + name + ".description");
+        description = Core.bundle.getOrNull("purchase." + name + ".description");
     }
 
     public String local(){
-        return Core.bundle.has("shopItem." + name + ".name") ? Core.bundle.get("shopItem." + name + ".name") : name;
+        return Core.bundle.get("purchase." + name + ".name", name);
     }
 
-    public boolean purchase(Building source){
+    public boolean purchase(Building source, Unit player){
         return false;
     }
 

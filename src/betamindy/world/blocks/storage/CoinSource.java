@@ -15,7 +15,7 @@ public class CoinSource extends Block {
     public TextureRegion topRegion;
     public Color topColor1 = Pal2.coin;
     public Color topColor2 = Pal2.darkCoin;
-    public float spinSpeed = -0.5f;
+    public float spinSpeed = 0.5f;
     public CoinSource(String name){
         super(name);
         update = true;

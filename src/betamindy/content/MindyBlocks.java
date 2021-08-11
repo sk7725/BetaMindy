@@ -1155,7 +1155,7 @@ public class MindyBlocks implements ContentList {
         testShop = new Shop("test-shop"){{
             requirements(Category.effect, BuildVisibility.sandboxOnly, with());
             size = 3;
-            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 500, 50f)};
+            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, cocktail};
             sellAllItems = sellAllUnits = true;
         }};
 
