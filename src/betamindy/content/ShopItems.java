@@ -21,8 +21,9 @@ import static java.lang.Float.*;
 import static mindustry.Vars.ui;
 
 public class ShopItems implements ContentList {
-    public static PackageShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10;
-    public static PurchaseItem firstAids, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail;
+    public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10,
+    holyRouter;
+    public static PurchaseItem firstAids, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie;
 
     @Override
     public void load(){
@@ -152,13 +153,21 @@ public class ShopItems implements ContentList {
         sporeJuice = new PurchaseDrink("spore-juice", 10, MindyStatusEffects.sporeSlimed){{
             duration = 60 * 60 * 5;
         }};
-        //todo bane of resolution drink
+        //todo sell at exotic shops
+        bittriumWine = new PurchaseDrink("bittrium-wine", 199, MindyStatusEffects.bittriumBane){{
+            duration = 60 * 60 * 4.5f;
+        }};
+        diodeCookie = new PurchaseDrink("diode-cookie", 65, MindyStatusEffects.forwardBiased){{
+            duration = 60 * 60 * 1.5f;
+        }};
 
-        cocktail = new PurchaseRunnable("cocktail", 18){
+        cocktail = new PurchaseRunnable("cocktail", 66){
             final Seq<StatusEffect> statusList = Vars.content.statusEffects().copy().removeAll(se -> se.permanent);
             @Override
             public boolean purchase(Building source, Unit player){
                 if(player == null || player.dead()) return false;
+                player.apply(statusList.random(MindyStatusEffects.ouch), 60 * 60 * 5);
+                player.apply(statusList.random(MindyStatusEffects.ouch), 60 * 60 * 5);
                 player.apply(statusList.random(MindyStatusEffects.ouch), 60 * 60 * 5);
                 return true;
             }
@@ -177,7 +186,7 @@ public class ShopItems implements ContentList {
                     tt.row();
                     tt.table(b -> {
                         b.left();
-                        b.button("???", Styles.cleart, () -> {
+                        b.button("@purchase.cocktail.description", new TextureRegionDrawable(MindyStatusEffects.glitched.icon(Cicon.medium)), Styles.cleart, 25f, () -> {
                             ui.content.show(statusList.random(MindyStatusEffects.ouch));
                         }).left().size(180f, 27f);
                         b.add(" [lightgray](5:00)[]");
@@ -187,5 +196,7 @@ public class ShopItems implements ContentList {
                 }).growX();
             }
         };
+
+        holyRouter = new BlockItem(Blocks.router, 15);
     }
 }

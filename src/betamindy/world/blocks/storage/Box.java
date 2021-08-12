@@ -115,7 +115,7 @@ public class Box extends Block {
             }
             Draw.rect(boxRegion, x, y, (sprite() % 2) * 90f);
             Draw.z(Layer.blockOver);
-            Draw.rect(boxTopRegion, x, y, (sprite() % 2) * -90f);
+            Draw.rect(boxTopRegion, x, y);
             Draw.reset();
         }
 

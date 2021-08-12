@@ -32,8 +32,7 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 
 import static arc.Core.atlas;
-import static mindustry.Vars.mobile;
-import static mindustry.Vars.player;
+import static mindustry.Vars.*;
 
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 500;
@@ -43,14 +42,17 @@ public class Shop extends PayloadAcceptor {
     public float spinShadowRadius = 15f;
 
     public @Nullable PurchaseItem[] purchases;
+    public @Nullable Block[] soldBlocks;
     public boolean sellAllItems = false;
     public boolean sellAllUnits = false;
+    public boolean sellAllBlocks = false;
+    public boolean navigationBar = false;
 
     OrderedMap<Item, Float> itemScores;
     OrderedMap<UnitType, Float> unitScores;
     OrderedMap<UnitType, Integer> unitTypeMap = new OrderedMap<>();
     BaseDialog shopDialog;
-    float[] scrollPos = {0, 0, 0};
+    float[] scrollPos = {0, 0, 0, 0};
 
     public Shop(String name){
         super(name);
@@ -75,6 +77,16 @@ public class Shop extends PayloadAcceptor {
             if(tile.anucoins >= price && tile.payload == null) {
                 tile.anucoins -= price;
                 tile.payload = new UnitPayload(unit.create(tile.team));
+
+                tile.payVector.setZero();
+                tile.payRotation = tile.rotdeg();
+            }
+        });
+        config(Block.class, (ShopBuild tile, Block block) -> {
+            int price = BlockItem.getScore(block);
+            if(tile.anucoins >= price && tile.payload == null) {
+                tile.anucoins -= price;
+                tile.payload = new BuildPayload(block, tile.team);
 
                 tile.payVector.setZero();
                 tile.payRotation = tile.rotdeg();
@@ -162,8 +174,9 @@ public class Shop extends PayloadAcceptor {
         return AnucoinTex.emoji;
     }
 
-    public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload> implements CoinBuild{
+    public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload> implements CoinBuild, BankLinked{
         public int anucoins = defaultAnucoins;
+        private int anubank = -1; //default is -1
         float buttonWidth = 210f;
         public UnitType unit;
         public float scl;
@@ -191,6 +204,23 @@ public class Shop extends PayloadAcceptor {
         public boolean outputCoin(){
             return anucoins > 0;
         }
+
+        @Override
+        public boolean occupied(Tile other){
+            return anubank != -1 && world.build(anubank) != other.build;
+        }
+
+        @Override
+        public void setLink(Tile other){
+            if(other.build == null) return;
+            anubank = other.build.pos();
+        }
+
+        @Override
+        public void removeLink(Tile other){
+            if(world.build(anubank) == other.build) anubank = -1;
+        }
+        //todo totalCoins & removeCoins
 
         public boolean addItemPayload(Item item, int amount){
             if(payload == null){
@@ -298,6 +328,30 @@ public class Shop extends PayloadAcceptor {
                     if(item.abort) shopDialog.hide();
                 }
             }).left().growX().disabled(b -> !item.unlocked.get(this));
+            pane.row();
+        }
+
+        public void blockButton(Table pane, Block block){
+            int price = BlockItem.getScore(block);
+
+            pane.button(t -> {
+                t.left();
+
+                t.image(block.icon(Cicon.medium)).size(40).padRight(10f);
+
+                t.table(tt -> {
+                    tt.left();
+
+                    tt.add(block.localizedName).growX().left().color(BlockItem.blockColor(block));
+                    tt.row();
+
+                    tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
+                }).growX();
+            }, () -> {
+                if(anucoins >= price && payload == null) {
+                    configure(block);
+                }
+            }).left().growX().disabled(b -> payload != null);
             pane.row();
         }
 
@@ -474,7 +528,6 @@ public class Shop extends PayloadAcceptor {
             shopDialog.row();
             //shopDialog.pane(tbl -> {
             ScrollPane itemPane = new ScrollPane(new Table(tbl -> {
-                float sy = 0f;
                 tbl.center();
                 if(purchases != null) {
                     tbl.table(marker -> {
@@ -492,14 +545,14 @@ public class Shop extends PayloadAcceptor {
                     scrollPos[1] = tbl.getPrefHeight();
                     tbl.table(marker -> {
                         marker.image().color(Pal2.coin).height(4f).growX();
-                        marker.add(Core.bundle.get("ui.items")).color(Pal2.coin).pad(3f);
+                        marker.add(Core.bundle.get("content.item.name")).color(Pal2.coin).pad(3f);
                         marker.image().color(Pal2.coin).height(4f).growX();
                     }).fillX().growX();
                     tbl.row();
 
-                    for (Item item : Vars.content.items()) {
-                        if (item == MindyItems.bittrium) continue;
-                        if (itemScores.containsKey(item)) {
+                    for(Item item : Vars.content.items()) {
+                        if(item == MindyItems.bittrium) continue;
+                        if(itemScores.containsKey(item)) {
                             itemButton(tbl, item);
                         }
                     }
@@ -508,21 +561,46 @@ public class Shop extends PayloadAcceptor {
                     scrollPos[2] = tbl.getPrefHeight();
                     tbl.table(marker -> {
                         marker.image().color(Pal2.coin).height(4f).growX();
-                        marker.add(Core.bundle.get("ui.units")).color(Pal2.coin).pad(3f);
+                        marker.add(Core.bundle.get("content.unit.name")).color(Pal2.coin).pad(3f);
                         marker.image().color(Pal2.coin).height(4f).growX();
                     }).fillX().growX();
                     tbl.row();
 
-                    for (UnitType unit : Vars.content.units()) {
-                        if (unitScores.containsKey(unit)) {
+                    for(UnitType unit : Vars.content.units()) {
+                        if(unitScores.containsKey(unit)) {
                             unitButton(tbl, unit);
                         }
                     }
                 }
-                Log.info("scrollPos:" + scrollPos[0] + "," + scrollPos[1] + "," + scrollPos[2]);
+
+                if(sellAllBlocks || soldBlocks != null){
+                    scrollPos[3] = tbl.getPrefHeight();
+                    tbl.table(marker -> {
+                        marker.image().color(Pal2.coin).height(4f).growX();
+                        marker.add(Core.bundle.get("content.block.name")).color(Pal2.coin).pad(3f);
+                        marker.image().color(Pal2.coin).height(4f).growX();
+                    }).fillX().growX();
+                    tbl.row();
+
+                    if(sellAllBlocks){
+                        for(Block block : Vars.content.blocks()) {
+                            if(!block.isHidden() && block.requirements.length > 0){
+                                blockButton(tbl, block);
+                            }
+                        }
+                    }
+                    else{
+                        for(Block block : soldBlocks) {
+                            if(!block.isHidden() && block.requirements.length > 0){
+                                blockButton(tbl, block);
+                            }
+                        }
+                    }
+                }
+                //Log.info("scrollPos:" + scrollPos[0] + "," + scrollPos[1] + "," + scrollPos[2]);
             }));
 
-            if((purchases != null && (sellAllItems || sellAllUnits)) || (sellAllItems && sellAllUnits)){
+            if(navigationBar){
                 shopDialog.table(topbar -> {
                     topbar.left();
                     topbar.defaults().padRight(10f).size(110f, 40f).left();
@@ -532,13 +610,18 @@ public class Shop extends PayloadAcceptor {
                         });
                     }
                     if(sellAllItems){
-                        topbar.button("@ui.items", () -> {
+                        topbar.button("@content.item.name", () -> {
                             itemPane.setScrollY(scrollPos[1]);
                         });
                     }
                     if(sellAllUnits){
-                        topbar.button("@ui.units", () -> {
+                        topbar.button("@content.unit.name", () -> {
                             itemPane.setScrollY(scrollPos[2]);
+                        });
+                    }
+                    if(sellAllBlocks || soldBlocks != null){
+                        topbar.button("@content.block.name", () -> {
+                            itemPane.setScrollY(scrollPos[3]);
                         });
                     }
                 }).center().width(width * 0.6f);

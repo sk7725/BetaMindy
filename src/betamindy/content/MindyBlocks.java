@@ -47,7 +47,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource, testShop,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource, testShop, cafe,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
     //drills
@@ -614,7 +614,7 @@ public class MindyBlocks implements ContentList {
         };
 
         pressureContainer = new SuperStorageBlock("pressure-container", Blocks.container){{
-            requirements(Category.effect, with(Items.titanium, 5, Items.thorium, 5));
+            requirements(Category.effect, with(Items.titanium, 150, Items.thorium, 50));
         }};
 
         leadWall = new Wall("lead-wall"){{
@@ -1138,6 +1138,8 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, with(Items.copper, 1));
             size = 3;
             sellAllItems = true;
+            soldBlocks = new Block[]{Blocks.container, pressureContainer, present};
+            navigationBar = true;
         }};
 
         unitShop = new Shop("unit-shop"){{
@@ -1155,14 +1157,20 @@ public class MindyBlocks implements ContentList {
         testShop = new Shop("test-shop"){{
             requirements(Category.effect, BuildVisibility.sandboxOnly, with());
             size = 3;
-            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, cocktail};
-            sellAllItems = sellAllUnits = true;
+            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter};
+            sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
+        }};
+
+        cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie}){{
+            requirements(Category.effect, with(Items.copper, 250, Items.titanium, 250, Items.graphite, 150, Items.metaglass, 100, Items.silicon, 50));
+
+            size = 4;
         }};
 
         anucoinNode = new AnucoinNode("anucoin-node"){{
-            requirements(Category.effect, BuildVisibility.hidden, with(Items.copper, 1));
+            requirements(Category.effect, with(Items.copper, 1));
 
-            size = 3;
+            size = 4;
         }};
 
         tradingPost = new TradingPost("trading-post"){{
