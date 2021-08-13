@@ -18,6 +18,7 @@ import betamindy.type.*;
 import betamindy.type.shop.*;
 import betamindy.ui.*;
 import betamindy.world.blocks.payloads.*;
+import betamindy.world.blocks.storage.AnucoinNode.*;
 import mindustry.content.*;
 import mindustry.entities.units.*;
 import mindustry.graphics.*;
@@ -207,7 +208,7 @@ public class Shop extends PayloadAcceptor {
 
         @Override
         public boolean occupied(Tile other){
-            return anubank != -1 && world.build(anubank) != other.build;
+            return getLink() != null && world.build(anubank) != other.build;
         }
 
         @Override
@@ -220,7 +221,29 @@ public class Shop extends PayloadAcceptor {
         public void removeLink(Tile other){
             if(world.build(anubank) == other.build) anubank = -1;
         }
-        //todo totalCoins & removeCoins
+
+        public int totalCoins(){
+            AnucoinNodeBuild bank = getLink();
+            if(bank == null) return anucoins;
+            return Math.max(0, bank.coins()) + anucoins;
+        }
+
+        public void removeCoins(int a){
+            anucoins -= a;
+            if(anucoins < 0){
+                AnucoinNodeBuild bank = getLink();
+                if(bank != null){
+                    bank.handleCoin(this, anucoins);
+                    anucoins = 0;
+                }
+            }
+        }
+
+        public AnucoinNode.AnucoinNodeBuild getLink(){
+            if(anubank == -1) return null;
+            if(world.build(anubank) instanceof AnucoinNodeBuild bank) return bank;
+            return null;
+        }
 
         public boolean addItemPayload(Item item, int amount){
             if(payload == null){
@@ -280,7 +303,7 @@ public class Shop extends PayloadAcceptor {
                     tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
                 }).growX();
             }, () -> {
-                if(anucoins >= price){
+                if(totalCoins() >= price){
                     configure(item);
                 }
             }).left().growX().disabled(b -> disabledBox());
@@ -308,7 +331,7 @@ public class Shop extends PayloadAcceptor {
                     tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
                 }).growX();
             }, () -> {
-                if(anucoins >= price && payload == null) {
+                if(totalCoins() >= price && payload == null) {
                     configure(unit);
                 }
             }).left().growX().disabled(b -> payload != null);
@@ -322,7 +345,7 @@ public class Shop extends PayloadAcceptor {
                 t.left();
                 item.buildButton(t);
             }, () -> {
-                if(anucoins >= price){
+                if(totalCoins() >= price){
                     configure(i);
 
                     if(item.abort) shopDialog.hide();
@@ -348,7 +371,7 @@ public class Shop extends PayloadAcceptor {
                     tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
                 }).growX();
             }, () -> {
-                if(anucoins >= price && payload == null) {
+                if(totalCoins() >= price && payload == null) {
                     configure(block);
                 }
             }).left().growX().disabled(b -> payload != null);
@@ -361,16 +384,16 @@ public class Shop extends PayloadAcceptor {
                 int i = (Integer)value;
                 if(purchases == null || i < 0 || i >= purchases.length) return;
                 PurchaseItem item = purchases[i];
-                if(anucoins >= item.cost){
+                if(totalCoins() >= item.cost){
                     if(item instanceof ShopItem shopitem){
                         if(shopitem.shop(this)){
-                            anucoins -= item.cost;
+                            removeCoins(item.cost);
                             payVector.setZero();
                             payRotation = rotdeg();
                         }
                     }else{
                         if(item.purchase(this, builder)){
-                            anucoins -= item.cost;
+                            removeCoins(item.cost);
                         }
                     }
                 }
@@ -500,14 +523,12 @@ public class Shop extends PayloadAcceptor {
             super.buildConfiguration(table);
             
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
-            float height = Math.max(Core.graphics.getWidth(), Core.graphics.getHeight());
+            //float height = Math.max(Core.graphics.getWidth(), Core.graphics.getHeight());
 
             shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
-            shopDialog.center();
+            shopDialog.cont.center().top();
 
-            shopDialog.row();
-
-            shopDialog.table(t -> {
+            shopDialog.cont.table(t -> {
                 t.center();
                 Image image = t.image(AnucoinTex.uiCoin).size(30f).center().padRight(10f).get();
                 image.clicked(() -> {
@@ -522,11 +543,13 @@ public class Shop extends PayloadAcceptor {
                         }
                     }
                 });
-                t.label(() -> String.valueOf(anucoins)).padRight(10f).center();
+                t.label(() -> {
+                    int a = totalCoins();
+                    return a + " " + (a > anucoins ? Core.bundle.get("ui.trans.linked") : "");
+                }).padRight(10f).center();
             });
 
-            shopDialog.row();
-            //shopDialog.pane(tbl -> {
+            shopDialog.cont.row();
             ScrollPane itemPane = new ScrollPane(new Table(tbl -> {
                 tbl.center();
                 if(purchases != null) {
@@ -601,7 +624,7 @@ public class Shop extends PayloadAcceptor {
             }));
 
             if(navigationBar){
-                shopDialog.table(topbar -> {
+                shopDialog.cont.table(topbar -> {
                     topbar.left();
                     topbar.defaults().padRight(10f).size(110f, 40f).left();
                     if(purchases != null){
@@ -625,55 +648,32 @@ public class Shop extends PayloadAcceptor {
                         });
                     }
                 }).center().width(width * 0.6f);
-                shopDialog.row();
+                shopDialog.cont.row();
             }
 
-            shopDialog.add(itemPane).center().width(width * 0.6f);
-            shopDialog.row();
-            shopDialog.table(t -> {
-                if(Vars.mobile){
-                    buttonWidth = (width / 2f) * 0.55f;
-                }
-                t.button("@back", Icon.left, shopDialog::hide).size(buttonWidth, 64f);
-                /*
-                t.button(Core.bundle.get("ui.sell"), Icon.add, () -> {
-                    int[] price = new int[]{0};
-                    Seq<ItemStack> itemStack = new Seq<>();
+            shopDialog.cont.add(itemPane).center().width(width * 0.6f);
 
-                    items.each((Item ii, int aa) -> {
-                        if(!itemScores.containsKey(ii)) return;
-
-                        price[0] += (int)Math.max((itemScores.get(ii) * aa) / 30f, Math.max(aa / 2f, 1));
-
-                        itemStack.add(new ItemStack().set(ii, aa));
-                    });
-
-                    buildSellDialog(price, itemStack, () -> {
-                        for(ItemStack stack : itemStack){
-                            items.remove(stack.item, stack.amount);
-                        }
-
-                        anucoins += price[0];
-                        updateAnucoins();
-                    });
-                }).size(buttonWidth, 64f).disabled(e -> items.total() == 0);
-                */
-            });
-
-            shopDialog.addCloseListener();
+            shopDialog.addCloseButton();
             shopDialog.show();
+        }
+
+        @Override
+        public byte version(){
+            return 1;
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
             write.i(anucoins);
+            write.i(anubank);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
             anucoins = read.i();
+            if(revision == 1) anubank = read.i();
         }
     }
 }

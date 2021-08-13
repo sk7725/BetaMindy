@@ -150,7 +150,7 @@ public class MindyBlocks implements ContentList {
             reloadTime = 245f;
             minRange = 100f;
             hasMinRange = true;
-            range = 400f;
+            range = 404f;
             health = 220 * size * size;
             unitSort = (u, x, y) -> -u.maxHealth;
 

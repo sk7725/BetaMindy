@@ -1,35 +1,25 @@
 package betamindy.world.blocks.storage;
 
 import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.input.KeyCode;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.*;
-import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
-import betamindy.type.shop.*;
 import betamindy.ui.*;
 import betamindy.world.blocks.storage.AnucoinNode.*;
-import mindustry.content.*;
-import mindustry.entities.units.*;
 import mindustry.graphics.*;
 import mindustry.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 
-import static arc.Core.atlas;
 import static mindustry.Vars.*;
 import static mindustry.Vars.world;
 
@@ -203,12 +193,10 @@ public class Store extends Block {
 
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
 
-            shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
-            shopDialog.center();
+            shopDialog = new BaseDialog(localizedName);
+            shopDialog.cont.center().top();
 
-            shopDialog.row();
-
-            shopDialog.table(t -> {
+            shopDialog.cont.table(t -> {
                 t.center();
                 Image image = t.image(AnucoinTex.uiCoin).size(30f).center().padRight(10f).get();
                 image.clicked(() -> {
@@ -229,8 +217,7 @@ public class Store extends Block {
                 }).padRight(10f).center();
             });
 
-            shopDialog.row();
-            //shopDialog.pane(tbl -> {
+            shopDialog.cont.row();
             ScrollPane itemPane = new ScrollPane(new Table(tbl -> {
                 tbl.center();
                 int cat = 0;
@@ -259,7 +246,7 @@ public class Store extends Block {
             }));
 
             if(navigationBar){
-                shopDialog.table(topbar -> {
+                shopDialog.cont.table(topbar -> {
                     topbar.left();
                     topbar.defaults().padRight(10f).size(130f, 40f).left();
                     for(int i = 0; i < categories.length; i++){
@@ -269,19 +256,12 @@ public class Store extends Block {
                         });
                     }
                 }).center().width(width * 0.6f);
-                shopDialog.row();
+                shopDialog.cont.row();
             }
 
-            shopDialog.add(itemPane).center().width(width * 0.6f);
-            shopDialog.row();
-            shopDialog.table(t -> {
-                if(Vars.mobile){
-                    buttonWidth = (width / 2f) * 0.55f;
-                }
-                t.button("@back", Icon.left, shopDialog::hide).size(buttonWidth, 64f);
-            });
+            shopDialog.cont.add(itemPane).center().width(width * 0.6f);
 
-            shopDialog.addCloseListener();
+            shopDialog.addCloseButton();
             shopDialog.show();
         }
 

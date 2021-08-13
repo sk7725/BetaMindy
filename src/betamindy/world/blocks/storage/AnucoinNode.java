@@ -5,12 +5,13 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
+import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.*;
 import arc.util.io.*;
 import betamindy.graphics.*;
-import betamindy.type.*;
 import betamindy.ui.*;
 import mindustry.Vars;
 import mindustry.core.*;
@@ -20,6 +21,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
+import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
@@ -27,12 +29,11 @@ public class AnucoinNode extends Block {
     /** surprisingly, this block's range is a square, not a circle */
     public int range = 15;
     public TextureRegion laser, laserEnd;
-    public int initialMaxCoins = 1000000;
+    public int initialMaxCoins = 100000;
     public int autoTransaction = timers++;
     public float transactionInterval = 60f;
 
     BaseDialog bankDialog = null;
-    float buttonWidth = 210f;
 
     private final Seq<Building> tmpe = new Seq<>();
 
@@ -64,6 +65,7 @@ public class AnucoinNode extends Block {
             }
 
             entity.refresh();
+            entity.sanitize();
         });
         configClear((AnucoinNodeBuild entity) -> {
             for(int i = 0; i < entity.links.size; i++){
@@ -77,11 +79,28 @@ public class AnucoinNode extends Block {
     }
 
     @Override
-    public void load() {
+    public void load(){
         super.load();
 
-        laser = Core.atlas.find("betamindy-anuke-laser");
-        laserEnd = Core.atlas.find("betamindy-anuke-laser-end");
+        laser = Core.atlas.find("betamindy-path");
+        laserEnd = Core.atlas.find("betamindy-path-end");
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.linkRange, range, StatUnit.blocks);
+        stats.add(Stat.itemCapacity, Core.bundle.format("ui.anucoin.emoji", initialMaxCoins));
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+
+        bars.add("anucoins", (AnucoinNodeBuild entity) -> new Bar(
+                () -> Core.bundle.format("bar.anucoin", entity.anucoins),
+                () -> Color.coral,
+                () -> Mathf.clamp(entity.anucoins / (float)entity.maxCoins())));
     }
 
     public boolean linkValid(Building tile, Building link){
@@ -118,14 +137,6 @@ public class AnucoinNode extends Block {
 
         public int maxCoins(){
             return initialMaxCoins; //todo anusafe
-        }
-
-        public void drawLaser(Team team, float x1, float y1, float x2, float y2, int size1, int size2){
-            float angle1 = Angles.angle(x1, y1, x2, y2),
-                    vx = Mathf.cosDeg(angle1), vy = Mathf.sinDeg(angle1),
-                    len1 = size1 * tilesize / 2f - 1.5f, len2 = size2 * tilesize / 2f - 1.5f;
-
-            Drawf.laser(team, laser, laserEnd, x1 + vx*len1, y1 + vy*len1, x2 - vx*len2, y2 - vy*len2, 0.25f);
         }
 
         @Override
@@ -208,7 +219,7 @@ public class AnucoinNode extends Block {
             if(timer.get(autoTransaction, transactionInterval)){
                 for(int i = 0; i < links.size; i++){
                     Building b = world.build(links.get(i));
-                    if(linkValid(this, b)){
+                    if(linkValid(this, b) && links.get(i) == b.pos()){
                         CoinBuild cb = (CoinBuild) b;
                         int need = cb.requiredCoin(this);
                         if(need > 0 && anucoins > 0){
@@ -221,14 +232,52 @@ public class AnucoinNode extends Block {
             }
         }
 
+        public void sanitize(){
+            for(int i = 0; i < links.size; i++){
+                Building b = world.build(links.get(i));
+                if(!linkValid(this, b) || links.get(i) != b.pos()){
+                    links.removeIndex(i);
+                    i--;
+                }
+            }
+        }
+
         @Override
-        public void draw() {
+        public void draw(){
             super.draw();
 
             if(Mathf.zero(Renderer.laserOpacity)) return;
 
             Draw.z(Layer.scorch - 1f);
-            //todo paths
+            Draw.mixcol(Pal2.path, 1f);
+            Lines.stroke(25f);
+            //credits to Yuria Shikibe
+            for(int i = 0; i < links.size; i++){
+                Building b = world.build(links.get(i));
+                if(!linkValid(this, b) || links.get(i) != b.pos()) continue;
+                float targetOffset = b.block.size / 2f * tilesize + 1f;
+                float angle = angleTo(b);
+
+                boolean right = Mathf.equal(angle, 0, 90);
+                boolean up = Mathf.equal(angle, 90, 90);
+
+                boolean horizontal = Mathf.equal(angle, 0, 45) || Mathf.equal(angle, 180, 45);
+                /*
+                float
+                        fromX = x + Mathf.num(horizontal) * Mathf.sign(right) * offset, toX = b.x + Mathf.num(!horizontal) * Mathf.sign(!right) * targetOffset,
+                        fromY = y + Mathf.num(!horizontal) * Mathf.sign(up) * offset, toY = b.y + Mathf.num(horizontal) * Mathf.sign(!up) * targetOffset;*/
+                float fromX = x, fromY = y, toX = b.x, toY = b.y;
+
+                Tmp.v1.set(horizontal ? toX : fromX, !horizontal ? toY : fromY);
+
+                Lines.line(laser, fromX, fromY, Tmp.v1.x, Tmp.v1.y, false);
+                Lines.line(laser, Tmp.v1.x, Tmp.v1.y,toX, toY, false);
+                //Fill.square(Tmp.v1.x, Tmp.v1.y, 0.5f);
+                //Drawf.laser(null, laser, laserEnd, fromX, fromY, Tmp.v1.x, Tmp.v1.y);
+                //Drawf.laser(null, laser, laserEnd, toX, toY, Tmp.v1.x, Tmp.v1.y);
+                Draw.rect(laserEnd, Tmp.v1.x, Tmp.v1.y);
+                Draw.rect(laserEnd, toX, toY);
+            }
 
             Draw.reset();
         }
@@ -237,19 +286,23 @@ public class AnucoinNode extends Block {
             CoinBuild cb = (CoinBuild) build;
 
             pane.button(t -> {
-                t.left();
+                t.left().touchable(() -> Touchable.childrenOnly);
                 t.image(build.block.icon(Cicon.medium)).size(40).padRight(10f);
 
                 t.table(tt -> {
                     tt.left();
-                    tt.add(build.block.localizedName).growX().left().color(Pal2.coin);
+                    tt.add(build.block.localizedName + Strings.format(" [gray](@,@)[]", build.tileX(), build.tileY())).growX().left().color(build instanceof BankLinked ? Color.coral : Pal2.coin);
                     tt.row();
                     tt.label(() -> Core.bundle.format("ui.trans.button", cb.coins(), cb.requiredCoin(this), cb.outputCoin())).growX().left();
                 }).growX();
 
                 t.button(Icon.upload, Styles.clearPartiali, () -> {
                     //todo configure [pos, amount] as Point2
-                    int coins = cb.coins();
+                    if(build.dead || !links.contains(build.pos())){
+                        Vars.ui.showInfoFade("@ui.trans.error");
+                        return;
+                    }
+                    int coins = Math.min(cb.coins(), maxCoins() - anucoins);
                     cb.handleCoin(this, -coins);
                     anucoins += coins;
                 }).size(40f).color(Color.green).disabled(b -> !cb.outputCoin());
@@ -287,7 +340,8 @@ public class AnucoinNode extends Block {
                         }
                     }
                 });
-                t.label(() -> String.valueOf(anucoins)).padRight(10f).center();
+                t.label(() -> anucoins + "[lightgray] / " + maxCoins() + "[]").padRight(10f).center();
+                t.button(Icon.refresh, Styles.clearTransi, 25f, this::refresh).size(25f).padRight(10f);
             });
 
             bankDialog.cont.row();
@@ -301,19 +355,12 @@ public class AnucoinNode extends Block {
                 tbl.row();
                 for(int i = 0; i < links.size; i++){
                     Building link = world.build(links.get(i));
-                    if(!linkValid(this, link)) continue;
+                    if(!linkValid(this, link) || links.get(i) != link.pos()) continue;
                     transButton(tbl, link);
                 }
             }));
 
             bankDialog.cont.add(itemPane).center().width(width * 0.6f);
-            bankDialog.cont.row();
-            bankDialog.cont.table(t -> {
-                if(Vars.mobile){
-                    buttonWidth = (width / 2f) * 0.55f;
-                }
-                t.button("@back", Icon.left, bankDialog::hide).size(buttonWidth, 64f);
-            });
         }
 
         @Override
