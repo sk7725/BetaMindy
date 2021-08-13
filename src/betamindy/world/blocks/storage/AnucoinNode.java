@@ -23,7 +23,6 @@ import mindustry.world.*;
 
 import static mindustry.Vars.*;
 
-/** THIS IS USELESS, PLEASE IGNORE, USE AS TEMPLATE */
 public class AnucoinNode extends Block {
     /** surprisingly, this block's range is a square, not a circle */
     public int range = 15;
@@ -32,8 +31,10 @@ public class AnucoinNode extends Block {
     public int autoTransaction = timers++;
     public float transactionInterval = 60f;
 
-    BaseDialog bankDialog;
+    BaseDialog bankDialog = null;
     float buttonWidth = 210f;
+
+    private final Seq<Building> tmpe = new Seq<>();
 
     public AnucoinNode(String name){
         super(name);
@@ -56,9 +57,13 @@ public class AnucoinNode extends Block {
                         bl.setLink(entity.tile);
                     }
                     entity.links.add(other.pos());
-
                 }
             }
+            else{
+                return;
+            }
+
+            entity.refresh();
         });
         configClear((AnucoinNodeBuild entity) -> {
             for(int i = 0; i < entity.links.size; i++){
@@ -67,6 +72,7 @@ public class AnucoinNode extends Block {
                 }
             }
             entity.links.clear();
+            entity.refresh();
         });
     }
 
@@ -131,13 +137,13 @@ public class AnucoinNode extends Block {
 
             if(this == other){
                 if(links.size == 0){
-                    tempTileEnts.clear();
+                    tmpe.clear();
                     for(int x = tile.x - range; x <= tile.x + range; x++){
                         for(int y = tile.y - range; y <= tile.y + range; y++){
                             Building link = world.build(x, y);
 
-                            if(link != this && !tempTileEnts.contains(link) && linkValid(this, link)){
-                                tempTileEnts.add(link);
+                            if(link != this && !tmpe.contains(link) && linkValid(this, link)){
+                                tmpe.add(link);
                                 configure(link.pos());
                             }
                         }
@@ -157,7 +163,7 @@ public class AnucoinNode extends Block {
             Lines.stroke(3f, Pal.gray);
             Lines.square(b.x, b.y, radius + 1f);
             Lines.stroke(1f, color);
-            Lines.square(b.x, b.y, radius + 1f);
+            Lines.square(b.x, b.y, radius);
         }
 
         @Override
@@ -167,15 +173,17 @@ public class AnucoinNode extends Block {
             Lines.stroke(3f, Pal.gray);
             Lines.square(x, y, radius + 1f);
             Lines.stroke(1f, Pal2.coin);
-            Lines.square(x, y, radius + 1f);
+            Lines.square(x, y,  radius);
             Draw.reset();
         }
 
         @Override
         public void drawConfigure(){
             float radius = (range + 0.5f) * tilesize;
-            Lines.stroke(1f, Pal.gray);
+            Lines.stroke(3f, Pal.gray);
             Lines.square(x, y, radius + 1f);
+            Lines.stroke(1f, Pal2.coin);
+            Lines.square(x, y,  radius);
             squares(this, Pal2.coin);
 
             for(int x = tile.x - range; x <= tile.x + range; x++){
@@ -186,7 +194,7 @@ public class AnucoinNode extends Block {
                         boolean linked = links.indexOf(link.pos()) >= 0;
 
                         if(linked){
-                            squares(link, Color.green);
+                            squares(link, (link instanceof BankLinked) ? Color.coral : Color.green);
                         }
                     }
                 }
@@ -236,10 +244,10 @@ public class AnucoinNode extends Block {
                     tt.left();
                     tt.add(build.block.localizedName).growX().left().color(Pal2.coin);
                     tt.row();
-                    tt.label(() -> Core.bundle.format("ui.trans.button", cb.coins(), cb.requiredCoin(this), cb.outputCoin()));
+                    tt.label(() -> Core.bundle.format("ui.trans.button", cb.coins(), cb.requiredCoin(this), cb.outputCoin())).growX().left();
                 }).growX();
 
-                t.button(Icon.upload, Styles.cleari, () -> {
+                t.button(Icon.upload, Styles.clearPartiali, () -> {
                     //todo configure [pos, amount] as Point2
                     int coins = cb.coins();
                     cb.handleCoin(this, -coins);
@@ -251,19 +259,21 @@ public class AnucoinNode extends Block {
             pane.row();
         }
 
-        @Override
-        public void buildConfiguration(Table table) {
-            super.buildConfiguration(table);
+        public void refresh(){
+            if(!headless && bankDialog != null && bankDialog.isShown()) rebuild();
+        }
 
+        public void rebuild(){
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
 
-            bankDialog = new BaseDialog(localizedName);
-            bankDialog.center();
-
-            bankDialog.row();
-
-            bankDialog.table(t -> {
-                t.center();
+            if(bankDialog == null){
+                bankDialog = new BaseDialog(localizedName);
+                bankDialog.cont.center().top();
+                bankDialog.addCloseButton();
+            }
+            bankDialog.cont.clearChildren();
+            bankDialog.cont.table(t -> {
+                t.center().top();
                 Image image = t.image(AnucoinTex.uiCoin).size(30f).center().padRight(10f).get();
                 image.clicked(() -> {
                     if(Core.input.keyDown(KeyCode.shiftLeft) || mobile){
@@ -280,10 +290,9 @@ public class AnucoinNode extends Block {
                 t.label(() -> String.valueOf(anucoins)).padRight(10f).center();
             });
 
-            bankDialog.row();
-            //shopDialog.pane(tbl -> {
+            bankDialog.cont.row();
             ScrollPane itemPane = new ScrollPane(new Table(tbl -> {
-                tbl.center();
+                tbl.center().top();
                 tbl.table(marker -> {
                     marker.image().color(Pal2.coin).height(4f).growX();
                     marker.add("@ui.transaction").color(Pal2.coin).pad(3f);
@@ -297,23 +306,28 @@ public class AnucoinNode extends Block {
                 }
             }));
 
-            bankDialog.add(itemPane).center().width(width * 0.6f);
-            bankDialog.row();
-            bankDialog.table(t -> {
+            bankDialog.cont.add(itemPane).center().width(width * 0.6f);
+            bankDialog.cont.row();
+            bankDialog.cont.table(t -> {
                 if(Vars.mobile){
                     buttonWidth = (width / 2f) * 0.55f;
                 }
                 t.button("@back", Icon.left, bankDialog::hide).size(buttonWidth, 64f);
             });
-
-            bankDialog.addCloseListener();
-
-            //todo refresh button
-            table.button(Icon.layers, 40f, () -> bankDialog.show());
         }
 
         @Override
-        public void write(Writes write) {
+        public void buildConfiguration(Table table){
+            super.buildConfiguration(table);
+            rebuild();
+            table.button(Icon.layers, Styles.clearTransi, 40f, () -> {
+                rebuild();
+                bankDialog.show();
+            });
+        }
+
+        @Override
+        public void write(Writes write){
             super.write(write);
 
             write.s(links.size);
@@ -324,8 +338,8 @@ public class AnucoinNode extends Block {
         }
 
         @Override
-        public void read(Reads read) {
-            super.read(read);
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
 
             links.clear();
             short amount = read.s();

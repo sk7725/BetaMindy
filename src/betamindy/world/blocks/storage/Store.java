@@ -17,7 +17,7 @@ import betamindy.graphics.*;
 import betamindy.type.*;
 import betamindy.type.shop.*;
 import betamindy.ui.*;
-import betamindy.world.blocks.payloads.*;
+import betamindy.world.blocks.storage.AnucoinNode.*;
 import mindustry.content.*;
 import mindustry.entities.units.*;
 import mindustry.graphics.*;
@@ -25,15 +25,13 @@ import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.production.*;
 
 import static arc.Core.atlas;
-import static mindustry.Vars.mobile;
-import static mindustry.Vars.player;
+import static mindustry.Vars.*;
+import static mindustry.Vars.world;
 
 public class Store extends Block {
     public int defaultAnucoins = 500;
@@ -80,8 +78,9 @@ public class Store extends Block {
         return AnucoinTex.emoji;
     }
 
-    public class StoreBuild extends Building implements CoinBuild{
+    public class StoreBuild extends Building implements CoinBuild, BankLinked{
         public int anucoins = defaultAnucoins;
+        private int anubank;
         float buttonWidth = 210f;
         public float scl;
 
@@ -105,6 +104,45 @@ public class Store extends Block {
             return anucoins > 0;
         }
 
+        @Override
+        public boolean occupied(Tile other){
+            return getLink() != null && world.build(anubank) != other.build;
+        }
+
+        @Override
+        public void setLink(Tile other){
+            if(other.build == null) return;
+            anubank = other.build.pos();
+        }
+
+        @Override
+        public void removeLink(Tile other){
+            if(world.build(anubank) == other.build) anubank = -1;
+        }
+
+        public int totalCoins(){
+            AnucoinNodeBuild bank = getLink();
+            if(bank == null) return anucoins;
+            return Math.max(0, bank.coins()) + anucoins;
+        }
+
+        public void removeCoins(int a){
+            anucoins -= a;
+            if(anucoins < 0){
+                AnucoinNodeBuild bank = getLink();
+                if(bank != null){
+                    bank.handleCoin(this, anucoins);
+                    anucoins = 0;
+                }
+            }
+        }
+
+        public AnucoinNodeBuild getLink(){
+            if(anubank == -1) return null;
+            if(world.build(anubank) instanceof AnucoinNodeBuild bank) return bank;
+            return null;
+        }
+
         public void extraButton(Table pane, PurchaseItem item, int i){
             int price = item.cost;
 
@@ -112,7 +150,7 @@ public class Store extends Block {
                 t.left();
                 item.buildButton(t);
             }, () -> {
-                if(anucoins >= price){
+                if(totalCoins() >= price){
                     configure(i);
 
                     if(item.abort) shopDialog.hide();
@@ -127,9 +165,9 @@ public class Store extends Block {
                 int i = (Integer)value;
                 if(purchases == null || i < 0 || i >= purchases.length) return;
                 PurchaseItem item = purchases[i];
-                if(anucoins >= item.cost){
+                if(totalCoins() >= item.cost){
                     if(item.purchase(this, builder)){
-                        anucoins -= item.cost;
+                        removeCoins(item.cost);
                     }
                 }
             }
@@ -185,7 +223,10 @@ public class Store extends Block {
                         }
                     }
                 });
-                t.label(() -> String.valueOf(anucoins)).padRight(10f).center();
+                t.label(() -> {
+                    int a = totalCoins();
+                    return a + " " + (a > anucoins ? Core.bundle.get("ui.trans.linked") : "");
+                }).padRight(10f).center();
             });
 
             shopDialog.row();
@@ -245,15 +286,22 @@ public class Store extends Block {
         }
 
         @Override
+        public byte version(){
+            return 1;
+        }
+
+        @Override
         public void write(Writes write){
             super.write(write);
             write.i(anucoins);
+            write.i(anubank);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
             anucoins = read.i();
+            if(revision == 1) anubank = read.i();
         }
     }
 }
