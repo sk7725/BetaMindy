@@ -13,6 +13,7 @@ import betamindy.type.shop.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -23,7 +24,7 @@ import static mindustry.Vars.ui;
 public class ShopItems implements ContentList {
     public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10,
     holyRouter;
-    public static PurchaseItem firstAids, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie;
+    public static PurchaseItem firstAids, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie, bossCake;
 
     @Override
     public void load(){
@@ -160,9 +161,19 @@ public class ShopItems implements ContentList {
         diodeCookie = new PurchaseDrink("diode-cookie", 65, MindyStatusEffects.forwardBiased){{
             duration = 60 * 60 * 1.5f;
         }};
+        bossCake = new PurchaseDrink("boss-cake", 640, StatusEffects.boss);
 
         cocktail = new PurchaseRunnable("cocktail", 66){
-            final Seq<StatusEffect> statusList = Vars.content.statusEffects().copy().removeAll(se -> se.permanent);
+            final Seq<StatusEffect> statusList = new Seq<>();
+            {
+                Events.on(EventType.ClientLoadEvent.class, e -> {
+                    statusList.addAll(Vars.content.statusEffects()).removeAll(se -> se.permanent || se == MindyStatusEffects.portal);
+                });
+                Events.on(EventType.ServerLoadEvent.class, e -> {
+                    statusList.addAll(Vars.content.statusEffects()).removeAll(se -> se.permanent || se == MindyStatusEffects.portal);
+                });
+            }
+
             @Override
             public boolean purchase(Building source, Unit player){
                 if(player == null || player.dead()) return false;

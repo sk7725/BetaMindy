@@ -31,18 +31,30 @@ public class UnitLib {
         });
         factories = facs.toArray(UnitFactory.class);
         recons = recs.toArray(Reconstructor.class);
-        Vars.content.units().each(UnitLib::initCost);
-    }
-
-    public static void initCost(UnitType u){
-        if(costs.containsKey(u)) return;
-        costs.put(u, calcCost(u));
+        Vars.content.units().each(UnitLib::calcCost);
     }
 
     public static ItemStack[] mergeArray(ItemStack[] first, ItemStack[] second){
         ItemStack[] both = Arrays.copyOf(first, first.length + second.length);
         System.arraycopy(second, 0, both, first.length, second.length);
         return both;
+    }
+
+    /** Debugging. */
+    public static ItemStack[] printCost(UnitType u){
+        ItemStack[] res = calcCost(u);
+        Log.info("[accent]" + u.name + "[]");
+        StringBuilder str = new StringBuilder();
+        for(ItemStack i : res){
+            if(i.item.emoji().equals("")){
+                str.append(i.item.name);
+            }
+            else str.append(i.item.emoji());
+            str.append(i.amount);
+            str.append(" ");
+        }
+        Log.info(str.toString());
+        return res;
     }
 
     /** Recursively generates a buildCost for units */
@@ -53,17 +65,22 @@ public class UnitLib {
             if(r != null){
                 ItemStack[] cost = calcCost(r[0]);
                 if(b.consumes.has(ConsumeType.item)){
-                    return mergeArray(cost, b.consumes.getItem().items);
+                    cost = mergeArray(cost, b.consumes.getItem().items);
                 }
-                else return cost;
+                costs.put(u, cost);
+                return cost;
             }
         }
 
         for(UnitFactory b : factories){
             for(UnitFactory.UnitPlan plan : b.plans){
-                if(plan.unit == u) return plan.requirements;
+                if(plan.unit == u){
+                    costs.put(u, plan.requirements);
+                    return plan.requirements;
+                }
             }
         }
+        costs.put(u, defaultStack);
         return defaultStack;
     }
 }

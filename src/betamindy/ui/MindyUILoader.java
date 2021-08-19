@@ -4,9 +4,15 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.graphics.g2d.Font.*;
 import arc.input.*;
+import arc.scene.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import betamindy.*;
 import mindustry.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 
@@ -14,6 +20,7 @@ import static mindustry.Vars.*;
 
 public class MindyUILoader {
     public HardmodeFragment hardfrag;
+    public PlacementInvFragment invfrag;
     private static Seq<Font> fonts;
 
     public void init(){
@@ -23,6 +30,8 @@ public class MindyUILoader {
         Core.app.post(() -> {
             hardfrag = new HardmodeFragment();
             hardfrag.build(ui.hudGroup);
+            invfrag = new PlacementInvFragment();
+            invfrag.build(ui.hudGroup);
         });
 
         if(!Core.settings.getBool("bloom") && !Core.settings.getBool("nobloomask", false)){
@@ -49,7 +58,7 @@ public class MindyUILoader {
     }
 
     public static String addEmoji(TextureRegion region, int unicode){
-        if(fonts == null) fonts = Seq.with(Fonts.chat, Fonts.def, Fonts.outline);
+        if(fonts == null) fonts = Seq.with(Fonts.def, Fonts.outline);
         int size = (int) (Fonts.def.getData().lineHeight / Fonts.def.getData().scaleY);
 
         Glyph glyph = new Glyph();
@@ -73,7 +82,7 @@ public class MindyUILoader {
     }
 
     public static String addOutlineEmoji(TextureRegion region, TextureRegion outline, int unicode){
-        if(fonts == null) fonts = Seq.with(Fonts.chat, Fonts.def, Fonts.outline);
+        if(fonts == null) fonts = Seq.with(Fonts.def, Fonts.outline);
         int size = (int) (Fonts.def.getData().lineHeight / Fonts.def.getData().scaleY);
 
         Glyph glyph = new Glyph();

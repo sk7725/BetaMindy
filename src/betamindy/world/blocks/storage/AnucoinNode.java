@@ -23,6 +23,7 @@ import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
+import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class AnucoinNode extends Block {
@@ -101,6 +102,17 @@ public class AnucoinNode extends Block {
                 () -> Core.bundle.format("bar.anucoin", entity.anucoins),
                 () -> Color.coral,
                 () -> Mathf.clamp(entity.anucoins / (float)entity.maxCoins())));
+    }
+
+    @Override
+    public TextureRegion[] icons(){
+        return new TextureRegion[]{region, teamRegions[Team.sharded.id]};
+    }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        Drawm.generateTeamRegion(packer, this);
+        super.createIcons(packer);
     }
 
     public boolean linkValid(Building tile, Building link){
@@ -250,7 +262,7 @@ public class AnucoinNode extends Block {
 
             Draw.z(Layer.scorch - 1f);
             Draw.mixcol(Pal2.path, 1f);
-            Lines.stroke(25f);
+            Lines.stroke(22f);
             //credits to Yuria Shikibe
             for(int i = 0; i < links.size; i++){
                 Building b = world.build(links.get(i));

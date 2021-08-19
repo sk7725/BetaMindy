@@ -24,7 +24,7 @@ import static mindustry.Vars.*;
 import static mindustry.Vars.world;
 
 public class Store extends Block {
-    public int defaultAnucoins = 500;
+    public int defaultAnucoins = 0;
 
     public String[] categories;
     public PurchaseItem[] purchases;

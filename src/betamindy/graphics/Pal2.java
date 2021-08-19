@@ -22,5 +22,5 @@ public class Pal2 {
     coin = Color.valueOf("f3e979"),
     darkCoin = Color.valueOf("d99f6b"),
     sporeSlime = Color.valueOf("9e78dc"),
-    path = Color.valueOf("d9a94a");
+    path = Color.valueOf("ad986d");
 }

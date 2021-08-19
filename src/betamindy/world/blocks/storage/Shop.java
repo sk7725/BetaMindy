@@ -36,11 +36,12 @@ import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class Shop extends PayloadAcceptor {
-    public int defaultAnucoins = 500;
+    public int defaultAnucoins = 0;
     public TextureRegion spinRegion;
     public TextureRegion[] spinTeamRegions;
     public float spinSpeed = 0.2f;
     public float spinShadowRadius = 15f;
+    public boolean drawSpinSprite = false;
 
     public @Nullable PurchaseItem[] purchases;
     public @Nullable Block[] soldBlocks;
@@ -65,9 +66,9 @@ public class Shop extends PayloadAcceptor {
 
         config(Item.class, (ShopBuild tile, Item item) -> {
             int price = Math.max(Math.round(itemScores.get(item)), 15);
-            if(tile.anucoins >= price){
+            if(tile.totalCoins() >= price){
                 if(tile.addItemPayload(item, 15)){
-                    tile.anucoins -= price;
+                    tile.removeCoins(price);
                     tile.payVector.setZero();
                     tile.payRotation = tile.rotdeg();
                 }
@@ -75,8 +76,8 @@ public class Shop extends PayloadAcceptor {
         });
         config(UnitType.class, (ShopBuild tile, UnitType unit) -> {
             int price = Math.max(Math.round(unitScores.get(unit)), 15);
-            if(tile.anucoins >= price && tile.payload == null) {
-                tile.anucoins -= price;
+            if(tile.totalCoins() >= price && tile.payload == null) {
+                tile.removeCoins(price);
                 tile.payload = new UnitPayload(unit.create(tile.team));
 
                 tile.payVector.setZero();
@@ -85,8 +86,8 @@ public class Shop extends PayloadAcceptor {
         });
         config(Block.class, (ShopBuild tile, Block block) -> {
             int price = BlockItem.getScore(block);
-            if(tile.anucoins >= price && tile.payload == null) {
-                tile.anucoins -= price;
+            if(tile.totalCoins() >= price && tile.payload == null) {
+                tile.removeCoins(price);
                 tile.payload = new BuildPayload(block, tile.team);
 
                 tile.payVector.setZero();
@@ -420,7 +421,7 @@ public class Shop extends PayloadAcceptor {
         @Override
         public void dumpPayload(){
             super.dumpPayload();
-            if(payload != null && payload instanceof BuildPayload bp){
+            if(payload != null && (payload instanceof BuildPayload bp) && bp.block().size == 1){
                 int off = size / 2 + 1;
                 Tile other = tile.nearby(Geometry.d4x(rotation) * off, Geometry.d4y(rotation) * off);
                 Log.info(other);
@@ -457,7 +458,12 @@ public class Shop extends PayloadAcceptor {
                 if(block.teamRegions[team.id] == block.teamRegion) Draw.color(team.color);
                 Draw.rect(block.teamRegions[team.id], x, y);
                 Draw.z(Layer.blockOver + 0.002f);
-                Drawm.spinSprite(spinTeamRegions[team.id], x, y, r);
+                if(drawSpinSprite){
+                    Drawm.spinSprite(spinTeamRegions[team.id], x, y, r);
+                }
+                else{
+                    Draw.rect(spinTeamRegions[team.id], x, y, r);
+                }
 
                 Draw.color();
                 Draw.rect(spinRegion, x, y, r);

@@ -38,7 +38,7 @@ public class PurchaseDrink extends PurchaseItem {
                 b.button(status.localizedName, new TextureRegionDrawable(status.icon(Cicon.medium)), Styles.cleart, 25f, () -> {
                     ui.content.show(status);
                 }).left().size(180f, 27f);
-                b.add(" [lightgray](" + formatTime(duration) + ")[]");
+                b.add(status.permanent ? "[lightgray](--:--)[]" : " [lightgray](" + formatTime(duration) + ")[]");
             }).left();
             tt.row();
             tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
@@ -48,7 +48,7 @@ public class PurchaseDrink extends PurchaseItem {
     @Override
     public boolean purchase(Building source, Unit player){
         if(player == null || player.dead()) return false;
-        player.apply(status, duration);
+        player.apply(status, status.permanent ? 1f : duration);
         return true;
     }
 

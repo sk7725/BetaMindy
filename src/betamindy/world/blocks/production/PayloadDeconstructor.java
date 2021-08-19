@@ -50,8 +50,11 @@ public class PayloadDeconstructor extends PayloadAcceptor {
     }
 
     public float realMultiplier(){
+        return Math.max(1f, Vars.state.rules.deconstructRefundMultiplier);
+        /*
         if(Vars.state.rules.deconstructRefundMultiplier > 1f) return Vars.state.rules.deconstructRefundMultiplier * refundMultiplier;
         return Math.min(1f, Vars.state.rules.deconstructRefundMultiplier * refundMultiplier);
+        */
     }
 
     @Override

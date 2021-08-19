@@ -55,7 +55,7 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad,
     //logic
-    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier,
+    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, colorModule, strokeModule,
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, astro, magicTurret, credit, taxation, brokerage, mortgage,
     //power
@@ -63,7 +63,9 @@ public class MindyBlocks implements ContentList {
     //crafting
     blockFurnace, heavyFurnace, gateSwitch,
     //catalysts (pushreact & spinreact & boost)
-    discharger, fireCan, campfire;
+    discharger, fireCan, campfire,
+    //floorpapers
+    floorRemover, metalGoldfloor, copperFloor;
 
     @Override
     public void load() {
@@ -804,8 +806,12 @@ public class MindyBlocks implements ContentList {
         }};
 
         nullifier = new Disabler("nullifier"){{
-            consumes.power(0.1f);
+            consumes.power(0.5f);
             requirements(Category.logic, with(Items.copper, 40, Items.lead, 20, Items.silicon, 10));
+        }};
+
+        pen = new Pen("pen"){{
+            requirements(Category.logic, with(Items.copper, 15, Items.silicon, 5, Items.metaglass, 5));
         }};
 
         button = new ButtonTap("button"){{
@@ -1135,21 +1141,24 @@ public class MindyBlocks implements ContentList {
         }};
 
         itemShop = new Shop("item-shop"){{
-            requirements(Category.effect, with(Items.copper, 1));
+            requirements(Category.effect, with(Items.sand , 240, Items.copper, 120, Items.titanium, 60, Items.thorium, 30, Items.plastanium, 20, Items.surgeAlloy, 10));
             size = 3;
             sellAllItems = true;
             soldBlocks = new Block[]{Blocks.container, pressureContainer, present};
             navigationBar = true;
+            drawSpinSprite = true;
         }};
 
         unitShop = new Shop("unit-shop"){{
             requirements(Category.effect, with(Items.copper, 1));
             size = 5;
             sellAllUnits = true;
+            spinShadowRadius = 18f;
         }};
 
+        //todo balance & split & stuff
         extraShop = new Shop("extra-shop"){{
-            requirements(Category.effect, with(Items.copper, 1));
+            requirements(Category.effect, BuildVisibility.sandboxOnly, with(Items.copper, 1));
             size = 3;
             purchases = new PurchaseItem[]{firstAids, invincibleCore, package1, package2, package3, package4, package5, package6, package7, package8, package9, package10};
         }};
@@ -1161,8 +1170,8 @@ public class MindyBlocks implements ContentList {
             sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
         }};
 
-        cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie}){{
-            requirements(Category.effect, with(Items.copper, 250, Items.titanium, 250, Items.graphite, 150, Items.metaglass, 100, Items.silicon, 50));
+        cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie, bossCake}){{
+            requirements(Category.effect, with(Items.sand, 500, Items.lead, 250, Items.titanium, 250, Items.graphite, 150, Items.metaglass, 100, Items.silicon, 50));
 
             size = 4;
         }};
@@ -1181,6 +1190,19 @@ public class MindyBlocks implements ContentList {
 
         coinSource = new CoinSource("coin-source"){{
             requirements(Category.effect, BuildVisibility.sandboxOnly, with());
+        }};
+
+        //test
+        floorRemover = new FloorRemover("floor-remover"){{
+            requirements(Category.effect, BuildVisibility.hidden, with());
+        }};
+        metalGoldfloor = new DecorativeFloor("metal-golden-floor"){{
+            requirements(Category.effect, BuildVisibility.hidden, with());
+            variants = 0;
+        }};
+        copperFloor = new DecorativeFloor("copper-floor"){{
+            requirements(Category.effect, BuildVisibility.hidden, with());
+            variants = 0;
         }};
     }
 }

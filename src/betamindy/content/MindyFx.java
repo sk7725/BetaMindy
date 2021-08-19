@@ -9,6 +9,7 @@ import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.graphics.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.Team;
@@ -17,6 +18,8 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.Cicon;
 import mindustry.world.Block;
+
+import java.util.*;
 
 import static arc.graphics.g2d.Draw.*;
 //I do not want my fills and lines fighting, so no wildcad imports
@@ -29,6 +32,7 @@ import static mindustry.Vars.tilesize;
 
 public class MindyFx {
     private static final int[] vgld = {0}; //VERY_GOOD_LANGUAGE_DESIGN
+    static final Vec2[] vecs = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
     public static final Effect
     directionalSmoke = new Effect(160f, e -> {
         Draw.z(Layer.flyingUnit + 0.1f);
@@ -978,6 +982,15 @@ public class MindyFx {
         */
     }).layer(Layer.bullet),
 
+    coins = new Effect(30f, e -> {
+        color(Color.white, e.fout(0.5f));
+        vgld[0] = e.id;
+        randLenVectors(e.id, e.id % 3 + 2, 8f + e.fin() * 3f, (x, y) -> {
+            vgld[0]++;
+            Drawm.coin(e.x + x, e.y + y, 4f, Mathf.randomSeed(vgld[0], 360f), e.fout() * 150f * Mathf.randomSeed(-vgld[0], 0.5f, 2.5f));
+        });
+    }).layer(Layer.flyingUnit + 0.1f),
+
     astroCharge = new Effect(60f, e -> {
         Draw.color(Color.white);
         Fill.circle(e.x, e.y, 16f * e.fin());
@@ -1020,5 +1033,59 @@ public class MindyFx {
         circle(e.x, e.y, e.finpow() * 16f + 1f);
         color();
         spark(e.x, e.y, e.finpow() * 8f + 4f, 2f * e.fout(), r);
+    }),
+
+    buildLaser = new Effect(40f, e -> {
+        if(e.data instanceof Unit u){
+            float tx = e.x;
+            float ty = e.y;
+
+            Lines.stroke(1f, e.color);
+            float focusLen = u.type.buildBeamOffset + Mathf.absin(Time.time, 3f, 0.6f);
+            float px = u.x + Angles.trnsx(u.rotation, focusLen);
+            float py = u.y + Angles.trnsy(u.rotation, focusLen);
+
+            float sz = Vars.tilesize * e.rotation / 2f;
+            float ang = u.angleTo(tx, ty);
+
+            vecs[0].set(tx - sz, ty - sz);
+            vecs[1].set(tx + sz, ty - sz);
+            vecs[2].set(tx - sz, ty + sz);
+            vecs[3].set(tx + sz, ty + sz);
+
+            Arrays.sort(vecs, Structs.comparingFloat(vec -> -Angles.angleDist(u.angleTo(vec), ang)));
+
+            Vec2 close = Geometry.findClosest(u.x, u.y, vecs);
+
+            float x1 = vecs[0].x, y1 = vecs[0].y,
+                    x2 = close.x, y2 = close.y,
+                    x3 = vecs[1].x, y3 = vecs[1].y;
+
+            Draw.alpha(e.fout());
+
+            Fill.square(e.x, e.y, e.rotation * tilesize/2f);
+
+            if(renderer.animateShields){
+                if(close != vecs[0] && close != vecs[1]){
+                    Fill.tri(px, py, x1, y1, x2, y2);
+                    Fill.tri(px, py, x3, y3, x2, y2);
+                }else{
+                    Fill.tri(px, py, x1, y1, x3, y3);
+                }
+            }else{
+                Lines.line(px, py, x1, y1);
+                Lines.line(px, py, x3, y3);
+            }
+
+            Fill.square(px, py, 1.8f + Mathf.absin(Time.time, 2.2f, 1.1f), e.rotation + 45);
+
+            Draw.reset();
+        }
+    }).layer(Layer.buildBeam),
+
+    placeBlockBlue = new Effect(16, e -> {
+        color(Pal.lancerLaser);
+        stroke(3f - e.fin() * 2f);
+        Lines.square(e.x, e.y, tilesize / 2f * e.rotation + e.fin() * 3f);
     });
 }

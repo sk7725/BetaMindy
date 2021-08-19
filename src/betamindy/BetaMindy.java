@@ -46,6 +46,7 @@ public class BetaMindy extends Mod{
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
     public static boolean uwu = OS.username.equals("sunny");
+    public static boolean inventoryUI = false;
     //public static UnitGravity gravity = new UnitGravity();
 
     private final ContentList[] mindyContent = {
