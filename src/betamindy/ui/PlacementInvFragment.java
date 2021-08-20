@@ -68,7 +68,7 @@ public class PlacementInvFragment extends Fragment {
                 if((blocksSelect.parent instanceof Table frame) && (frame.parent instanceof Table full)){
                     full.visible(() -> !inventoryUI && ui.hudfrag.shown);
                     vanilla = full;
-                    vanillaWidth = frame.getPrefWidth();
+                    vanillaWidth = frame.getPrefWidth() / Scl.scl(1f);
                     Log.info("[accent]OH YES[]");
                     Log.info(vanillaWidth);
                 }

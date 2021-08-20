@@ -28,7 +28,7 @@ public class PurchaseInvBlock extends PurchaseItem {
 
         t.table(tt -> {
             tt.left();
-            tt.add(localizedName + (amount > 1 ? " [white]x"+amount+"[]" : "")).growX().left(); //todo icon emoji (how)?
+            tt.add("[accent]" + Iconc.box + "[] " + localizedName + (amount > 1 ? " [white]x"+amount+"[]" : "")).growX().left(); //todo icon emoji (how)?
             tt.row();
             tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
         }).growX();

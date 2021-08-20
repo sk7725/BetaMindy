@@ -111,11 +111,26 @@ public class MindyItems implements ContentList {
             hardness = 3;
         }};
         //used for glowing / decorative high-tier blocks
-        starStone = new ForeignItem("star-stone", Pal.accent){{
-            cost = 5;
-            hardness = 4;
-            radioactivity = 0.628f;
-        }};
+        starStone = new AnimatedItem("star-stone", Color.yellow){
+            {
+                cost = 5;
+                hardness = 4;
+                radioactivity = 0.628f;
+                sprites = 4;
+                animDelay = 5f;
+                transition = 10;
+            }
+            @Override
+            public boolean unlockedNow(){
+                return false;
+            }
+
+            //todo v7
+            public boolean unlockedNowHost(){
+                return false;
+            }
+        };
+        starStone.details = starStone.details == null ? Core.bundle.get("item.foreign") : Core.bundle.get("item.foreign") + "\n" + starStone.details;
         zinc = new ForeignItem("zinc", Color.valueOf("ded7c3")){{
             cost = 3;
             hardness = 4;

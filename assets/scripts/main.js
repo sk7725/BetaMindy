@@ -57,7 +57,7 @@ if(Version.number > 6 && !Vars.headless){
         swapBreakSound("betamindy-cryo-wall");
         swapBreakSound("betamindy-cryo-wall-large");
 
-        animbois = [bmItem("bittrium"), bmItem("tensor"), bmItem("source")];
+        animbois = [bmItem("bittrium"), bmItem("tensor"), bmItem("source"), bmItem("star-stone")];
         animn = animbois.length;
         try{
             Vars.ui.settings.graphics.sliderPref("animlevel", 2, 0, 3, i => Core.bundle.get("slider.level." + i, "" + i));
