@@ -5,6 +5,7 @@ import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.content.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.units.*;
@@ -13,6 +14,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 
+import static betamindy.BetaMindy.uwu;
 import static mindustry.Vars.*;
 import static mindustry.world.Build.validPlace;
 
@@ -29,8 +31,10 @@ public class InventoryModule {
         //todo: remove any 0-amount items from both the invlist & rules
         invList.clear();
         amountList.clear();
-        invList.addAll(MindyBlocks.floorRemover.id, MindyBlocks.metalGoldfloor.id, Blocks.scatter.id);
-        amountList.addAll( -1, 20, 5);
+        if(uwu){
+            invList.addAll(MindyBlocks.floorRemover.id, MindyBlocks.metalGoldfloor.id, MindyBlocks.copperFloor.id, Blocks.scatter.id);
+            amountList.addAll( -1, 20, 40, 5);
+        }
     }
 
     /** This method MUST be called when making changes to the inventory! */
@@ -99,9 +103,12 @@ public class InventoryModule {
                 inventoryPlace(player, current.block, player.team, current.x, current.y, current.rotation);//todo see below
             }
         }
-        if(changed && !headless && BetaMindy.mui.invfrag != null){
+        if(changed && !headless && BetaMindy.mui.invfrag != null && player.team == Vars.player.team()){
             BetaMindy.mui.invfrag.refreshInventory();
             changed = false;
+            if(control.input.block != null && !hasActual(control.input.block)){
+                control.input.block = null; //unfocus
+            }
         }
     }
 

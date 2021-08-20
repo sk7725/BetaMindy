@@ -19,7 +19,7 @@ public class DecorativeFloor extends OverlayFloor {
 
     @Override
     public boolean canPlaceOn(Tile tile, Team team){
-        return super.canPlaceOn(tile, team) && tile.overlay() == Blocks.air;
+        return super.canPlaceOn(tile, team) && (tile.overlay() == Blocks.air || ((tile.overlay() instanceof DecorativeFloor) && tile.overlay().id != id));
     }
 
     @Override
@@ -30,6 +30,11 @@ public class DecorativeFloor extends OverlayFloor {
     public class DecorativeFloorBuild extends Building {
         @Override
         public void update(){ //not updateTile on purpose
+            if(tile.overlay() instanceof DecorativeFloor df){
+                if(df.refund){
+                    InventoryModule.add(df, 1);
+                }
+            }
             tile.setOverlay(block);
             tile.remove();
             remove();

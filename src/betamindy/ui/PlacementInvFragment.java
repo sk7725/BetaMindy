@@ -68,7 +68,7 @@ public class PlacementInvFragment extends Fragment {
                 if((blocksSelect.parent instanceof Table frame) && (frame.parent instanceof Table full)){
                     full.visible(() -> !inventoryUI && ui.hudfrag.shown);
                     vanilla = full;
-                    vanillaWidth = frame.getPrefWidth() / Scl.scl(1f);
+                    vanillaWidth = frame.getPrefWidth() / Scl.scl(1f); //table's getPrefWidth is scaled by scl. We undo this scl because width() applies the scl again.
                     Log.info("[accent]OH YES[]");
                     Log.info(vanillaWidth);
                 }
@@ -102,9 +102,11 @@ public class PlacementInvFragment extends Fragment {
 
             full.table(MindyUILoader.buttonEdge2, side -> {
                 side.bottom().defaults().pad(0);
-                side.image(Icon.box).color(Pal2.inventory).size(35f).touchable(Touchable.enabled).tooltip("@ui.inventory.short").get().clicked(() -> {
+                Image im = side.image(Icon.box).color(Pal2.inventory).size(35f).touchable(Touchable.enabled).tooltip("@ui.inventory.short").get();
+                im.clicked(() -> {
                     inventoryUI = !inventoryUI;
                     control.input.block = null;
+                    im.setDrawable(inventoryUI ? ui.getIcon(ui.hudfrag.blockfrag.currentCategory.name()): Icon.box);
                 });
                 side.row();
                 side.image().color(Pal.gray).height(4f).growX().margin(0).pad(0).padTop(4);
