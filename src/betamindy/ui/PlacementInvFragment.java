@@ -35,6 +35,7 @@ public class PlacementInvFragment extends Fragment {
     ScrollPane blockPane;
     Runnable rebuildCategory;
     Block menuHoverBlock;
+    float vanillaWidth = 314f;
 
     public PlacementInvFragment(){
         Events.on(WorldLoadEvent.class, event -> {
@@ -59,15 +60,17 @@ public class PlacementInvFragment extends Fragment {
     void refreshVanilla(){
         //anuuuuuuuuuuuuuuuuuuuuuuuuke
         Element iTable = ui.hudGroup.find(e -> e.name != null && e.name.equals("inputTable"));
-        Log.info(iTable);
+        //Log.info(iTable);
         if(iTable instanceof Table it){
             if(it.parent instanceof Table blocksSelect){
-                Log.info(blocksSelect);
+                //Log.info(blocksSelect);
 
                 if((blocksSelect.parent instanceof Table frame) && (frame.parent instanceof Table full)){
                     full.visible(() -> !inventoryUI && ui.hudfrag.shown);
                     vanilla = full;
+                    vanillaWidth = frame.getPrefWidth();
                     Log.info("[accent]OH YES[]");
+                    Log.info(vanillaWidth);
                 }
             }
         }
@@ -233,7 +236,7 @@ public class PlacementInvFragment extends Fragment {
                             }
                         });
                     }).growX();
-                }).fillY().bottom().touchable(Touchable.enabled).width(vanilla.getPrefWidth());
+                }).fillY().bottom().touchable(Touchable.enabled).width(vanillaWidth);
 
                 rebuildCategory.run();
                 frame.update(() -> {
