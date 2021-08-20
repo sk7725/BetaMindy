@@ -1,6 +1,7 @@
 package betamindy.graphics;
 
 import arc.graphics.Color;
+import mindustry.graphics.*;
 
 public class Pal2 {
     public static Color clearWhite = Color.white.cpy().a(0f),
@@ -22,5 +23,6 @@ public class Pal2 {
     coin = Color.valueOf("f3e979"),
     darkCoin = Color.valueOf("d99f6b"),
     sporeSlime = Color.valueOf("9e78dc"),
-    path = Color.valueOf("ad986d");
+    path = Color.valueOf("ad986d"),
+    inventory = Pal.lancerLaser;
 }

@@ -40,7 +40,7 @@ public class ItemItem extends ShopItem{
             tt.left();
             tt.add(localizedName + " [accent]x"+amount+"[]").growX().left();
             tt.row();
-            tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();;
+            tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
         }).growX();
     }
 }

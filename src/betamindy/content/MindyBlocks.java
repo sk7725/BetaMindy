@@ -55,7 +55,7 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad,
     //logic
-    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, colorModule, strokeModule,
+    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule,
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, astro, magicTurret, credit, taxation, brokerage, mortgage,
     //power
@@ -814,6 +814,20 @@ public class MindyBlocks implements ContentList {
             requirements(Category.logic, with(Items.copper, 15, Items.silicon, 5, Items.metaglass, 5));
         }};
 
+        colorModule = new PenColorModule("color-module"){{
+            requirements(Category.logic, with(Items.copper, 15, Items.coal, 15, Items.graphite, 15));
+        }};
+
+        strokeModule = new PenStrokeModule("stroke-module"){{
+            requirements(Category.logic, with(Items.copper, 15, Items.metaglass, 15, Items.phaseFabric, 15));
+        }};
+
+        starPen = new Pen("star-pen"){{
+            requirements(Category.logic, with(Items.copper, 15, Items.silicon, 5, MindyItems.starStone, 5));
+            drawLength = 60;
+            glow = true;
+        }};
+
         button = new ButtonTap("button"){{
             requirements(Category.power, with(Items.graphite, 5, Items.silicon, 25));
             health = 40;
@@ -1164,10 +1178,12 @@ public class MindyBlocks implements ContentList {
         }};
 
         testShop = new Shop("test-shop"){{
-            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
+            requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.sandboxOnly, with(Items.copper, 1));
             size = 3;
-            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter};
+            defaultAnucoins = 1000;
+            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1)};
             sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
+            alwaysUnlocked = uwu;
         }};
 
         cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie, bossCake}){{

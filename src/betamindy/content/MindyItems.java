@@ -16,9 +16,12 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class MindyItems implements ContentList {
-    public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source, cryonite, spaceMatter;
+    public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source, cryonite, spaceMatter,
+    //foreign items
+    wood, tungsten, starStone, zinc, bedrock;
 
     public void load(){
+        //given from portal invasions
         bittrium = new AnimatedItem("bittrium", Color.valueOf("00ffff")){{
             charge = 10.24f;
             radioactivity = 10.24f;
@@ -29,6 +32,7 @@ public class MindyItems implements ContentList {
             animDelay = 4f;
         }};
 
+        //used as freezing ammo
         cryonite = new Item("cryonite", Pal2.ice){{
             flammability = -1f;
             explosiveness = 1f;
@@ -78,7 +82,7 @@ public class MindyItems implements ContentList {
             sprites = 10;
         }};
 
-        //todo animation
+        //todo animation?
         spaceMatter = new Item("space-matter", Color.valueOf("7c067c")){{
             hardness = 9;
             cost = 4;
@@ -94,6 +98,35 @@ public class MindyItems implements ContentList {
             animDelay = 2f;
         }};
         */
+
+        /* Foreign items are not available in normal gameplay; They are there to prevent the shop-only items from getting built. */
+        //used for almost all low-tier blocks
+        wood = new ForeignItem("wood", Pal2.path){{
+            flammability = 0.7f;
+            cost = 1;
+        }};
+        //used for wires
+        tungsten = new ForeignItem("tungsten", Pal.darkerGray){{
+            cost = 2;
+            hardness = 3;
+        }};
+        //used for glowing / decorative high-tier blocks
+        starStone = new ForeignItem("star-stone", Pal.accent){{
+            cost = 5;
+            hardness = 4;
+            radioactivity = 0.628f;
+        }};
+        zinc = new ForeignItem("zinc", Color.valueOf("ded7c3")){{
+            cost = 3;
+            hardness = 4;
+            charge = 0.5f;
+            explosiveness = 0.3f;
+        }};
+        //used for environmental walls turned into blocks
+        bedrock = new ForeignItem("bedrock", Pal.darkestGray){{
+            cost = 10;
+            hardness = 10;
+        }};
 
         if(!Vars.headless){
             for(Item i : Vars.content.items()){

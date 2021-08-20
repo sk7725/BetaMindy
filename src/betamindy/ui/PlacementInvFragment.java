@@ -11,6 +11,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
+import betamindy.graphics.*;
 import betamindy.util.*;
 import mindustry.ctype.*;
 import mindustry.gen.*;
@@ -32,7 +33,6 @@ public class PlacementInvFragment extends Fragment {
     private Table vanilla; //the 'toggler' or 'full' of the PlacementFragment.
     Table blockTable, toggler;
     ScrollPane blockPane;
-    Drawable accentEdge2, pane2;
     Runnable rebuildCategory;
     Block menuHoverBlock;
 
@@ -50,7 +50,7 @@ public class PlacementInvFragment extends Fragment {
         Events.run(Trigger.update, () -> {
             if(Core.input.keyTap(KeyCode.f2)){
                 inventoryUI = !inventoryUI;//todo keybind
-                control.input.block = null;//todo mobile button; make sure to do this too
+                control.input.block = null;
             }
             if(inventoryUI && state.isPlaying()) updatePlans(player.unit());
         });
@@ -91,16 +91,21 @@ public class PlacementInvFragment extends Fragment {
 
     @Override
     public void build(Group parent){
-        if(accentEdge2 == null || pane2 == null){
-            //load nines
-            accentEdge2 = Core.atlas.drawable("betamindy-accent-edge-2");
-            pane2 = Core.atlas.drawable("pane-2");
-        }
         loadInventory();
         refreshVanilla();
         parent.fill(full -> {
             toggler = full;
-            full.bottom().right().visible(() -> ui.hudfrag.shown && inventoryUI);
+            full.bottom().right().visible(() -> ui.hudfrag.shown);
+
+            full.table(MindyUILoader.buttonEdge2, side -> {
+                side.bottom().defaults().pad(0);
+                side.image(Icon.box).color(Pal2.inventory).size(35f).touchable(Touchable.enabled).tooltip("@ui.inventory.short").get().clicked(() -> {
+                    inventoryUI = !inventoryUI;
+                    control.input.block = null;
+                });
+                side.row();
+                side.image().color(Pal.gray).height(4f).growX().margin(0).pad(0).padTop(4);
+            }).visible(() -> inventoryUI || (control.input.block != null && getSize() > 0)).size(65f, 56f).bottom().pad(0).margin(0);
 
             full.table(frame -> {
                 //rebuilds the inventory table with the correct recipes
@@ -173,9 +178,9 @@ public class PlacementInvFragment extends Fragment {
                 };
 
                 //top
-                frame.table(accentEdge2, top -> {
+                frame.table(MindyUILoader.accentEdge2, top -> {
                     //todo refactor
-                    Image image = top.image(Icon.box, Pal.accent).size(30f).padRight(9f).padTop(6f).get();
+                    Image image = top.image(Icon.box, Pal2.inventory).size(30f).padRight(9f).padTop(6f).get();
                     image.update(() -> {
                         Block h = menuHoverBlock != null ? menuHoverBlock : control.input.block;
                         if(h != null){
@@ -184,18 +189,18 @@ public class PlacementInvFragment extends Fragment {
                         }
                         else{
                             image.setDrawable(Icon.box);
-                            image.setColor(Pal.accent);
+                            image.setColor(Pal2.inventory);
                         }
                     });
-                    top.labelWrap(() -> menuHoverBlock == null ? (control.input.block == null ? "@ui.inventory.title" : control.input.block.localizedName) : menuHoverBlock.localizedName).growX().height(48f).color(Pal.accent);
+                    top.labelWrap(() -> menuHoverBlock == null ? (control.input.block == null ? "@ui.inventory.title" : control.input.block.localizedName) : menuHoverBlock.localizedName).growX().height(48f).color(Pal2.inventory);
                 }).fillX().height(48f).bottom();
 
                 frame.row();
-                frame.image().color(Pal.accent).colspan(3).height(4).growX();
+                frame.image().color(Pal2.inventory).colspan(3).height(4).growX();
                 frame.row();
 
                 //inventory
-                frame.table(pane2, blocksSelect -> {
+                frame.table(MindyUILoader.pane2, blocksSelect -> {
                     blocksSelect.margin(4).marginTop(0);
                     blockPane = blocksSelect.pane(blocks -> blockTable = blocks).height(194f).update(pane -> {
                         if(pane.hasScroll()){
@@ -215,10 +220,13 @@ public class PlacementInvFragment extends Fragment {
                             backbutt.row();
                             var b1 = backbutt.button(Icon.list, Styles.clearTransi, () -> {
                                 //todo
-                            }).size(48f).margin(0).disabled(b -> getSize() <= 1);
+                            }).size(48f).margin(0);
                             var b2 = backbutt.button(Icon.undo, Styles.clearTransi, () -> {
-                                if(inventoryUI) inventoryUI = false;
-                            }).size(48f).margin(0).color(Pal.accent);
+                                if(inventoryUI){
+                                    inventoryUI = false;
+                                    control.input.block = null;
+                                }
+                            }).size(48f).margin(0).color(Pal2.inventory);
                             if(!mobile){
                                 b1.tooltip("@sort");
                                 b2.tooltip("@back");
@@ -235,7 +243,7 @@ public class PlacementInvFragment extends Fragment {
                         if(tryRecipe != null) InventoryModule.add(tryRecipe, 10);
                     }
                 });
-            });
+            }).visible(() -> inventoryUI);
         });
     }
 

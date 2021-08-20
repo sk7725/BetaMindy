@@ -22,6 +22,8 @@ public class InventoryModule {
     private static final IntSeq invList = new IntSeq(); //ids
     private static final IntSeq amountList = new IntSeq();//amounts
 
+    static boolean changed = false;
+
     public static void loadInventory(){
         //todo: read inventory from rules
         //todo: remove any 0-amount items from both the invlist & rules
@@ -89,22 +91,23 @@ public class InventoryModule {
     }
 
     public static void updatePlans(Unit player){
-        boolean changed = false;
         for(BuildPlan current : player.plans()){
             if(current.breaking || current.initialized || !validPlace(current.block, player.team, current.x, current.y, current.rotation)) continue;
 
-            if(add(current.block, -1, false)){
-                changed = true;
+            if(hasActual(current.block)){
                 current.initialized = true;
                 inventoryPlace(player, current.block, player.team, current.x, current.y, current.rotation);//todo see below
             }
         }
-        if(changed && !headless && BetaMindy.mui.invfrag != null) BetaMindy.mui.invfrag.refreshInventory();
+        if(changed && !headless && BetaMindy.mui.invfrag != null){
+            BetaMindy.mui.invfrag.refreshInventory();
+            changed = false;
+        }
     }
 
     //todo make this a Call.inventoryPlace
     public static void inventoryPlace(@Nullable Unit unit, Block result, Team team, int x, int y, int rotation){
-        if(!validPlace(result, team, x, y, rotation)){
+        if(!validPlace(result, team, x, y, rotation) || !add(result, -1, false)){ //todo make this class non-static and for each team
             return;
         }
 
@@ -144,6 +147,7 @@ public class InventoryModule {
             //todo lancerlaser build effects & cool stuff
             if(unit != null) MindyFx.buildLaser.at(tile.drawx(), tile.drawy(), result.size, Pal.lancerLaser, unit);
             MindyFx.placeBlockBlue.at(tile.drawx(), tile.drawy(), result.size);
+            changed = true;
         }
     }
 }

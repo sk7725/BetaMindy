@@ -23,9 +23,16 @@ public class MindyUILoader {
     public PlacementInvFragment invfrag;
     private static Seq<Font> fonts;
 
+    public static Drawable accentEdge2, pane, pane2, buttonEdge2;
+
     public void init(){
         AncientKoruh.load();
         AnucoinTex.load();
+
+        accentEdge2 = Core.atlas.drawable("betamindy-blue-edge-2");
+        pane = Core.atlas.drawable("pane");
+        pane2 = Core.atlas.drawable("pane-2");
+        buttonEdge2 = Core.atlas.drawable("button-edge-2");
 
         Core.app.post(() -> {
             hardfrag = new HardmodeFragment();

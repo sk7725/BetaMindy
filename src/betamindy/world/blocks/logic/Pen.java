@@ -14,6 +14,7 @@ import static mindustry.Vars.world;
 public class Pen extends Block {
     public int drawLength = 40;
     public TextureRegion topRegion;
+    public boolean glow = false;
 
     public Pen(String name){
         super(name);
@@ -25,14 +26,13 @@ public class Pen extends Block {
     @Override
     public void load(){
         super.load();
-        topRegion = atlas.find(name + "-top");
+        topRegion = atlas.find(name + "-top", "betamindy-pen-top");
     }
 
     public class PenBuild extends Building implements SpinDraw, SpinUpdate{
         public Trail trail = new Trail(drawLength);
         public int color = Color.white.rgba();
         public float stroke = 1f;
-        public boolean glow = true;
 
         public int prev = -1;
 
@@ -52,7 +52,7 @@ public class Pen extends Block {
 
         @Override
         public void spinUpdate(float sx, float sy, float srad, float absRot, float rawRot){
-            Building n = world.buildWorld(x, y);
+            Building n = world.buildWorld(sx, sy);
             boolean dis = false;
             if(n != null){
                 if(n.block instanceof Disabler) dis = true;
@@ -84,7 +84,7 @@ public class Pen extends Block {
             super.write(write);
             write.i(color);
             write.f(stroke);
-            write.bool(glow);
+            write.bool(false); //use later
         }
 
         @Override
@@ -92,7 +92,7 @@ public class Pen extends Block {
             super.read(read, revision);
             color = read.i();
             stroke = read.f();
-            glow = read.bool();
+            read.bool();
         }
     }
 }
