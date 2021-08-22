@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -67,6 +68,18 @@ public class AnucoinNode extends Block {
 
             entity.refresh();
             entity.sanitize();
+        });
+        config(Point2.class, (AnucoinNodeBuild entity, Point2 trans) -> {
+            Building other = world.build(trans.x);
+            boolean contains = entity.links.contains(trans.x) && linkValid(entity, other);
+
+            if(contains){
+                //withdraw
+                CoinBuild cb = (CoinBuild) other;
+                if(!cb.outputCoin()) return;
+                cb.handleCoin(entity, -trans.y);
+                entity.anucoins += trans.y;
+            }
         });
         configClear((AnucoinNodeBuild entity) -> {
             for(int i = 0; i < entity.links.size; i++){
@@ -309,14 +322,13 @@ public class AnucoinNode extends Block {
                 }).growX();
 
                 t.button(Icon.upload, Styles.clearPartiali, () -> {
-                    //todo configure [pos, amount] as Point2
+                    //configure [pos, bank receiving amount] as Point2
                     if(build.dead || !links.contains(build.pos())){
                         Vars.ui.showInfoFade("@ui.trans.error");
                         return;
                     }
-                    int coins = Math.min(cb.coins(), maxCoins() - anucoins);
-                    cb.handleCoin(this, -coins);
-                    anucoins += coins;
+                    int coins = Math.min(cb.coins(), maxCoins() - anucoins);//bank receiving is +, bank withdrawing is -. In this case, this is +
+                    if(coins > 0) configure(new Point2(build.pos(), coins));
                 }).size(40f).color(Color.green).disabled(b -> !cb.outputCoin());
                 //todo strict transaction
             }, () -> {

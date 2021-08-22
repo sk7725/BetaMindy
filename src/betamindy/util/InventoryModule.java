@@ -31,9 +31,9 @@ public class InventoryModule {
     public static class Inventory {
         protected final IntSeq invList = new IntSeq(); //ids, short range [0?, 65535]
         protected final IntSeq amountList = new IntSeq(); //amounts, byte range [-1, 127]
-        public Team team;
+        public @Nullable Team team; //null unless this inventory is global
 
-        public Inventory(Team team){
+        public Inventory(@Nullable Team team){
             this.team = team;
         }
 
@@ -69,7 +69,8 @@ public class InventoryModule {
             }
 
             //todo: refactor or something, rn i cannot give a shit
-            if(ret && current != -1){
+            //save to the rules only if the inventory is a global team one
+            if(ret && current != -1 && team != null){
                 if(state.isCampaign()){
                     if(team == state.rules.defaultTeam){
                         //in campaign, only the player team is saved
@@ -158,6 +159,7 @@ public class InventoryModule {
         }
     }
 
+    //methods below are for global team inventories; Do not use for inventory storages!
     public static void loadInventory(Team team){
         if(teams[team.id] == null){
             teams[team.id] = new Inventory(team);
@@ -235,7 +237,7 @@ public class InventoryModule {
 
     //todo make this a Call.inventoryPlace
     public static void inventoryPlace(@Nullable Unit unit, Block result, Team team, int x, int y, int rotation){
-        if(teams[team.id] == null || !validPlace(result, team, x, y, rotation) || !teams[team.id].add(result, -1, false)){ //todo make this class non-static and for each team
+        if(teams[team.id] == null || !validPlace(result, team, x, y, rotation) || !teams[team.id].add(result, -1, false)){
             return;
         }
 
