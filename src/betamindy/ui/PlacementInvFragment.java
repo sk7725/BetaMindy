@@ -13,7 +13,9 @@ import arc.util.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
+import mindustry.*;
 import mindustry.ctype.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
@@ -36,9 +38,11 @@ public class PlacementInvFragment extends Fragment {
     Runnable rebuildCategory;
     Block menuHoverBlock;
     float vanillaWidth = 314f;
+    Team lastTeam = Team.sharded;
 
     public PlacementInvFragment(){
         Events.on(WorldLoadEvent.class, event -> {
+            reset();
             Core.app.post(this::rebuild);
         });
 
@@ -94,7 +98,7 @@ public class PlacementInvFragment extends Fragment {
 
     @Override
     public void build(Group parent){
-        loadInventory();
+        loadInventory(state.isMenu()? Team.sharded : player.team());
         refreshVanilla();
         parent.fill(full -> {
             toggler = full;
@@ -123,11 +127,13 @@ public class PlacementInvFragment extends Fragment {
                     ButtonGroup<ImageButton> group = new ButtonGroup<>();
                     group.setMinCheckCount(0);
 
-                    int n = getSize();
+                    int n = getSize(true);
+                    int team = player.team().id;
+
                     for(int i = 0; i < n; i++){
                         final int item = i;
-                        Block block = block(i);
-                        int amount = amount(i);
+                        Block block = teams[team].block(i);
+                        int amount = teams[team].amount(i);
                         if(block == null || amount == 0) continue;
                         if(index++ % rowWidth == 0){
                             blockTable.row();
@@ -136,7 +142,7 @@ public class PlacementInvFragment extends Fragment {
                         Stack sb = new Stack();
                         Table tb = new Table().right().bottom();
                         Table ib = new Table();
-                        tb.label(() -> amount(item) == -1 ? "[lightgray]*[]" : amount(item) + "").touchable(Touchable.disabled);
+                        tb.label(() -> (teams[team] == null || teams[team].amount(item) == -1) ? "[lightgray]*[]" : teams[team].amount(item) + "").touchable(Touchable.disabled);
 
                         ImageButton button = ib.button(new TextureRegionDrawable(block.icon(Cicon.medium)), Styles.selecti, () -> {
                             if(unlocked(block)){
@@ -151,7 +157,7 @@ public class PlacementInvFragment extends Fragment {
                         button.resizeImage(32f);
 
                         button.update(() -> { //color unplacable things gray
-                            Color color = player.isBuilder() && amount(item) != 0 && unlocked(block) ? Color.white : Color.gray;
+                            Color color = player.isBuilder() && teams[team] != null && teams[team].amount(item) != 0 && unlocked(block) ? Color.white : Color.gray;
                             button.forEach(elem -> elem.setColor(color));
                             button.setChecked(control.input.block == block);
                         });
@@ -245,7 +251,11 @@ public class PlacementInvFragment extends Fragment {
                     if(state.rules.infiniteResources && Core.input.keyTap(Binding.pick) && player.isBuilder()){ //mouse eyedropper select
                         var build = world.buildWorld(Core.input.mouseWorld().x, Core.input.mouseWorld().y);
                         Block tryRecipe = build == null ? null : build.block;
-                        if(tryRecipe != null) InventoryModule.add(tryRecipe, 10);
+                        if(tryRecipe != null) InventoryModule.add(tryRecipe, 10, player.team());
+                    }
+                    if(player.team() != lastTeam){
+                        refreshInventory();
+                        lastTeam = player.team();
                     }
                 });
             }).visible(() -> inventoryUI);

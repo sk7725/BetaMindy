@@ -24,7 +24,7 @@ public class DecorativeFloor extends OverlayFloor {
 
     @Override
     public boolean isHidden(){
-        return !Vars.headless && !(BetaMindy.inventoryUI && InventoryModule.hasActual(this));
+        return !Vars.headless && !(BetaMindy.inventoryUI && InventoryModule.hasActual(this, Vars.player.team()));
     }
 
     public class DecorativeFloorBuild extends Building {
@@ -32,7 +32,7 @@ public class DecorativeFloor extends OverlayFloor {
         public void update(){ //not updateTile on purpose
             if(tile.overlay() instanceof DecorativeFloor df){
                 if(df.refund){
-                    InventoryModule.add(df, 1);
+                    InventoryModule.add(df, 1, team);
                 }
             }
             tile.setOverlay(block);

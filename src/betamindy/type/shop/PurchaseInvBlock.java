@@ -38,6 +38,6 @@ public class PurchaseInvBlock extends PurchaseItem {
     public boolean purchase(Building source, Unit player){
         if(player == null) return false;
         if(!block.unlockedNow()) block.unlock();
-        return InventoryModule.add(block, amount, true);//todo add team
+        return InventoryModule.add(block, amount, player.team);
     }
 }

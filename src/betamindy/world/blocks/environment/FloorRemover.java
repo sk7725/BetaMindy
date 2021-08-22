@@ -22,7 +22,7 @@ public class FloorRemover extends Block {
 
     @Override
     public boolean isHidden(){
-        return !Vars.headless && !(BetaMindy.inventoryUI && InventoryModule.hasActual(this));
+        return !Vars.headless && !(BetaMindy.inventoryUI && InventoryModule.hasActual(this, Vars.player.team()));
     }
 
     public class FloorRemoverBuild extends Building {
@@ -30,7 +30,7 @@ public class FloorRemover extends Block {
         public void update(){ //not updateTile on purpose
             if(tile.overlay() instanceof DecorativeFloor df){
                 tile.clearOverlay();
-                if(df.refund) InventoryModule.add(df, 1);
+                if(df.refund) InventoryModule.add(df, 1, team);
             }
             tile.remove();
             remove();
