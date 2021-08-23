@@ -292,17 +292,23 @@ public class Shop extends PayloadAcceptor {
         public void itemButton(Table pane, Item item){
             int price = Math.max(Math.round(itemScores.get(item)), 15);
 
+            boolean unlocked = item.unlocked() || state.rules.infiniteResources;
+
             pane.button(t -> {
                 t.left();
-                t.image(item.icon(Cicon.medium)).size(40).padRight(10f);
+                t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
 
-                t.table(tt -> {
-                    tt.left();
-                    String color = colorToHex(item.color);
-                    tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x15[]").growX().left();
-                    tt.row();
-                    tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
-                }).growX();
+                if(unlocked) {
+                    t.table(tt -> {
+                        tt.left();
+                        String color = colorToHex(item.color);
+                        tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x15[]").growX().left();
+                        tt.row();
+                        tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();
+                    }).growX();
+                } else {
+                    t.add("[accent]???");
+                }
             }, () -> {
                 if(totalCoins() >= price){
                     configure(item);
@@ -314,22 +320,27 @@ public class Shop extends PayloadAcceptor {
         public void unitButton(Table pane, UnitType unit){
             int price = Math.max(Math.round(unitScores.get(unit)), 15);
 
+            boolean unlocked = unit.unlocked() || state.rules.infiniteResources;
+
             pane.button(t -> {
                 t.left();
 
-                t.image(unit.icon(Cicon.medium)).size(40).padRight(10f);
+                t.image(unlocked ? unit.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
 
                 t.table(tt -> {
                     int type = unitTypeMap.get(unit);
                     tt.left();
 
-                    tt.add(unit.localizedName).growX().left().color(player == null || player.team() == null || player.team().id == Team.derelict.id ? Pal.accent : player.team().color);
-                    tt.row();
+                    tt.add(unlocked ? unit.localizedName : "???").growX().left().color(player == null || player.team() == null || player.team().id == Team.derelict.id ? Pal.accent : player.team().color);
 
-                    tt.add(Core.bundle.get("ui.type") + ": " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
-                    tt.row();
+                    if(unlocked) {
+                        tt.row();
 
-                    tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
+                        tt.add(Core.bundle.get("ui.type") + ": " + (type == 1 ? "[#" + airColor + "]" + Core.bundle.get("ui.air") : (type == 2 ? "[#" + groundColor + "]" + Core.bundle.get("ui.ground") : "[#" + navalColor + "]" + Core.bundle.get("ui.naval")))).left();
+                        tt.row();
+
+                        tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();
+                    }
                 }).growX();
             }, () -> {
                 if(totalCoins() >= price && payload == null) {
@@ -358,18 +369,20 @@ public class Shop extends PayloadAcceptor {
         public void blockButton(Table pane, Block block){
             int price = BlockItem.getScore(block);
 
+            boolean unlocked = block.unlocked() || state.rules.infiniteResources;
+
             pane.button(t -> {
                 t.left();
 
-                t.image(block.icon(Cicon.medium)).size(40).padRight(10f);
+                t.image(unlocked ? block.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
 
                 t.table(tt -> {
                     tt.left();
 
-                    tt.add(block.localizedName).growX().left().color(BlockItem.blockColor(block));
+                    tt.add(unlocked ? block.localizedName : "???").growX().left().color(BlockItem.blockColor(block));
                     tt.row();
 
-                    tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
+                    if(unlocked) tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
                 }).growX();
             }, () -> {
                 if(totalCoins() >= price && payload == null) {
