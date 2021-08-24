@@ -17,19 +17,20 @@ public class TouchpadFragment extends Fragment {
     Touchpad touchpad;
     public final static float size = 160f, thresh = 0.15f, timeout = 60 * 5;
     boolean pw, pa, ps, pd;
-    float lastShown;
+    float lastShown, lastStarted;
     final String keyboardKey = "keyboard", alwaysKey = "touchpadalways";
 
     public void showStart(){
+        if(!showing()) lastStarted = Time.globalTime;
         lastShown = Time.globalTime;
     }
 
     public float alpha(){
         if(alwaysShow()) return 1f;
         if(!showing()) return 0f;
-        float time = (Time.globalTime - lastShown);
-        if(time < 20f) return Math.max(time / 20f, 0f);
-        return Mathf.clamp((timeout - time) / 60f);
+        float stime = Time.globalTime - lastStarted;
+        if(stime < 15f) return Math.max(stime / 15f, 0f);
+        return Mathf.clamp((timeout - (Time.globalTime - lastShown)) / 60f);
     }
 
     public boolean showing(){
@@ -50,7 +51,7 @@ public class TouchpadFragment extends Fragment {
 
         parent.fill(full -> {
             full.bottom().left().visible(() -> alwaysShow() || showing());
-            touchpad = new Touchpad(size * 0.15f * Scl.scl(1f), new Touchpad.TouchpadStyle(atlas.getDrawable("check-on-disabled"), knobby));
+            touchpad = new Touchpad(size * 0.15f * Scl.scl(1f), new Touchpad.TouchpadStyle(atlas.getDrawable("betamindy-pad-back"), knobby));
             touchpad.changed(() -> {
                 float x = touchpad.getKnobPercentX();
                 float y = touchpad.getKnobPercentY();
