@@ -1,12 +1,13 @@
 package betamindy.type.shop;
 
 import arc.*;
-import arc.graphics.g2d.*;
 import arc.scene.ui.*;
 import betamindy.*;
 import betamindy.world.blocks.storage.Shop.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+
+import static mindustry.Vars.*;
 
 /** Used for non-item-shop shops that sell items. */
 public class ItemItem extends ShopItem{
@@ -19,7 +20,7 @@ public class ItemItem extends ShopItem{
         this.amount = amount;
 
         localizedName = "[#" + item.color.toString() + "]" + item.localizedName + "[]";
-        unlocked = e -> !((ShopBuild)e).disabledBox();
+        unlocked = e -> !((ShopBuild)e).disabledBox() && (item.unlocked() || state.rules.infiniteResources);
     }
 
     public ItemItem(Item item){

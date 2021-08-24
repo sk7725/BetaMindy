@@ -2,7 +2,7 @@ package betamindy.util;
 
 import arc.struct.*;
 import mindustry.Vars;
-import mindustry.entities.bullet.BulletType;
+import mindustry.entities.bullet.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -66,15 +66,28 @@ public class ScoreLib {
         return score;
     }
 
+    public float getStacksCost(ItemStack[] stacks){
+        float score = 0f;
+
+        for(ItemStack stack : stacks){
+            score += itemScores.get(stack.item) * stack.amount;
+        }
+
+        return score;
+    }
+
     public float getScoreUnit(UnitType unit){
         float score = getScoreUnitWeapons(unit);
 
         score += (unit.health * 0.3f + unit.dpsEstimate * 0.2f) * unit.speed * Math.max(unit.mineTier, 1f) * Math.max(unit.abilities.size, 1);
+        score += getStacksCost(UnitLib.calcCost(unit));
 
         return score;
     }
 
     public void itemsLoad(){
+        UnitLib.init();
+
         Seq<Item> tmpItemArray = new Seq<>();
         Seq<Float> tmpItemScores = new Seq<>();
         Seq<Integer> tmpItemTypes = new Seq<>();

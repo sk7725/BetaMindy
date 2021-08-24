@@ -8,6 +8,8 @@ import betamindy.world.blocks.storage.Shop.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 
+import static mindustry.Vars.state;
+
 public class LiquidItem extends ShopItem{
     public Liquid liquid;
     public float amount;
@@ -18,7 +20,7 @@ public class LiquidItem extends ShopItem{
         this.amount = amount;
 
         localizedName = "[#" + liquid.color.toString() + "]" + liquid.localizedName + "[]";
-        unlocked = e -> !((ShopBuild)e).disabledLiquid(liquid);
+        unlocked = e -> !((ShopBuild)e).disabledLiquid(liquid) && (liquid.unlocked() || state.rules.infiniteResources);
     }
 
     /*

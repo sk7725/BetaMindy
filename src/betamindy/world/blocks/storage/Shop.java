@@ -313,7 +313,7 @@ public class Shop extends PayloadAcceptor {
                 if(totalCoins() >= price){
                     configure(item);
                 }
-            }).left().growX().disabled(b -> disabledBox());
+            }).left().growX().disabled(b -> disabledBox() || !unlocked);
             pane.row();
         }
 
@@ -346,7 +346,7 @@ public class Shop extends PayloadAcceptor {
                 if(totalCoins() >= price && payload == null) {
                     configure(unit);
                 }
-            }).left().growX().disabled(b -> payload != null);
+            }).left().growX().disabled(b -> payload != null || !unlocked);
             pane.row();
         }
 
@@ -388,7 +388,7 @@ public class Shop extends PayloadAcceptor {
                 if(totalCoins() >= price && payload == null) {
                     configure(block);
                 }
-            }).left().growX().disabled(b -> payload != null);
+            }).left().growX().disabled(b -> payload != null || !unlocked);
             pane.row();
         }
 

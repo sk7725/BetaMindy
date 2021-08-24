@@ -77,7 +77,6 @@ public class PayloadDeconstructor extends PayloadAcceptor {
     @Override
     public void init(){
         super.init();
-        UnitLib.init();
     }
 
     public ItemStack[] payloadCost(Payload pay){

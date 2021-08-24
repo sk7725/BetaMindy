@@ -18,6 +18,8 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.storage.*;
 
+import static mindustry.Vars.state;
+
 public class BlockItem extends ShopItem{
     public Block item;
 
@@ -26,7 +28,7 @@ public class BlockItem extends ShopItem{
         this.item = item;
 
         localizedName = "[#" + blockColor(item).toString() + "]" + item.localizedName + "[]";
-        unlocked = e -> ((Shop.ShopBuild)e).payload == null;
+        unlocked = e -> ((Shop.ShopBuild)e).payload == null && (item.unlocked() || state.rules.infiniteResources);
     }
 /*
     public BlockItem(Block item){
