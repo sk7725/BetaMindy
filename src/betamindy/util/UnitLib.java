@@ -12,7 +12,8 @@ import mindustry.world.consumers.*;
 import java.util.*;
 
 public class UnitLib {
-    public static final ObjectMap<UnitType, ItemStack[]> costs = new ObjectMap<UnitType, ItemStack[]>(33);
+    public static final ObjectMap<UnitType, ItemStack[]> costs = new ObjectMap<>(33);
+    public static final ObjectIntMap<UnitType> tiers = new ObjectIntMap<>(33);
     public static UnitFactory[] factories;
     public static Reconstructor[] recons;
     public static final ItemStack[] defaultStack = {new ItemStack(Items.scrap, 25)};
@@ -53,12 +54,16 @@ public class UnitLib {
             str.append(i.amount);
             str.append(" ");
         }
+        str.append("[accent]<T");
+        str.append(tiers.get(u));
+        str.append(">[]");
         Log.info(str.toString());
         return res;
     }
 
     /** Recursively generates a buildCost for units */
     public static ItemStack[] calcCost(UnitType u){
+        if(!tiers.containsKey(u)) tiers.put(u, 1);
         if(costs.containsKey(u)) return costs.get(u);
         for(Reconstructor b : recons){
             UnitType[] r = b.upgrades.find(u0 -> u0[1] == u);
@@ -68,6 +73,7 @@ public class UnitLib {
                     cost = mergeArray(cost, b.consumes.getItem().items);
                 }
                 costs.put(u, cost);
+                tiers.put(u, tiers.get(r[0]) + 1);
                 return cost;
             }
         }

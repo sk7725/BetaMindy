@@ -22,6 +22,7 @@ import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.struct.*;
 import arc.util.*;
+import betamindy.*;
 import betamindy.content.*;
 import mindustry.Vars;
 import mindustry.content.*;
@@ -169,6 +170,8 @@ public class Useful {
     public static byte wasd(){
         float ya = Core.input.axis(Binding.move_y);
         float xa = Core.input.axis(Binding.move_x);
+        if(BetaMindy.mui.touchpad != null) BetaMindy.mui.touchpad.showStart();
+
         if(Math.abs(ya) > 0.2f){
             if(ya > 0) return 0;
             return 2;
@@ -184,6 +187,8 @@ public class Useful {
     public static byte dwas(){
         float ya = Core.input.axis(Binding.move_y);
         float xa = Core.input.axis(Binding.move_x);
+        if(BetaMindy.mui.touchpad != null) BetaMindy.mui.touchpad.showStart();
+
         if(Math.abs(ya) > 0.2f){
             if(ya > 0) return 1;
             return 3;

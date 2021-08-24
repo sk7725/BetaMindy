@@ -47,6 +47,7 @@ public class BetaMindy extends Mod{
     public static Seq<Block> visibleBlockList = new Seq<Block>();
     public static boolean uwu = OS.username.equals("sunny");
     public static boolean inventoryUI = false;
+    public static boolean showTouchpad = false;
     //public static UnitGravity gravity = new UnitGravity();
 
     private final ContentList[] mindyContent = {
@@ -143,7 +144,10 @@ public class BetaMindy extends Mod{
 
             hints.load();
             mui.init();
+            UnitLib.init();
         });
+
+        Events.run(ServerLoadEvent.class, UnitLib::init);
 
         Events.run(WorldLoadEvent.class, () -> {
             if(!headless){
