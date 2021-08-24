@@ -70,8 +70,6 @@ public class Shop extends PayloadAcceptor {
             if(tile.totalCoins() >= price){
                 if(tile.addItemPayload(item, 15)){
                     tile.removeCoins(price);
-                    tile.payVector.setZero();
-                    tile.payRotation = tile.rotdeg();
                 }
             }
         });
@@ -250,6 +248,8 @@ public class Shop extends PayloadAcceptor {
         public boolean addItemPayload(Item item, int amount){
             if(payload == null){
                 payload = new BuildPayload(MindyBlocks.box, team);
+                payVector.setZero();
+                payRotation = rotdeg();
             }
 
             if(payload instanceof BuildPayload bp){
