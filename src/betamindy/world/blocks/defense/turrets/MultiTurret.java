@@ -88,9 +88,9 @@ public class MultiTurret extends Turret {
 
         public void playerControl(){
             //clientside
-            if(!shouldTurn()) return;
 
             int input = Useful.wasd();
+            if(!shouldTurn()) return;
             if(input == -1) return;
             if(input != mode) configure(input);
         }

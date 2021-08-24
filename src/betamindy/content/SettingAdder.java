@@ -23,6 +23,8 @@ public class SettingAdder {
         Core.settings.put("uiscalechanged", false);
 
         addGameSetting("nonmoddedservers");
+        addGameSetting("touchpadenable");
+        addGameSetting("touchpadalways"); //todo v7 make this disabled when enable is false
         addGraphicSetting("slimeeffect");
         addGraphicSetting("accelballs");
         addGraphicSetting("correctview");

@@ -68,7 +68,7 @@ public class BetaMindy extends Mod{
         musics.init();
         MindySounds.load();
 
-        Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false);
+        Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false, "touchpadenable", mobile, "touchpadalways", false);
         Events.on(ClientLoadEvent.class, e -> {
             settingAdder.init();
             Core.app.post(() -> Core.app.post(() -> {
@@ -143,7 +143,10 @@ public class BetaMindy extends Mod{
 
             hints.load();
             mui.init();
+            UnitLib.init();
         });
+
+        Events.run(ServerLoadEvent.class, UnitLib::init);
 
         Events.run(WorldLoadEvent.class, () -> {
             if(!headless){

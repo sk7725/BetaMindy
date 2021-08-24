@@ -16,11 +16,13 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 
+import static betamindy.BetaMindy.uwu;
 import static mindustry.Vars.*;
 
 public class MindyUILoader {
     public HardmodeFragment hardfrag;
     public PlacementInvFragment invfrag;
+    public TouchpadFragment touchpad;
     private static Seq<Font> fonts;
 
     public static Drawable accentEdge2, pane, pane2, buttonEdge2;
@@ -39,6 +41,10 @@ public class MindyUILoader {
             hardfrag.build(ui.hudGroup);
             invfrag = new PlacementInvFragment();
             invfrag.build(ui.hudGroup);
+            if(Core.settings.getBool("touchpadenable")){//todo bundles
+                touchpad = new TouchpadFragment();
+                touchpad.build(ui.hudGroup);
+            }
         });
 
         if(!Core.settings.getBool("bloom") && !Core.settings.getBool("nobloomask", false)){

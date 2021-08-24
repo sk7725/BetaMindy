@@ -14,6 +14,7 @@ import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -24,6 +25,7 @@ import mindustry.ui.fragments.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
+import static betamindy.BetaMindy.uwu;
 import static betamindy.util.InventoryModule.*;
 import static mindustry.game.EventType.*;
 import static betamindy.BetaMindy.inventoryUI;
@@ -249,9 +251,9 @@ public class PlacementInvFragment extends Fragment {
                 rebuildCategory.run();
                 frame.update(() -> {
                     if(state.rules.infiniteResources && Core.input.keyTap(Binding.pick) && player.isBuilder()){ //mouse eyedropper select
-                        var build = world.buildWorld(Core.input.mouseWorld().x, Core.input.mouseWorld().y);
-                        Block tryRecipe = build == null ? null : build.block;
-                        if(tryRecipe != null) InventoryModule.add(tryRecipe, 10, player.team());
+                        var tile = world.tileWorld(Core.input.mouseWorld().x, Core.input.mouseWorld().y);
+                        Block tryRecipe = tile == null ? null : tile.block();
+                        if(tryRecipe != null && tryRecipe != Blocks.air && (uwu || tile.build != null)) InventoryModule.add(tryRecipe, 10, player.team());
                     }
                     if(player.team() != lastTeam){
                         refreshInventory();

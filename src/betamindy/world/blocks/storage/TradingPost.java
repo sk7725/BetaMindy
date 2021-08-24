@@ -20,6 +20,8 @@ import static mindustry.Vars.*;
 import static betamindy.BetaMindy.*;
 
 public class TradingPost extends Block {
+    private final int[] price = new int[]{0};
+    private final Seq<ItemStack> tempStack = new Seq<>();
 
     public TradingPost(String name){
         super(name);
@@ -27,6 +29,10 @@ public class TradingPost extends Block {
         update = solid = true;
         configurable = true;
         hasItems = true;
+
+        config(Integer.class, (TradingPostBuild entity, Integer value) -> {
+            if(value == 0) entity.sellAll();
+        });
     }
 
     @Override
@@ -46,6 +52,26 @@ public class TradingPost extends Block {
 
     public class TradingPostBuild extends Building implements CoinBuild{
         public int anucoins;
+
+        public void sellAll(){
+            if(items.empty()) return;
+            tempStack.clear();
+            price[0] = 0;
+
+            items.each((Item ii, int aa) -> {
+                if(!itemScores.containsKey(ii)) return;
+
+                price[0] += (int)Math.max((itemScores.get(ii) * aa) / 30f, Math.max(aa / 2f, 1));
+
+                tempStack.add(new ItemStack().set(ii, aa));
+            });
+
+            for(ItemStack stack : tempStack){
+                items.remove(stack.item, stack.amount);
+            }
+
+            anucoins += price[0];
+        }
 
         @Override
         public int coins(){
@@ -81,9 +107,9 @@ public class TradingPost extends Block {
         public void drawConfigure(){ }
 
         @Override
-        public void buildConfiguration(Table table) {
-            int[] price = new int[]{0};
+        public void buildConfiguration(Table table){
             Seq<ItemStack> itemStack = new Seq<>();
+            price[0] = 0;
 
             items.each((Item ii, int aa) -> {
                 if(!itemScores.containsKey(ii)) return;
@@ -94,11 +120,7 @@ public class TradingPost extends Block {
             });
 
             Runnable confirmed = () -> {
-                for (ItemStack stack : itemStack) {
-                    items.remove(stack.item, stack.amount);
-                }
-
-                anucoins += price[0];
+                if(!items.empty()) configure(0);
             };
 
             String text1 = Core.bundle.get("ui.sellAccept") + ":";
