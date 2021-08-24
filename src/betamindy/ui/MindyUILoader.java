@@ -41,7 +41,7 @@ public class MindyUILoader {
             hardfrag.build(ui.hudGroup);
             invfrag = new PlacementInvFragment();
             invfrag.build(ui.hudGroup);
-            if(uwu){//todo settings; settings will decide whether the touchpad shows at all
+            if(Core.settings.getBool("touchpadenable")){//todo bundles
                 touchpad = new TouchpadFragment();
                 touchpad.build(ui.hudGroup);
             }

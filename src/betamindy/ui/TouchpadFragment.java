@@ -18,36 +18,38 @@ public class TouchpadFragment extends Fragment {
     public final static float size = 160f, thresh = 0.15f, timeout = 60 * 5;
     boolean pw, pa, ps, pd;
     float lastShown;
+    final String keyboardKey = "keyboard", alwaysKey = "touchpadalways";
 
     public void showStart(){
         lastShown = Time.globalTime;
     }
 
     public float alpha(){
-        //todo "always" option
+        if(alwaysShow()) return 1f;
         if(!showing()) return 0f;
-        if(mobile && settings.getBool("keyboard")) return 1f;
         float time = (Time.globalTime - lastShown);
         if(time < 20f) return Math.max(time / 20f, 0f);
         return Mathf.clamp((timeout - time) / 60f);
     }
 
     public boolean showing(){
-        return (mobile && settings.getBool("keyboard")) || (Time.globalTime - lastShown < timeout);
+        return (Time.globalTime - lastShown < timeout);
+    }
+
+    public boolean alwaysShow(){
+        return settings.getBool(alwaysKey) || (mobile && settings.getBool(keyboardKey));
     }
 
     @Override
     public void build(Group parent){
-        //todo STouchpad class that has opacity
         //todo bigger background sprite
-        if(uwu) showTouchpad = true;
 
         TextureRegionDrawable knobby = new TextureRegionDrawable(atlas.find("check-on-over"));
         knobby.setMinHeight(size * 0.5f);
         knobby.setMinWidth(size * 0.5f);
 
         parent.fill(full -> {
-            full.bottom().left().visible(() -> showTouchpad && showing());
+            full.bottom().left().visible(() -> alwaysShow() || showing());
             touchpad = new Touchpad(size * 0.15f * Scl.scl(1f), new Touchpad.TouchpadStyle(atlas.getDrawable("check-on-disabled"), knobby));
             touchpad.changed(() -> {
                 float x = touchpad.getKnobPercentX();

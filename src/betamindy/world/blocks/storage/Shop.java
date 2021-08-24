@@ -15,6 +15,7 @@ import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
+import betamindy.type.item.*;
 import betamindy.type.shop.*;
 import betamindy.ui.*;
 import betamindy.world.blocks.payloads.*;
@@ -593,7 +594,7 @@ public class Shop extends PayloadAcceptor {
                     tbl.row();
 
                     for(Item item : Vars.content.items()) {
-                        if(item == MindyItems.bittrium) continue;
+                        if(item == MindyItems.bittrium || (item instanceof ForeignItem)) continue;
                         if(itemScores.containsKey(item)) {
                             itemButton(tbl, item);
                         }

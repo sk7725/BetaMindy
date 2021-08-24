@@ -47,7 +47,6 @@ public class BetaMindy extends Mod{
     public static Seq<Block> visibleBlockList = new Seq<Block>();
     public static boolean uwu = OS.username.equals("sunny");
     public static boolean inventoryUI = false;
-    public static boolean showTouchpad = false;
     //public static UnitGravity gravity = new UnitGravity();
 
     private final ContentList[] mindyContent = {
@@ -69,7 +68,7 @@ public class BetaMindy extends Mod{
         musics.init();
         MindySounds.load();
 
-        Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false);
+        Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false, "touchpadenable", mobile, "touchpadalways", false);
         Events.on(ClientLoadEvent.class, e -> {
             settingAdder.init();
             Core.app.post(() -> Core.app.post(() -> {
