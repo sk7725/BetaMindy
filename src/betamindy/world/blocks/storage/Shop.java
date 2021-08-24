@@ -296,7 +296,7 @@ public class Shop extends PayloadAcceptor {
 
             pane.button(t -> {
                 t.left();
-                t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
+                t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Pal.gray);
 
                 if(unlocked) {
                     t.table(tt -> {
@@ -325,7 +325,7 @@ public class Shop extends PayloadAcceptor {
             pane.button(t -> {
                 t.left();
 
-                t.image(unlocked ? unit.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
+                t.image(unlocked ? unit.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Pal.gray);
 
                 t.table(tt -> {
                     int type = unitTypeMap.get(unit);
@@ -374,7 +374,7 @@ public class Shop extends PayloadAcceptor {
             pane.button(t -> {
                 t.left();
 
-                t.image(unlocked ? block.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
+                t.image(unlocked ? block.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Pal.gray);
 
                 t.table(tt -> {
                     tt.left();
