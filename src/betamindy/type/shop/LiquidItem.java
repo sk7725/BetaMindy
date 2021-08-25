@@ -1,10 +1,10 @@
 package betamindy.type.shop;
 
 import arc.*;
-import arc.graphics.g2d.*;
+import arc.graphics.*;
 import arc.scene.ui.*;
-import betamindy.*;
 import betamindy.world.blocks.storage.Shop.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 
@@ -37,8 +37,10 @@ public class LiquidItem extends ShopItem{
 
     @Override
     public void buildButton(Button t){
+        boolean unlocked = liquid.unlocked() || state.rules.infiniteResources;
+
         t.left();
-        t.image(liquid.icon(Cicon.medium)).size(40).padRight(10f);
+        t.image(unlocked ? liquid.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
 
         t.table(tt -> {
             tt.left();

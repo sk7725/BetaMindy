@@ -1,9 +1,11 @@
 package betamindy.type.shop;
 
 import arc.*;
+import arc.graphics.Color;
 import arc.scene.ui.*;
 import betamindy.*;
 import betamindy.world.blocks.storage.Shop.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 
@@ -34,14 +36,18 @@ public class ItemItem extends ShopItem{
 
     @Override
     public void buildButton(Button t){
-        t.left();
-        t.image(item.icon(Cicon.medium)).size(40).padRight(10f);
+        boolean unlocked = item.unlocked() || state.rules.infiniteResources;
 
-        t.table(tt -> {
-            tt.left();
-            tt.add(localizedName + " [accent]x"+amount+"[]").growX().left();
-            tt.row();
-            tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
-        }).growX();
+        t.left();
+        t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
+
+        if(unlocked) {
+            t.table(tt -> {
+                tt.left();
+                tt.add(localizedName + " [accent]x" + amount + "[]").growX().left();
+                tt.row();
+                tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
+            }).growX();
+        }
     }
 }

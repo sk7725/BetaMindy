@@ -5,11 +5,11 @@ import betamindy.world.blocks.storage.Shop.*;
 import mindustry.gen.*;
 
 public class ShopItem extends PurchaseItem {
-    public ShopItem(String name, int cost){
+    public ShopItem(String name, int cost) {
         super(name, cost);
     }
 
-    public boolean shop(ShopBuild source){
+    public boolean shop(ShopBuild source) {
         return false;
     }
 }

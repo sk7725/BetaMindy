@@ -124,6 +124,14 @@ public class Shop extends PayloadAcceptor {
             itemScores = BetaMindy.itemScores;
             unitScores = BetaMindy.unitScores;
 
+            if(purchases != null) {
+                for (PurchaseItem purchase : purchases) {
+                    if (purchase instanceof PackageShopItem p && p.cost == 0) {
+                        p.definePrice();
+                    }
+                }
+            }
+
             for (UnitType unit : Vars.content.units()) {
                 if (unitScores.containsKey(unit)) {
                     unitTypeMap.put(unit, checkUnitType(unit));
