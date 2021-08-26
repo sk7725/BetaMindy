@@ -126,6 +126,7 @@ public class Shop extends PayloadAcceptor {
         super.init();
 
         shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
+        shopDialog.addCloseButton();
 
         Runnable ee = () -> {
             itemScores = BetaMindy.itemScores;
@@ -317,7 +318,11 @@ public class Shop extends PayloadAcceptor {
                     t.table(tt -> {
                         tt.left();
                         String color = colorToHex(item.color);
-                        tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x15[]").growX().left();
+
+                        Label text = new Label("[#" + color + "]" + item.localizedName + "[] [accent]x15[]");
+                        text.setWrap(true);
+                        tt.add(text).growX().left();
+
                         tt.row();
                         tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();
                     }).growX();
@@ -346,7 +351,10 @@ public class Shop extends PayloadAcceptor {
                     int type = unitTypeMap.get(unit);
                     tt.left();
 
-                    tt.add(unlocked ? unit.localizedName : "???").growX().left().color(player == null || player.team() == null || player.team().id == Team.derelict.id ? Pal.accent : player.team().color);
+                    Label text = new Label(unlocked ? unit.localizedName : "???");
+                    text.setWrap(true);
+
+                    tt.add(text).growX().left().color(player == null || player.team() == null || player.team().id == Team.derelict.id ? Pal.accent : player.team().color);
 
                     if(unlocked) {
                         tt.row();
@@ -394,7 +402,10 @@ public class Shop extends PayloadAcceptor {
                 t.table(tt -> {
                     tt.left();
 
-                    tt.add(unlocked ? block.localizedName : "???").growX().left().color(BlockItem.blockColor(block));
+                    Label text = new Label(unlocked ? block.localizedName : "???");
+                    text.setWrap(true);
+
+                    tt.add(text).growX().left().color(BlockItem.blockColor(block));
                     tt.row();
 
                     if(unlocked) tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();
@@ -625,8 +636,6 @@ public class Shop extends PayloadAcceptor {
 
             shopDialog.cont.row();
             itemCell = shopDialog.cont.add(itemPane).center().width(width * 0.6f);
-
-            shopDialog.addCloseButton();
             shopDialog.show();
         }
 

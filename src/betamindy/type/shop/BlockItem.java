@@ -80,7 +80,11 @@ public class BlockItem extends ShopItem{
         if(unlocked) {
             t.table(tt -> {
                 tt.left();
-                tt.add(localizedName).growX().left();
+
+                Label text = new Label(localizedName);
+                text.setWrap(true);
+
+                tt.add(text).growX().left();
                 tt.row();
                 tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
             }).growX();

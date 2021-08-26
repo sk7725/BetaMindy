@@ -44,7 +44,11 @@ public class ItemItem extends ShopItem{
         if(unlocked) {
             t.table(tt -> {
                 tt.left();
-                tt.add(localizedName + " [accent]x" + amount + "[]").growX().left();
+
+                Label text = new Label(localizedName + " [accent]x" + amount + "[]");
+                text.setWrap(true);
+
+                tt.add(text).growX().left();
                 tt.row();
                 tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
             }).growX();

@@ -22,9 +22,9 @@ import static java.lang.Float.*;
 import static mindustry.Vars.ui;
 
 public class ShopItems implements ContentList {
-    public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10,
+    public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11,
     holyRouter;
-    public static PurchaseItem firstAids, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie, bossCake;
+    public static PurchaseItem firstAid, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie, bossCake;
 
     @Override
     public void load(){
@@ -37,44 +37,44 @@ public class ShopItems implements ContentList {
                 ItemStack.with(Items.silicon, 1000, Items.graphite, 1000)
         );
 
-        package2 = new PackageShopItem("ore-package",
+        package3 = new PackageShopItem("ore-package",
                 ItemStack.with(MindyItems.scalarRaw, 100, MindyItems.tensorRaw, 100, MindyItems.vectorRaw, 100)
         );
 
-        package3 = new PackageShopItem("meltdown-package",
+        package4 = new PackageShopItem("meltdown-package",
                 ItemStack.with(Items.copper, 1200, Items.lead, 350, Items.graphite, 300, Items.silicon, 325, Items.surgeAlloy, 325)
         );
 
-        package4 = new PackageShopItem("mynamite-package",
+        package5 = new PackageShopItem("mynamite-package",
             ItemStack.with(Items.thorium, 180, Items.blastCompound, 400)
         );
 
-        package5 = new PackageShopItem("pipes-package",
+        package6 = new PackageShopItem("pipes-package",
             ItemStack.with(Items.metaglass, 200, Items.graphite, 130)
         );
 
-        package6 = new PackageShopItem("unit-package",
+        package7 = new PackageShopItem("unit-package",
             ItemStack.with(Items.copper, 500, Items.lead, 500, Items.silicon, 500)
         );
 
-        package7 = new PackageShopItem("spectre-in-a-box",
+        package8 = new PackageShopItem("spectre-in-a-box",
             ItemStack.with(Items.copper, 900, Items.graphite, 300, Items.thorium, 250, Items.plastanium, 175, Items.surgeAlloy, 250)
         );
 
-        package8 = new PackageShopItem("spectre-package",
+        package9 = new PackageShopItem("spectre-package",
             ItemStack.with(Items.copper, 9000, Items.graphite, 3000, Items.thorium, 2500, Items.plastanium, 1750, Items.surgeAlloy, 2500)
         );
 
-        package9 = new PackageShopItem("foundation-in-a-box",
+        package10 = new PackageShopItem("foundation-in-a-box",
             ItemStack.with(Items.copper, 3000, Items.lead, 3000, Items.silicon, 2000)
         );
 
-        package10 = new PackageShopItem("nucleus-in-a-box",
+        package11 = new PackageShopItem("nucleus-in-a-box",
             ItemStack.with(Items.copper, 8000, Items.lead, 8000, Items.silicon, 5000, Items.thorium, 4000)
         );
 
         /* Runnables */
-        firstAids = new PurchaseRunnable("first-aids", 1500){{
+        firstAid = new PurchaseRunnable("first-aids", 23299){{
             purchased = e -> {
                 e.team.cores().each(c -> c.health = c.maxHealth);
                 return true;
@@ -91,7 +91,7 @@ public class ShopItems implements ContentList {
             };
         }};
 
-        invincibleCore = new PurchaseRunnable("invi-core", 10250){{
+        invincibleCore = new PurchaseRunnable("invi-core", 35799){{
             purchased = e -> {
                 e.team.cores().each(c -> c.health = Float.NaN);
 

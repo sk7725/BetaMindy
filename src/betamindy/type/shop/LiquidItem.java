@@ -44,7 +44,11 @@ public class LiquidItem extends ShopItem{
 
         t.table(tt -> {
             tt.left();
-            tt.add(localizedName + " [accent]"+amount+"L[]").growX().left();
+
+            Label text = new Label(localizedName + " [accent]" + amount + "L[]");
+            text.setWrap(true);
+
+            tt.add(text).growX().left();
             tt.row();
             tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
         }).growX();
