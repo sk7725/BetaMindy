@@ -1174,7 +1174,7 @@ public class MindyBlocks implements ContentList {
         extraShop = new Shop("extra-shop"){{
             requirements(Category.effect, BuildVisibility.sandboxOnly, with(Items.copper, 1));
             size = 3;
-            purchases = new PurchaseItem[]{firstAid, invincibleCore, package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11};
+            purchases = new PurchaseItem[]{firstAid, invincibleCore, package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11, package12, package13};
         }};
 
         testShop = new Shop("test-shop"){{

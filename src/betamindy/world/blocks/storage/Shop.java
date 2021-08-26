@@ -65,7 +65,7 @@ public class Shop extends PayloadAcceptor {
     public Shop(String name){
         super(name);
 
-        update = solid = hasItems = outputsPayload = sync = rotate = configurable = true;
+        update = solid = outputsPayload = sync = rotate = configurable = true;
         saveConfig = false;
         acceptsItems = true;
         unloadable = false;
@@ -575,7 +575,7 @@ public class Shop extends PayloadAcceptor {
 
             shopDialog.cont.table(t -> {
                 t.center();
-                Image image = t.image(AnucoinTex.uiCoin).size(30f).center().padRight(10f).get();
+                Image image = t.image(AnucoinTex.uiCoin).size(30f).center().padRight(6f).get();
                 image.clicked(() -> {
                     if(Core.input.keyDown(KeyCode.shiftLeft) || mobile){
                         if(Core.app.getClipboardText().equals(AnucoinTex.emoji)){

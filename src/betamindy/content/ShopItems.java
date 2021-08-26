@@ -22,7 +22,7 @@ import static java.lang.Float.*;
 import static mindustry.Vars.ui;
 
 public class ShopItems implements ContentList {
-    public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11,
+    public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11, package12, package13,
     holyRouter;
     public static PurchaseItem firstAid, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie, bossCake;
 
@@ -73,8 +73,16 @@ public class ShopItems implements ContentList {
             ItemStack.with(Items.copper, 8000, Items.lead, 8000, Items.silicon, 5000, Items.thorium, 4000)
         );
 
+        package12 = new PackageShopItem("repair-kit",
+                ItemStack.with(Items.copper, 110, Items.lead, 120, Items.silicon, 40)
+        );
+
+        package13 = new PackageShopItem("spore-kit",
+                ItemStack.with(Items.sporePod, 69 * 420)
+        );
+
         /* Runnables */
-        firstAid = new PurchaseRunnable("first-aids", 23299){{
+        firstAid = new PurchaseRunnable("first-aid", 23299){{
             purchased = e -> {
                 e.team.cores().each(c -> c.health = c.maxHealth);
                 return true;

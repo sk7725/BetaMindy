@@ -41,7 +41,11 @@ public abstract class PurchaseItem {
 
         if(description != null){
             t.row();
-            t.add(description).growX().left().color(Color.gray);
+
+            Label text = new Label(description);
+            text.setWrap(true);
+
+            t.add(text).growX().left().color(Color.gray);
         }
         t.row();
         t.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
