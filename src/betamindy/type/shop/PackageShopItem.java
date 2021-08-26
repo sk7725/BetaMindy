@@ -39,6 +39,11 @@ public class PackageShopItem extends ShopItem {
         for(ItemStack stack : packageItems){
             this.cost += (int)(BetaMindy.itemScores.get(stack.item) * stack.amount * 0.6f);
         }
+
+        if(this.cost >= 500) {
+            this.cost /= 100;
+            this.cost = Math.round(this.cost) * 100 - 1;
+        }
     }
 
     @Override
