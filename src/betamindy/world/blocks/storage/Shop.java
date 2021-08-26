@@ -317,7 +317,7 @@ public class Shop extends PayloadAcceptor {
                 if(unlocked) {
                     t.table(tt -> {
                         tt.left();
-                        String color = colorToHex(item.color == Color.black ? Color.lightGray : item.color);
+                        String color = colorToHex(item.color.equals(Color.black) ? Color.lightGray : item.color);
 
                         Label text = new Label("[#" + color + "]" + item.localizedName + "[] [accent]x15[]");
                         text.setWrap(true);
