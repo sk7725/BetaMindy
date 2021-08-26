@@ -40,7 +40,7 @@ public class LiquidItem extends ShopItem{
         boolean unlocked = liquid.unlocked() || state.rules.infiniteResources;
 
         t.left();
-        t.image(unlocked ? liquid.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
+        t.image(unlocked ? liquid.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.lightGray);
 
         t.table(tt -> {
             tt.left();

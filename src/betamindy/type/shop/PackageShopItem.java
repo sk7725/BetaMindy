@@ -51,7 +51,7 @@ public class PackageShopItem extends ShopItem {
 
             t.table(tt -> {
                 tt.left();
-                tt.image(unlocked ? stack.item.icon(Cicon.small) : Icon.tree.getRegion()).left().padRight(2f).color(unlocked ? Color.white : Color.red);
+                tt.image(unlocked ? stack.item.icon(Cicon.small) : Icon.tree.getRegion()).left().padRight(2f).color(unlocked ? Color.white : Color.lightGray);
                 tt.add(String.valueOf(stack.amount)).left();
             }).left();
         }

@@ -1,7 +1,7 @@
 package betamindy.type.shop;
 
 import arc.*;
-import arc.graphics.Color;
+import arc.graphics.*;
 import arc.scene.ui.*;
 import betamindy.*;
 import betamindy.world.blocks.storage.Shop.*;
@@ -39,7 +39,7 @@ public class ItemItem extends ShopItem{
         boolean unlocked = item.unlocked() || state.rules.infiniteResources;
 
         t.left();
-        t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
+        t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.lightGray);
 
         if(unlocked) {
             t.table(tt -> {

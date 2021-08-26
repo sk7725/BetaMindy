@@ -6,7 +6,7 @@ import arc.scene.ui.*;
 import betamindy.*;
 import betamindy.world.blocks.storage.*;
 import mindustry.content.*;
-import mindustry.gen.Icon;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -75,7 +75,7 @@ public class BlockItem extends ShopItem{
         boolean unlocked = item.unlocked() || state.rules.infiniteResources;
 
         t.left();
-        t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.red);
+        t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.lightGray);
 
         if(unlocked) {
             t.table(tt -> {
