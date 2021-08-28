@@ -155,6 +155,8 @@ public class BetaMindy extends Mod{
             }
         });
 
+        new JsonShopPackageLoader().loadPackages();
+
         hardmode.init();
         Events.run(Trigger.update, () -> {
             if(state.isPlaying()) hardmode.update();

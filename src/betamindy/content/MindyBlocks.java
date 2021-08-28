@@ -1174,14 +1174,14 @@ public class MindyBlocks implements ContentList {
         extraShop = new Shop("extra-shop"){{
             requirements(Category.effect, BuildVisibility.sandboxOnly, with(Items.copper, 1));
             size = 3;
-            purchases = new PurchaseItem[]{firstAid, invincibleCore, package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11, package12, package13};
+            purchases = Seq.with(firstAid, invincibleCore, package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11, package12, package13);
         }};
 
         testShop = new Shop("test-shop"){{
             requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.sandboxOnly, with(Items.copper, 1));
             size = 3;
             defaultAnucoins = 1000;
-            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1)};
+            purchases = Seq.with(package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1));
             sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
             alwaysUnlocked = uwu;
         }};

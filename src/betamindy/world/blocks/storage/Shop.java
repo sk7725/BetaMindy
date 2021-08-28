@@ -45,7 +45,7 @@ public class Shop extends PayloadAcceptor {
     public float spinShadowRadius = 15f;
     public boolean drawSpinSprite = false;
 
-    public @Nullable PurchaseItem[] purchases;
+    public @Nullable Seq<PurchaseItem> purchases;
     public @Nullable Block[] soldBlocks;
     public boolean sellAllItems = false;
     public boolean sellAllUnits = false;
@@ -422,8 +422,8 @@ public class Shop extends PayloadAcceptor {
         public void configured(Unit builder, Object value){
             if(value instanceof Integer){
                 int i = (Integer)value;
-                if(purchases == null || i < 0 || i >= purchases.length) return;
-                PurchaseItem item = purchases[i];
+                if(purchases == null || i < 0 || i >= purchases.size) return;
+                PurchaseItem item = purchases.get(i);
                 if(totalCoins() >= item.cost){
                     if(item instanceof ShopItem shopitem){
                         if(shopitem.shop(this)){
@@ -651,9 +651,9 @@ public class Shop extends PayloadAcceptor {
                     }).fillX().growX();
                     tbl.row();
 
-                    for(int i = 0; i < purchases.length; i++){
-                        if(!searchString.equals("") && (!purchases[i].name.contains(searchString) && !purchases[i].localizedName.contains(searchString))) continue;
-                        extraButton(tbl, purchases[i], i);
+                    for(int i = 0; i < purchases.size; i++){
+                        if(!searchString.equals("") && (!purchases.get(i).name.contains(searchString) && !purchases.get(i).localizedName.contains(searchString))) continue;
+                        extraButton(tbl, purchases.get(i), i);
                     }
                 }
                 if(sellAllItems){
