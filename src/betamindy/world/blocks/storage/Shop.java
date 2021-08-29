@@ -65,7 +65,7 @@ public class Shop extends PayloadAcceptor {
     public Shop(String name){
         super(name);
 
-        update = solid = outputsPayload = sync = rotate = configurable = true;
+        update = solid = hasItems = outputsPayload = sync = rotate = configurable = true;
         saveConfig = false;
         acceptsItems = true;
         unloadable = false;
