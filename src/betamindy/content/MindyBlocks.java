@@ -1308,7 +1308,7 @@ public class MindyBlocks implements ContentList {
 
         //todo dailystore
         ancientStore = new Store("ancient-store", "special", new PurchaseItem[]{bittriumWine, new PurchaseInvBlock(floorRemover, 10, 20)},"8bit-floor", bitl(gamerSky, gamerGreens, gamerGrass, gamerIron, gamerWood, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks)){{
-            requirements(Category.effect, BuildVisibility.sandboxOnly, with(Items.copper, 1));
+            requirements(Category.effect, uwu ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with(Items.copper, 1));
             size = 2;
         }};
     }
