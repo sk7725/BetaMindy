@@ -36,7 +36,7 @@ import mindustry.world.blocks.production.*;
 import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
-@SuppressWarnings("al")
+@SuppressWarnings("all")
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 0;
     public TextureRegion spinRegion;
@@ -45,14 +45,15 @@ public class Shop extends PayloadAcceptor {
     public float spinShadowRadius = 15f;
     public boolean drawSpinSprite = false;
 
-    public @Nullable Seq<PurchaseItem> purchases;
+    public Seq<PurchaseItem> jsonItems;
+    public @Nullable PurchaseItem[] purchases;
     public @Nullable Block[] soldBlocks;
     public boolean sellAllItems = false;
     public boolean sellAllUnits = false;
     public boolean sellAllBlocks = false;
     public boolean navigationBar = false;
 
-    BaseDialog shopDialog;
+    BaseDialog shopDialog = null;
     String searchString = "";
     Cell<ScrollPane> itemCell;
 
@@ -125,8 +126,10 @@ public class Shop extends PayloadAcceptor {
     public void init(){
         super.init();
 
-        shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
-        shopDialog.addCloseButton();
+        Seq<PurchaseItem> temp = new Seq();
+        temp.addAll(jsonItems);
+        temp.addAll(purchases);
+        purchases = temp.toArray();
 
         Runnable ee = () -> {
             itemScores = BetaMindy.itemScores;
@@ -422,8 +425,8 @@ public class Shop extends PayloadAcceptor {
         public void configured(Unit builder, Object value){
             if(value instanceof Integer){
                 int i = (Integer)value;
-                if(purchases == null || i < 0 || i >= purchases.size) return;
-                PurchaseItem item = purchases.get(i);
+                if(purchases == null || i < 0 || i >= purchases.length) return;
+                PurchaseItem item = purchases[i];
                 if(totalCoins() >= item.cost){
                     if(item instanceof ShopItem shopitem){
                         if(shopitem.shop(this)){
@@ -566,6 +569,12 @@ public class Shop extends PayloadAcceptor {
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
+
+            if(shopDialog == null) {
+                shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
+                shopDialog.addCloseButton();
+            }
+
             searchString = "";
 
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
@@ -651,9 +660,9 @@ public class Shop extends PayloadAcceptor {
                     }).fillX().growX();
                     tbl.row();
 
-                    for(int i = 0; i < purchases.size; i++){
-                        if(!searchString.equals("") && (!purchases.get(i).name.contains(searchString) && !purchases.get(i).localizedName.contains(searchString))) continue;
-                        extraButton(tbl, purchases.get(i), i);
+                    for(int i = 0; i < purchases.length; i++){
+                        if(!searchString.equals("") && (!purchases[i].name.contains(searchString) && !purchases[i].localizedName.contains(searchString))) continue;
+                        extraButton(tbl, purchases[i], i);
                     }
                 }
                 if(sellAllItems){

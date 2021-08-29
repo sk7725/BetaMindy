@@ -2,6 +2,8 @@ package betamindy.type.shop;
 
 
 public enum ItemType {
-    PackageShopItem,
-    PurchaseRunnable;
+    Package,
+    Runnable,
+    Block,
+    Liquid;
 }

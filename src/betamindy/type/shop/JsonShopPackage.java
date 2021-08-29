@@ -1,10 +1,13 @@
 package betamindy.type.shop;
 
 import arc.func.*;
+import arc.util.Log;
 import betamindy.type.*;
+import mindustry.ctype.UnlockableContent;
 import mindustry.gen.*;
 import mindustry.type.*;
-import rhino.*;
+import mindustry.world.Block;
+//import rhino.*;
 
 public class JsonShopPackage {
     public Boolf<Building> purchased, unlocked;
@@ -14,29 +17,34 @@ public class JsonShopPackage {
         this.unlocked = unlocked;
     }
 
-    public PurchaseItem NewJsonShopPackage(String name, ItemType itemType, ItemStack[] items, int cost, String code){
-        PurchaseItem item = null;
-        if(itemType == ItemType.PackageShopItem){
-            item = new PackageShopItem(name, items);
-        } else if(itemType == ItemType.PurchaseRunnable){
-            if(code == null) return null;
+    public PurchaseItem NewJsonShopPackage(String name, ItemType itemType, ItemStack[] items, Integer cost, String code, UnlockableContent cItem, Integer amount){
+        PurchaseItem item;
 
-            Context ctx = Context.enter();
-            Scriptable scope = ctx.initStandardObjects();
+        //For later fixing and usage at stable v7
+        /*if(code == null) return null;
 
-            Object wrappedStock = Context.javaToJS(this, scope);
-            ScriptableObject.putProperty(scope, "pkg", wrappedStock);
+        Context ctx = Context.enter();
+        Scriptable scope = ctx.initStandardObjects();
 
-            ctx.evaluateString(scope, code.replace("\n", ""), "PackageScript", 1, null);
+        Object wrappedStock = Context.javaToJS(this, scope);
+        ScriptableObject.putProperty(scope, "pkg", wrappedStock);
 
-            Context.exit();
+        ctx.evaluateString(scope, code.replace("\n", ""), "PackageScript", 1, null);
 
-            item = new PurchaseRunnable(name, cost){{
-                purchased = e -> this.purchased.get(e);
+        Context.exit();
 
-                unlocked = e -> this.unlocked.get(e);
-            }};
-        }
+        item = new PurchaseRunnable(name, cost){{
+            purchased = e -> this.purchased.get(e);
+
+            unlocked = e -> this.unlocked.get(e);
+        }};*/
+
+        item = switch (itemType) {
+            case Package -> new PackageShopItem(name, items);
+            case Runnable -> new PurchaseRunnable(null, 0);
+            case Block -> new BlockItem((Block) cItem, cost);
+            case Liquid -> new LiquidItem((Liquid) cItem, cost, amount);
+        };
         
         return item;
     }

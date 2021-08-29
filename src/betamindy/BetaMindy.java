@@ -52,6 +52,7 @@ public class BetaMindy extends Mod{
     private final ContentList[] mindyContent = {
         new OverWriter(),
         new MindyStatusEffects(),
+        new MindyLiquids(),
         new MindyItems(),
         new MindyBullets(),
         new MindyUnitTypes(),

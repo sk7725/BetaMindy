@@ -5,9 +5,8 @@ import mindustry.type.*;
 import java.util.*;
 
 public class ShopPackageType {
-    public String itemType, shop;
-    public String codePath;
-    public Integer cost;
+    public String itemType, shop, item, codePath;
+    public Integer cost, amount;
     public ItemStack[] items = {};
 
     @Override
@@ -15,6 +14,7 @@ public class ShopPackageType {
         return "ShopPackageType{" +
             "itemType=" + itemType +
             ", cost=" + cost +
+            ", amount=" + amount +
             ", shop=" + shop +
             ", items=" + Arrays.toString(items) +
         '}';

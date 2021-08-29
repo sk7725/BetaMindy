@@ -2,29 +2,37 @@ package betamindy.util;
 
 import arc.files.*;
 import arc.util.*;
-import betamindy.content.MindyBlocks;
+import arc.util.serialization.*;
+import betamindy.content.*;
 import betamindy.type.*;
 import betamindy.type.shop.*;
 import betamindy.world.blocks.storage.*;
+import mindustry.ctype.*;
 import mindustry.io.*;
-import mindustry.type.ItemStack;
-import rhino.JavaScriptException;
+import mindustry.type.*;
 
 import static mindustry.Vars.*;
 
 public class JsonShopPackageLoader {
-    public void loadPackages(){
+    public void loadPackages() {
         mods.list().each(e -> {
             if(!e.isJava()) {
                 Fi path = e.root.child("content");
-                if(path != null) path = path.child("packages");
+                if(path != null) path = path.child("shopItems");
                 final Fi finalPath = path;
 
                 if(path != null){
                     path.walk(c -> {
-                        if(c.extEquals("json")){
+                        if(c.extEquals("json") ||c.extEquals("hjson")){
+                            ShopPackageType pack;
+
+                            if(c.extEquals("hjson")){
+                                pack = JsonIO.json.fromJson(ShopPackageType.class, Jval.read(c.readString()).toString(Jval.Jformat.plain));
+                            } else {
+                                pack = JsonIO.json.fromJson(ShopPackageType.class, c.readString());
+                            }
+
                             String name = e.meta.name + "." + c.nameWithoutExtension();
-                            ShopPackageType pack = JsonIO.json.fromJson(ShopPackageType.class, c.readString());
 
                             if(pack != null){
                                 String itemType = pack.itemType;
@@ -47,12 +55,23 @@ public class JsonShopPackageLoader {
                                     Log.info(code);
                                 }
 
-                                PurchaseItem item = new JsonShopPackage().NewJsonShopPackage(name, ItemType.valueOf(itemType), items, pack.cost == null ? 69 : pack.cost, code);
+                                ItemType type = ItemType.valueOf(itemType);
+                                UnlockableContent cItem = switch (type){
+                                    case Block -> content.block(pack.item);
+                                    case Liquid -> content.getByName(ContentType.liquid, pack.item);
+                                    default -> null;
+                                };
 
-                                if(item != null && shop != null){
-                                    shop.purchases.add(item);
+                                PurchaseItem item = new JsonShopPackage().NewJsonShopPackage(name, type, items, pack.cost == null ? 69 : pack.cost, code, cItem, pack.amount);
+
+                                if(item instanceof PurchaseRunnable){
+                                    Log.info("Runnables in json are not supported yet. Please wait until v7.");
                                 } else {
-                                    Log.err("Package error for package " + name);
+                                    if (item != null && shop != null) {
+                                        shop.jsonItems.add(item);
+                                    } else {
+                                        Log.err("Package error for package " + name);
+                                    }
                                 }
                             }
                         }

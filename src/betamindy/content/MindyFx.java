@@ -1087,5 +1087,29 @@ public class MindyFx {
         color(Pal.lancerLaser);
         stroke(3f - e.fin() * 2f);
         Lines.square(e.x, e.y, tilesize / 2f * e.rotation + e.fin() * 3f);
+    }),
+
+    razor = new Effect(25f, e -> {
+        stroke(e.fout());
+        color(Color.orange, Pal.lightishGray, e.fin());
+
+        randLenVectors(e.id, 1 + e.id % 2, 14f * e.finpow(), e.rotation + 90f, 25f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 3.5f);
+        });
+        randLenVectors(e.id, 2 - e.id % 2, 14f * e.finpow(), e.rotation - 90f, 25f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 3.5f);
+        });
+    }),
+
+    razorFast = new Effect(15f, e -> {
+        stroke(e.fout());
+        color(Color.orange, Pal.lightishGray, e.fin());
+
+        randLenVectors(e.id, 1 + e.id % 2, 14f * e.finpow(), e.rotation + 90f, 25f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 3.5f);
+        });
+        randLenVectors(e.id, 2 - e.id % 2, 14f * e.finpow(), e.rotation - 90f, 25f, (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 3.5f);
+        });
     });
 }
