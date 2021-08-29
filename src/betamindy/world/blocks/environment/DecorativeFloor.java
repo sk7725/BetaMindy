@@ -1,13 +1,20 @@
 package betamindy.world.blocks.environment;
 
 import betamindy.*;
+import betamindy.content.*;
+import betamindy.type.*;
+import betamindy.type.shop.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.meta.*;
+
+import static mindustry.type.ItemStack.with;
 
 public class DecorativeFloor extends OverlayFloor {
     public boolean refund = true;
@@ -15,6 +22,8 @@ public class DecorativeFloor extends OverlayFloor {
         super(name);
         update = true;
         alwaysUnlocked = true;
+        variants = 0;
+        requirements(Category.effect, BuildVisibility.hidden, with());
     }
 
     @Override

@@ -28,7 +28,7 @@ import static mindustry.Vars.*;
 public class Spinner extends Block {
     public float spinTime = 16f;
 
-    public TextureRegion baseRegion, topRegion, laser, laserEnd, altIcon;
+    public TextureRegion baseRegion, topRegion, laser, laserEnd, altIcon, topRegion2;
     public TextureRegion[] sideRegions = new TextureRegion[2];
     public TextureRegion[][] sideRegions2 = new TextureRegion[2][2];
 
@@ -40,6 +40,7 @@ public class Spinner extends Block {
     /** Whether to keep spinning when picked up. */
     public boolean inertia = false;
     public Color inertiaColor = Pal.accent;
+    public boolean drawSpinSprite = true;
 
     public final int[][] evenOffsets = {{-1, -1}, {0, -1}, {0, 0}, {-1, 0}};
 
@@ -62,15 +63,27 @@ public class Spinner extends Block {
     @Override
     public void load() {
         super.load();
-        baseRegion = atlas.find(name + "-base");
+        baseRegion = atlas.find(name + "-base", "betamindy-cog-base");
         topRegion = atlas.find(name + "-top", "betamindy-spinner-top");
-        laser = atlas.find(name + "-laser", "betamindy-spinner-laser");
-        laserEnd = atlas.find(name + "-laser-end", "betamindy-spinner-laser-end");
         altIcon = atlas.find(name + "-alt");
-        for(int i = 0; i < 2; i++){
-            sideRegions[i] = atlas.find(name + "-" + i, "betamindy-spinner-" + i);
-            for(int j = 0; j < 2; j++){
-                sideRegions2[i][j] = atlas.find(name + "-side-" + (j * 2 + i), "betamindy-spinner-side-" + (j * 2 + i));
+        if(drawSpinSprite){
+            laser = atlas.find(name + "-laser", "betamindy-spinner-laser");
+            laserEnd = atlas.find(name + "-laser-end", "betamindy-spinner-laser-end");
+            for(int i = 0; i < 2; i++){
+                sideRegions[i] = atlas.find(name + "-" + i, "betamindy-spinner-" + i);
+                for(int j = 0; j < 2; j++){
+                    sideRegions2[i][j] = atlas.find(name + "-side-" + (j * 2 + i), "betamindy-spinner-side-" + (j * 2 + i));
+                }
+            }
+        }
+        else{
+            laser = atlas.find(name + "-laser", "betamindy-cog-laser");
+            laserEnd = atlas.find(name + "-laser-end", "betamindy-cog-laser-end");
+            topRegion2 = atlas.find(name + "-top-2", "betamindy-cog-top-2");
+            for(int i = 0; i < 2; i++){
+                for(int j = 0; j < 2; j++){
+                    sideRegions2[i][j] = atlas.find(name + "-side-" + (j * 2 + i), "betamindy-cog-side-" + (j * 2 + i));
+                }
             }
         }
     }
@@ -287,18 +300,27 @@ public class Spinner extends Block {
 
         public void drawSpinning(float x, float y, float dr, boolean tint){
             Draw.rect(baseRegion, x, y, dr);
-            Draw.rect(sideRegions[Mathf.num(ccw)], x, y, dr);
-            Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f + dr);
 
-            if(!spinning || spin % spinTime < 0.0001f){
-                Draw.rect(topRegion, x, y, dr);
+            if(drawSpinSprite){
+                Draw.rect(sideRegions[Mathf.num(ccw)], x, y, dr);
+                Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f + dr);
+
+                if(!spinning || spin % spinTime < 0.0001f){
+                    Draw.rect(topRegion, x, y, dr);
+                }else{
+                    float r = (spin % spinTime) / spinTime * 90f;
+                    Draw.rect(topRegion, x, y, r * Mathf.sign(ccw) + dr);
+                    Draw.alpha(r / 90f);
+                    Draw.rect(topRegion, x, y, (r - 90f) * Mathf.sign(ccw) + dr);
+                    Draw.alpha(1f);
+                }
             }
             else{
-                float r = (spin % spinTime) / spinTime * 90f;
+                float r = (!spinning || spin % spinTime < 0.0001f) ? 0f : (spin % spinTime) / spinTime * 90f;
+                Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f + dr);
+                Draw.z(Layer.blockOver + 0.17f);
                 Draw.rect(topRegion, x, y, r * Mathf.sign(ccw) + dr);
-                Draw.alpha(r / 90f);
-                Draw.rect(topRegion, x, y, (r - 90f) * Mathf.sign(ccw) + dr);
-                Draw.alpha(1f);
+                Draw.rect(topRegion2, x, y, dr);
             }
 
             if(spinning && payload != null){

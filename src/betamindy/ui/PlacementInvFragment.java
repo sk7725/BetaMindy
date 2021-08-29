@@ -38,6 +38,8 @@ public class PlacementInvFragment extends Fragment {
     Table blockTable, toggler;
     ScrollPane blockPane;
     Runnable rebuildCategory;
+    Image sideButton;
+
     Block menuHoverBlock;
     float vanillaWidth = 314f;
     Team lastTeam = Team.sharded;
@@ -45,6 +47,7 @@ public class PlacementInvFragment extends Fragment {
     public PlacementInvFragment(){
         Events.on(WorldLoadEvent.class, event -> {
             reset();
+            inventoryUI = false;
             Core.app.post(this::rebuild);
         });
 
@@ -56,8 +59,8 @@ public class PlacementInvFragment extends Fragment {
 
         Events.run(Trigger.update, () -> {
             if(Core.input.keyTap(KeyCode.f2)){
-                inventoryUI = !inventoryUI;//todo keybind
-                control.input.block = null;
+                //todo keybind
+                toggle();
             }
             if(inventoryUI && state.isPlaying()) updatePlans(player.unit());
         });
@@ -98,6 +101,13 @@ public class PlacementInvFragment extends Fragment {
         rebuildCategory.run();
     }
 
+    public void toggle(){
+        if(net.active()) inventoryUI = false; //todo remove after figuring the sync out
+        else inventoryUI = !inventoryUI;
+        control.input.block = null;
+        if(sideButton != null) sideButton.setDrawable(inventoryUI ? ui.getIcon(ui.hudfrag.blockfrag.currentCategory.name()): Icon.box);
+    }
+
     @Override
     public void build(Group parent){
         loadInventory(state.isMenu()? Team.sharded : player.team());
@@ -108,12 +118,8 @@ public class PlacementInvFragment extends Fragment {
 
             full.table(MindyUILoader.buttonEdge2, side -> {
                 side.bottom().defaults().pad(0);
-                Image im = side.image(Icon.box).color(Pal2.inventory).size(35f).touchable(Touchable.enabled).tooltip("@ui.inventory.short").get();
-                im.clicked(() -> {
-                    inventoryUI = !inventoryUI;
-                    control.input.block = null;
-                    im.setDrawable(inventoryUI ? ui.getIcon(ui.hudfrag.blockfrag.currentCategory.name()): Icon.box);
-                });
+                sideButton = side.image(Icon.box).color(Pal2.inventory).size(35f).touchable(Touchable.enabled).tooltip("@ui.inventory.short").get();
+                sideButton.clicked(this::toggle);
                 side.row();
                 side.image().color(Pal.gray).height(4f).growX().margin(0).pad(0).padTop(4);
             }).visible(() -> inventoryUI || (control.input.block != null && getSize() > 0)).size(65f, 56f).bottom().pad(0).margin(0);
@@ -236,8 +242,7 @@ public class PlacementInvFragment extends Fragment {
                             }).size(48f).margin(0);
                             var b2 = backbutt.button(Icon.undo, Styles.clearTransi, () -> {
                                 if(inventoryUI){
-                                    inventoryUI = false;
-                                    control.input.block = null;
+                                    toggle();
                                 }
                             }).size(48f).margin(0).color(Pal2.inventory);
                             if(!mobile){

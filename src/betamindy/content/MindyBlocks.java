@@ -37,6 +37,7 @@ import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.uwu;
 import static betamindy.content.ShopItems.*;
+import static betamindy.util.BlockLib.bitl;
 import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
@@ -45,11 +46,11 @@ public class MindyBlocks implements ContentList {
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi,
+    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource, testShop, cafe,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource, testShop, cafe, ancientStore,
     //walls
-    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear,
+    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, graphiteWall, graphiteWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear, crusher, crusherPyra, crusherScalar,
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
@@ -61,11 +62,11 @@ public class MindyBlocks implements ContentList {
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
     //crafting
-    blockFurnace, heavyFurnace, gateSwitch,
+    blockFurnace, heavyFurnace, gateSwitch, coffeeMachine,
     //catalysts (pushreact & spinreact & boost)
     discharger, fireCan, campfire,
     //floorpapers
-    floorRemover, metalGoldfloor, copperFloor;
+    floorRemover, metalGoldfloor, copperFloor, gamerSky, gamerGreens, gamerGrass, gamerWood, gamerIron, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks;
 
     @Override
     public void load() {
@@ -525,23 +526,61 @@ public class MindyBlocks implements ContentList {
             requirements(Category.power, with(Items.lead, 25, Items.silicon, 20, Items.plastanium, 3));
         }};
 
+        cog = new Spinner("cog"){{
+            requirements(Category.distribution, with(Items.copper, 18, Items.graphite, 5));
+            spinTime = 64f;
+            maxBlocks = 10;
+            drawSpinSprite = false;
+            inertia = true;
+            consumes.power(0.1f);
+        }};
+
+        titaniumCog = new Spinner("titanium-cog"){{
+            requirements(Category.distribution, with(Items.titanium, 24, Items.silicon, 10, Items.graphite, 10));
+            spinTime = 32f;
+            maxBlocks = 16;
+            drawSpinSprite = false;
+            inertia = true;
+            consumes.power(0.2f);
+        }};
+
+        plastaniumCog = new Spinner("plastanium-cog"){{
+            requirements(Category.distribution, with(Items.plastanium, 28, Items.silicon, 10, Items.phaseFabric, 10));
+            spinTime = 48f;
+            maxBlocks = 20;
+            drawSpinSprite = false;
+            inertia = true;
+            consumes.power(0.3f);
+        }};
+
+        armoredCog = new Spinner("armored-cog"){{
+            requirements(Category.distribution, with(Items.thorium, 24, Items.metaglass, 10, Items.silicon, 10, Items.graphite, 15));
+            spinTime = 32f;
+            maxBlocks = 24;
+            drawSpinSprite = false;
+            inertia = false;
+            consumes.power(0.2f);
+        }};
+
         cloner = new BlockCloner("cloner"){{
+            requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.phaseFabric, 8));
             hasPower = true;
             consumes.power(0.6f);
-            requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.phaseFabric, 8));
         }};
 
         spinner = new Spinner("spinner"){{
+            requirements(Category.distribution, with(Items.thorium, 30, Items.phaseFabric, 35, MindyItems.vector, 4));
             hasPower = true;
+            maxBlocks = 16;
             consumes.power(0.3f);
-            requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.plastanium, 8));
         }};
 
         spinnerInert = new Spinner("spinner-inert"){{
+            requirements(Category.distribution, with(Items.titanium, 60, Items.phaseFabric, 35, MindyItems.vector, 4));
             hasPower = true;
             inertia = true;
+            maxBlocks = 16;
             consumes.power(0.3f);
-            requirements(Category.distribution, with(Items.thorium, 30, Items.silicon, 35, MindyItems.vector, 8));
         }};
 
         spinnerInfi = new Spinner("spinner-infi"){{
@@ -658,6 +697,17 @@ public class MindyBlocks implements ContentList {
             insulated = true;
             size = 2;
             requirements(Category.defense, with(Items.copper, 8, Items.silicon, 20));
+        }};
+
+        graphiteWall = new AbsorbWall("graphite-wall"){{
+            health = 420;
+            requirements(Category.defense, with(Items.graphite, 6, Items.titanium, 4));
+        }};
+
+        graphiteWallLarge = new AbsorbWall("graphite-wall-large"){{
+            health = 420 * 4;
+            size = 2;
+            requirements(Category.defense, with(Items.graphite, 24, Items.titanium, 16));
         }};
 
         coalWall = new IgniteWall("coal-wall"){{
@@ -962,6 +1012,23 @@ public class MindyBlocks implements ContentList {
             requirements(Category.defense, with(Items.metaglass, 4, MindyItems.vector, 1));
         }};
 
+        crusher = new Crusher("crusher"){{
+            requirements(Category.defense, with(Items.copper, 12, Items.titanium, 18, Items.silicon, 8));
+            health = 350;
+            consumes.power(1.9f);
+        }};
+
+        crusherPyra = new Crusher("crusher-pyra"){{
+            requirements(Category.defense, with(Items.pyratite, 22, Items.thorium, 18, Items.plastanium, 18));
+            health = 750;
+            damage = 1.8f;
+            status = StatusEffects.melting;
+            rotateSpeed = 8f;
+            damageEffect = MindyFx.razorFast;
+            effectChance = 0.7f;
+            consumes.power(3.8f);
+        }};
+
         spotlight = new FloodLight("spotlight"){{
             requirements(Category.effect, BuildVisibility.lightingOnly, with(Items.graphite, 10, Items.silicon, 4));
 
@@ -1150,6 +1217,21 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, with(Items.copper, 15, Items.graphite, 15));
         }};
 
+        coffeeMachine = new DrinkCrafter("cmachine"){{
+            requirements(Category.crafting, with(Items.copper, 20, Items.metaglass, 10, Items.silicon, 10, MindyItems.wood, 5));
+            result = MindyLiquids.coffee;
+            liquidCapacity = 120f;
+            itemCapacity = 30;
+            ambientSound = Sounds.respawn;
+            ambientSoundVolume = 0.5f;
+            pumpAmount = 0.5f;
+            updateEffect = Fx.pulverize;
+            updateEffectChance = 0.08f;
+            consumes.item(Items.scrap, 2);
+            consumes.power(3f);
+            consumes.liquid(Liquids.water, 0.5f);
+        }};
+
         altar = new Altar("altar"){{
             requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.hidden, with(Items.scrap, 100));
         }};
@@ -1181,12 +1263,12 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.sandboxOnly, with(Items.copper, 1));
             size = 3;
             defaultAnucoins = 1000;
-            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1)};
+            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1), new PurchaseInvBlock(Blocks.arc, 1699, 3)};
             sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
             alwaysUnlocked = uwu;
         }};
 
-        cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie, bossCake}){{
+        cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie, bossCake}, "block", new PurchaseItem[]{new PurchaseInvBlock(coffeeMachine, 6280, 1)}){{
             requirements(Category.effect, with(Items.sand, 500, Items.lead, 250, Items.titanium, 250, Items.graphite, 150, Items.metaglass, 100, Items.silicon, 50));
 
             size = 4;
@@ -1212,13 +1294,22 @@ public class MindyBlocks implements ContentList {
         floorRemover = new FloorRemover("floor-remover"){{
             requirements(Category.effect, BuildVisibility.hidden, with());
         }};
-        metalGoldfloor = new DecorativeFloor("metal-golden-floor"){{
-            requirements(Category.effect, BuildVisibility.hidden, with());
-            variants = 0;
-        }};
-        copperFloor = new DecorativeFloor("copper-floor"){{
-            requirements(Category.effect, BuildVisibility.hidden, with());
-            variants = 0;
+        metalGoldfloor = new DecorativeFloor("metal-golden-floor");
+        copperFloor = new DecorativeFloor("copper-floor");
+        gamerSky = new DecorativeFloor("gamer-sky");
+        gamerGreens = new DecorativeFloor("gamer-greens");
+        gamerGrass = new DecorativeFloor("gamer-grass");
+        gamerIron = new DecorativeFloor("gamer-iron");
+        gamerWood = new DecorativeFloor("gamer-wood");
+        gamerLeaves = new DecorativeFloor("gamer-leaves");
+        gamerWaterfall = new DecorativeFloor("gamer-waterfall");
+        gamerTrees = new DecorativeFloor("gamer-trees");
+        gamerBricks = new DecorativeFloor("gamer-bricks");
+
+        //todo dailystore
+        ancientStore = new Store("ancient-store", "special", new PurchaseItem[]{bittriumWine, new PurchaseInvBlock(floorRemover, 10, 20)},"8bit-floor", bitl(gamerSky, gamerGreens, gamerGrass, gamerIron, gamerWood, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks)){{
+            requirements(Category.effect, BuildVisibility.sandboxOnly, with(Items.copper, 1));
+            size = 2;
         }};
     }
 }

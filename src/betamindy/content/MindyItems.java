@@ -4,8 +4,10 @@ import arc.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.util.*;
+import betamindy.*;
 import betamindy.graphics.*;
 import betamindy.type.item.*;
+import betamindy.ui.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
@@ -18,19 +20,26 @@ import mindustry.type.*;
 public class MindyItems implements ContentList {
     public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source, cryonite, spaceMatter,
     //foreign items
-    wood, tungsten, starStone, zinc, bedrock;
+    wood, tungsten, starStone, zinc, pixellium, bedrock;
 
     public void load(){
         //given from portal invasions
-        bittrium = new AnimatedItem("bittrium", Color.valueOf("00ffff")){{
-            charge = 10.24f;
-            radioactivity = 10.24f;
-            cost = 0.1f;
-            hardness = 15;
+        bittrium = new AnimatedItem("bittrium", Color.valueOf("00ffff")){
+            {
+                charge = 10.24f;
+                radioactivity = 10.24f;
+                cost = 0.1f;
+                hardness = 15;
 
-            transition = 5;
-            animDelay = 4f;
-        }};
+                transition = 5;
+                animDelay = 4f;
+            }
+
+            @Override
+            public String emoji(){
+                return AnucoinTex.emojiBit;
+            }
+        };
 
         //used as freezing ammo
         cryonite = new Item("cryonite", Pal2.ice){{
@@ -141,6 +150,12 @@ public class MindyItems implements ContentList {
         bedrock = new ForeignItem("bedrock", Pal.darkestGray){{
             cost = 10;
             hardness = 10;
+        }};
+        //used for gamersmod floorpapers sold at ancient stores
+        pixellium = new ForeignItem("pixellium", Color.pink){{
+            cost = 10;
+            hardness = 64;
+            charge = 10.24f;
         }};
 
         if(!Vars.headless){
