@@ -41,6 +41,7 @@ public class Spinner extends Block {
     public boolean inertia = false;
     public Color inertiaColor = Pal.accent;
     public boolean drawSpinSprite = true;
+    public boolean drawTop = false;
 
     public final int[][] evenOffsets = {{-1, -1}, {0, -1}, {0, 0}, {-1, 0}};
 
@@ -317,6 +318,7 @@ public class Spinner extends Block {
             }
             else{
                 float r = (!spinning || spin % spinTime < 0.0001f) ? 0f : (spin % spinTime) / spinTime * 90f;
+                if(drawTop) Draw.z(Layer.blockOver + 0.18f);
                 Draw.rect(sideRegions2[rotation >> 1][Mathf.num(ccw)], x, y, rotation * 90f + dr);
                 Draw.z(Layer.blockOver + 0.17f);
                 Draw.rect(topRegion, x, y, r * Mathf.sign(ccw) + dr);
