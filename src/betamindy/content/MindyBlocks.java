@@ -37,16 +37,17 @@ import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.uwu;
 import static betamindy.content.ShopItems.*;
+import static betamindy.util.BlockLib.asPurchase;
 import static betamindy.util.BlockLib.bitl;
 import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
+    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace, blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree,
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog,
+    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog,
     //effect
     silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource, testShop, cafe, ancientStore,
     //walls
@@ -112,6 +113,32 @@ public class MindyBlocks implements ContentList {
             emitLight = true;
         }};
 
+        blackstone = new Floor("blackstone"){{
+            variants = 3;
+            dragMultiplier = 2f;
+        }};
+        redstone = new Floor("redstone"){{
+            variants = 3;
+            dragMultiplier = 2f;
+        }};
+
+        blackstoneWall = new StaticWall("blackstone-wall"){{
+            variants = 2;
+        }};
+        redstoneWall = new StaticWall("redstone-wall"){{
+            variants = 2;
+        }};
+
+        blackPine = new StaticTree("black-pine"){{
+            variants = 0;
+        }};
+        redPine = new StaticTree("red-pine"){{
+            variants = 0;
+        }};
+
+        largeTree = new TreeBlock("large-tree");
+
+        //turrets
         credit = new CoinTurret("credit"){{
             requirements(Category.turret, with(Items.lead, 20, Items.graphite, 20));
 
@@ -529,7 +556,7 @@ public class MindyBlocks implements ContentList {
         cog = new Spinner("cog"){{
             requirements(Category.distribution, with(Items.copper, 18, Items.graphite, 5));
             spinTime = 64f;
-            maxBlocks = 10;
+            maxBlocks = 14;
             drawSpinSprite = false;
             inertia = true;
             consumes.power(0.1f);
@@ -549,6 +576,7 @@ public class MindyBlocks implements ContentList {
             spinTime = 48f;
             maxBlocks = 20;
             drawSpinSprite = false;
+            drawTop = true;
             inertia = true;
             consumes.power(0.3f);
         }};
@@ -556,10 +584,20 @@ public class MindyBlocks implements ContentList {
         armoredCog = new Spinner("armored-cog"){{
             requirements(Category.distribution, with(Items.thorium, 24, Items.metaglass, 10, Items.silicon, 10, Items.graphite, 15));
             spinTime = 32f;
-            maxBlocks = 24;
+            maxBlocks = 25;
             drawSpinSprite = false;
+            drawTop = true;
             inertia = false;
             consumes.power(0.2f);
+        }};
+
+        woodenCog = new Spinner("wooden-cog"){{
+            requirements(Category.distribution, with(MindyItems.wood, 18, MindyItems.tungsten, 5));
+            spinTime = 256f;
+            maxBlocks = 18;
+            drawSpinSprite = false;
+            inertia = true;
+            consumes.power(0.1f);
         }};
 
         cloner = new BlockCloner("cloner"){{
@@ -862,6 +900,7 @@ public class MindyBlocks implements ContentList {
 
         pen = new Pen("pen"){{
             requirements(Category.logic, with(Items.copper, 15, Items.silicon, 5, Items.metaglass, 5));
+            drawLength = 125;
         }};
 
         colorModule = new PenColorModule("color-module"){{
@@ -874,7 +913,7 @@ public class MindyBlocks implements ContentList {
 
         starPen = new Pen("star-pen"){{
             requirements(Category.logic, with(Items.copper, 15, Items.silicon, 5, MindyItems.starStone, 5));
-            drawLength = 60;
+            drawLength = 250;
             glow = true;
         }};
 
@@ -1307,7 +1346,7 @@ public class MindyBlocks implements ContentList {
         gamerBricks = new DecorativeFloor("gamer-bricks");
 
         //todo dailystore
-        ancientStore = new Store("ancient-store", "special", new PurchaseItem[]{bittriumWine, new PurchaseInvBlock(floorRemover, 10, 20)},"8bit-floor", bitl(gamerSky, gamerGreens, gamerGrass, gamerIron, gamerWood, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks)){{
+        ancientStore = new Store("ancient-store", "special", new PurchaseItem[]{asPurchase(woodenCog, 85, 5), bittriumWine, new PurchaseInvBlock(floorRemover, 10, 20)},"8bit-floor", bitl(gamerSky, gamerGreens, gamerGrass, gamerIron, gamerWood, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks)){{
             requirements(Category.effect, uwu ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with(Items.copper, 1));
             size = 2;
         }};
