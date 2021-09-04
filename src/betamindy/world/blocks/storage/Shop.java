@@ -125,9 +125,6 @@ public class Shop extends PayloadAcceptor {
     public void init(){
         super.init();
 
-        shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
-        shopDialog.addCloseButton();
-
         Runnable ee = () -> {
             itemScores = BetaMindy.itemScores;
             unitScores = BetaMindy.unitScores;
@@ -567,6 +564,11 @@ public class Shop extends PayloadAcceptor {
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
             searchString = "";
+            
+            if(shopDialog == null) {
+                shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
+                shopDialog.addCloseButton();
+            }
 
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
             //float height = Math.max(Core.graphics.getWidth(), Core.graphics.getHeight());
