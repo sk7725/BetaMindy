@@ -571,13 +571,12 @@ public class Shop extends PayloadAcceptor {
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
+            searchString = "";
 
             if(shopDialog == null) {
                 shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
                 shopDialog.addCloseButton();
             }
-
-            searchString = "";
 
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
             //float height = Math.max(Core.graphics.getWidth(), Core.graphics.getHeight());
