@@ -26,8 +26,9 @@ public class JsonShopPackageLoader {
                         if(c.extEquals("json")/* ||c.extEquals("hjson")*/){
                             ShopPackageType pack;
 
-                            /*if(c.extEquals("hjson")){
-                                pack = JsonIO.json.fromJson(ShopPackageType.class, Jval.read(c.readString()).toString(Jval.Jformat.plain));
+                            /*idk how does this work so i'll just ignore hjson
+                            if(c.extEquals("hjson")){
+                                pack = JsonIO.json.fromJson(ShopPackageType.class, String.valueOf(Jval.read(c.readString()).toString(Jval.Jformat.plain)));
                             } else {*/
                                 pack = JsonIO.json.fromJson(ShopPackageType.class, c.readString());
                             //}
