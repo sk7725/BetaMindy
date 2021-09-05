@@ -36,7 +36,7 @@ import mindustry.world.blocks.production.*;
 import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
-@SuppressWarnings("al")
+@SuppressWarnings("all")
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 0;
     public TextureRegion spinRegion;
@@ -45,6 +45,7 @@ public class Shop extends PayloadAcceptor {
     public float spinShadowRadius = 15f;
     public boolean drawSpinSprite = false;
 
+    public Seq<PurchaseItem> jsonItems = new Seq<>();
     public @Nullable PurchaseItem[] purchases;
     public @Nullable Block[] soldBlocks;
     public boolean sellAllItems = false;
@@ -52,7 +53,7 @@ public class Shop extends PayloadAcceptor {
     public boolean sellAllBlocks = false;
     public boolean navigationBar = false;
 
-    BaseDialog shopDialog;
+    BaseDialog shopDialog = null;
     String searchString = "";
     Cell<ScrollPane> itemCell;
 
@@ -130,6 +131,13 @@ public class Shop extends PayloadAcceptor {
             unitScores = BetaMindy.unitScores;
 
             if(purchases != null) {
+                if(jsonItems.size > 0) {
+                    Seq<PurchaseItem> temp = new Seq();
+                    temp.addAll(purchases);
+                    temp.addAll(jsonItems);
+                    purchases = temp.toArray();
+                }
+
                 for (PurchaseItem purchase : purchases) {
                     if (purchase instanceof PackageShopItem p && p.cost == 0) {
                         p.definePrice();
@@ -565,6 +573,11 @@ public class Shop extends PayloadAcceptor {
             super.buildConfiguration(table);
             searchString = "";
             
+            if(shopDialog == null) {
+                shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
+                shopDialog.addCloseButton();
+            }
+
             if(shopDialog == null) {
                 shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
                 shopDialog.addCloseButton();
