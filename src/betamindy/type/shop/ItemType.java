@@ -5,5 +5,6 @@ public enum ItemType {
     Package,
     Runnable,
     Block,
+    BlockInv,
     Liquid;
 }

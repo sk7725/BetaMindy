@@ -45,7 +45,7 @@ public class Shop extends PayloadAcceptor {
     public float spinShadowRadius = 15f;
     public boolean drawSpinSprite = false;
 
-    public Seq<PurchaseItem> jsonItems;
+    public Seq<PurchaseItem> jsonItems = new Seq<>();
     public @Nullable PurchaseItem[] purchases;
     public @Nullable Block[] soldBlocks;
     public boolean sellAllItems = false;
@@ -126,16 +126,18 @@ public class Shop extends PayloadAcceptor {
     public void init(){
         super.init();
 
-        Seq<PurchaseItem> temp = new Seq();
-        temp.addAll(jsonItems);
-        temp.addAll(purchases);
-        purchases = temp.toArray();
-
         Runnable ee = () -> {
             itemScores = BetaMindy.itemScores;
             unitScores = BetaMindy.unitScores;
 
             if(purchases != null) {
+                if(jsonItems.size > 0) {
+                    Seq<PurchaseItem> temp = new Seq();
+                    temp.addAll(purchases);
+                    temp.addAll(jsonItems);
+                    purchases = temp.toArray();
+                }
+
                 for (PurchaseItem purchase : purchases) {
                     if (purchase instanceof PackageShopItem p && p.cost == 0) {
                         p.definePrice();

@@ -17,7 +17,7 @@ public class JsonShopPackage {
         this.unlocked = unlocked;
     }
 
-    public PurchaseItem NewJsonShopPackage(String name, ItemType itemType, ItemStack[] items, Integer cost, String code, UnlockableContent cItem, Integer amount){
+    public PurchaseItem NewJsonShopPackage(String name, ItemType itemType, ItemStack[] items, Integer cost, String code, UnlockableContent cItem, Integer amount, boolean iAbort){
         PurchaseItem item;
 
         //For later fixing and usage at stable v7
@@ -40,10 +40,11 @@ public class JsonShopPackage {
         }};*/
 
         item = switch (itemType) {
-            case Package -> new PackageShopItem(name, items);
-            case Runnable -> new PurchaseRunnable(null, 0);
-            case Block -> new BlockItem((Block) cItem, cost);
-            case Liquid -> new LiquidItem((Liquid) cItem, cost, amount);
+            case Package -> new PackageShopItem(name, items){{abort = iAbort;}};
+            case Runnable -> new PurchaseRunnable(null, 0){{abort = iAbort;}};
+            case Block -> new BlockItem((Block) cItem, cost){{abort = iAbort;}};
+            case BlockInv -> new PurchaseInvBlock((Block) cItem, cost, amount){{abort = iAbort;}};
+            case Liquid -> new LiquidItem((Liquid) cItem, cost, amount){{abort = iAbort;}};
         };
         
         return item;
