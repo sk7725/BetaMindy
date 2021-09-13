@@ -24,7 +24,7 @@ import static mindustry.Vars.ui;
 public class ShopItems implements ContentList {
     public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10,
     holyRouter;
-    public static PurchaseItem firstAids, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie, bossCake;
+    public static PurchaseItem firstAids, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie, bossCake, anucoins2000, anucoins4200, anucoins12000;
 
     @Override
     public void load(){
@@ -112,7 +112,7 @@ public class ShopItems implements ContentList {
             };
         }};
 
-        milk = new PurchaseRunnable("milk", 15){
+        milk = new PurchaseRunnable("milk", 75){
             @Override
             public boolean purchase(Building source, Unit player){
                 if(player == null || player.dead()) return false;
@@ -141,29 +141,29 @@ public class ShopItems implements ContentList {
             }
         };
 
-        coffee = new PurchaseDrink("coffee", 15, MindyStatusEffects.caffeinated);
-        herbTea = new PurchaseDrink("herb-tea", 25, MindyStatusEffects.herbed);
-        flowerTea = new PurchaseDrink("flower-tea", 60, MindyStatusEffects.blossoming){{
+        coffee = new PurchaseDrink("coffee", 75, MindyStatusEffects.caffeinated);
+        herbTea = new PurchaseDrink("herb-tea", 125, MindyStatusEffects.herbed);
+        flowerTea = new PurchaseDrink("flower-tea", 300, MindyStatusEffects.blossoming){{
             duration = 60 * 60 * 3;
         }};
 
-        pancake = new PurchaseDrink("pancake", 20, MindyStatusEffects.absorbing){{
+        pancake = new PurchaseDrink("pancake", 100, MindyStatusEffects.absorbing){{
             duration = 60 * 60 * 1.5f;
         }};
-        glowstick = new PurchaseDrink("glowstick", 28, MindyStatusEffects.glowing);
-        sporeJuice = new PurchaseDrink("spore-juice", 10, MindyStatusEffects.sporeSlimed){{
+        glowstick = new PurchaseDrink("glowstick", 140, MindyStatusEffects.glowing);
+        sporeJuice = new PurchaseDrink("spore-juice", 40, MindyStatusEffects.sporeSlimed){{
             duration = 60 * 60 * 5;
         }};
         //todo sell at exotic shops
-        bittriumWine = new PurchaseDrink("bittrium-wine", 199, MindyStatusEffects.bittriumBane){{
+        bittriumWine = new PurchaseDrink("bittrium-wine", 599, MindyStatusEffects.bittriumBane){{
             duration = 60 * 60 * 4.5f;
         }};
-        diodeCookie = new PurchaseDrink("diode-cookie", 65, MindyStatusEffects.forwardBiased){{
+        diodeCookie = new PurchaseDrink("diode-cookie", 325, MindyStatusEffects.forwardBiased){{
             duration = 60 * 60 * 1.5f;
         }};
-        bossCake = new PurchaseDrink("boss-cake", 640, StatusEffects.boss);
+        bossCake = new PurchaseDrink("boss-cake", 800, StatusEffects.boss);
 
-        cocktail = new PurchaseRunnable("cocktail", 66){
+        cocktail = new PurchaseRunnable("cocktail", 330){
             final Seq<StatusEffect> statusList = new Seq<>();
             {
                 Events.on(EventType.ClientLoadEvent.class, e -> {
@@ -209,5 +209,9 @@ public class ShopItems implements ContentList {
         };
 
         holyRouter = new BlockItem(Blocks.router, 15);
+
+        anucoins2000 = new PurchaseCoin(2000, 29);
+        anucoins4200 = new PurchaseCoin(4200, 49);
+        anucoins12000 = new PurchaseCoin(12000, 129);
     }
 }

@@ -146,7 +146,7 @@ public class AnucoinNode extends Block {
         @Override
         public void handleCoin(Building source, int amount){
             anucoins += amount; //debts can be a thing here
-            if(anucoins > maxCoins()) anucoins = maxCoins();
+            //if(anucoins > maxCoins()) anucoins = maxCoins();
         }
 
         @Override
@@ -161,7 +161,14 @@ public class AnucoinNode extends Block {
         }
 
         public int maxCoins(){
-            return initialMaxCoins; //todo anusafe
+            int c = initialMaxCoins;
+            for(int i = 0; i < links.size; i++){
+                Building b = world.build(links.get(i));
+                if(linkValid(this, b) && links.get(i) == b.pos() && b.block instanceof AnucoinVault vault){
+                    c += vault.capacity;
+                }
+            }
+            return c;
         }
 
         @Override
@@ -230,7 +237,7 @@ public class AnucoinNode extends Block {
                         boolean linked = links.indexOf(link.pos()) >= 0;
 
                         if(linked){
-                            squares(link, (link instanceof BankLinked) ? Color.coral : Color.green);
+                            squares(link, (link instanceof BankLinked) ? ((link.block instanceof AnucoinVault) ? Pal2.coin : Color.coral) : Color.green);
                         }
                     }
                 }
@@ -308,6 +315,7 @@ public class AnucoinNode extends Block {
         }
 
         public void transButton(Table pane, Building build){
+            if(build.block instanceof AnucoinVault) return;
             CoinBuild cb = (CoinBuild) build;
 
             pane.button(t -> {

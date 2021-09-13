@@ -120,6 +120,10 @@ public class Drawm {
     }
 
     public static void portal(float x, float y, float radius, Color color1, Color color2){
+        portal(x, y, radius, color1, color2, 1f, 9, 64, 0f);
+    }
+
+    public static void portal(float x, float y, float radius, Color color1, Color color2, float sizeScl, int branches, int dust, float offset){
         if(Vars.renderer.bloom == null){
             Tmp.c2.set(color1).lerp(color2, Mathf.sin(Time.globalTime / 35f) * 0.5f + 0.5f);
             Tmp.c3.set(color1).lerp(color2, Mathf.cos(Time.globalTime / 35f) * 0.5f + 0.5f);
@@ -131,36 +135,36 @@ public class Drawm {
         Fill.circle(x, y, radius);
         Draw.z(Layer.effect);
 
-        int n = 9;
+        int n = branches;
         Draw.color(color1);
         for(int i = 0; i < n; i++){
-            Tmp.v1.trns(i * 360f / n - Time.globalTime / 2f, radius - 2f).add(x, y);
-            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 12f), 120f, i * 360f / n - Time.globalTime / 2f + 100f);
+            Tmp.v1.trns(i * 360f / n - Time.globalTime / 2f + offset, radius - 2f * sizeScl).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 12f * sizeScl), 120f * sizeScl, i * 360f / n - Time.globalTime / 2f + 100f);
         }
-        n = 6;
+        n = branches / 3 + 3;
         Draw.color(color2);
         for(int i = 0; i < n; i++){
-            Tmp.v1.trns(i * 360f / n - Time.globalTime / 3f, radius - 4f).add(x, y);
-            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 16f), 160f, i * 360f / n - Time.globalTime / 3f + 110f);
+            Tmp.v1.trns(i * 360f / n - Time.globalTime / 3f + offset, radius - 4f * sizeScl).add(x, y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 16f * sizeScl), 160f * sizeScl, i * 360f / n - Time.globalTime / 3f + 110f);
         }
 
         n = 4;
         for(int i = 0; i < n; i++){
-            Lines.stroke(Math.min(radius, 8.2f));
+            Lines.stroke(Math.min(radius, 8.2f * sizeScl));
             Draw.alpha(1f - ((float)i) / n);
-            Lines.circle(x, y, Math.max(1f ,radius - i * 8f));
+            Lines.circle(x, y, Math.max(1f ,radius - i * 8f * sizeScl));
         }
 
         Fill.light(x, y, Lines.circleVertices(radius), radius, Color.clear, color1);
 
-        n = 64;
-        float m = 11f;
+        n = dust;
+        float m = 11f * sizeScl;
         Draw.alpha(0.7f);
         for(int i = 0; i < n; i++){
             float s = Mathf.randomSeed(n + 17 * i) * m;
             float speed = (Mathf.randomSeed(i * n) + 0.5f) * (m + 1f - s) * 0.1f;
             Draw.color(color1, color2, Mathf.randomSeed(i - 3 * n));
-            Tmp.v1.trns(i * 360f / n - Time.globalTime * speed + Mathf.randomSeedRange(n + i, 180f / n), radius + 14f - s * 1.5f + Mathf.randomSeedRange(n - i, 3f)).add(x, y);
+            Tmp.v1.trns(i * 360f / n - Time.globalTime * speed + Mathf.randomSeedRange(n + i, 180f / n) + offset, radius + 14f * sizeScl - s * 1.5f + Mathf.randomSeedRange(n - i, 3f)).add(x, y);
             Fill.circle(Tmp.v1.x, Tmp.v1.y, Math.min(radius, s));
         }
         Draw.color();

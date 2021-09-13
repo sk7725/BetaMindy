@@ -10,9 +10,12 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.world.*;
 
+import java.util.*;
+
 public class BlockLib {
     public static ObjectMap<Block, Seq<Block> > crafts = new ObjectMap<>();
     private final static OrderedMap<WallType, String> loadCache = new OrderedMap<>();
+    public static final float bittriumScarcity = 0.4f;
 
     public static void load(){
         if(!loadCache.isEmpty()){
@@ -37,19 +40,32 @@ public class BlockLib {
     }
 
     public static PurchaseItem asPurchase(Block block){
-        return asPurchase(block, 1, 20);
+        return asPurchase(block, 500, 1);
     }
 
     public static PurchaseItem asPurchase(Block block, int price, int amount){
+        //isForeign(block); //todo v7, also add to asDaily
         return new PurchaseInvBlock(block, price, amount);
     }
 
+    public static PurchaseItem asDaily(Block block, int price){
+        return asDaily(block, price, 1f);
+    }
+
+    public static PurchaseItem asDaily(Block block, int price, float scarcity){
+        PurchaseItem p = new PurchaseInvBlock(block, price, 1);
+        p.scarcity = scarcity;
+        return p;
+    }
+
     public static PurchaseItem asBitPurchase(Block block){
-        return asBitPurchase(block, 5, 20);
+        return asBitPurchase(block, 15, 33);
     }
 
     public static PurchaseItem asBitPurchase(Block block, int price, int amount){
-        return new PurchaseInvBlock(block, price, amount, MindyItems.bittrium);
+        PurchaseItem p = new PurchaseInvBlock(block, price, amount, MindyItems.bittrium);
+        p.scarcity = bittriumScarcity;
+        return p;
     }
 
     public static boolean isForeign(Block block){
@@ -61,6 +77,12 @@ public class BlockLib {
             }
         }
         return false;
+    }
+
+    public static PurchaseItem[] mergeItems(PurchaseItem[] first, PurchaseItem[] second){
+        PurchaseItem[] both = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, both, first.length, second.length);
+        return both;
     }
 
     private static void loadAfter(WallType t, String s){

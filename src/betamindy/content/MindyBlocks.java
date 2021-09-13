@@ -37,8 +37,7 @@ import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.uwu;
 import static betamindy.content.ShopItems.*;
-import static betamindy.util.BlockLib.asPurchase;
-import static betamindy.util.BlockLib.bitl;
+import static betamindy.util.BlockLib.*;
 import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
@@ -49,13 +48,13 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, tradingPost, coinSource, testShop, cafe, ancientStore,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, graphiteWall, graphiteWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear, crusher, crusherPyra, crusherScalar,
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad,
+    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad, teleportPad, portalPad, yutnori,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule,
     //turrets
@@ -67,7 +66,7 @@ public class MindyBlocks implements ContentList {
     //catalysts (pushreact & spinreact & boost)
     discharger, fireCan, campfire,
     //floorpapers
-    floorRemover, metalGoldfloor, copperFloor, gamerSky, gamerGreens, gamerGrass, gamerWood, gamerIron, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks;
+    floorRemover, metalGoldfloor, copperFloor, gamerSky, gamerGreens, gamerGrass, gamerWood, gamerIron, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks, routerFloor;
 
     @Override
     public void load() {
@@ -559,6 +558,7 @@ public class MindyBlocks implements ContentList {
             maxBlocks = 14;
             drawSpinSprite = false;
             inertia = true;
+            health = 45;
             consumes.power(0.1f);
         }};
 
@@ -568,26 +568,29 @@ public class MindyBlocks implements ContentList {
             maxBlocks = 16;
             drawSpinSprite = false;
             inertia = true;
+            health = 65;
             consumes.power(0.2f);
         }};
 
         plastaniumCog = new Spinner("plastanium-cog"){{
             requirements(Category.distribution, with(Items.plastanium, 28, Items.silicon, 10, Items.phaseFabric, 10));
             spinTime = 48f;
-            maxBlocks = 20;
+            maxBlocks = 25;
             drawSpinSprite = false;
             drawTop = true;
             inertia = true;
+            health = 80;
             consumes.power(0.3f);
         }};
 
         armoredCog = new Spinner("armored-cog"){{
             requirements(Category.distribution, with(Items.thorium, 24, Items.metaglass, 10, Items.silicon, 10, Items.graphite, 15));
             spinTime = 32f;
-            maxBlocks = 25;
+            maxBlocks = 20;
             drawSpinSprite = false;
             drawTop = true;
             inertia = false;
+            health = 200;
             consumes.power(0.2f);
         }};
 
@@ -860,6 +863,25 @@ public class MindyBlocks implements ContentList {
             boostEffect = MindyFx.driftBlock;
             boostSound = Sounds.flame2;//todo
             impulseAmount = 9f;
+        }};
+
+        teleportPad = new TeleportPad("teleport-pad"){{
+            requirements(Category.units, with( Items.copper, 320, Items.silicon, 150, Items.phaseFabric, 50, MindyItems.tensor, 30));
+            size = 3;
+            consumes.power(10f);
+        }};
+
+        portalPad = new TeleportPortal("teleport-portal"){{
+            requirements(Category.units, with( Items.scrap, 320, Items.copper, 250, Items.phaseFabric, 75, MindyItems.tensor, 30, MindyItems.bittrium, 55));
+            size = 3;
+            animateNear = false;
+            heatLerp = 0.02f;
+            lightColor = Color.white;
+            inSound = MindySounds.easterEgg1;
+            outSound = MindySounds.easterEgg2;
+            teleportIn = MindyFx.unitInPortal;
+            teleportOut = MindyFx.portalWaveSmall;
+            teleportUnit = MindyFx.unitOutPortal;
         }};
 
         //frostPad = new FrostPad("frostpad"){
@@ -1271,8 +1293,28 @@ public class MindyBlocks implements ContentList {
             consumes.liquid(Liquids.water, 0.5f);
         }};
 
+        yutnori = new Yutnori("gameyut"){{
+            requirements(Category.effect, with(Items.copper, 10, Items.silicon, 10, MindyItems.wood, 40));
+        }};
+
         altar = new Altar("altar"){{
             requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.hidden, with(Items.scrap, 100));
+        }};
+
+        anucoinNode = new AnucoinNode("anucoin-node"){{
+            requirements(Category.effect, with(Items.sand, 360, Items.copper, 240, Items.lead, 220, Items.graphite, 50, Items.metaglass, 50, Items.silicon, 50, Items.coal, 75));
+            size = 4;
+        }};
+
+        anucoinSafe = new AnucoinVault("anucoin-safe"){{
+            requirements(Category.effect, with(Items.sand, 200, Items.lead, 220, Items.titanium, 285, Items.thorium, 235, Items.graphite, 150, Items.plastanium, 75));
+            size = 2;
+        }};
+
+        anucoinVault = new AnucoinVault("anucoin-vault"){{
+            requirements(Category.effect, with(Items.sand, 240, Items.lead, 320, Items.titanium, 380, Items.thorium, 325, Items.silicon, 150, Items.surgeAlloy, 35));
+            size = 3;
+            capacity = 150000;
         }};
 
         itemShop = new Shop("item-shop"){{
@@ -1298,23 +1340,8 @@ public class MindyBlocks implements ContentList {
             purchases = new PurchaseItem[]{firstAids, invincibleCore, package1, package2, package3, package4, package5, package6, package7, package8, package9, package10};
         }};
 
-        testShop = new Shop("test-shop"){{
-            requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.sandboxOnly, with(Items.copper, 1));
-            size = 3;
-            defaultAnucoins = 1000;
-            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1), new PurchaseInvBlock(Blocks.arc, 1699, 3)};
-            sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
-            alwaysUnlocked = uwu;
-        }};
-
         cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie, bossCake}, "block", new PurchaseItem[]{new PurchaseInvBlock(coffeeMachine, 6280, 1)}){{
             requirements(Category.effect, with(Items.sand, 500, Items.lead, 250, Items.titanium, 250, Items.graphite, 150, Items.metaglass, 100, Items.silicon, 50));
-
-            size = 4;
-        }};
-
-        anucoinNode = new AnucoinNode("anucoin-node"){{
-            requirements(Category.effect, with(Items.copper, 1));
 
             size = 4;
         }};
@@ -1334,6 +1361,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, BuildVisibility.hidden, with());
         }};
         metalGoldfloor = new DecorativeFloor("metal-golden-floor");
+        routerFloor = new DecorativeFloor("router-floor");
         copperFloor = new DecorativeFloor("copper-floor");
         gamerSky = new DecorativeFloor("gamer-sky");
         gamerGreens = new DecorativeFloor("gamer-greens");
@@ -1345,10 +1373,25 @@ public class MindyBlocks implements ContentList {
         gamerTrees = new DecorativeFloor("gamer-trees");
         gamerBricks = new DecorativeFloor("gamer-bricks");
 
-        //todo dailystore
-        ancientStore = new Store("ancient-store", "special", new PurchaseItem[]{asPurchase(woodenCog, 85, 5), bittriumWine, new PurchaseInvBlock(floorRemover, 10, 20)},"8bit-floor", bitl(gamerSky, gamerGreens, gamerGrass, gamerIron, gamerWood, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks)){{
+        ancientStore = new DailyStore("ancient-store", "coins", new PurchaseItem[]{anucoins2000, anucoins4200, anucoins12000}){{
             requirements(Category.effect, uwu ? BuildVisibility.sandboxOnly : BuildVisibility.hidden, with(Items.copper, 1));
             size = 2;
+            navigationBar = false;
+            displayCurrency = MindyItems.bittrium;
+            dailyItems = mergeItems(new PurchaseItem[]{
+                    asPurchase(woodenCog, 1300, 10),
+                    asDaily(starPen, 580, 0.1f),
+                    asDaily(yutnori, 4800, 0.1f)
+                    }, bitl(gamerSky, gamerGreens, gamerGrass, gamerWood, gamerIron, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks));
+        }};
+
+        testShop = new Shop("test-shop"){{
+            requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.debugOnly, with(Items.copper, 1));
+            size = 3;
+            defaultAnucoins = 1000;
+            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1), new PurchaseInvBlock(Blocks.arc, 1699, 3), asPurchase(routerFloor, 69420, 99)};
+            sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
+            alwaysUnlocked = uwu;
         }};
     }
 }

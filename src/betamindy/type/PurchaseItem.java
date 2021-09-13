@@ -17,6 +17,7 @@ public abstract class PurchaseItem {
     public int cost = 10;
     /** Whether to leave the purchase dialog after purchasing this item. */
     public boolean abort = false;
+    public float scarcity = 1f;
 
     public Boolf<Building> unlocked = e -> true;
 

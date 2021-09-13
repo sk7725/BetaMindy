@@ -16,6 +16,7 @@ import mindustry.graphics.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
@@ -29,6 +30,7 @@ public class Store extends Block {
     public String[] categories;
     public PurchaseItem[] purchases;
     public boolean navigationBar = true;
+    public @Nullable Item displayCurrency = null;
 
     BaseDialog shopDialog;
     float[] scrollPos;
@@ -71,7 +73,6 @@ public class Store extends Block {
     public class StoreBuild extends Building implements CoinBuild, BankLinked{
         public int anucoins = defaultAnucoins;
         private int anubank;
-        float buttonWidth = 210f;
         public float scl;
 
         @Override
@@ -149,11 +150,19 @@ public class Store extends Block {
             pane.row();
         }
 
+        public void beforeButtons(Table tbl){}
+
+        public void altConfigured(Unit builder, int value){}
+
         @Override
         public void configured(Unit builder, Object value){
             if(value instanceof Integer){
                 int i = (Integer)value;
-                if(purchases == null || i < 0 || i >= purchases.length) return;
+                if(i < 0){
+                    altConfigured(builder, i);
+                    return;
+                }
+                if(purchases == null || i >= purchases.length) return;
                 PurchaseItem item = purchases[i];
                 if(totalCoins() >= item.cost){
                     if(item.purchase(this, builder)){
@@ -215,15 +224,22 @@ public class Store extends Block {
                     int a = totalCoins();
                     return a + " " + (a > anucoins ? Core.bundle.get("ui.trans.linked") : "");
                 }).padRight(10f).center();
+                if(displayCurrency != null){
+                    t.image(displayCurrency.icon(Cicon.medium)).size(30f).center().padRight(10f).padLeft(20f);
+                    t.label(() -> team.core() == null ? "0" : team.core().items().get(displayCurrency) + "").padRight(10f).center();
+                }
             });
 
             shopDialog.cont.row();
             ScrollPane itemPane = new ScrollPane(new Table(tbl -> {
                 tbl.center();
+                beforeButtons(tbl);
+                scrollPos[0] = tbl.getPrefHeight();
+
                 int cat = 0;
                 tbl.table(marker -> {
                     marker.image().color(Pal2.coin).height(4f).growX();
-                    marker.add(Core.bundle.get("purchase.category." + categories[0])).color(Pal2.coin).pad(3f);
+                    marker.add(Core.bundle.get("purchase.category." + categories[0], "@ui.extra")).color(Pal2.coin).pad(3f);
                     marker.image().color(Pal2.coin).height(4f).growX();
                 }).fillX().growX();
                 tbl.row();

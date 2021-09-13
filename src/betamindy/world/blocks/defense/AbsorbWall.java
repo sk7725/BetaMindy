@@ -16,7 +16,7 @@ public class AbsorbWall extends Wall {
     public class AbsorbWallBuild extends WallBuild {
         @Override
         public boolean collide(Bullet other){
-            if(other.type.speed > 0.01f && other.team != team && health > other.damage){ //dont mess with lasery stuff
+            if(other.type.speed > 0.01f && other.team != team){ //dont mess with lasery stuff
                 other.hit = true;
                 other.type.despawnEffect.at(other.x, other.y, other.rotation(), other.type.hitColor);
 

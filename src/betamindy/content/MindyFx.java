@@ -25,6 +25,7 @@ import static arc.graphics.g2d.Draw.*;
 //I do not want my fills and lines fighting, so no wildcad imports
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
+import static betamindy.BetaMindy.hardmode;
 import static betamindy.graphics.Drawm.shard;
 import static betamindy.graphics.Drawm.spark;
 import static mindustry.Vars.renderer;
@@ -1111,5 +1112,38 @@ public class MindyFx {
         randLenVectors(e.id, 2 - e.id % 2, 14f * e.finpow(), e.rotation - 90f, 25f, (x, y) -> {
             lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fout() * 3.5f);
         });
+    }),
+
+    portalWaveSmall = new Effect(50f, 100f, e -> {
+        color(Color.white, BetaMindy.hardmode.color(), e.fin());
+        stroke(e.fout() * 2f);
+        circle(e.x, e.y, e.finpow() * 50f);
+    }),
+
+    teleportUnit = new Effect(20f, e -> {
+        TextureRegion region = e.data instanceof UnitType u? u.icon(Cicon.full) : UnitTypes.alpha.icon(Cicon.full);
+        color();
+        mixcol(e.color, 1f);
+        rect(region, e.x, e.y, region.width * scl * xscl * e.fout(), region.height * scl * yscl * (1f + e.finpow() * 2f), e.rotation - 90f);
+        mixcol();
+    }),
+
+    unitInPortal = new Effect(40f, e -> {
+        TextureRegion region = e.data instanceof UnitType u? u.icon(Cicon.full) : UnitTypes.alpha.icon(Cicon.full);
+        color(Color.white, e.fout(0.3f));
+        float f = e.fout() * 0.5f + 0.5f;
+        rect(region, e.x, e.y, region.width * scl * xscl * f, region.height * scl * yscl * f, e.rotation - 90f);
+    }).layer(Layer.groundUnit - 0.1f),
+
+    unitOutPortal = new Effect(60f, e -> {
+        if(e.data instanceof Unit unit){
+            if(unit.type().flying && !unit.type.lowAltitude) z(Layer.flyingUnit + 1f);
+            else z(Layer.effect + 0.0001f);
+            color();
+            mixcol(Tmp.c1.set(Color.white).lerp(hardmode.color(), e.fin()), 1f);
+            alpha(e.fout(0.4f));
+            rect(unit.icon(), unit.x, unit.y, unit.rotation - 90f);
+            reset();
+        }
     });
 }

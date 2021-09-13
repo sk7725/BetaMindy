@@ -87,6 +87,13 @@ public class BetaMindy extends Mod{
         Events.on(DisposeEvent.class, e -> {
             MindyShaders.dispose();
         });
+
+        //hm
+        /*
+        Events.on(EventType.pickupEvent, e -> {
+            if(e.build instanceof GhostHolder ghost) ghost.pickedEvent(e.carrier);
+        });
+         */
     }
 
     @Override
