@@ -9,3 +9,5 @@
 .project
 .classpath
 *.log
+/assets/sprites/effects/koruh-font.png
+/assets/sprites/ui/koruh-ui.png
