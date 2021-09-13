@@ -36,6 +36,7 @@ import mindustry.world.blocks.production.*;
 import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
+@SuppressWarnings("al")
 public class Shop extends PayloadAcceptor {
     public int defaultAnucoins = 0;
     public TextureRegion spinRegion;
@@ -51,10 +52,14 @@ public class Shop extends PayloadAcceptor {
     public boolean sellAllBlocks = false;
     public boolean navigationBar = false;
 
+    BaseDialog shopDialog;
+    String searchString = "";
+    Cell<ScrollPane> itemCell;
+
     OrderedMap<Item, Float> itemScores;
     OrderedMap<UnitType, Float> unitScores;
     OrderedMap<UnitType, Integer> unitTypeMap = new OrderedMap<>();
-    BaseDialog shopDialog;
+
     float[] scrollPos = {0, 0, 0, 0};
 
     public Shop(String name){
@@ -70,8 +75,6 @@ public class Shop extends PayloadAcceptor {
             if(tile.totalCoins() >= price){
                 if(tile.addItemPayload(item, 15)){
                     tile.removeCoins(price);
-                    tile.payVector.setZero();
-                    tile.payRotation = tile.rotdeg();
                 }
             }
         });
@@ -125,6 +128,14 @@ public class Shop extends PayloadAcceptor {
         Runnable ee = () -> {
             itemScores = BetaMindy.itemScores;
             unitScores = BetaMindy.unitScores;
+
+            if(purchases != null) {
+                for (PurchaseItem purchase : purchases) {
+                    if (purchase instanceof PackageShopItem p && p.cost == 0) {
+                        p.definePrice();
+                    }
+                }
+            }
 
             for (UnitType unit : Vars.content.units()) {
                 if (unitScores.containsKey(unit)) {
@@ -180,7 +191,6 @@ public class Shop extends PayloadAcceptor {
     public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload> implements CoinBuild, BankLinked{
         public int anucoins = defaultAnucoins;
         private int anubank = -1; //default is -1
-        float buttonWidth = 210f;
         public UnitType unit;
         public float scl;
 
@@ -250,6 +260,8 @@ public class Shop extends PayloadAcceptor {
         public boolean addItemPayload(Item item, int amount){
             if(payload == null){
                 payload = new BuildPayload(MindyBlocks.box, team);
+                payVector.setZero();
+                payRotation = rotdeg();
             }
 
             if(payload instanceof BuildPayload bp){
@@ -302,8 +314,12 @@ public class Shop extends PayloadAcceptor {
                 if(unlocked) {
                     t.table(tt -> {
                         tt.left();
-                        String color = colorToHex(item.color);
-                        tt.add("[#" + color + "]" + item.localizedName + "[] [accent]x15[]").growX().left();
+                        String color = colorToHex(item.color.equals(Color.black) ? Color.lightGray : item.color);
+
+                        Label text = new Label("[#" + color + "]" + item.localizedName + "[] [accent]x15[]");
+                        text.setWrap(true);
+                        tt.add(text).growX().left();
+
                         tt.row();
                         tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();
                     }).growX();
@@ -314,7 +330,7 @@ public class Shop extends PayloadAcceptor {
                 if(totalCoins() >= price){
                     configure(item);
                 }
-            }).left().growX().disabled(b -> disabledBox());
+            }).left().growX().disabled(b -> disabledBox() || !unlocked);
             pane.row();
         }
 
@@ -332,7 +348,10 @@ public class Shop extends PayloadAcceptor {
                     int type = unitTypeMap.get(unit);
                     tt.left();
 
-                    tt.add(unlocked ? unit.localizedName : "???").growX().left().color(player == null || player.team() == null || player.team().id == Team.derelict.id ? Pal.accent : player.team().color);
+                    Label text = new Label(unlocked ? unit.localizedName : "???");
+                    text.setWrap(true);
+
+                    tt.add(text).growX().left().color(player == null || player.team() == null || player.team().id == Team.derelict.id ? Pal.accent : player.team().color);
 
                     if(unlocked) {
                         tt.row();
@@ -347,7 +366,7 @@ public class Shop extends PayloadAcceptor {
                 if(totalCoins() >= price && payload == null) {
                     configure(unit);
                 }
-            }).left().growX().disabled(b -> payload != null);
+            }).left().growX().disabled(b -> payload != null || !unlocked);
             pane.row();
         }
 
@@ -380,16 +399,19 @@ public class Shop extends PayloadAcceptor {
                 t.table(tt -> {
                     tt.left();
 
-                    tt.add(unlocked ? block.localizedName : "???").growX().left().color(BlockItem.blockColor(block));
+                    Label text = new Label(unlocked ? block.localizedName : "???");
+                    text.setWrap(true);
+
+                    tt.add(text).growX().left().color(BlockItem.blockColor(block));
                     tt.row();
 
-                    if(unlocked) tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();;
+                    if(unlocked) tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", price)).left();
                 }).growX();
             }, () -> {
                 if(totalCoins() >= price && payload == null) {
                     configure(block);
                 }
-            }).left().growX().disabled(b -> payload != null);
+            }).left().growX().disabled(b -> payload != null || !unlocked);
             pane.row();
         }
 
@@ -496,7 +518,7 @@ public class Shop extends PayloadAcceptor {
         @Override
         public void drawConfigure() {}
 
-        public void buildSellDialog(int[] price, Seq<ItemStack> items, Runnable confirmed){
+        /*public void buildSellDialog(int[] price, Seq<ItemStack> items, Runnable confirmed){
             String text1 = Core.bundle.get("ui.sellAccept") + ":";
             String text2 = Core.bundle.get("ui.sellAccept2") + " [accent]" + price[0] + " " + Core.bundle.get("ui.anucoin.multiple") + "[]";
             BaseDialog dialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
@@ -536,21 +558,27 @@ public class Shop extends PayloadAcceptor {
             dialog.keyDown(KeyCode.escape, dialog::hide);
             dialog.keyDown(KeyCode.back, dialog::hide);
             dialog.show();
-        }
+        }*/
 
         @Override
         public void buildConfiguration(Table table) {
             super.buildConfiguration(table);
+            searchString = "";
             
+            if(shopDialog == null) {
+                shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
+                shopDialog.addCloseButton();
+            }
+
             float width = Math.min(Core.graphics.getWidth(), Core.graphics.getHeight());
             //float height = Math.max(Core.graphics.getWidth(), Core.graphics.getHeight());
 
-            shopDialog = new BaseDialog(Core.bundle.get("ui.shop.title"));
+            shopDialog.cont.clear();
             shopDialog.cont.center().top();
 
             shopDialog.cont.table(t -> {
                 t.center();
-                Image image = t.image(AnucoinTex.uiCoin).size(30f).center().padRight(10f).get();
+                Image image = t.image(AnucoinTex.uiCoin).size(30f).center().padRight(6f).get();
                 image.clicked(() -> {
                     if(Core.input.keyDown(KeyCode.shiftLeft) || mobile){
                         if(Core.app.getClipboardText().equals(AnucoinTex.emoji)){
@@ -570,7 +598,52 @@ public class Shop extends PayloadAcceptor {
             });
 
             shopDialog.cont.row();
-            ScrollPane itemPane = new ScrollPane(new Table(tbl -> {
+            ScrollPane itemPane = buildPane();
+
+            if(navigationBar){
+                shopDialog.cont.table(topbar -> {
+                    topbar.left();
+                    topbar.defaults().padRight(10f).size(110f, 40f).left();
+                    if(purchases != null){
+                        topbar.button("@ui.extra", () ->
+                            itemPane.setScrollY(scrollPos[0])
+                        );
+                    }
+                    if(sellAllItems){
+                        topbar.button("@content.item.name", () ->
+                            itemPane.setScrollY(scrollPos[1])
+                        );
+                    }
+                    if(sellAllUnits){
+                        topbar.button("@content.unit.name", () ->
+                            itemPane.setScrollY(scrollPos[2])
+                        );
+                    }
+                    if(sellAllBlocks || soldBlocks != null){
+                        topbar.button("@content.block.name", () ->
+                            itemPane.setScrollY(scrollPos[3])
+                        );
+                    }
+                }).center().width(width * 0.6f);
+                shopDialog.cont.row();
+            }
+
+            shopDialog.cont.table(t -> {
+                t.image(Icon.zoom.getRegion()).size(32f);
+
+                t.field(searchString, e -> {
+                    searchString = e;
+                    rebuildPane();
+                }).width(width * 0.6f - 32f);
+            });
+
+            shopDialog.cont.row();
+            itemCell = shopDialog.cont.add(itemPane).center().width(width * 0.6f);
+            shopDialog.show();
+        }
+
+        public ScrollPane buildPane() {
+            return new ScrollPane(new Table(tbl -> {
                 tbl.center();
                 if(purchases != null) {
                     tbl.table(marker -> {
@@ -581,6 +654,7 @@ public class Shop extends PayloadAcceptor {
                     tbl.row();
 
                     for(int i = 0; i < purchases.length; i++){
+                        if(!searchString.equals("") && (!purchases[i].name.contains(searchString) && !purchases[i].localizedName.contains(searchString))) continue;
                         extraButton(tbl, purchases[i], i);
                     }
                 }
@@ -595,6 +669,7 @@ public class Shop extends PayloadAcceptor {
 
                     for(Item item : Vars.content.items()) {
                         if(item == MindyItems.bittrium || (item instanceof ForeignItem)) continue;
+                        if(!searchString.equals("") && (!item.name.contains(searchString) && !item.localizedName.contains(searchString))) continue;
                         if(itemScores.containsKey(item)) {
                             itemButton(tbl, item);
                         }
@@ -610,6 +685,7 @@ public class Shop extends PayloadAcceptor {
                     tbl.row();
 
                     for(UnitType unit : Vars.content.units()) {
+                        if(!searchString.equals("") && (!unit.name.contains(searchString) && !unit.localizedName.contains(searchString))) continue;
                         if(unitScores.containsKey(unit)) {
                             unitButton(tbl, unit);
                         }
@@ -628,6 +704,7 @@ public class Shop extends PayloadAcceptor {
                     if(sellAllBlocks){
                         for(Block block : Vars.content.blocks()) {
                             if(!block.isHidden() && block.requirements.length > 0){
+                                if(!searchString.equals("") && (!block.name.contains(searchString) && !block.localizedName.contains(searchString))) continue;
                                 blockButton(tbl, block);
                             }
                         }
@@ -635,46 +712,18 @@ public class Shop extends PayloadAcceptor {
                     else{
                         for(Block block : soldBlocks) {
                             if(!block.isHidden() && block.requirements.length > 0){
+                                if(!searchString.equals("") && (!block.name.contains(searchString) && !block.localizedName.contains(searchString))) continue;
                                 blockButton(tbl, block);
                             }
                         }
                     }
                 }
-                //Log.info("scrollPos:" + scrollPos[0] + "," + scrollPos[1] + "," + scrollPos[2]);
             }));
+        }
 
-            if(navigationBar){
-                shopDialog.cont.table(topbar -> {
-                    topbar.left();
-                    topbar.defaults().padRight(10f).size(110f, 40f).left();
-                    if(purchases != null){
-                        topbar.button("@ui.extra", () -> {
-                            itemPane.setScrollY(scrollPos[0]);
-                        });
-                    }
-                    if(sellAllItems){
-                        topbar.button("@content.item.name", () -> {
-                            itemPane.setScrollY(scrollPos[1]);
-                        });
-                    }
-                    if(sellAllUnits){
-                        topbar.button("@content.unit.name", () -> {
-                            itemPane.setScrollY(scrollPos[2]);
-                        });
-                    }
-                    if(sellAllBlocks || soldBlocks != null){
-                        topbar.button("@content.block.name", () -> {
-                            itemPane.setScrollY(scrollPos[3]);
-                        });
-                    }
-                }).center().width(width * 0.6f);
-                shopDialog.cont.row();
-            }
-
-            shopDialog.cont.add(itemPane).center().width(width * 0.6f);
-
-            shopDialog.addCloseButton();
-            shopDialog.show();
+        public void rebuildPane(){
+            ScrollPane itemPane = buildPane();
+            itemCell.setElement(itemPane);
         }
 
         @Override

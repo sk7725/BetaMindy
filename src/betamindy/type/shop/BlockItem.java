@@ -4,9 +4,9 @@ import arc.*;
 import arc.graphics.*;
 import arc.scene.ui.*;
 import betamindy.*;
-import betamindy.content.*;
 import betamindy.world.blocks.storage.*;
 import mindustry.content.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -18,6 +18,8 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.storage.*;
 
+import static mindustry.Vars.state;
+
 public class BlockItem extends ShopItem{
     public Block item;
 
@@ -26,7 +28,7 @@ public class BlockItem extends ShopItem{
         this.item = item;
 
         localizedName = "[#" + blockColor(item).toString() + "]" + item.localizedName + "[]";
-        unlocked = e -> ((Shop.ShopBuild)e).payload == null;
+        unlocked = e -> ((Shop.ShopBuild)e).payload == null && (item.unlocked() || state.rules.infiniteResources);
     }
 /*
     public BlockItem(Block item){
@@ -70,14 +72,22 @@ public class BlockItem extends ShopItem{
 
     @Override
     public void buildButton(Button t){
-        t.left();
-        t.image(item.icon(Cicon.medium)).size(40).padRight(10f);
+        boolean unlocked = item.unlocked() || state.rules.infiniteResources;
 
-        t.table(tt -> {
-            tt.left();
-            tt.add(localizedName).growX().left();
-            tt.row();
-            tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();;
-        }).growX();
+        t.left();
+        t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.lightGray);
+
+        if(unlocked) {
+            t.table(tt -> {
+                tt.left();
+
+                Label text = new Label(localizedName);
+                text.setWrap(true);
+
+                tt.add(text).growX().left();
+                tt.row();
+                tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
+            }).growX();
+        }
     }
 }

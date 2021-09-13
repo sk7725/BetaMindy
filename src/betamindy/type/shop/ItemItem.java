@@ -1,12 +1,15 @@
 package betamindy.type.shop;
 
 import arc.*;
-import arc.graphics.g2d.*;
+import arc.graphics.*;
 import arc.scene.ui.*;
 import betamindy.*;
 import betamindy.world.blocks.storage.Shop.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+
+import static mindustry.Vars.*;
 
 /** Used for non-item-shop shops that sell items. */
 public class ItemItem extends ShopItem{
@@ -19,7 +22,7 @@ public class ItemItem extends ShopItem{
         this.amount = amount;
 
         localizedName = "[#" + item.color.toString() + "]" + item.localizedName + "[]";
-        unlocked = e -> !((ShopBuild)e).disabledBox();
+        unlocked = e -> !((ShopBuild)e).disabledBox() && (item.unlocked() || state.rules.infiniteResources);
     }
 
     public ItemItem(Item item){
@@ -33,14 +36,22 @@ public class ItemItem extends ShopItem{
 
     @Override
     public void buildButton(Button t){
-        t.left();
-        t.image(item.icon(Cicon.medium)).size(40).padRight(10f);
+        boolean unlocked = item.unlocked() || state.rules.infiniteResources;
 
-        t.table(tt -> {
-            tt.left();
-            tt.add(localizedName + " [accent]x"+amount+"[]").growX().left();
-            tt.row();
-            tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
-        }).growX();
+        t.left();
+        t.image(unlocked ? item.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.lightGray);
+
+        if(unlocked) {
+            t.table(tt -> {
+                tt.left();
+
+                Label text = new Label(localizedName + " [accent]x" + amount + "[]");
+                text.setWrap(true);
+
+                tt.add(text).growX().left();
+                tt.row();
+                tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
+            }).growX();
+        }
     }
 }
