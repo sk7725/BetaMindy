@@ -19,6 +19,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import betamindy.ui.*;
 import mindustry.*;
@@ -29,10 +30,13 @@ import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 
+import static arc.graphics.g2d.Lines.getStroke;
 import static betamindy.BetaMindy.hardmode;
 import static mindustry.Vars.renderer;
 
 public class Drawm {
+    private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
+
     public static void construct(Building t, TextureRegion region, float rotation, float progress, float speed, float time, Color color){
         Shaders.build.region = region;
         Shaders.build.progress = progress;
@@ -98,6 +102,74 @@ public class Drawm {
         }
     }
 
+    /** Draws an ellipse.
+     * @author MeepofFaith
+     */
+    public static void ellipse(float x, float y, float rad, float wScl, float hScl, float rot){
+        float sides = Lines.circleVertices(rad);
+        float space = 360 / sides;
+        float r1 = rad - getStroke() / 2f, r2 = rad + getStroke() / 2f;
+
+        for(int i = 0; i < sides; i++){
+            float a = space * i;
+            vec1.trns(rot,
+                    r1 * wScl * Mathf.cosDeg(a),
+                    r1 * hScl * Mathf.sinDeg(a)
+            );
+            vec2.trns(rot,
+                    r1 * wScl * Mathf.cosDeg(a + space),
+                    r1 * hScl * Mathf.sinDeg(a + space)
+            );
+            vec3.trns(rot,
+                    r2 * wScl * Mathf.cosDeg(a + space),
+                    r2 * hScl * Mathf.sinDeg(a + space)
+            );
+            vec4.trns(rot,
+                    r2 * wScl * Mathf.cosDeg(a),
+                    r2 * hScl * Mathf.sinDeg(a)
+            );
+            Fill.quad(
+                    x + vec1.x, y + vec1.y,
+                    x + vec2.x, y + vec2.y,
+                    x + vec3.x, y + vec3.y,
+                    x + vec4.x, y + vec4.y
+            );
+        }
+    }
+
+    public static void ellipse(float x, float y, float rad, float wScl, float hScl, float rot, float layerUnder, float layerOver){
+        float sides = Lines.circleVertices(rad);
+        float space = 360 / sides;
+        float r1 = rad - getStroke() / 2f, r2 = rad + getStroke() / 2f;
+
+        for(int i = 0; i < sides; i++){
+            float a = space * i;
+            Draw.z(i > sides / 2 ? layerUnder : layerOver);
+            vec1.trns(rot,
+                    r1 * wScl * Mathf.cosDeg(a),
+                    r1 * hScl * Mathf.sinDeg(a)
+            );
+            vec2.trns(rot,
+                    r1 * wScl * Mathf.cosDeg(a + space),
+                    r1 * hScl * Mathf.sinDeg(a + space)
+            );
+            vec3.trns(rot,
+                    r2 * wScl * Mathf.cosDeg(a + space),
+                    r2 * hScl * Mathf.sinDeg(a + space)
+            );
+            vec4.trns(rot,
+                    r2 * wScl * Mathf.cosDeg(a),
+                    r2 * hScl * Mathf.sinDeg(a)
+            );
+            Fill.quad(
+                    x + vec1.x, y + vec1.y,
+                    x + vec2.x, y + vec2.y,
+                    x + vec3.x, y + vec3.y,
+                    x + vec4.x, y + vec4.y
+            );
+        }
+    }
+
     public static void koruh(float x, float y, float size, float r, char c){
         Draw.rect(AncientKoruh.eng(c), x, y, size, size, r);
     }
@@ -139,13 +211,13 @@ public class Drawm {
         Draw.color(color1);
         for(int i = 0; i < n; i++){
             Tmp.v1.trns(i * 360f / n - Time.globalTime / 2f + offset, radius - 2f * sizeScl).add(x, y);
-            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 12f * sizeScl), 120f * sizeScl, i * 360f / n - Time.globalTime / 2f + 100f);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 12f * sizeScl), 120f * sizeScl, i * 360f / n - Time.globalTime / 2f + 100f + offset);
         }
         n = branches / 3 + 3;
         Draw.color(color2);
         for(int i = 0; i < n; i++){
             Tmp.v1.trns(i * 360f / n - Time.globalTime / 3f + offset, radius - 4f * sizeScl).add(x, y);
-            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 16f * sizeScl), 160f * sizeScl, i * 360f / n - Time.globalTime / 3f + 110f);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, Math.min(radius, 16f * sizeScl), 160f * sizeScl, i * 360f / n - Time.globalTime / 3f + 110f + offset);
         }
 
         n = 4;

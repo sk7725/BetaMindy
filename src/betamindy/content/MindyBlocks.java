@@ -42,13 +42,16 @@ import static mindustry.type.ItemStack.with;
 
 public class MindyBlocks implements ContentList {
     //environment
-    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace, blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree,
+    public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
+    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree, borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, starBoulder, starTree, starPine, milksand, milkduneWall,
+    //ores
+    oreScalar, oreVector, oreTensor,
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore, terraformer1, terraformer2, terraformer3, terraformer4, terraformerC,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, graphiteWall, graphiteWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear, crusher, crusherPyra, crusherScalar,
     //drills
@@ -136,6 +139,56 @@ public class MindyBlocks implements ContentList {
         }};
 
         largeTree = new TreeBlock("large-tree");
+
+        //planet shar (moon of serpulo)
+        borudalite = new Floor("borudalite"){{
+            variants = 13;
+        }};
+        mossyBorudalite = new Floor("mossy-borudalite"){{
+            variants = 5;
+        }};
+
+        twilightMoss = new Floor("twilight-moss"){{
+            variants = 8;
+        }};
+        starryMoss = new Floor("starry-moss"){{
+            variants = 4;
+        }};
+
+        milksand = new Floor("milksand"){{
+            itemDrop = Items.sand; //change this?
+            playerUnmineable = true;
+            variants = 3;
+        }};
+
+        borudaliteWall = new StaticWall("borudalite-wall"){{
+            variants = 6;
+        }};
+        twilightMossWall = new StaticWall("twilight-moss-wall"){{
+            variants = 2;
+        }};
+        milkduneWall = new Floor("milkdune-wall"){{
+            variants = 2;
+            milksand.asFloor().wall = this;
+        }};
+        //endregion
+
+        //ores
+        oreScalar = new OreBlock(MindyItems.scalarRaw){{
+            oreDefault = false;
+            oreThreshold = 0.841f;
+            oreScale = 25.580953f;
+        }};
+        oreVector = new OreBlock(MindyItems.vectorRaw){{
+            oreDefault = false;
+            oreThreshold = 0.894f;
+            oreScale = 25.5813f;
+        }};
+        oreTensor = new OreBlock(MindyItems.tensorRaw){{
+            oreDefault = false;
+            oreThreshold = 0.91f;
+            oreScale = 25.6628f;
+        }};
 
         //turrets
         credit = new CoinTurret("credit"){{
@@ -1392,6 +1445,86 @@ public class MindyBlocks implements ContentList {
             purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1), new PurchaseInvBlock(Blocks.arc, 1699, 3), asPurchase(routerFloor, 69420, 99)};
             sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
             alwaysUnlocked = uwu;
+        }};
+
+        //scalar terraformer. turns stone -> dripstone & deepstone, spore -> moss
+        terraformer1 = new Terraformer("terraformer-1", 1){{
+            requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.debugOnly, with(Items.copper, 1));
+            lightColor = Pal2.scalar;
+            orbColor = Color.yellow;
+            ores = new Floor[]{(Floor)oreScalar};
+            //stone floors
+            terraFloors.put(Blocks.stone, borudalite);
+            terraFloors.put(Blocks.craters, mossyBorudalite);
+            terraFloors.put(Blocks.charr, mossyBorudalite);
+            terraFloors.put(Blocks.dirt, borudalite);
+            terraFloors.put(Blocks.mud, mossyBorudalite);
+            terraFloors.put(blackstone, borudalite);
+            terraFloors.put(redstone, borudalite);
+            //grass floors
+            terraFloors.put(Blocks.moss, twilightMoss);
+            terraFloors.put(Blocks.sporeMoss, starryMoss);
+            terraFloors.put(Blocks.grass, twilightMoss);
+            terraFloors.put(Blocks.taintedWater, Blocks.water);//todo v7 deeptaintedwater
+            terraFloors.put(Blocks.darksandTaintedWater, Blocks.darksandWater);//
+            terraFloors.put(Blocks.sandWater, Blocks.darksandWater);//
+            terraFloors.put(Blocks.sand, milksand);
+            terraFloors.put(Blocks.darksand, milksand);
+            //walls
+            terraBlocks.put(Blocks.stoneWall, borudaliteWall);
+            terraBlocks.put(Blocks.dirtWall, borudaliteWall);
+            terraBlocks.put(blackstoneWall, borudaliteWall);
+            terraBlocks.put(Blocks.sandWall, milkduneWall);
+            terraBlocks.put(Blocks.duneWall, milkduneWall);
+            terraBlocks.put(Blocks.sporeWall, twilightMossWall);
+            terraBlocks.put(Blocks.shrubs, twilightMossWall);
+            terraBlocks.put(redstoneWall, borudaliteWall);
+            terraBlocks.put(Blocks.sporePine, Blocks.pine);//
+            terraBlocks.put(redPine, Blocks.pine);//
+            terraBlocks.put(blackPine, Blocks.pine);//
+            terraBlocks.put(Blocks.whiteTree, largeTree);//
+            terraBlocks.put(Blocks.whiteTreeDead, largeTree);//
+            terraBlocks.put(Blocks.boulder, crystalScalar);//
+        }};
+
+        //classic terraformer. turns stone -> dirt, spore -> grass
+        terraformerC = new Terraformer("terraformer-c", 0){{
+            requirements(Category.effect, with(Items.scrap, 512, Items.coal, 256, Items.titanium, 128, MindyItems.pixellium, 64));
+            lightColor = Pal2.exp;
+            orbColor = Pal.heal;
+            ores = new Floor[]{(Floor) Blocks.oreScrap};
+            //stone floors
+            terraFloors.put(Blocks.stone, Blocks.dirt);
+            terraFloors.put(Blocks.craters, Blocks.mud);
+            terraFloors.put(Blocks.charr, Blocks.mud);
+            terraFloors.put(blackstone, Blocks.dirt);
+            terraFloors.put(redstone, Blocks.dirt);
+            terraFloors.put(borudalite, Blocks.dirt);
+            //grass floors
+            terraFloors.put(Blocks.moss, Blocks.grass);
+            terraFloors.put(Blocks.sporeMoss, Blocks.grass);
+            terraFloors.put(twilightMoss, Blocks.grass);
+            terraFloors.put(starryMoss, Blocks.grass);
+            terraFloors.put(Blocks.taintedWater, Blocks.water);//todo v7 deeptaintedwater
+            terraFloors.put(Blocks.darksandTaintedWater, Blocks.sandWater);
+            terraFloors.put(Blocks.darksandWater, Blocks.sandWater);
+
+            terraFloors.put(Blocks.darksand, Blocks.sand);
+            terraFloors.put(milksand, Blocks.sand);
+            //walls
+            terraBlocks.put(Blocks.stoneWall, Blocks.dirtWall);
+            terraBlocks.put(blackstoneWall, Blocks.dirtWall);
+            terraBlocks.put(redstoneWall, Blocks.dirtWall);
+            terraBlocks.put(borudaliteWall, Blocks.dirtWall);
+            terraBlocks.put(Blocks.duneWall, Blocks.sandWall);
+            terraBlocks.put(milkduneWall, Blocks.sandWall);
+            terraBlocks.put(Blocks.sporeWall, Blocks.shrubs);
+            terraBlocks.put(Blocks.sporePine, Blocks.pine);
+            terraBlocks.put(redPine, Blocks.pine);
+            terraBlocks.put(blackPine, Blocks.pine);
+            terraBlocks.put(Blocks.whiteTree, largeTree);
+            terraBlocks.put(Blocks.whiteTreeDead, largeTree);
+            terraBlocks.put(Blocks.boulder, Blocks.router);
         }};
     }
 }

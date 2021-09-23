@@ -1145,5 +1145,32 @@ public class MindyFx {
             rect(unit.icon(), unit.x, unit.y, unit.rotation - 90f);
             reset();
         }
+    }),
+
+    yutGyulGwaEffect = new Effect(350f, 800f, e -> {
+        e.scaled(60f, s -> {
+            color(Color.white, e.color, s.finpow());
+            vgld[0] = 0;
+            randLenVectors(e.id, e.id % 4 + 8, 4f + 29f * s.finpow(), (x, y) -> {
+                vgld[0]++;
+                spark(e.x + x, e.y + y, 6f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 3.f * s.fout(), Mathf.angle(x, y));
+            });
+        });
+
+        if(e.data instanceof TextureRegion region){
+            Draw.z(Layer.endPixeled + 0.01f);
+            color(Color.white, e.fout(0.9f));
+            float f = Math.max(0f, e.fout() * 8f - 7f);
+            mixcol(Color.white, f);
+            rect(region, e.x, e.y, region.width * scl * xscl * (1f + f * 2f), region.height * scl * yscl * (1 - f), 0f);
+            mixcol();
+        }
+    }),
+
+    terraBeam = new Effect(40f, 4000f, e -> {
+        blend(Blending.additive);
+        stroke(Mathf.randomSeed(e.id, 2f, 16f) * e.fout(), e.color);
+        lineAngleCenter(e.x, e.y, e.rotation, 4000);
+        blend();
     });
 }

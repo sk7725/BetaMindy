@@ -1,6 +1,7 @@
 package betamindy.ui;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.input.*;
 import arc.scene.*;

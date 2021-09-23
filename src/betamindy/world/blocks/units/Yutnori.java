@@ -1,11 +1,13 @@
 package betamindy.world.blocks.units;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import betamindy.content.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -22,16 +24,16 @@ public class Yutnori extends Block {
     public static final int yutSprites = 8;
     public int timerThrow = timers++;
     private static final Rand rand = new Rand();
-    public float friction = 0.97f, gravity = -0.12f, throwStrength = 9f, throwDelay = 180f;
+    public float friction = 0.95f, gravity = -0.12f, throwStrength = 9f, throwDelay = 210f;
 
     public TextureRegion baseRegion;
     public TextureRegion[] yutRegion, backdoRegion, wordRegion; //word: mo/do/ge/geol/yut/backdo
 
     public Effect doGeGeolEffect = Fx.teleportOut;
     public Effect yutMoEffect = Fx.teleportActivate;
-    public Effect wordEffect = Fx.none;//todo
+    public Effect wordEffect = MindyFx.yutGyulGwaEffect;
     public Color[] colors = {Color.valueOf("03e3fc"), Color.valueOf("d66eff"), Pal.remove};//yut, mo, backdo
-    public float rippleScale = 3f;
+    public float rippleScale = 1.2f;
     public float yutLength = 18f; //half of the (longer) width of the yut sprite in world units
 
     public Yutnori(String name){
@@ -70,13 +72,16 @@ public class Yutnori extends Block {
         @Override
         public void created(){
             super.created();
-            for(int i = 0; i < 4; i++) sticks[i].set(this);
+            for(int i = 0; i < 4; i++){
+                sticks[i].set(Tmp.v1.rnd(18f).add(this));
+                sticks[i].rotation = Mathf.random(360f);
+            }
         }
 
         @Override
         public void placed(){
             super.placed();
-            for(int i = 0; i < 4; i++) sticks[i].roll(this, id - i, throwStrength / 4f);
+            for(int i = 0; i < 4; i++) sticks[i].roll(this, id - i, throwStrength / 4f, true);
         }
 
         @Override
@@ -120,7 +125,12 @@ public class Yutnori extends Block {
         @Override
         public void draw(){
             Draw.rect(baseRegion, x, y);
-            for(int i = 0; i < 4; i++) sticks[i].draw();
+            if(Core.settings.getBool("correctview")){
+                for(int i = 0; i < 4; i++) sticks[i].draw();
+            }
+            else{
+                for(int i = 0; i < 4; i++) sticks[i].drawOriginal();
+            }
         }
 
         @Override
@@ -162,56 +172,75 @@ public class Yutnori extends Block {
                     h += hv * Time.delta;
                     hv += gravity * Time.delta;
                 }
-                if(h < 0){
+                if(h <= 0){
                     h = 0;
-                    if(hv < -1) hv *= -0.3f;
+                    if(hv < -1) hv *= -0.49f;
                     if(hv > 0.01f || !determined) hitGround();
+                    else{
+                        xv *= 0.1f;
+                        yv *= 0.1f;
+                    }
                 }
             }
 
             public void draw(){
-                Draw.z(h > 0.2f ? Layer.turret : Layer.blockOver);
+                float z = h > 0.05f ? (h > 0.25f ? Layer.flyingUnit + 1f : Layer.power) : Layer.turret;
+                Draw.z(z);
                 Draw.color(Pal.shadow);
-                float offset = h * 0.3f;
+                float offset = h * 0.5f;
                 int s = Mathf.mod(Mathf.roundPositive(sprite), yutSprites);
                 TextureRegion region = back? backdoRegion[s] : yutRegion[s];
                 Draw.rect(region, x - offset, y - offset, rotation);
 
-                float sizeScl = offset * 0.02f + 1f;
+                Draw.z(z + 0.1f);
+                float sizeScl = offset * 0.015f + 1f;
                 Draw.color();
                 Draw.rect(region, x, y, region.width * Draw.scl * Draw.xscl * sizeScl, region.height * Draw.scl * Draw.yscl * sizeScl, rotation);
                 Draw.reset();
             }
 
             public void drawOriginal(){
-                //todo correctviewn't
+                float z = h > 0.05f ? (h > 0.25f ? Layer.flyingUnit + 1f : Layer.power) : Layer.turret;
+                Draw.z(z);
+                Draw.color(Pal.shadow);
+                float offset = h * 0.5f;
+                int s = Mathf.mod(Mathf.roundPositive(sprite), yutSprites);
+                TextureRegion region = back? backdoRegion[s] : yutRegion[s];
+                Draw.rect(region, x, y, rotation);
+
+                Draw.z(h > 0.05f ? Layer.weather - 0.1f : Layer.turret + 1f);
+                Draw.color();
+                Draw.rect(region, x, y + offset, rotation);
+                Draw.reset();
             }
 
             public void roll(YutnoriBuild build, long seed, float strength){
+                roll(build, seed, strength, false);
+            }
+
+            public void roll(YutnoriBuild build, long seed, float strength, boolean fake){
                 rand.setSeed(seed);
                 outcome = rand.chance(back ? 0.65f : 0.55f);
                 x = build.x;
                 y = build.y;
                 h = 0;
                 hv = strength * 0.5f * rand.random(0.5f, 1.5f);
-                xv = rand.range(strength) * 0.35f;
-                yv = rand.range(strength) * 0.35f;
+                xv = rand.range(strength) * 0.3f;
+                yv = rand.range(strength) * 0.3f;
                 rotation = rand.random(360f);
                 rv = rand.range(5f);
-                determined = false;
+                determined = fake;
                 sprite = 0;
-                spritev = rand.random(0.6f);
+                spritev = (rand.random(2f) + 1f) * strength / throwStrength;
             }
 
             public void hitGround(){
-                if(hv < 1 && !determined){
+                if(!determined){
                     determined = true;
                     spritev = 0;
                     //lerp sprite to nearest breakpoint: 0 or 4
-                    sprite = sprite % yutSprites - yutSprites;
-                }
-                else if(!determined){
-                    spritev *= Mathf.random(0.8f, 1.3f);
+                    sprite = sprite % yutSprites;
+                    sprite -= yutSprites * Mathf.random(0, 2); //int is inclusive
                 }
 
                 if(headless) return;
@@ -219,15 +248,15 @@ public class Yutnori extends Block {
                 Floor floor = Vars.world.floorWorld(x, y);
                 if(floor.isLiquid){
                     Tmp.v1.trns(rotation, Mathf.random(yutLength));
-                    floor.walkEffect.at(Tmp.v1.x, Tmp.v1.y, rippleScale, floor.mapColor);
+                    floor.walkEffect.at(Tmp.v1.x + x, Tmp.v1.y + y, rippleScale, floor.mapColor);
                     Tmp.v1.trns(-rotation, Mathf.random(yutLength));
-                    floor.walkEffect.at(Tmp.v1.x, Tmp.v1.y, rippleScale, floor.mapColor);
+                    floor.walkEffect.at(Tmp.v1.x + x, Tmp.v1.y + y, rippleScale, floor.mapColor);
                     floor.walkSound.at(x, y, 1f, floor.walkSoundVolume);
                 }else{
                     Tmp.v1.trns(rotation, Mathf.random(yutLength));
-                    Fx.unitLandSmall.at(Tmp.v1.x, Tmp.v1.y, rippleScale, floor.mapColor);
+                    Fx.unitLandSmall.at(Tmp.v1.x + x, Tmp.v1.y + y, rippleScale, floor.mapColor);
                     Tmp.v1.trns(-rotation, Mathf.random(yutLength));
-                    Fx.unitLandSmall.at(Tmp.v1.x, Tmp.v1.y, rippleScale, floor.mapColor);
+                    Fx.unitLandSmall.at(Tmp.v1.x + x, Tmp.v1.y + y, rippleScale, floor.mapColor);
                     Fx.unitLandSmall.at(x, y, rippleScale, floor.mapColor);
                 }
             }

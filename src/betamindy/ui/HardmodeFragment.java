@@ -27,7 +27,7 @@ public class HardmodeFragment extends Fragment {
     public void build(Group parent){
         next = new Table();
         next.left();
-        mainBar = new SBar(() -> hardmode.barText(), () -> hardmode.isBoss() ? Pal.health : hardmode.color(), () -> Mathf.clamp(hardmode.barVal())).exact(true).blink(Color.white);
+        mainBar = new SBar(() -> hardmode.barText(), () -> hardmode.isBoss() && hardmode.portal != null && hardmode.portal.state == 5 ? Pal.health : hardmode.color(), () -> Mathf.clamp(hardmode.barVal())).exact(true).blink(Color.white);
         background = nine("betamindy-kback2", 16, 0.5f);
         parent.fill(table -> {
             table.name = "hardmodebar";
