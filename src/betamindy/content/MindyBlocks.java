@@ -391,7 +391,7 @@ public class MindyBlocks implements ContentList {
 
         astro = new UnitTurret("astro"){
             {
-                requirements(Category.turret, with(Items.thorium, 12000, Items.silicon, 25500, Items.titanium, 8250, MindyItems.bittrium, 5000));
+                requirements(Category.turret, with(Items.thorium, 12000, Items.silicon, 25500, Items.titanium, 8250, MindyItems.vector, 1000, MindyItems.tensor, 400));
                 size = 6;
                 chargeTime = 61f;
                 chargeEffect = MindyFx.astroCharge;

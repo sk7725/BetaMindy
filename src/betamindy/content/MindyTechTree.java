@@ -81,7 +81,16 @@ public class MindyTechTree implements ContentList{
                     node(spikePyra);
                 });
             });
-            node(spikeScrap);
+            node(spikeScrap, () -> {
+                node(crusher, () -> {
+                    node(crusherPyra);
+                });
+            });
+        });
+        margeNode(titaniumWall, () -> {
+            node(graphiteWall, () -> {
+                node(graphiteWallLarge);
+            });
         });
         margeNode(surgeWall, () -> {
             node(cryoWall, () -> {
@@ -102,12 +111,30 @@ public class MindyTechTree implements ContentList{
             });
         });
         margeNode(tsunami, () -> {
-            node(propaganda);
+            node(propaganda, () -> {
+                node(astro);
+            });
         });
 
         margeNode(vault, () -> {
             node(silo, () -> {
                 node(warehouse);
+            });
+        });
+        margeNode(container, () -> {
+            node(anucoinNode, () -> {
+                node(anucoinSafe, () -> {
+                    node(anucoinVault);
+                });
+                node(cafe);
+                node(tradingPost);
+                node(itemShop, () -> {
+                    node(unitShop);
+                });
+                node(credit, () -> {
+                    node(taxation);
+                    node(brokerage);
+                });
             });
         });
 
@@ -134,6 +161,10 @@ public class MindyTechTree implements ContentList{
 
         margeNode(commandCenter, () -> {
             node(boostPad, () -> {
+                node(driftPad, () -> {
+                    node(teleportPad);
+                    //todo hardmode level objective for PortalPad, HopeBringer, AncientShop, Tarnation etc.
+                });
                 node(bumper, () -> {
                     node(bumperBlue);
                     node(bumperPlus);
@@ -150,16 +181,25 @@ public class MindyTechTree implements ContentList{
         margeNode(itemBridge, () -> {
             node(piston, () -> {
                 node(stickyPiston, () -> {
-                    node(cloner, () -> {
-                        node(spinner, () -> {
-                            node(spinnerInert);
-                        });
-                    });
+                    node(cloner);
                 });
 
                 node(sporeSlime, () -> {
                     node(sporeSlimeSided);
                     node(surgeSlime);
+                });
+            });
+        });
+
+        margeNode(conveyor, () -> {
+            node(cog, () -> {
+                node(titaniumCog, () -> {
+                    node(plastaniumCog, () -> {
+                        node(spinner, () -> {
+                            node(spinnerInert);
+                        });
+                    });
+                    node(armoredCog);
                 });
             });
         });
@@ -174,6 +214,13 @@ public class MindyTechTree implements ContentList{
             });
         });
 
+        margeNode(logicDisplay, () -> {
+            node(pen, () -> {
+                node(colorModule);
+                node(strokeModule);
+            });
+        });
+
         margeNode(pyratite, () -> {
             node(crystalPyra);
         });
@@ -182,6 +229,10 @@ public class MindyTechTree implements ContentList{
             nodeProduce(cryonite, () -> {
                 node(crystalCryo);
             });
+        });
+
+        margeNode(Liquids.water, () -> {
+            nodeProduce(MindyLiquids.coffee);
         });
     }
     private static void margeNode(UnlockableContent parent, Runnable children){

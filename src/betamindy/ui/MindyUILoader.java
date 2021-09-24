@@ -61,7 +61,7 @@ public class MindyUILoader {
                 dialog.buttons.button("@cancel", dialog::hide);
                 dialog.buttons.button("@ok", () -> {
                     dialog.hide();
-                    ui.mods.show();
+
                     Core.app.post(() -> {
                         if(mods.getMod(MusicControl.musicMod) == null){
                             //get mod TODO v7
@@ -69,6 +69,8 @@ public class MindyUILoader {
                         }
                         else{
                             //enable & update mod
+                            mods.setEnabled(mods.getMod(MusicControl.musicMod), true);
+                            ui.mods.show();
                         }
                     });
                 });

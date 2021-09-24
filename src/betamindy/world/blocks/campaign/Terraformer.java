@@ -53,7 +53,7 @@ public class Terraformer extends Block {
 
     public Terraformer(String name, int tier){
         super(name);
-        size = 5;
+        size = 7;
         solid = true;
         update = true;
         configurable = true;
