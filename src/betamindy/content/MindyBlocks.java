@@ -153,12 +153,18 @@ public class MindyBlocks implements ContentList {
         }};
         starryMoss = new Floor("starry-moss"){{
             variants = 4;
+            emitLight = true;
+            lightRadius = 34f;
+            lightColor = Color.yellow.cpy().a(0.5f);
         }};
 
         milksand = new Floor("milksand"){{
             itemDrop = Items.sand; //change this?
             playerUnmineable = true;
             variants = 3;
+            emitLight = true;
+            lightRadius = 16f;
+            lightColor = Color.sky.cpy().a(0.15f);
         }};
 
         borudaliteWall = new StaticWall("borudalite-wall"){{
@@ -1380,7 +1386,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         unitShop = new Shop("unit-shop"){{
-            requirements(Category.effect, with(Items.copper, 1));
+            requirements(Category.effect, with(Items.sand , 600, Items.lead, 520, Items.titanium, 860, Items.thorium, 200, Items.phaseFabric, 140, Items.surgeAlloy, 50));
             size = 5;
             sellAllUnits = true;
             spinShadowRadius = 18f;
@@ -1449,7 +1455,7 @@ public class MindyBlocks implements ContentList {
 
         //scalar terraformer. turns stone -> dripstone & deepstone, spore -> moss
         terraformer1 = new Terraformer("terraformer-1", 1){{
-            requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.debugOnly, with(Items.copper, 1));
+            requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.debugOnly, with(Items.scrap, 500, Items.coal, 500, Items.copper, 1000, Items.lead, 1000, Items.silicon, 500, Items.titanium, 500, Items.surgeAlloy, 400, Items.blastCompound, 400, MindyItems.bittrium, 100, MindyItems.bedrock, 50));
             lightColor = Pal2.scalar;
             orbColor = Color.yellow;
             ores = new Floor[]{(Floor)oreScalar};
@@ -1489,7 +1495,7 @@ public class MindyBlocks implements ContentList {
 
         //classic terraformer. turns stone -> dirt, spore -> grass
         terraformerC = new Terraformer("terraformer-c", 0){{
-            requirements(Category.effect, with(Items.scrap, 512, Items.coal, 256, Items.titanium, 128, MindyItems.pixellium, 64));
+            requirements(Category.effect, with(Items.scrap, 512, Items.coal, 512, Items.titanium, 512, MindyItems.pixellium, 64));
             lightColor = Pal2.exp;
             orbColor = Pal.heal;
             ores = new Floor[]{(Floor) Blocks.oreScrap};

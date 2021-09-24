@@ -11,6 +11,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
+import betamindy.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -41,13 +42,42 @@ public class MindyUILoader {
             hardfrag.build(ui.hudGroup);
             invfrag = new PlacementInvFragment();
             invfrag.build(ui.hudGroup);
-            if(Core.settings.getBool("touchpadenable")){//todo bundles
+            if(Core.settings.getBool("touchpadenable")){
                 touchpad = new TouchpadFragment();
                 touchpad.build(ui.hudGroup);
             }
         });
 
-        if(!Core.settings.getBool("bloom") && !Core.settings.getBool("nobloomask", false)){
+        if(uwu && (mods.getMod(MusicControl.musicMod) == null || !mods.getMod(MusicControl.musicMod).enabled()) && !Core.settings.getBool("nomusicask", false)){
+            Core.app.post(() -> {
+                BaseDialog dialog = new BaseDialog("@mod.betamindy.name");
+                dialog.cont.add(Core.bundle.format("ui.musicmodplease", MusicControl.musicRepo)).width(Vars.mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);
+                dialog.buttons.defaults().size(200f, 54f).pad(2f);
+                dialog.setFillParent(false);
+                dialog.cont.row();
+                dialog.cont.check("@ui.notagain", false, b -> {
+                    if(b) Core.settings.put("nomusicask", true);
+                }).left().padTop(8f);
+                dialog.buttons.button("@cancel", dialog::hide);
+                dialog.buttons.button("@ok", () -> {
+                    dialog.hide();
+                    ui.mods.show();
+                    Core.app.post(() -> {
+                        if(mods.getMod(MusicControl.musicMod) == null){
+                            //get mod TODO v7
+
+                        }
+                        else{
+                            //enable & update mod
+                        }
+                    });
+                });
+                dialog.keyDown(KeyCode.escape, dialog::hide);
+                dialog.keyDown(KeyCode.back, dialog::hide);
+                dialog.show();
+            });
+        }
+        else if(!Core.settings.getBool("bloom") && !Core.settings.getBool("nobloomask", false)){
             Core.app.post(() -> {
                 BaseDialog dialog = new BaseDialog("@mod.betamindy.name");
                 dialog.cont.add(Core.bundle.format("ui.bloomplease", Core.bundle.get("setting.bloom.name"))).width(Vars.mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);

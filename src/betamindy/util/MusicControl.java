@@ -14,10 +14,10 @@ import mindustry.game.*;
 import static mindustry.Vars.*;
 
 public class MusicControl {
-    public final String musicMod = "betamindy-music";
-    public final String musicRepo = "sk7725/BetaMindyMusic";
+    public final static String musicMod = "betamindy-music";
+    public static final String musicRepo = "sk7725/BetaMindyMusic";
 
-    public static final String[] musicFiles = {"sssatisfaction"};
+    public static final String[] musicFiles = {"invasion"};
     public Music[] musics;
 
     protected @Nullable Music current = null;
