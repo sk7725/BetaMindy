@@ -61,7 +61,7 @@ public class Yutnori extends Block {
             backdoRegion[i] = atlas.find(name + "-" + i + "-1", name + "-" + i);
         }
         for(int i = 0; i < 6; i++){
-            wordRegion[i] = atlas.find(name + "-word-" + i);
+            wordRegion[i] = atlas.find("betamindy-yut-word-" + i);
         }
     }
 

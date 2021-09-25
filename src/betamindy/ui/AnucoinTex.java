@@ -15,6 +15,8 @@ public class AnucoinTex {
     public static final int unicode = 0xE005;
     public static String emojiBit = "";
     public static final int unicodeBit = 0xE006;
+    public static TextureRegion[] uiYut = new TextureRegion[6];
+    public static String[] emojuYut = new String[6];
 
     public static void load(){
         uiCoin = atlas.find("betamindy-anucoin");
@@ -25,6 +27,10 @@ public class AnucoinTex {
         outlineBittrium = atlas.find("betamindy-uibittrium-outline");
         bittrium = atlas.find("betamindy-bittrium");
 
+        for(int i = 0; i < 6; i++){
+            uiYut[i] = atlas.find("betamindy-yut-ui-" + i);
+        }
+
         if(!uiCoin.found()){
             Log.err("Cannot find the coin texture!");
             return;
@@ -34,6 +40,9 @@ public class AnucoinTex {
             emoji = MindyUILoader.addOutlineEmoji(uiCoin, outlineCoin, unicode);
             if(uiBittrium.found()){
                 emojiBit = MindyUILoader.addOutlineEmoji(uiBittrium, outlineBittrium, unicodeBit);
+            }
+            for(int i = 0; i < 6; i++){
+                emojuYut[i] = MindyUILoader.addEmoji(uiYut[i], unicodeBit + 1 + i);
             }
         });
     }
