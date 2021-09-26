@@ -173,7 +173,7 @@ public class MindyBlocks implements ContentList {
         twilightMossWall = new StaticWall("twilight-moss-wall"){{
             variants = 2;
         }};
-        milkduneWall = new Floor("milkdune-wall"){{
+        milkduneWall = new StaticWall("milkdune-wall"){{
             variants = 2;
             milksand.asFloor().wall = this;
         }};

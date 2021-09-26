@@ -90,16 +90,16 @@ public class TeleportPad extends Block {
 
         public TeleportPadBuild nextPad(TeleportPadBuild prev){
             if(pads.isEmpty()) return prev;
-            Log.info("NEXTPAD START"+pads.toString());
+            //Log.info("NEXTPAD START"+pads.toString());
             Seq<TeleportPadBuild> arr = pads.orderedItems();
             int gid = prev.power == null ? -1 : prev.power.graph.getID();
-            Log.info("GID:"+gid);
+            //Log.info("GID:"+gid);
             TeleportPadBuild dest = prev;
             int dpos = prev.pos();
             int ppos = dpos;
             for(int i = 0; i < arr.size; i++){
                 TeleportPadBuild next = arr.get(i);
-                Log.info("NEXT:"+next);
+                //Log.info("NEXT:"+next);
                 if(next.id != prev.id && next.team == prev.team && !next.dead() && next.enabled){
                     if(prev.power == null){
                         if(next.power == null && scorePos(ppos, next.pos(), dpos)){
@@ -113,7 +113,6 @@ public class TeleportPad extends Block {
                     }
                 }
             }
-            Log.info("NOPE");
             return dest;
         }
 
@@ -125,7 +124,7 @@ public class TeleportPad extends Block {
         @Override
         public void created(){
             super.created();
-            Log.info("CREATED:" + id);
+            //Log.info("CREATED:" + id);
             pads.add(this);
         }
 
@@ -138,7 +137,7 @@ public class TeleportPad extends Block {
         @Override
         public void updateTile(){
             if(preLoad){ //WLE is called after created(), so re-invoke this after WLE once
-                Log.info("UPDATE-CREATED:" + id);
+                //Log.info("UPDATE-CREATED:" + id);
                 pads.add(this);
                 preLoad = false;
             }
