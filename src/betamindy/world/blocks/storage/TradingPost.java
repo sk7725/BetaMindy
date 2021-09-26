@@ -2,7 +2,7 @@ package betamindy.world.blocks.storage;
 
 import arc.*;
 import arc.graphics.Color;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
@@ -11,6 +11,7 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.ui.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
@@ -22,6 +23,10 @@ import static betamindy.BetaMindy.*;
 public class TradingPost extends Block {
     private final int[] price = new int[]{0};
     private final Seq<ItemStack> tempStack = new Seq<>();
+    public float animScale = 60f, spinSpeed = 0.8f;
+    public float animPeriod = -1f; //calculated automatically
+    public float animRadius = 7.8f;
+    private static final Rand rand = new Rand();
 
     public TradingPost(String name){
         super(name);
@@ -48,6 +53,7 @@ public class TradingPost extends Block {
     @Override
     public void load() {
         super.load();
+        animPeriod = animScale * Mathf.pi;
     }
 
     public class TradingPostBuild extends Building implements CoinBuild{
@@ -71,6 +77,28 @@ public class TradingPost extends Block {
             }
 
             anucoins += price[0];
+        }
+
+        @Override
+        public void draw(){
+            super.draw();
+            // a typical sin wave's period is 2PI. with absin(scl), it is 4PI*scl (= sin(x/2scl)).
+            // 1/2PI + 2NPI is the sin's local maxima. This is T + 3PIscl % 4PIscl for each bump.
+            // m a t h
+            int seed = (int)((Time.time + 3f * animPeriod) / (4f * animPeriod)); //so this increments only when all items meet at one spot
+            float s = Mathf.absin(Time.time, animScale, 1f);
+            float l = (1f - s*s*s) * animRadius; //this just looks cool according to wolfram
+            rand.setSeed(seed + 1L + id); //might overflow if it was an int
+            for(int i = 5; i >= 0; i--){
+                Tmp.v1.trns(i * 60f + Time.time * spinSpeed, l).add(this);
+                TextureRegion item = i == 0 ? AnucoinTex.coin : content.items().random(rand).icon(Cicon.full);
+                Draw.z(Layer.blockOver - 0.1f);
+                Draw.color(Pal.shadow);
+                Draw.rect(item, Tmp.v1.x, Tmp.v1.y - 1f, 7f, 7f);
+                Draw.color();
+                Draw.z(Layer.blockOver);
+                Draw.rect(item, Tmp.v1.x, Tmp.v1.y, 7f, 7f);
+            }
         }
 
         @Override

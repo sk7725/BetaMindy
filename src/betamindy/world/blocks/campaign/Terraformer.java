@@ -77,6 +77,12 @@ public class Terraformer extends Block {
         bars.add("uses", (TerraformerBuild entity) -> new Bar(() -> Core.bundle.format("bar.uses", maxUses - entity.used), () -> Pal.accent, () -> ((float) maxUses - entity.used) / maxUses));
     }
 
+
+    @Override
+    public boolean canBreak(Tile tile){
+        return super.canBreak(tile) && (tile.build instanceof TerraformerBuild terra) && !terra.terraforming && terra.used < maxUses;
+    }
+
     public class TerraformerBuild extends Building {
         public boolean charging = false; //when true, starts charging & consuming
         public float charge = 0f; //amount of power stored

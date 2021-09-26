@@ -1151,9 +1151,9 @@ public class MindyFx {
         e.scaled(60f, s -> {
             color(Color.white, e.color, s.finpow());
             vgld[0] = 0;
-            randLenVectors(e.id, e.id % 4 + 8, 4f + 29f * s.finpow(), (x, y) -> {
+            randLenVectors(e.id, e.id % 4 + 12, 4f + 49f * s.finpow(), (x, y) -> {
                 vgld[0]++;
-                spark(e.x + x, e.y + y, 6f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 3.f * s.fout(), Mathf.angle(x, y));
+                spark(e.x + x, e.y + y, 8f * s.fout() + Mathf.randomSeed(e.id + vgld[0], 8f), 3.8f * s.fout(), Mathf.angle(x, y));
             });
         });
 

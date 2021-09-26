@@ -119,6 +119,7 @@ public class Yutnori extends Block {
                 if(wordEffect != Fx.none){
                     wordEffect.at(x, y, 0f, flats == 5 ? colors[2] : (flats == 4 ? colors[0] : flats == 0 ? colors[1] : Color.white), wordRegion[flats]);
                 }
+                deselect();
             }
         }
 
@@ -130,6 +131,13 @@ public class Yutnori extends Block {
             }
             else{
                 for(int i = 0; i < 4; i++) sticks[i].drawOriginal();
+            }
+        }
+
+        @Override
+        public void drawLight(){
+            for(int i = 0; i < 4; i++){
+                Drawf.light(null, sticks[i].x, sticks[i].y, yutLength * 1.5f, Color.white, 0.8f);
             }
         }
 
