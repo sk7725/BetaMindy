@@ -55,15 +55,13 @@ public class PayloadBullet extends ArtilleryBulletType {
         TextureRegion icon;
         float rotation = b.rotation();
 
-        if(b.data instanceof BuildPayload){
-            BuildPayload bp = (BuildPayload)b.data;
-            icon = bp.build.block.icon(Cicon.full);
+        if(b.data instanceof BuildPayload bp){
+            icon = bp.build.block.fullIcon;
             if(bp.build.block.rotate) rotation = Mathf.lerp(rotation, (int)((rotation + 45f) / 90f) * 90f, b.fin());
             else rotation = Mathf.lerp((rotation + 45f) % 90f - 45f, 0f, b.fin());
         }
-        else if(b.data instanceof UnitPayload){
-            UnitPayload up = (UnitPayload)b.data;
-            icon = up.unit.type().icon(Cicon.full);
+        else if(b.data instanceof UnitPayload up){
+            icon = up.unit.type().fullIcon;
             rotation -= 90f;
         }
         else return;

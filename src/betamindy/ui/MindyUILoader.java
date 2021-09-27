@@ -64,8 +64,9 @@ public class MindyUILoader {
 
                     Core.app.post(() -> {
                         if(mods.getMod(MusicControl.musicMod) == null){
-                            //get mod TODO v7
-
+                            //get mod
+                            ui.mods.show();
+                            Reflect.invoke(ui.mods, "githubImportMod", new Object[]{MusicControl.musicRepo, false}, String.class, boolean.class);
                         }
                         else{
                             //enable & update mod

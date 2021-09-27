@@ -20,21 +20,22 @@ public class RandomAnimatedItem extends AnimatedItem {
     @Override
     public void update(){
         animateLevel = Core.settings.getInt("animlevel", 2);
-        if(animateLevel >= 3){
+        if(animateLevel >= 1){
             if(left > 0){
                 if(Time.globalTime % animDelay < 1){
                     left--;
-                    animIcon.set(animRegions[(int)(Mathf.random() * n)]);
+                    fullIcon.set(animRegions[(int)(Mathf.random() * n)]);
                 }
             }
             else{
-                animIcon.set(animRegions[0]);
+                fullIcon.set(animRegions[0]);
                 if(Time.globalTime % animDelay < 1){
                     if(Mathf.chance(chance * animDelay)){
                         left = consecutive + Mathf.random(3) - 1;
                     }
                 }
             }
+            if(animateLevel >= 2) uiIcon.set(fullIcon);
         }
     }
 
@@ -43,6 +44,7 @@ public class RandomAnimatedItem extends AnimatedItem {
         return dice < n ? animRegions[dice] : animRegions[0];
     }
 
+    /*
     @Override
     public TextureRegion icon(Cicon icon){
         if(animateLevel <= 0) return super.icon(icon);
@@ -54,7 +56,7 @@ public class RandomAnimatedItem extends AnimatedItem {
         Log.info("###START###");
         for(int i = 0; i < stack.length; i++){
             Log.info(i + " | " + stack[i].getMethodName() + " | " + stack[i].getClassName());
-        }*/
+        }/
         return (stack[2].getMethodName().equals("draw")) ? randomIcon() : animIcon;
-    }
+    }*/
 }

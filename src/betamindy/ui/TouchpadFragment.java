@@ -43,8 +43,6 @@ public class TouchpadFragment extends Fragment {
 
     @Override
     public void build(Group parent){
-        //todo bigger background sprite
-
         TextureRegionDrawable knobby = new TextureRegionDrawable(atlas.find("check-on-over"));
         knobby.setMinHeight(size * 0.5f);
         knobby.setMinWidth(size * 0.5f);

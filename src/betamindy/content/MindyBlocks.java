@@ -57,7 +57,7 @@ public class MindyBlocks implements ContentList {
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
-    boostPad, repairTurret, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad, teleportPad, portalPad, yutnori,
+    boostPad, rejuvenator, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad, teleportPad, portalPad, yutnori,
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule,
     //turrets
@@ -895,10 +895,11 @@ public class MindyBlocks implements ContentList {
             requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, MindyItems.vector, 15));
         }};
 
-        repairTurret = new RepairTurret("repair-turret"){{
+        rejuvenator = new RepairTurret("repair-turret"){{
+            requirements(Category.units, with(Items.lead, 150, Items.thorium, 365, Items.silicon, 250, Items.plastanium, 55, Items.surgeAlloy, 75));
             size = 3;
-            powerUse = 4f;
-            requirements(Category.units, with(Items.lead, 50, Items.copper, 65, Items.silicon, 50, Items.plastanium, 25, Items.phaseFabric, 15));
+            powerUse = 14f;
+            repairRadius = 170f;
             consumes.item(MindyItems.scalar).boost();
         }};
 

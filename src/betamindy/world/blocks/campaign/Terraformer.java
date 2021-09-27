@@ -59,6 +59,7 @@ public class Terraformer extends Block {
         configurable = true;
         hasPower = true;
         this.tier = tier;
+        clipSize = drawLimit * 2f;
         localizedName = "[#84ff00]" + Core.bundle.get("block." + this.name + ".name", Core.bundle.get("block.betamindy-terraformer.name") + ((tier >= romans.length || tier <= 0) ? "" : " " + romans[tier])) + "[]";
     }
 
@@ -145,7 +146,7 @@ public class Terraformer extends Block {
             if(t.overlay() == Blocks.tendrils) t.setOverlay(Blocks.air);
             if(t.overlay() == Blocks.air || (t.overlay() instanceof OreBlock ob) && ob.itemDrop != null && ob.itemDrop.hardness <= ores[0].itemDrop.hardness){
                 for(int i = 0; i < ores.length; i++){
-                    if(NotSoSimplex.noise2d(oreSeeds[i], 2, 0.3f, 1 / ores[i].oreScale, t.x + oreSeeds[i], t.y + oreSeeds[i]) >= ores[i].oreThreshold * threshMultiplier){
+                    if(Simplex.noise2d(oreSeeds[i], 2, 0.3f, 1 / ores[i].oreScale, t.x + oreSeeds[i], t.y + oreSeeds[i]) >= ores[i].oreThreshold * threshMultiplier){
                         t.setOverlay(ores[i]);
                     }
                 }

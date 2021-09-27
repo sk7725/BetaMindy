@@ -1,7 +1,6 @@
 package betamindy.content;
 
 import arc.Core;
-import arc.scene.ui.SettingsDialog.*;
 import arc.util.*;
 import mindustry.*;
 
@@ -24,7 +23,7 @@ public class SettingAdder {
 
         addGameSetting("nonmoddedservers");
         addGameSetting("touchpadenable");
-        addGameSetting("touchpadalways"); //todo v7 make this disabled when enable is false
+        addGameSetting("touchpadalways");
         addGraphicSetting("slimeeffect");
         addGraphicSetting("accelballs");
         addGraphicSetting("correctview");
@@ -32,9 +31,9 @@ public class SettingAdder {
         //Vars.ui.settings.graphics is technically located in a different class, so this throws an error in 7.0
         //simply recompiling with the 7.0 jar as a dependency will fix it
         try{
-            Vars.ui.settings.graphics.sliderPref("animlevel", 2, 0, 3, i -> Core.bundle.get("slider.level." + i, "" + i));
+            Vars.ui.settings.graphics.sliderPref("animlevel", 2, 0, 2, i -> Core.bundle.get("slider.level." + i, "" + i));
         }catch(NoSuchFieldError nope){
-            Log.warn("[BetaMindy] Ignoring animlevel setting for 7.0 compatibility");
+            Log.warn("[BetaMindy] Ignoring animlevel setting for 6.0 compatibility");
         }
         //addGraphicSetting("ifritview"); //merged to status view
 

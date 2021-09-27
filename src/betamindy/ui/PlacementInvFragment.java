@@ -32,7 +32,6 @@ import static mindustry.game.EventType.*;
 import static betamindy.BetaMindy.inventoryUI;
 import static mindustry.Vars.*;
 
-//todo
 public class PlacementInvFragment extends Fragment {
     final int rowWidth = 6;
     private Table vanilla; //the 'toggler' or 'full' of the PlacementFragment.

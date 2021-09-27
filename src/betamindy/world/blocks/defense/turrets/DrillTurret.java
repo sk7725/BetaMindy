@@ -21,7 +21,6 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
-import mindustry.world.meta.values.*;
 
 import static mindustry.Vars.*;
 
@@ -81,7 +80,7 @@ public class DrillTurret extends BaseTurret {
                 for(int i = 0; i < list.size; i++){
                     Block item = list.get(i);
 
-                    l.image(item.icon(Cicon.small)).size(8 * 3).padRight(2).padLeft(2).padTop(3).padBottom(3);
+                    l.image(item.uiIcon).size(8 * 3).padRight(2).padLeft(2).padTop(3).padBottom(3);
                     l.add(item.localizedName).left().padLeft(1).padRight(4);
                     if(i % 5 == 4){
                         l.row();

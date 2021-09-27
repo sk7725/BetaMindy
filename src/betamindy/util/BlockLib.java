@@ -28,7 +28,7 @@ public class BlockLib {
     public static void addCraft(Block before, Block after){
         Seq<Block> blocks = crafts.get(before, Seq::new);
         if(!blocks.contains(after)) blocks.add(after);
-        //after.playerPlaceable = false;//todo v7
+        after.placeablePlayer = false;
     }
 
     public static PurchaseItem[] bitl(Block... blocks){
@@ -44,7 +44,7 @@ public class BlockLib {
     }
 
     public static PurchaseItem asPurchase(Block block, int price, int amount){
-        //isForeign(block); //todo v7, also add to asDaily
+        isForeign(block);
         return new PurchaseInvBlock(block, price, amount);
     }
 
@@ -53,6 +53,7 @@ public class BlockLib {
     }
 
     public static PurchaseItem asDaily(Block block, int price, float scarcity){
+        isForeign(block);
         PurchaseItem p = new PurchaseInvBlock(block, price, 1);
         p.scarcity = scarcity;
         return p;
@@ -72,7 +73,7 @@ public class BlockLib {
         if(block.requirements.length < 1 || block.minfo.mod == null) return false;
         for(int i = block.requirements.length - 1; i >= 0; i--){ //foreign items should be at the end of the items
             if(block.requirements[i].item instanceof ForeignItem){
-                //block.playerPlaceable = false; //todo v7
+                block.placeablePlayer = false;
                 return true;
             }
         }

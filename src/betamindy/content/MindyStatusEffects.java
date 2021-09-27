@@ -151,19 +151,18 @@ public class MindyStatusEffects implements ContentList {
             init(() -> {
                 opposite(StatusEffects.melting, StatusEffects.burning);
 
-                if(Version.number > 6) return; //todo remove & fix transition handler in v7
-                affinity(StatusEffects.blasted, ((unit, time, newTime, result) -> {
+                affinity(StatusEffects.blasted, ((unit, result, time) -> {
                     unit.damagePierce(transitionDamage);
                     result.set(icy, time);
                 }));
 
-                affinity(StatusEffects.wet, ((unit, time, newTime, result) -> {
+                affinity(StatusEffects.wet, ((unit, result, time) -> {
                     unit.damagePierce(transitionDamage);
                     result.set(icy, time);
                 }));
 
-                affinity(StatusEffects.freezing, ((unit, time, newTime, result) -> {
-                    result.set(icy, time + newTime);
+                affinity(StatusEffects.freezing, ((unit, result, time) -> {
+                    result.set(icy, time + result.time);
                 }));
             });
         }};

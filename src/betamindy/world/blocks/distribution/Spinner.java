@@ -54,11 +54,16 @@ public class Spinner extends Block {
         hasPower = true;
         configurable = true;
         saveConfig = true;
-        expanded = true;
 
         group = BlockGroup.transportation;//TODO: Make own category for place-overs
 
         config(Boolean.class, (SpinnerBuild entity, Boolean b) -> entity.ccw = b);
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        clipSize = (maxBlocks + 16) * tilesize * 2f;
     }
 
     @Override
@@ -258,17 +263,10 @@ public class Spinner extends Block {
                 if(weight > maxBlocks && !multiBuild) return; //even if it is overweight, refusing to pick up multiblocks here will lead to a critical bug. Normally this should not happen anyways
 
                 switch(rotation){
-                    case 0:
-                        offset = (byte)(b.tileY() - tileY());
-                        break;
-                    case 1:
-                        offset = (byte)(tileX() - b.tileX());
-                        break;
-                    case 2:
-                        offset = (byte)(tileY() - b.tileY());
-                        break;
-                    default:
-                        offset = (byte)(b.tileX() - tileX());
+                    case 0 -> offset = (byte) (b.tileY() - tileY());
+                    case 1 -> offset = (byte) (tileX() - b.tileX());
+                    case 2 -> offset = (byte) (tileY() - b.tileY());
+                    default -> offset = (byte) (b.tileX() - tileX());
                 }
                 if(b.block.size % 2 == 0) offset -= evenOffsets[rotation][0];
 
@@ -351,7 +349,7 @@ public class Spinner extends Block {
             Drawf.shadow(x + Tmp.v1.x, y + Tmp.v1.y, tilesize * payload.block().size * 2f);
             Draw.z(Layer.blockOver + 0.1f);
             if(payload.build instanceof SpinDraw) ((SpinDraw) payload.build).drawSpinning(x + Tmp.v1.x, y + Tmp.v1.y, rawAngle() * Mathf.sign(ccw) + dr);
-            else Draw.rect(payload.build.block.icon(Cicon.full), x + Tmp.v1.x, y + Tmp.v1.y, (payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f) + dr);
+            else Draw.rect(payload.build.block.fullIcon, x + Tmp.v1.x, y + Tmp.v1.y, (payload.block().size > 1 || multiBuild || payload.block().rotate ? (payload.block().rotate ? payload.build.rotation : 0) * 90f + rawAngle() * Mathf.sign(ccw) : 0f) + dr);
         }
 
         @Override
@@ -406,11 +404,11 @@ public class Spinner extends Block {
 
         @Override
         public double sense(LAccess sensor){
-            switch(sensor){
-                case rotation: return angle();
-                case enabled: return spinning ? 1 : 0;
-                default: return super.sense(sensor);
-            }
+            return switch(sensor){
+                case rotation -> angle();
+                case enabled -> spinning ? 1 : 0;
+                default -> super.sense(sensor);
+            };
         }
 
         @Override

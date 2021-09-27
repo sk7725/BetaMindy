@@ -28,9 +28,6 @@ import mindustry.world.blocks.storage.*;
 import static mindustry.Vars.*;
 
 public class BlockWeather extends ParticleWeather {
-    //rand has changed its modifier in 7.0, so we use a different rand to avoid IncompatibleClassChangeError
-    //todo refactor name to "rand" & remove in v7
-    public static final Rand randw = new Rand();
     public Block block = Blocks.router;
     public Team blockTeam = Team.derelict;
     public Effect blockEffect = Fx.explosion, blockFallingEffect = MindyFx.blockFalling;
@@ -73,15 +70,15 @@ public class BlockWeather extends ParticleWeather {
 
         int total = (int)(Tmp.r1.area() / density * state.intensity);
 
-        randw.setSeed((long) Time.time);
+        rand.setSeed((long) Time.time);
         for(int i = 0; i < total; i++){
-            float scl = randw.random(0.5f, 1f);
-            float scl2 = randw.random(0.5f, 1f);
-            float size = randw.random(sizeMin, sizeMax);
-            float x = (randw.random(0f, world.unitWidth()) + Time.time * windx * scl2);
-            float y = (randw.random(0f, world.unitHeight()) + Time.time * windy * scl);
+            float scl = rand.random(0.5f, 1f);
+            float scl2 = rand.random(0.5f, 1f);
+            float size = rand.random(sizeMin, sizeMax);
+            float x = (rand.random(0f, world.unitWidth()) + Time.time * windx * scl2);
+            float y = (rand.random(0f, world.unitHeight()) + Time.time * windy * scl);
 
-            x += Mathf.sin(y, randw.random(sinSclMin, sinSclMax), randw.random(sinMagMin, sinMagMax));
+            x += Mathf.sin(y, rand.random(sinSclMin, sinSclMax), rand.random(sinMagMin, sinMagMax));
 
             x -= Tmp.r1.x;
             y -= Tmp.r1.y;
@@ -127,7 +124,7 @@ public class BlockWeather extends ParticleWeather {
     }
 
     public TextureRegion rollIcon(int seed){
-        return rollBlock(seed).icon(Cicon.full);
+        return rollBlock(seed).fullIcon;
     }
 
     @Override
@@ -159,17 +156,17 @@ public class BlockWeather extends ParticleWeather {
         Core.camera.bounds(Tmp.r2);
         int total = (int)(Tmp.r1.area() / density * intensity);
         Draw.color(color, opacity);
-        randw.setSeed(0);
+        rand.setSeed(0);
         for(int i = 0; i < total; i++){
-            float scl = randw.random(0.5f, 1f);
-            float scl2 = randw.random(0.5f, 1f);
-            float size = randw.random(sizeMin, sizeMax);
-            float x = (randw.random(0f, world.unitWidth()) + Time.time * windx * scl2);
-            float y = (randw.random(0f, world.unitHeight()) + Time.time * windy * scl);
-            float alpha = randw.random(minAlpha, maxAlpha);
-            float r = randw.random(360f);
+            float scl = rand.random(0.5f, 1f);
+            float scl2 = rand.random(0.5f, 1f);
+            float size = rand.random(sizeMin, sizeMax);
+            float x = (rand.random(0f, world.unitWidth()) + Time.time * windx * scl2);
+            float y = (rand.random(0f, world.unitHeight()) + Time.time * windy * scl);
+            float alpha = rand.random(minAlpha, maxAlpha);
+            float r = rand.random(360f);
 
-            x += Mathf.sin(y, randw.random(sinSclMin, sinSclMax), randw.random(sinMagMin, sinMagMax));
+            x += Mathf.sin(y, rand.random(sinSclMin, sinSclMax), rand.random(sinMagMin, sinMagMax));
 
             x -= Tmp.r1.x;
             y -= Tmp.r1.y;

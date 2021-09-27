@@ -17,7 +17,7 @@ public class ForeignItem extends Item {
         return false;
     }
 
-    //todo v7
+    @Override
     public boolean unlockedNowHost(){
         return false;
     }

@@ -376,10 +376,12 @@ public class Drawm {
                 }
                 packer.add(PageType.main, b.name + "-team-" + team.name, out);
 
-                //for 6.0 compatibility only! TODO remove in 7.0
+                //for 6.0 compatibility only!
+                /*
                 if(Version.number <= 6){
                     Core.atlas.addRegion(b.name + "-team-" + team.name, new TextureRegion(new Texture(out)));
                 }
+                */
             }
         }
 
@@ -406,10 +408,12 @@ public class Drawm {
                 }
                 packer.add(PageType.main, name + "-team-" + team.name, out);
 
-                //for 6.0 compatibility only! TODO remove in 7.0
+                //for 6.0 compatibility only!
+                /*
                 if(Version.number <= 6){
                     Core.atlas.addRegion(name + "-team-" + team.name, new TextureRegion(new Texture(out)));
                 }
+                */
             }
         }
     }

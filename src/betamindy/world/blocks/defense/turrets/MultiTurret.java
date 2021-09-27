@@ -99,25 +99,26 @@ public class MultiTurret extends Turret {
 
         @Override
         public double sense(LAccess sensor){
-            switch(sensor){
-                case ammo: return power.status;
-                case ammoCapacity: return 1;
-                case config: return mode;
-                default: return super.sense(sensor);
-            }
+            return switch(sensor){
+                case ammo -> power.status;
+                case ammoCapacity -> 1;
+                case config -> mode;
+                default -> super.sense(sensor);
+            };
         }
 
         @Override
         public Object senseObject(LAccess sensor) {
-            switch(sensor){
-                case config: return noSensed; //senseObject takes priority over sense unless it is a noSensed
-                default: return super.senseObject(sensor);
-            }
+            return switch(sensor){
+//senseObject takes priority over sense unless it is a noSensed
+                case config -> noSensed;
+                default -> super.senseObject(sensor);
+            };
         }
 
         @Override
         public void control(LAccess type, double p1, double p2, double p3, double p4){
-            if(type == LAccess.configure){
+            if(type == LAccess.config){
                 int input = (int)p1;
                 if(Vars.net.client() || !shouldTurn() || input < 0 || input >= 4 || input == mode || selectHeat > 0.2f){
                     return;

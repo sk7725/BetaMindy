@@ -14,13 +14,15 @@ import mindustry.world.blocks.environment.*;
 import static mindustry.Vars.*;
 
 /**
- * Same as {@link ForceDraw}, except it's not hardcoded only to serve force projectors. <br>
+ * Deprecated in v7.
+ * Same as {ForceDraw}, except it's not hardcoded only to serve force projectors. <br>
  * Won't add itself if the holder is null; always use {@code holder = ...} before calling {@link #add()}. <br>
  * <br>
  * See {@link ExtensionHolder} for usage and example codes.
  * @author GlennFolker
 */
 @SuppressWarnings("unchecked")
+@Deprecated
 public final class Extension implements Drawc{
     public ExtensionHolder holder;
 
@@ -220,11 +222,12 @@ public final class Extension implements Drawc{
         return (T)this;
     }
 
+    /*
     @Override
     public <T> T with(Cons<T> cons){
         cons.get((T)this);
         return (T)this;
-    }
+    }*/
 
     @Override
     public String toString(){

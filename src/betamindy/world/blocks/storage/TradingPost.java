@@ -91,7 +91,7 @@ public class TradingPost extends Block {
             rand.setSeed(seed + 1L + id); //might overflow if it was an int
             for(int i = 5; i >= 0; i--){
                 Tmp.v1.trns(i * 60f + Time.time * spinSpeed, l).add(this);
-                TextureRegion item = i == 0 ? AnucoinTex.coin : content.items().random(rand).icon(Cicon.full);
+                TextureRegion item = i == 0 ? AnucoinTex.coin : content.items().random(rand).fullIcon;
                 Draw.z(Layer.blockOver - 0.1f);
                 Draw.color(Pal.shadow);
                 Draw.rect(item, Tmp.v1.x, Tmp.v1.y - 1f, 7f, 7f);
@@ -164,7 +164,7 @@ public class TradingPost extends Block {
                         t.left();
                         t.table(tt -> {
                             tt.left();
-                            tt.image(stack.item.icon(Cicon.medium)).left();
+                            tt.image(stack.item.uiIcon).size(36f).left();
                             tt.add("x" + stack.amount).left();
                         }).growX().left();
 

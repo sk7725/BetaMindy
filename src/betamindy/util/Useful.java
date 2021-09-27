@@ -245,8 +245,7 @@ public class Useful {
     public static boolean dumpPlayerUnit(UnitPayload u, Player player){
         if(u.unit.type == null) return true;
 
-        if(!Units.canCreate(u.unit.team, u.unit.type) && Version.number <= 6){
-            u.deactiveTime = 1f;
+        if(!Units.canCreate(u.unit.team, u.unit.type)){
             return false;
         }
 

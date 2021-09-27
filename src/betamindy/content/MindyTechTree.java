@@ -47,8 +47,8 @@ public class MindyTechTree implements ContentList{
             });
         });
 
-        margeNode(repairPoint, () -> {
-            node(repairTurret);
+        margeNode(repairTurret, () -> {
+            node(rejuvenator);
         });
 
         margeNode(massDriver, () -> {

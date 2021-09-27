@@ -54,7 +54,7 @@ public final class GhostEntity implements Drawc{
     @Override
     public float clipSize(){
         if(holder != null){
-            return 80f;//todo v7
+            return holder.block.clipSize;
         }else{
             return 0f;
         }
@@ -228,12 +228,6 @@ public final class GhostEntity implements Drawc{
 
     @Override
     public <T> T as(){
-        return (T)this;
-    }
-
-    @Override
-    public <T> T with(Cons<T> cons){
-        cons.get((T)this);
         return (T)this;
     }
 

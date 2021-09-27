@@ -23,7 +23,6 @@ import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.Vars;
 
 import betamindy.content.*;
-import mindustry.world.meta.values.BlockFilterValue;
 
 import static mindustry.Vars.tilesize;
 
@@ -93,7 +92,7 @@ public class Mynamite extends Block {
                 for(int i = 0; i < list.size; i++){
                     Block item = list.get(i);
 
-                    l.image(item.icon(Cicon.small)).size(8 * 3).padRight(2).padLeft(2).padTop(3).padBottom(3);
+                    l.image(item.uiIcon).size(8 * 3).padRight(2).padLeft(2).padTop(3).padBottom(3);
                     l.add(item.localizedName).left().padLeft(1).padRight(4);
                     if(i % 5 == 4){
                         l.row();
@@ -232,11 +231,11 @@ public class Mynamite extends Block {
 
         @Override
         public double sense(LAccess sensor){
-            switch(sensor){
-                case heat: return heat;
-                case enabled: return lit ? 1 : 0;
-                default: return super.sense(sensor);
-            }
+            return switch(sensor){
+                case heat -> heat;
+                case enabled -> lit ? 1 : 0;
+                default -> super.sense(sensor);
+            };
         }
 
         @Override

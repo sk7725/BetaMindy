@@ -57,13 +57,17 @@ public class AnimatedItem extends Item {
     //should be called in Trigger.update
     public void update(){
         animateLevel = Core.settings.getInt("animlevel", 2);
-        if(animateLevel >= 2) animIcon.set(animRegions[(int)(Time.globalTime / animDelay) % n]);
+        if(animateLevel >= 1){
+            fullIcon.set(animRegions[(int) (Time.globalTime / animDelay) % n]);
+            if(animateLevel >= 2) uiIcon.set(fullIcon);
+        }
     }
 
+    /*
     @Override
     public TextureRegion icon(Cicon icon){
         if(animateLevel <= 0) return super.icon(icon);
         else if(animateLevel == 1) return animRegions[(int)(Time.globalTime / animDelay) % n];
         else return animIcon;
-    }
+    }*/
 }

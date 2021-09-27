@@ -15,8 +15,10 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
+import static betamindy.graphics.Drawm.ellipse;
 import static mindustry.Vars.*;
 
+//todo v7-fy code
 public class RepairTurret extends Block{
     static final Rect rect = new Rect();
 
@@ -29,10 +31,11 @@ public class RepairTurret extends Block{
     public float phaseRangeBoost = 75f;
     public float phaseBoost = 5.5f;
     public float useTime = 240f;
+    public float beamWidth = 1.2f, ringRadius = 14f, ringWidth = 5f;
 
-    public TextureRegion baseRegion, laser, laserEnd;
+    public TextureRegion baseRegion, laser, laserEnd, laserTop, laserTopEnd;
 
-    public Color laserColor = Color.valueOf("e8ffd7");
+    public Color laserColor = Color.valueOf("e8ffd7"), laserTopColor = Color.white.cpy();
     public Color phaseColor = Pal2.scalar;
 
     public RepairTurret(String name){
@@ -63,8 +66,10 @@ public class RepairTurret extends Block{
     public void load(){
         super.load();
         baseRegion = Core.atlas.find(name + "-base", "block-" + size);
-        laser = Core.atlas.find("laser");
-        laserEnd = Core.atlas.find("laser-end");
+        laser = Core.atlas.find("laser-white");
+        laserEnd = Core.atlas.find("laser-white-end");
+        laserTop = Core.atlas.find("laser-top");
+        laserTopEnd = Core.atlas.find("laser-top-end");
     }
 
     @Override
@@ -92,14 +97,33 @@ public class RepairTurret extends Block{
             Draw.rect(region, x, y, rotation - 90);
 
             if(target != null && Angles.angleDist(angleTo(target), rotation) < 30f){
-                Draw.z(Layer.flyingUnit + 1); //above all units
                 float ang = angleTo(target);
                 float len = 5f;
 
                 Draw.color(laserColor, phaseColor, phaseHeat);
-                Drawf.laser(team, laser, laserEnd,
-                        x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len),
-                        target.x(), target.y(), strength * 1.1f);
+                //cool stuff
+                Draw.alpha(Mathf.absin(6f, 0.8f));
+                float z = Layer.flyingUnit - 0.1f;
+                float s = 8f;
+                if(target instanceof Unit unit){
+                    z = unit.isFlying() ? (unit.type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : Layer.groundUnit;
+                    s = unit.hitSize() / 2f;
+                }
+                else if(target instanceof Building b){
+                    z = Layer.block;
+                    s = b.block.size * tilesize / 2f;
+                }
+
+                Lines.stroke(ringWidth * strength);
+                ellipse(x, y, ringRadius + s, 1f, Mathf.absin(9f, 1f) + 0.001f, Time.time / 12f, z - 1f, Layer.flyingUnit + 1.2f);
+                ellipse(x, y, ringRadius + s, 1f, Mathf.absin(Time.time * -1f, 7f, 1f) + 0.001f, -Time.time / 11f, z - 1f, Layer.flyingUnit + 1.2f);
+
+                Draw.z(Layer.flyingUnit + 1);
+                Draw.alpha(1f);
+                Drawf.laser(team, laser, laserEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), target.x(), target.y(), strength * beamWidth);
+                Draw.z(Layer.flyingUnit + 1.1f);
+                Draw.color(laserTopColor);
+                Drawf.laser(team, laserTop, laserTopEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), target.x(), target.y(), strength * beamWidth);
                 Draw.color();
             }
         }
