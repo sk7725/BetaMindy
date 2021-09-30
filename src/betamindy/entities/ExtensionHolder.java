@@ -91,6 +91,7 @@ package betamindy.entities;
  * } </pre>
  * @author GlennFolker
  */
+@Deprecated
 public interface ExtensionHolder{
     /** This will be called by {@link Extension#draw()} */
     void drawExt();

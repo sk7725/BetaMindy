@@ -63,41 +63,20 @@ public class UnitFan extends LogicSpinBlock {
     }
 
     @Override
+    public void init(){
+        super.init();
+        clipSize = Math.max(clipSize, range * 2f + 16f);
+    }
+
+    @Override
     public void load(){
         super.load();
         if(hasLiquids) liquidRegion = atlas.find(name + "-liquid");
     }
 
-    public class FanBuild extends LogicSpinBuild implements ExtensionHolder {
+    public class FanBuild extends LogicSpinBuild {
         public float windLen = 0f; //stores last wind length
         public float heat = 0f;
-        public Extension windy; //class made by Glenn. Cute, according to Glenn.
-
-        @Override
-        public void created(){
-            super.created();
-
-            windy = Extension.create();
-            windy.holder = this;
-            windy.set(x, y);
-            windy.add();
-        }
-
-        @Override
-        public void onRemoved(){
-            super.onRemoved();
-            windy.remove();
-        }
-
-        @Override
-        public void drawExt(){
-            if(heat > 0.1f && windLen > 0f) drawWind(realRotation()); //SK: welp, there's no avoiding it. This time for sure, I need to use annos.    ~SIKE~
-        }
-
-        @Override
-        public float clipSizeExt(){
-            return 2f * range;
-        }
 
         @Override
         public void draw(){
@@ -106,6 +85,7 @@ public class UnitFan extends LogicSpinBlock {
                 Draw.z(Layer.block + 0.01f);
                 Drawf.liquid(liquidRegion, x, y, liquids.total() / liquidCapacity, liquids.current().color);
             }
+            if(heat > 0.1f && windLen > 0f) drawWind(realRotation());
         }
 
         public void pushUnits(float str){

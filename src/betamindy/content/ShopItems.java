@@ -162,7 +162,6 @@ public class ShopItems implements ContentList {
         sporeJuice = new PurchaseDrink("spore-juice", 40, MindyStatusEffects.sporeSlimed){{
             duration = 60 * 60 * 5;
         }};
-        //todo sell at exotic shops
         bittriumWine = new PurchaseDrink("bittrium-wine", 599, MindyStatusEffects.bittriumBane){{
             duration = 60 * 60 * 4.5f;
         }};

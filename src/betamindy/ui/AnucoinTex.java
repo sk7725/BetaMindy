@@ -8,13 +8,11 @@ import static arc.Core.atlas;
 
 public class AnucoinTex {
     /** UI Atlas regions. */
-    public static TextureRegion uiCoin, outlineCoin, uiBittrium, outlineBittrium;
+    public static TextureRegion uiCoin, outlineCoin, uiBittrium, outlineBittrium, portalIcon;
     /** World Atlas regions. */
     public static TextureRegion coin, bittrium;
-    public static String emoji = "";
-    public static final int unicode = 0xE005;
-    public static String emojiBit = "";
-    public static final int unicodeBit = 0xE006;
+    public static String emoji = "", emojiBit = "", emojiPortal = "";
+    public static final int unicode = 0xE005, unicodeBit = 0xE006, unicodePortal = 0xE00D;
     public static TextureRegion[] uiYut = new TextureRegion[6];
     public static String[] emojuYut = new String[6];
 
@@ -30,6 +28,7 @@ public class AnucoinTex {
         for(int i = 0; i < 6; i++){
             uiYut[i] = atlas.find("betamindy-yut-ui-" + i);
         }
+        portalIcon = atlas.find("betamindy-hardmode-portal-icon");
 
         if(!uiCoin.found()){
             Log.err("Cannot find the coin texture!");
@@ -44,6 +43,7 @@ public class AnucoinTex {
             for(int i = 0; i < 6; i++){
                 emojuYut[i] = MindyUILoader.addEmoji(uiYut[i], unicodeBit + 1 + i);
             }
+            emojiPortal = MindyUILoader.addEmoji(portalIcon, unicodePortal);
         });
     }
 }

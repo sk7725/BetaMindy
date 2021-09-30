@@ -37,6 +37,12 @@ public class FloodLight extends LogicSpinBlock{
     }
 
     @Override
+    public void init(){
+        super.init();
+        clipSize = Math.max(clipSize, (radius + stroke + tilesize) * 2f);
+    }
+
+    @Override
     public void load(){
         super.load();
         topRegion = atlas.find(name + "-top");
@@ -48,11 +54,10 @@ public class FloodLight extends LogicSpinBlock{
         return new TextureRegion[]{baseRegion, region};
     }
 
-    public class FloodLightBuild extends LogicSpinBuild implements ExtensionHolder{
-        public Extension light;
+    public class FloodLightBuild extends LogicSpinBuild {
         public Color color = Pal.accent.cpy();
 
-        @Override
+        /*@Override
         public void created(){
             super.created();
 
@@ -67,6 +72,7 @@ public class FloodLight extends LogicSpinBlock{
             super.onRemoved();
             light.remove();
         }
+         */
 
         @Override
         public void control(LAccess type, double p1, double p2, double p3, double p4){
@@ -76,22 +82,6 @@ public class FloodLight extends LogicSpinBlock{
 
             super.control(type, p1, p2, p3, p4);
         }
-
-        /*
-        @Override
-        public void draw(){
-            Draw.rect(baseRegion, x, y);
-            Draw.color();
-
-            float z = Draw.z();
-            Draw.z(Layer.turret);
-
-            float r = realRotation();
-            Drawf.shadow(region, x - elevation, y - elevation, r);
-            Draw.rect(region, x, y, r);
-
-            Draw.z(z);
-        }*/
 
         @Override
         public void draw(){
@@ -105,9 +95,10 @@ public class FloodLight extends LogicSpinBlock{
             Draw.rect(lightRegion, x, y, r);
             Draw.blend();
             Draw.color();
+            drawExt();
+            Draw.reset();
         }
 
-        @Override
         public void drawExt(){
             if(renderer != null && (team == Team.derelict || team == player.team() || state.rules.enemyLights)){
                 for(int i = -2; i <= 2; i++){
@@ -119,11 +110,6 @@ public class FloodLight extends LogicSpinBlock{
                     renderer.lights.line(x + Tmp.v2.x, y + Tmp.v2.y, x + Tmp.v1.x, y + Tmp.v1.y, e, color, (brightness / (Math.abs(i) + 1f)));
                 }
             }
-        }
-
-        @Override
-        public float clipSizeExt(){
-            return 2f * (radius + stroke);
         }
 
         @Override

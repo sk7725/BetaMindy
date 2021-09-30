@@ -42,7 +42,7 @@ public class AnucoinNode extends Block {
     public AnucoinNode(String name){
         super(name);
 
-        configurable = solid = update = expanded = sync = true;
+        configurable = solid = update = sync = true;
         config(Integer.class, (AnucoinNodeBuild entity, Integer value) -> {
             Building other = world.build(value);
             boolean contains = entity.links.contains(value);
@@ -90,6 +90,12 @@ public class AnucoinNode extends Block {
             entity.links.clear();
             entity.refresh();
         });
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        clipSize = Math.max(clipSize, (range + 9) * tilesize * 2f); //9 is max block size / 2 + 1
     }
 
     @Override
@@ -287,11 +293,11 @@ public class AnucoinNode extends Block {
             for(int i = 0; i < links.size; i++){
                 Building b = world.build(links.get(i));
                 if(!linkValid(this, b) || links.get(i) != b.pos()) continue;
-                float targetOffset = b.block.size / 2f * tilesize + 1f;
+                //float targetOffset = b.block.size / 2f * tilesize + 1f;
                 float angle = angleTo(b);
 
-                boolean right = Mathf.equal(angle, 0, 90);
-                boolean up = Mathf.equal(angle, 90, 90);
+                //boolean right = Mathf.equal(angle, 0, 90);
+                //boolean up = Mathf.equal(angle, 90, 90);
 
                 boolean horizontal = Mathf.equal(angle, 0, 45) || Mathf.equal(angle, 180, 45);
                 /*
@@ -320,7 +326,7 @@ public class AnucoinNode extends Block {
 
             pane.button(t -> {
                 t.left().touchable(() -> Touchable.childrenOnly);
-                t.image(build.block.icon(Cicon.medium)).size(40).padRight(10f);
+                t.image(build.block.uiIcon).size(40).padRight(10f);
 
                 t.table(tt -> {
                     tt.left();

@@ -160,7 +160,7 @@ public class HardMode {
         return Math.min(maxLevel, (int)(Math.cbrt(experience / 25f)));
     }
 
-    public float expCap(int l){
+    public static float expCap(int l){
         if(l < 0) return 0f;
         if(l > maxLevel) l = maxLevel;
         return (l + 1) * (l + 1) * (l + 1) * 25f;

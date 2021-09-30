@@ -3,6 +3,7 @@ package betamindy.content;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
+import arc.util.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
@@ -43,7 +44,7 @@ import static mindustry.type.ItemStack.with;
 public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
-    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree, borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, starBoulder, starTree, starPine, milksand, milkduneWall,
+    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree, borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
     //ores
     oreScalar, oreVector, oreTensor,
     //payloads
@@ -176,6 +177,79 @@ public class MindyBlocks implements ContentList {
         milkduneWall = new StaticWall("milkdune-wall"){{
             variants = 2;
             milksand.asFloor().wall = this;
+        }};
+
+        starryWaterDeep = new Floor("starry-water-deep"){{
+            speedMultiplier = 0.5f;
+            variants = 0;
+            liquidDrop = Liquids.water;//todo alcohol
+            liquidMultiplier = 1.5f;
+            isLiquid = true;
+            status = StatusEffects.wet;
+            statusDuration = 120f;
+            drownTime = 140f;
+            Log.info("[accent]<CONTENT>[]");
+            cacheLayer = MindyShaders.starryLayer;
+            albedo = 0.9f;
+            emitLight = true;
+            lightRadius = 18f;
+            lightColor = Color.sky.cpy().a(0.7f);
+        }};
+
+        starryWater = new Floor("starry-water-shallow"){{
+            speedMultiplier = 0.7f;
+            variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = MindyShaders.starryLayer;
+            albedo = 0.9f;
+            emitLight = true;
+            lightRadius = 18f;
+            lightColor = Color.sky.cpy().a(0.6f);
+        }};
+
+        starryBorudaliteWater = new Floor("starry-borudalite-water"){{
+            speedMultiplier = 0.7f;
+            variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = MindyShaders.starryLayer;
+            albedo = 0.9f;
+            emitLight = true;
+            lightRadius = 18f;
+            lightColor = Color.sky.cpy().a(0.5f);
+        }};
+
+        starryMossWater = new Floor("starry-moss-water"){{
+            speedMultiplier = 0.7f;
+            variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = MindyShaders.starryLayer;
+            albedo = 0.9f;
+            emitLight = true;
+            lightRadius = 18f;
+            lightColor = Color.sky.cpy().a(0.5f);
+        }};
+
+        starrySandWater = new Floor("starry-sand-water"){{
+            speedMultiplier = 0.7f;
+            variants = 0;
+            status = StatusEffects.wet;
+            statusDuration = 90f;
+            liquidDrop = Liquids.water;
+            isLiquid = true;
+            cacheLayer = MindyShaders.starryLayer;
+            albedo = 0.9f;
+            emitLight = true;
+            lightRadius = 18f;
+            lightColor = Color.sky.cpy().a(0.5f);
         }};
         //endregion
 
@@ -896,9 +970,9 @@ public class MindyBlocks implements ContentList {
         }};
 
         rejuvenator = new RepairTurret("repair-turret"){{
-            requirements(Category.units, with(Items.lead, 150, Items.thorium, 365, Items.silicon, 250, Items.plastanium, 55, Items.surgeAlloy, 75));
+            requirements(Category.units, with(Items.thorium, 365, Items.silicon, 250, Items.plastanium, 55, Items.phaseFabric, 75, MindyItems.scalar, 175));
             size = 3;
-            powerUse = 14f;
+            powerUse = 16f;
             repairRadius = 170f;
             consumes.item(MindyItems.scalar).boost();
         }};
@@ -997,6 +1071,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.logic, with(Items.copper, 15, Items.silicon, 5, MindyItems.starStone, 5));
             drawLength = 250;
             glow = true;
+            placeablePlayer = false;
         }};
 
         button = new ButtonTap("button"){{
@@ -1351,6 +1426,7 @@ public class MindyBlocks implements ContentList {
             consumes.item(Items.scrap, 2);
             consumes.power(3f);
             consumes.liquid(Liquids.water, 0.5f);
+            placeablePlayer = false;
         }};
 
         yutnori = new Yutnori("gameyut"){{

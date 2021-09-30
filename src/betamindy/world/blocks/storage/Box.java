@@ -44,6 +44,7 @@ public class Box extends Block {
         unloadable = true;
         rebuildable = false;
         breakSound = MindySounds.boxOpen;
+        placeablePlayer = false;
     }
     //todo unlock this block when shop is researched
 

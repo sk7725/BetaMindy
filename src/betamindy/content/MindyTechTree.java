@@ -1,6 +1,7 @@
 package betamindy.content;
 
 import arc.struct.*;
+import betamindy.util.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
@@ -127,6 +128,7 @@ public class MindyTechTree implements ContentList{
                     node(anucoinVault);
                 });
                 node(cafe);
+                nodePortal(ancientStore, 5);
                 node(tradingPost);
                 node(itemShop, () -> {
                     node(unitShop);
@@ -162,8 +164,7 @@ public class MindyTechTree implements ContentList{
         margeNode(commandCenter, () -> {
             node(boostPad, () -> {
                 node(driftPad, () -> {
-                    node(teleportPad);
-                    //todo hardmode level objective for PortalPad, HopeBringer, AncientShop, Tarnation etc.
+                    nodePortal(teleportPad, 9);
                 });
                 node(bumper, () -> {
                     node(bumperBlue);
@@ -276,5 +277,13 @@ public class MindyTechTree implements ContentList{
 
     private static void nodeProduce(UnlockableContent content){
         nodeProduce(content, Seq.with(), () -> {});
+    }
+
+    private static void nodePortal(UnlockableContent content, int level, Runnable children){
+        node(content, content.researchRequirements(), Seq.with(new ObjectivesM.PortalLevel(level)), children);
+    }
+
+    private static void nodePortal(UnlockableContent content, int level){
+        nodePortal(content, level, () -> {});
     }
 }

@@ -18,7 +18,6 @@ import mindustry.world.meta.*;
 import static betamindy.graphics.Drawm.ellipse;
 import static mindustry.Vars.*;
 
-//todo v7-fy code
 public class RepairTurret extends Block{
     static final Rect rect = new Rect();
 
@@ -35,7 +34,7 @@ public class RepairTurret extends Block{
 
     public TextureRegion baseRegion, laser, laserEnd, laserTop, laserTopEnd;
 
-    public Color laserColor = Color.valueOf("e8ffd7"), laserTopColor = Color.white.cpy();
+    public Color laserColor = Color.valueOf("98ffa9"), laserTopColor = Color.white.cpy();
     public Color phaseColor = Pal2.scalar;
 
     public RepairTurret(String name){
@@ -59,6 +58,7 @@ public class RepairTurret extends Block{
     @Override
     public void init(){
         consumes.powerCond(powerUse, entity -> ((RepairTurretBuild)entity).target != null);
+        clipSize = Math.max(clipSize, (phaseRangeBoost + repairRadius + tilesize) * 2);
         super.init();
     }
 
@@ -83,10 +83,11 @@ public class RepairTurret extends Block{
     }
 
     public class RepairTurretBuild extends Building{
-        public Healthc target;
+        public Healthc target, lastTarget;
         public float strength, rotation = 90;
         public float phaseHeat = 0f;
         public float timeUsed = 0f;
+        private final Vec2 lastPos = new Vec2();
 
         @Override
         public void draw(){
@@ -96,34 +97,37 @@ public class RepairTurret extends Block{
             Drawf.shadow(region, x - (size / 2f), y - (size / 2f), rotation - 90);
             Draw.rect(region, x, y, rotation - 90);
 
-            if(target != null && Angles.angleDist(angleTo(target), rotation) < 30f){
-                float ang = angleTo(target);
+            if(/*(target != null && Angles.angleDist(angleTo(target), rotation) < 30f) || */lastTarget != null && strength > 0.01f){
+                float ang = angleTo(target != null ? target : lastPos);
                 float len = 5f;
 
                 Draw.color(laserColor, phaseColor, phaseHeat);
                 //cool stuff
-                Draw.alpha(Mathf.absin(6f, 0.8f));
+                Draw.alpha(0.8f * Math.min(1f, strength * 2f));
                 float z = Layer.flyingUnit - 0.1f;
                 float s = 8f;
-                if(target instanceof Unit unit){
+                if(lastTarget instanceof Unit unit){
                     z = unit.isFlying() ? (unit.type.lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : Layer.groundUnit;
                     s = unit.hitSize() / 2f;
                 }
-                else if(target instanceof Building b){
+                else if(lastTarget instanceof Building b){
                     z = Layer.block;
                     s = b.block.size * tilesize / 2f;
                 }
 
+                float tx = target == null ? lastPos.x : target.x();
+                float ty = target == null ? lastPos.y : target.y();
+
                 Lines.stroke(ringWidth * strength);
-                ellipse(x, y, ringRadius + s, 1f, Mathf.absin(9f, 1f) + 0.001f, Time.time / 12f, z - 1f, Layer.flyingUnit + 1.2f);
-                ellipse(x, y, ringRadius + s, 1f, Mathf.absin(Time.time * -1f, 7f, 1f) + 0.001f, -Time.time / 11f, z - 1f, Layer.flyingUnit + 1.2f);
+                ellipse(tx, ty, ringRadius * strength + s, 1f, Mathf.absin(9f, 1f) + 0.001f, Time.time / 12f, z - 1f, Layer.flyingUnit + 1.2f);
+                ellipse(tx, ty, ringRadius * strength + s, 1f, Mathf.absin(Time.time * -1f, 7f, 1f) + 0.001f, -Time.time / 11f, z - 1f, Layer.flyingUnit + 1.2f);
 
                 Draw.z(Layer.flyingUnit + 1);
                 Draw.alpha(1f);
-                Drawf.laser(team, laser, laserEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), target.x(), target.y(), strength * beamWidth);
+                Drawf.laser(team, laser, laserEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), tx, ty, strength * beamWidth);
                 Draw.z(Layer.flyingUnit + 1.1f);
                 Draw.color(laserTopColor);
-                Drawf.laser(team, laserTop, laserTopEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), target.x(), target.y(), strength * beamWidth);
+                Drawf.laser(team, laserTop, laserTopEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), tx, ty, strength * beamWidth);
                 Draw.color();
             }
         }
@@ -171,6 +175,12 @@ public class RepairTurret extends Block{
                 target = Units.closest(team, x, y, r, Unit::damaged);
                 if(target == null) target = Units.findAllyTile(team, x, y, r, Building::damaged);
             }
+
+            if(target != null){
+                lastPos.set(target);
+                lastTarget = target;
+            }
+            else if(strength <= 0.01f) lastTarget = null;
         }
 
         @Override
