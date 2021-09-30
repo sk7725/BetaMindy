@@ -75,6 +75,15 @@ task dexify(type: Jar){
 
 task buildDex dependsOn "build", "dexify"
 
+task buildMove(dependsOn: build){
+    doLast{
+        copy{
+            from "build/libs/UnitInfo.jar"
+            into System.getenv("destination")
+        }
+    }
+}
+
 tasks.withType(JavaCompile){
     targetCompatibility = 8
     sourceCompatibility = JavaVersion.VERSION_14
