@@ -78,7 +78,7 @@ task buildDex dependsOn "build", "dexify"
 task buildMove(dependsOn: build){
     doLast{
         copy{
-            from "build/libs/UnitInfo.jar"
+            from "build/libs/raw-BetaMindy.jar"
             into System.getenv("destination")
         }
     }
