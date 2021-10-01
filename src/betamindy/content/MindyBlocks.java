@@ -44,7 +44,7 @@ import static mindustry.type.ItemStack.with;
 public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
-    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree, borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
+    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree, borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
     //ores
     oreScalar, oreVector, oreTensor,
     //payloads
@@ -178,6 +178,9 @@ public class MindyBlocks implements ContentList {
             variants = 2;
             milksand.asFloor().wall = this;
         }};
+        starPine = new StaticTree("twilight-pine"){{
+            variants = 0;//todo StarryTree class
+        }};
 
         starryWaterDeep = new Floor("starry-water-deep"){{
             speedMultiplier = 0.5f;
@@ -250,6 +253,16 @@ public class MindyBlocks implements ContentList {
             emitLight = true;
             lightRadius = 18f;
             lightColor = Color.sky.cpy().a(0.5f);
+        }};
+
+        borudaliteDol = new Prop("borudalite-dol"){{
+            variants = 2;
+            borudalite.asFloor().decoration = this;
+        }};
+
+        milksandBoulder = new Prop("milksand-boulder"){{
+            variants = 2;
+            milksand.asFloor().decoration = this;
         }};
         //endregion
 
@@ -1548,9 +1561,14 @@ public class MindyBlocks implements ContentList {
             terraFloors.put(Blocks.moss, twilightMoss);
             terraFloors.put(Blocks.sporeMoss, starryMoss);
             terraFloors.put(Blocks.grass, twilightMoss);
-            terraFloors.put(Blocks.taintedWater, Blocks.water);//todo v7 deeptaintedwater
-            terraFloors.put(Blocks.darksandTaintedWater, Blocks.darksandWater);//
-            terraFloors.put(Blocks.sandWater, Blocks.darksandWater);//
+
+            terraFloors.put(Blocks.water, starryWater);
+            terraFloors.put(Blocks.taintedWater, starryMossWater);
+            terraFloors.put(Blocks.deepwater, starryWaterDeep);
+            terraFloors.put(Blocks.deepTaintedWater, starryWaterDeep);
+            terraFloors.put(Blocks.darksandWater, starrySandWater);
+            terraFloors.put(Blocks.darksandTaintedWater, starrySandWater);
+            terraFloors.put(Blocks.sandWater, starrySandWater);
             terraFloors.put(Blocks.sand, milksand);
             terraFloors.put(Blocks.darksand, milksand);
             //walls
@@ -1562,12 +1580,17 @@ public class MindyBlocks implements ContentList {
             terraBlocks.put(Blocks.sporeWall, twilightMossWall);
             terraBlocks.put(Blocks.shrubs, twilightMossWall);
             terraBlocks.put(redstoneWall, borudaliteWall);
-            terraBlocks.put(Blocks.sporePine, Blocks.pine);//
-            terraBlocks.put(redPine, Blocks.pine);//
-            terraBlocks.put(blackPine, Blocks.pine);//
+
+            terraBlocks.put(Blocks.sporePine, starPine);
+            terraBlocks.put(redPine, starPine);
+            terraBlocks.put(blackPine, starPine);
+            terraBlocks.put(Blocks.pine, starPine);
             terraBlocks.put(Blocks.whiteTree, largeTree);//
             terraBlocks.put(Blocks.whiteTreeDead, largeTree);//
-            terraBlocks.put(Blocks.boulder, crystalScalar);//
+
+            terraBlocks.put(Blocks.boulder, borudaliteDol);
+            terraBlocks.put(Blocks.sandBoulder, milksandBoulder);
+            terraBlocks.put(Blocks.sporeCluster, milksandBoulder);//
         }};
 
         //classic terraformer. turns stone -> dirt, spore -> grass
@@ -1580,6 +1603,7 @@ public class MindyBlocks implements ContentList {
             terraFloors.put(Blocks.stone, Blocks.dirt);
             terraFloors.put(Blocks.craters, Blocks.mud);
             terraFloors.put(Blocks.charr, Blocks.mud);
+
             terraFloors.put(blackstone, Blocks.dirt);
             terraFloors.put(redstone, Blocks.dirt);
             terraFloors.put(borudalite, Blocks.dirt);
@@ -1588,9 +1612,15 @@ public class MindyBlocks implements ContentList {
             terraFloors.put(Blocks.sporeMoss, Blocks.grass);
             terraFloors.put(twilightMoss, Blocks.grass);
             terraFloors.put(starryMoss, Blocks.grass);
-            terraFloors.put(Blocks.taintedWater, Blocks.water);//todo v7 deeptaintedwater
+
+            terraFloors.put(Blocks.taintedWater, Blocks.water);
+            terraFloors.put(starryWater, Blocks.water);
+            terraFloors.put(starryMossWater, Blocks.water);
+            terraFloors.put(Blocks.deepTaintedWater, Blocks.deepwater);
+            terraFloors.put(starryWaterDeep, Blocks.deepwater);
             terraFloors.put(Blocks.darksandTaintedWater, Blocks.sandWater);
             terraFloors.put(Blocks.darksandWater, Blocks.sandWater);
+            terraFloors.put(starrySandWater, Blocks.sandWater);
 
             terraFloors.put(Blocks.darksand, Blocks.sand);
             terraFloors.put(milksand, Blocks.sand);
@@ -1599,15 +1629,20 @@ public class MindyBlocks implements ContentList {
             terraBlocks.put(blackstoneWall, Blocks.dirtWall);
             terraBlocks.put(redstoneWall, Blocks.dirtWall);
             terraBlocks.put(borudaliteWall, Blocks.dirtWall);
+
             terraBlocks.put(Blocks.duneWall, Blocks.sandWall);
             terraBlocks.put(milkduneWall, Blocks.sandWall);
+
             terraBlocks.put(Blocks.sporeWall, Blocks.shrubs);
             terraBlocks.put(Blocks.sporePine, Blocks.pine);
             terraBlocks.put(redPine, Blocks.pine);
             terraBlocks.put(blackPine, Blocks.pine);
+            terraBlocks.put(starPine, Blocks.pine);
             terraBlocks.put(Blocks.whiteTree, largeTree);
             terraBlocks.put(Blocks.whiteTreeDead, largeTree);
+
             terraBlocks.put(Blocks.boulder, Blocks.router);
+            terraBlocks.put(borudaliteDol, Blocks.junction);
         }};
     }
 }

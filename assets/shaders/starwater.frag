@@ -21,19 +21,20 @@ const float mscl = 40.0;
 const float mth = 7.0;
 
 void main(){
-    vec2 c = v_texCoords.xy;
+    vec2 c = v_texCoords;
     //water shader
     vec2 v = vec2(1.0/u_resolution.x, 1.0/u_resolution.y);
     vec2 coords = vec2(c.x / v.x + u_campos.x, c.y / v.y + u_campos.y);
     float stime = u_time / 5.0;
-    //vec2 offset = vec2(sin(stime/3.0 + coords.y/0.75) * v.x, 0.0);
+    vec2 offset = vec2(sin(stime/3.0 + coords.y/0.75) * v.x, 0.0);
     //space shader
     vec2 coordsSpace = vec2(c.x * u_resolutionSpace.x, c.y * u_resolutionSpace.y);
 
     //water
-    vec3 color = texture2D(u_texture, c + vec2(sin(stime/3.0 + coords.y/0.75) * v.x, 0.0)).rgb * vec3(0.9, 0.9, 1.0);
-    float al = texture2D(u_texture, c).a;
-    vec3 stars = texture2D(u_stars, coordsSpace/NSCALE + vec2(-0.1 + stime / 830.0, -0.1 + stime / 650.0) + u_ccampos / CAMSCALE).rgb;
+    vec4 tex = texture2D(u_texture, c + offset);
+    vec3 color = tex.rgb * vec3(0.9, 0.9, 1.0);
+    float al = texture2D(u_texture, c).a * tex.a;
+    vec3 stars = texture2D(u_stars, coordsSpace/NSCALE + vec2(-0.1 + stime / 1330.0, -0.1 + stime / 1000.0) + u_ccampos / CAMSCALE).rgb;
 
     float tester = mod((coords.x + coords.y*1.1 + sin(stime / 8.0 + coords.x/5.0 - coords.y/100.0)*2.0) +
     sin(stime / 20.0 + coords.y/3.0) * 1.0 +
