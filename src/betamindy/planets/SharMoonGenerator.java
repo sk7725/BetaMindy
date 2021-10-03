@@ -138,7 +138,7 @@ public class SharMoonGenerator extends PlanetGenerator {
     public Color getColor(Vec3 position){
         Block block = getBlock(position);
         float tnoise = Simplex.noise3d(seed, 8, 0.56, 1f/6f, position.x + 99f, position.y + 9999f, position.z);
-        tnoise = (1f - Mathf.clamp(tnoise * 1.3f - 0.15f)) * 0.7f + 0.3f;
+        tnoise = (1f - Mathf.clamp(tnoise)) * 0.9f + 0.1f;
 
         if(block == mossyBorudalite) return Tmp.c1.set(borudaMidColor.set(borudalite.mapColor).lerp(twilightMoss.mapColor, 0.5f)).mul(tnoise).a(1f);
         return Tmp.c1.set(block.mapColor).mul(tnoise).a(1f - block.albedo);
@@ -169,8 +169,8 @@ public class SharMoonGenerator extends PlanetGenerator {
 
         //Block res = arr[Mathf.clamp((int)(temp * arr.length), 0, arr[0].length - 1)][Mathf.clamp((int)(height * arr[0].length), 0, arr[0].length - 1)];
         Block res = (tnoise > 0.685f) ? (tnoise > 0.71f ? starryWater : starryBorudaliteWater) : borudalite;
-        float moss = Ridged.noise3d(seed, position.x, position.y, position.z, 6, 0.29f);//freq = 1 / scl?
-        if(moss > 0.35f){
+        float moss = Ridged.noise3d(seed, position.x, position.y, position.z, 8, 0.59f);//freq = 1 / scl?
+        if(moss > 0.45f){
             return toMoss.get(res, res);
         }
         else if(moss > 0.21f){
