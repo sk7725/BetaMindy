@@ -14,12 +14,12 @@ public class MindyPlanets implements ContentList {
     @Override
     public void load(){
         shar = new Planet("shar", Planets.serpulo, 0, 0.9f){{
-            atmosphereColor = Color.valueOf("fff4ba");
+            atmosphereColor = Color.valueOf("fff4ba").mul(0.5f);
             landCloudColor = Color.clear.cpy();
             atmosphereRadOut = 0.1f;
-            hasAtmosphere = false;
+            hasAtmosphere = true;
             generator = new SharMoonGenerator();
-            meshLoader = () -> new HexMesh(this, 4);
+            meshLoader = () -> new HexMesh(this, 5);
             //accessible = false;
         }};
 
