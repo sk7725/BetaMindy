@@ -155,6 +155,7 @@ public class SharMoonGenerator extends PlanetGenerator {
     }
 
     Block getBlock(Vec3 position){
+        //todo refill poles with milksand, try reviving the arr usage
         float height = rawHeight(position);
         Tmp.v31.set(position);
         position = Tmp.v33.set(position).scl(scl);
