@@ -3,6 +3,7 @@ package betamindy.type.shop;
 import arc.*;
 import arc.graphics.*;
 import arc.scene.ui.*;
+import betamindy.graphics.*;
 import betamindy.world.blocks.storage.Shop.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -40,17 +41,19 @@ public class LiquidItem extends ShopItem{
         boolean unlocked = liquid.unlocked() || state.rules.infiniteResources;
 
         t.left();
-        t.image(unlocked ? liquid.icon(Cicon.medium) : Icon.tree.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Color.lightGray);
+        t.image(unlocked ? liquid.uiIcon : Icon.lock.getRegion()).size(40).padRight(10f).color(unlocked ? Color.white : Pal2.locked);
 
-        t.table(tt -> {
-            tt.left();
+        if(unlocked){
+            t.table(tt -> {
+                tt.left();
 
-            Label text = new Label(localizedName + " [accent]" + amount + "L[]");
-            text.setWrap(true);
+                Label text = new Label(localizedName + " [accent]" + amount + "L[]");
+                text.setWrap(true);
 
-            tt.add(text).growX().left();
-            tt.row();
-            tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
-        }).growX();
+                tt.add(text).growX().left();
+                tt.row();
+                tt.add(Core.bundle.get("ui.price") + ": " + Core.bundle.format("ui.anucoin.emoji", cost)).left();
+            }).growX();
+        }
     }
 }

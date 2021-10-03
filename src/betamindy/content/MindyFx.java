@@ -16,7 +16,6 @@ import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.Cicon;
 import mindustry.world.Block;
 
 import java.util.*;
@@ -205,7 +204,7 @@ public class MindyFx {
         float y = e.y + yoff * e.fout() * 2.4f;
 
         color();
-        rect(((Block)e.data).icon(Cicon.medium), x, y, size, size, Time.time * 4f);//shar wtf
+        rect(((Block)e.data).fullIcon, x, y, size, size, Time.time * 4f);//shar wtf
     }).layer(Layer.flyingUnit + 1f),
 
     omegaShine = new Effect(96f, e -> { //69 is too short :P
@@ -1121,7 +1120,7 @@ public class MindyFx {
     }),
 
     teleportUnit = new Effect(20f, e -> {
-        TextureRegion region = e.data instanceof UnitType u? u.icon(Cicon.full) : UnitTypes.alpha.icon(Cicon.full);
+        TextureRegion region = e.data instanceof UnitType u? u.fullIcon : UnitTypes.alpha.fullIcon;
         color();
         mixcol(e.color, 1f);
         rect(region, e.x, e.y, region.width * scl * xscl * e.fout(), region.height * scl * yscl * (1f + e.finpow() * 2f), e.rotation - 90f);
@@ -1129,7 +1128,7 @@ public class MindyFx {
     }),
 
     unitInPortal = new Effect(40f, e -> {
-        TextureRegion region = e.data instanceof UnitType u? u.icon(Cicon.full) : UnitTypes.alpha.icon(Cicon.full);
+        TextureRegion region = e.data instanceof UnitType u? u.fullIcon : UnitTypes.alpha.fullIcon;
         color(Color.white, e.fout(0.3f));
         float f = e.fout() * 0.5f + 0.5f;
         rect(region, e.x, e.y, region.width * scl * xscl * f, region.height * scl * yscl * f, e.rotation - 90f);

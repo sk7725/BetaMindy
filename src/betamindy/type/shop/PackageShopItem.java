@@ -4,6 +4,7 @@ import arc.func.*;
 import arc.graphics.Color;
 import arc.scene.ui.*;
 import betamindy.BetaMindy;
+import betamindy.graphics.*;
 import betamindy.world.blocks.storage.Shop.*;
 import mindustry.gen.Icon;
 import mindustry.type.*;
@@ -56,7 +57,7 @@ public class PackageShopItem extends ShopItem {
 
             t.table(tt -> {
                 tt.left();
-                tt.image(unlocked ? stack.item.icon(Cicon.small) : Icon.tree.getRegion()).left().padRight(2f).color(unlocked ? Color.white : Color.lightGray);
+                tt.image(unlocked ? stack.item.uiIcon : Icon.lock.getRegion()).left().padRight(2f).color(unlocked ? Color.white : Pal2.locked);
                 tt.add(String.valueOf(stack.amount)).left();
             }).left();
         }

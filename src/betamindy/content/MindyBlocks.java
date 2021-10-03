@@ -1634,6 +1634,7 @@ public class MindyBlocks implements ContentList {
             terraBlocks.put(milkduneWall, Blocks.sandWall);
 
             terraBlocks.put(Blocks.sporeWall, Blocks.shrubs);
+            terraBlocks.put(twilightMossWall, Blocks.shrubs);
             terraBlocks.put(Blocks.sporePine, Blocks.pine);
             terraBlocks.put(redPine, Blocks.pine);
             terraBlocks.put(blackPine, Blocks.pine);

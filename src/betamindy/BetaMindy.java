@@ -58,8 +58,9 @@ public class BetaMindy extends Mod{
         new MindyUnitTypes(),
         new ShopItems(),
         new MindyBlocks(),
-        new MindyTechTree(),
         new MindyWeathers(),
+        new MindyPlanets(),
+        new MindyTechTree(),
         new FireColor()
     };
 
@@ -145,7 +146,7 @@ public class BetaMindy extends Mod{
         //used for block weather
         Events.run(ClientLoadEvent.class, () -> {
             Vars.content.blocks().each(temp -> {
-                if(((temp instanceof ConstructBlock) || (temp instanceof Altar) || !temp.hasBuilding()) || !temp.icon(Cicon.full).found()) return;
+                if(((temp instanceof ConstructBlock) || (temp instanceof Altar) || !temp.hasBuilding()) || !temp.fullIcon.found()) return;
                 visibleBlockList.add(temp);
             });
 

@@ -16,7 +16,6 @@ import mindustry.graphics.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
@@ -225,7 +224,7 @@ public class Store extends Block {
                     return a + " " + (a > anucoins ? Core.bundle.get("ui.trans.linked") : "");
                 }).padRight(10f).center();
                 if(displayCurrency != null){
-                    t.image(displayCurrency.icon(Cicon.medium)).size(30f).center().padRight(10f).padLeft(20f);
+                    t.image(displayCurrency.uiIcon).size(30f).center().padRight(10f).padLeft(20f);
                     t.label(() -> team.core() == null ? "0" : team.core().items().get(displayCurrency) + "").padRight(10f).center();
                 }
             });

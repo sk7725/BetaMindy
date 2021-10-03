@@ -35,7 +35,7 @@ public class PurchaseDrink extends PurchaseItem {
             tt.row();
             tt.table(b -> {
                 b.left();
-                b.button(status.localizedName, new TextureRegionDrawable(status.icon(Cicon.medium)), Styles.cleart, 25f, () -> {
+                b.button(status.localizedName, new TextureRegionDrawable(status.uiIcon), Styles.cleart, 25f, () -> {
                     ui.content.show(status);
                 }).left().size(180f, 27f);
                 b.add(status.permanent ? "[lightgray](--:--)[]" : " [lightgray](" + formatTime(duration) + ")[]");

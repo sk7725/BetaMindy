@@ -24,5 +24,6 @@ public class Pal2 {
     darkCoin = Color.valueOf("d99f6b"),
     sporeSlime = Color.valueOf("9e78dc"),
     path = Color.valueOf("ad986d"),
-    inventory = Pal.lancerLaser;
+    inventory = Pal.lancerLaser,
+    locked = Color.gray;
 }
