@@ -3,14 +3,12 @@ package betamindy.type.shop;
 import arc.*;
 import arc.scene.ui.*;
 import arc.util.*;
-import betamindy.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 
 public class PurchaseInvBlock extends PurchaseItem {
@@ -40,7 +38,7 @@ public class PurchaseInvBlock extends PurchaseItem {
     @Override
     public void buildButton(Button t){
         t.left();
-        t.image(block.icon(Cicon.medium)).size(40).padRight(10f);
+        t.image(block.uiIcon).size(40).padRight(10f);
 
         t.table(tt -> {
             tt.left();

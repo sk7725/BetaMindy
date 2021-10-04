@@ -144,19 +144,23 @@ public class MindyBlocks implements ContentList {
         //planet shar (moon of serpulo)
         borudalite = new Floor("borudalite"){{
             variants = 13;
+            albedo = 0.6f;
         }};
         mossyBorudalite = new Floor("mossy-borudalite"){{
             variants = 5;
+            albedo = 0.5f;
         }};
 
         twilightMoss = new Floor("twilight-moss"){{
             variants = 8;
+            albedo = 0.2f;
         }};
         starryMoss = new Floor("starry-moss"){{
             variants = 4;
             emitLight = true;
             lightRadius = 34f;
             lightColor = Color.yellow.cpy().a(0.5f);
+            albedo = 0.2f;
         }};
 
         milksand = new Floor("milksand"){{
@@ -166,6 +170,7 @@ public class MindyBlocks implements ContentList {
             emitLight = true;
             lightRadius = 16f;
             lightColor = Color.sky.cpy().a(0.15f);
+            albedo = 0.5f;
         }};
 
         borudaliteWall = new StaticWall("borudalite-wall"){{
