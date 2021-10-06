@@ -1,7 +1,6 @@
 package betamindy.ui;
 
 import arc.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.input.*;
 import arc.scene.*;
@@ -9,14 +8,10 @@ import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.struct.*;
 import arc.util.*;
-import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
-import mindustry.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -24,7 +19,6 @@ import mindustry.input.*;
 import mindustry.ui.*;
 import mindustry.ui.fragments.*;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.uwu;
 import static betamindy.util.InventoryModule.*;
@@ -152,7 +146,7 @@ public class PlacementInvFragment extends Fragment {
                         Table ib = new Table();
                         tb.label(() -> (teams[team] == null || teams[team].amount(item) == -1) ? "[lightgray]*[]" : teams[team].amount(item) + "").touchable(Touchable.disabled);
 
-                        ImageButton button = ib.button(new TextureRegionDrawable(block.icon(Cicon.medium)), Styles.selecti, () -> {
+                        ImageButton button = ib.button(new TextureRegionDrawable(block.uiIcon), Styles.selecti, () -> {
                             if(unlocked(block)){
                                 if(Core.input.keyDown(KeyCode.shiftLeft) && Fonts.getUnicode(block.name) != 0){
                                     Core.app.setClipboardText((char)Fonts.getUnicode(block.name) + "");
@@ -203,7 +197,7 @@ public class PlacementInvFragment extends Fragment {
                     image.update(() -> {
                         Block h = menuHoverBlock != null ? menuHoverBlock : control.input.block;
                         if(h != null){
-                            image.setDrawable(h.icon(Cicon.medium));
+                            image.setDrawable(h.uiIcon);
                             image.setColor(Color.white);
                         }
                         else{

@@ -44,7 +44,10 @@ import static mindustry.type.ItemStack.with;
 public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
-    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree, borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
+    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree,
+            //env - shar
+            borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
+            chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
     //ores
     oreScalar, oreVector, oreTensor,
     //payloads
@@ -149,6 +152,15 @@ public class MindyBlocks implements ContentList {
         mossyBorudalite = new Floor("mossy-borudalite"){{
             variants = 5;
             albedo = 0.5f;
+            blendGroup = borudalite;
+        }};
+        bandalite = new Floor("bandalite"){{
+            variants = 3;
+            albedo = 0.5f;
+        }};
+        chosudalite = new Floor("chosudalite"){{
+            variants = 3;
+            albedo = 0.5f;
         }};
 
         twilightMoss = new Floor("twilight-moss"){{
@@ -173,8 +185,25 @@ public class MindyBlocks implements ContentList {
             albedo = 0.5f;
         }};
 
+        //todo magnetic affinity
+        halfEclipseOxide = new Floor("half-eclipse-oxide"){{
+            variants = 2;
+            albedo = 0.5f;
+        }};
+        eclipseOxide = new Floor("eclipse-oxide"){{
+            variants = 3;
+            albedo = 0.5f;
+        }};
+
         borudaliteWall = new StaticWall("borudalite-wall"){{
             variants = 6;
+            mossyBorudalite.asFloor().wall = halfEclipseOxide.asFloor().wall = this;
+        }};
+        bandaliteWall = new StaticWall("bandalite-wall"){{
+            variants = 2;
+        }};
+        chosudaliteWall = new StaticWall("chosudalite-wall"){{
+            variants = 2;
         }};
         twilightMossWall = new StaticWall("twilight-moss-wall"){{
             variants = 2;
@@ -183,6 +212,11 @@ public class MindyBlocks implements ContentList {
             variants = 2;
             milksand.asFloor().wall = this;
         }};
+        eclipseOxideDune = new StaticWall("eclipse-oxide-dune"){{
+            variants = 2;
+            eclipseOxide.asFloor().wall = this;
+        }};
+
         starPine = new StaticTree("twilight-pine"){{
             variants = 0;//todo StarryTree class
         }};
@@ -1554,6 +1588,7 @@ public class MindyBlocks implements ContentList {
             lightColor = Pal2.scalar;
             orbColor = Color.yellow;
             ores = new Floor[]{(Floor)oreScalar};
+            threshMultiplier = 0.94f;
             //stone floors
             terraFloors.put(Blocks.stone, borudalite);
             terraFloors.put(Blocks.craters, mossyBorudalite);

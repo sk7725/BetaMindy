@@ -25,5 +25,6 @@ public class Pal2 {
     sporeSlime = Color.valueOf("9e78dc"),
     path = Color.valueOf("ad986d"),
     inventory = Pal.lancerLaser,
-    locked = Color.gray;
+    locked = Color.gray,
+    esoterum = Color.valueOf("8aadff");
 }

@@ -13,7 +13,7 @@ public class MindyPlanets implements ContentList {
 
     @Override
     public void load(){
-        shar = new Planet("shar", Planets.serpulo, 0, 0.9f){{
+        shar = new Planet("shar", Planets.serpulo, 0, 1f){{
             atmosphereColor = Color.gray.cpy();
             landCloudColor = Color.clear.cpy();
             atmosphereRadOut = 0.5f;

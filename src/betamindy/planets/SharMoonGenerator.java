@@ -33,7 +33,7 @@ public class SharMoonGenerator extends PlanetGenerator {
     final Color borudaMidColor = new Color();
 
     BaseGenerator basegen = new BaseGenerator();
-    float scl = 2.2f;
+    float scl = 3f;
     float waterOffset = 0.07f;
     boolean genLakes = false;
 
@@ -85,14 +85,14 @@ public class SharMoonGenerator extends PlanetGenerator {
 
     float water = 2f / arr[0].length;
 
-    Vec3[] craters = new Vec3[6];
+    Vec3[] craters = new Vec3[4];
     float[] craterSize = new float[craters.length];
     void initCraters(){
         if(craters[0] != null) return;
         for(int i = 0; i < craters.length; i++){
-            rand.setSeed(seed + i + 42);
+            rand.setSeed(seed + i + 66);
             craters[i] = new Vec3(scl, 0, 0).setToRandomDirection(rand).setLength2(scl * scl);
-            craterSize[i] = rand.nextFloat() * 0.11f + 0.07f;
+            craterSize[i] = rand.nextFloat() * 0.15f + 0.03f;
         }
     }
 
@@ -102,7 +102,7 @@ public class SharMoonGenerator extends PlanetGenerator {
         boolean isRiver = tnoise > 0.49f && tnoise < 0.65f;
 
         //do not touch tnoise here, tweak the riverNoise() instead
-        float simp = isRiver ? 0f : Simplex.noise3d(seed, 5, 0.5f, 1f/8f, position.x, position.y, position.z) + craterNoise(position);
+        float simp = isRiver ? 0f : Simplex.noise3d(seed, 5, 0.5f, 1f/8f, position.x, position.y, position.z) + craterNoise(position, true) * 1.4f;
         return (simp * 0.7f + waterOffset) / (1f + waterOffset);
     }
 
@@ -153,8 +153,9 @@ public class SharMoonGenerator extends PlanetGenerator {
     @Override
     public Color getColor(Vec3 position){
         Block block = getBlock(position);
-        float tnoise = Simplex.noise3d(seed, 8, 0.56, 1f/6f, position.x + 99f, position.y + 9999f, position.z);
-        tnoise = (1f - Mathf.clamp(tnoise)) * 0.6f + 0.4f;
+        float tnoise = 1f;
+        //float tnoise = Simplex.noise3d(seed, 8, 0.56, 1f/16f, position.x, position.y + 9999f, position.z);
+        //tnoise = (1f - Mathf.clamp(tnoise)) * 0.3f + 0.7f;
 
         if(block == mossyBorudalite) return Tmp.c1.set(borudaMidColor.set(borudalite.mapColor).lerp(twilightMoss.mapColor, 0.5f)).mul(tnoise).a(1f);
         return Tmp.c1.set(block.mapColor).mul(tnoise).a(1f - block.albedo);
@@ -171,10 +172,10 @@ public class SharMoonGenerator extends PlanetGenerator {
     }
 
     float riverNoise(Vec3 position){
-        return Simplex.noise3d(seed, 7, 0.56, 1f/8f, position.x, position.y + 999f, position.z) * 0.8f;
+        return Simplex.noise3d(seed, 7, 0.56, 1f/15f, position.x, position.y + 999f, position.z) * 0.76f;
     }
 
-    float craterNoise(Vec3 position){
+    float craterNoise(Vec3 position, boolean smooth){
         initCraters();
         float d = scl * scl * 4f, s = 0.3f;
         for(int i = 0; i < craters.length; i++){
@@ -186,9 +187,15 @@ public class SharMoonGenerator extends PlanetGenerator {
         }
 
         d /= scl * scl; //d = [0 ~ 2]
-        if(d <= s) return -0.7f;
-        if(d >= s + 0.2f) return 0.2f;
-        return (1f - (d - s) / 0.2f) * 0.4f + 0.2f;
+        if(d <= s){
+            //inside crater
+            if(smooth) return d / s * 1.3f -0.7f;
+            return -0.7f;
+        }
+        if(d >= s + 0.15f) return 0.2f; //not a crater
+        float a = (d - s) / 0.15f;
+        //outside crater
+        return (1f - Mathf.sqrt(a)) * 0.38f + 0.22f;
     }
 
     Block getBlock(Vec3 position){
@@ -199,7 +206,7 @@ public class SharMoonGenerator extends PlanetGenerator {
         float rad = scl;
         float temp = Mathf.clamp(Math.abs(position.y * 2f) / (rad));
         float tnoise = riverNoise(position);
-        float cnoise = craterNoise(position);
+        float cnoise = craterNoise(position, false);
         //temp = Mathf.lerp(temp, tnoise, 0.5f);
         //height *= 1.2f;
         //height = Mathf.clamp(height);

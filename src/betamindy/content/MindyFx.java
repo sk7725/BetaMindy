@@ -174,6 +174,13 @@ public class MindyFx {
         rect("circle", e.x+e.fin()*26f, e.y+e.fin() * 30f, size, size);
     }),
 
+    manualFire = new Effect(170f, e -> {
+        color(e.color, e.fout());
+        randLenVectors(e.id, 4, 1.5f + 4f * e.fin(), (x, y) -> {
+            Fill.square(e.x + e.fin() * 13f + x, e.y + e.fin() * 9f + y, 0.2f + e.fout());
+        });
+    }),
+
     blueBumperBonk = new Effect(25f, 60f, e -> {
         color(Color.white, e.fout());
         Tmp.v1.trns(e.rotation, e.finpow() * 20f);
