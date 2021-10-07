@@ -71,7 +71,7 @@ public class PenColorModule extends Block {
         @Override
         public void buildConfiguration(Table table){
             table.table(MindyUILoader.pane, t -> {
-                TextArea a = t.add(new TextArea(Tmp.c1.set(color).toString())).size(140f, 50f).padTop(10f).get();
+                TextArea a = t.add(new TextArea(Tmp.c1.set(color).toString())).size(160f, 50f).padTop(10f).get();
                 a.setColor(Color.white);
                 a.setMaxLength(8);
                 a.changed(() -> {

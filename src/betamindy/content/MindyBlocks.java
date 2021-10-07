@@ -63,7 +63,7 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, rejuvenator, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad, teleportPad, portalPad, yutnori,
     //logic
-    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule,
+    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule, notePlayer, starPlayer,
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, astro, magicTurret, credit, taxation, brokerage, mortgage,
     //power
@@ -1106,6 +1106,17 @@ public class MindyBlocks implements ContentList {
             requirements(Category.logic, with(Items.copper, 40, Items.lead, 20, Items.silicon, 10));
         }};
 
+        notePlayer = new NotePlayer("speaker"){{
+            consumes.power(0.5f);
+            requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.graphite, 10));
+        }};
+
+        starPlayer = new NotePlayer("star-speaker"){{
+            global = true;
+            consumes.power(0.8f);
+            requirements(Category.logic, with(Items.copper, 20, Items.silicon, 5, Items.graphite, 10, MindyItems.starStone, 5));
+        }};
+
         pen = new Pen("pen"){{
             requirements(Category.logic, with(Items.copper, 15, Items.silicon, 5, Items.metaglass, 5));
             drawLength = 125;
@@ -1123,7 +1134,6 @@ public class MindyBlocks implements ContentList {
             requirements(Category.logic, with(Items.copper, 15, Items.silicon, 5, MindyItems.starStone, 5));
             drawLength = 250;
             glow = true;
-            placeablePlayer = false;
         }};
 
         button = new ButtonTap("button"){{

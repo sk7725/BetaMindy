@@ -4,11 +4,13 @@ import arc.*;
 import arc.assets.*;
 import arc.assets.loaders.*;
 import arc.audio.*;
+import betamindy.world.blocks.logic.*;
 import mindustry.*;
 
 public class MindySounds {
-    public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan, pipePop, pipeSqueeze, pipeIn, easterEgg1, easterEgg2, portalOpen, portalLoop, portalClose, lightningStrike, shatter, boxOpen, astroCharge, astroShoot, drink;
-    public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan", "pipepop", "pipesqueeze", "pipein", "strawberrydeath", "strawberrypredeath", "portalopen", "portalloop", "portalclose", "lstrike", "shatter", "boxopen", "astroCharge", "astroShoot", "drink"};
+    public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan, pipePop, pipeSqueeze, pipeIn, easterEgg1, easterEgg2, portalOpen, portalLoop, portalClose, lightningStrike, shatter, boxOpen, astroCharge, astroShoot, drink, pianoSample, squareSample;
+    public static Sound[] piano, bells, squareWave, squareWave2, sawWave;
+    public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan", "pipepop", "pipesqueeze", "pipein", "strawberrydeath", "strawberrypredeath", "portalopen", "portalloop", "portalclose", "lstrike", "shatter", "boxopen", "astroCharge", "astroShoot", "drink", "pianoS", "squareS"};
     private static int num = 0;
 
     public static void load() {
@@ -35,6 +37,12 @@ public class MindySounds {
         astroCharge = l();
         astroShoot = l();
         drink = l();
+        pianoSample = l();
+        squareSample = l();
+
+        //todo more samples
+        piano = loadNotes("piano");
+        bells = loadNotes("bell"); //btw these are portal bells from the Invasion track
     }
 /*
     public static void dispose() {
@@ -71,6 +79,17 @@ public class MindySounds {
         } else {
             return new Sound();
         }
+    }
+
+    /** Go check out Goobrr/Esoterum
+     * @author MeepofFaith
+     */
+    public static Sound[] loadNotes(String soundName){
+        Sound[] out = new Sound[NotePlayer.octaves];
+        for(int i = 0; i < 5; i++){
+            out[i] = loadSound(soundName + "/" + soundName + "C" + (2 + i));
+        }
+        return out;
     }
 
     /*protected static Sound disposeSound(String soundName) {

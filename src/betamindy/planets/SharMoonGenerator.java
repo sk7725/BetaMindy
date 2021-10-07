@@ -161,6 +161,11 @@ public class SharMoonGenerator extends PlanetGenerator {
         return Tmp.c1.set(block.mapColor).mul(tnoise).a(1f - block.albedo);
     }
 
+    //@Override
+    //public boolean skip(Vec3 position){
+    //    return Simplex.noise3d(seed, 8, 0.56, 1f/16f, position.x, position.y + 999f, position.z) > 0.72f; //test
+    //}
+
     @Override
     public void genTile(Vec3 position, TileGen tile){
         tile.floor = getBlock(position);
