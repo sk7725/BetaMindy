@@ -38,6 +38,13 @@ public class NotePlayer extends Block {
             "F%o#", "G%o", "G%o#",
             "A%o", "A%o#", "B%o"
     };
+    //used for black keys where "C4#" won't fit
+    public final static String[] noteButtonNames = new String[]{
+            "C", "C#", "D",
+            "D#", "E", "F",
+            "F#", "G", "G#",
+            "A", "A#", "B"
+    };
     public final static int[] whiteOffset = {0, 2, 4, 5, 7, 9, 11, 12, 14, 16};
     public final static int[] blackOffset = {1, 3, 0, 6, 8, 10, 0, 13, 15};
 
@@ -49,7 +56,9 @@ public class NotePlayer extends Block {
                 new Instrument("Piano", MindySounds.piano),
                 new Instrument("Bells", MindySounds.bells),
                 new Instrument("Square", MindySounds.squareSample),
-                new Instrument("Saw", MindySounds.sawWave)
+                new Instrument("Saw", MindySounds.sawWave),
+                new Instrument("Bass", MindySounds.bass),
+                new Instrument("Organ", MindySounds.organ)
         };
 
         //mode, pitch, vol
@@ -92,7 +101,7 @@ public class NotePlayer extends Block {
         topRegion = atlas.find(name + "-top");
         instrumentIcons = new TextureRegion[instruments.length];
         for(int i = 0; i < instruments.length; i++){
-            instrumentIcons[i] = atlas.find("betamindy-instrument" + i);
+            instrumentIcons[i] = atlas.find("betamindy-instrument" + i, "betamindy-instrument-ohno");
         }
     }
 
@@ -247,11 +256,10 @@ public class NotePlayer extends Block {
 
                 frame.row();
                 frame.table(t -> {
-                    //todo buttonstyle
                     Table whites = new Table(w -> {
                         for(int i = 0; i < 10; i++){
                             int note = octavePage * 12 + whiteOffset[i];
-                            w.button("\n\n\n\n\nW", Styles.clearToggleMenut, () -> {
+                            w.button("\n\n\n\n\n" + (note >= octaves * 12 ? "[gray]" + pitchString(note) + "[]": pitchString(note)), MindyUILoader.whitePiano, () -> {
                                 if(note < octaves * 12) configure(note);
                             }).size(40, 150).checked(butt -> note == pitch).disabled(note >= octaves * 12);
                         }
@@ -261,7 +269,7 @@ public class NotePlayer extends Block {
                         w.top();
                         for(int i = 0; i < 9; i++){
                             int note = octavePage * 12 + blackOffset[i];
-                            w.button("B", Styles.logicTogglet, () -> {
+                            w.button(note >= octaves * 12 ? "[lightgray]" + noteButtonNames[note % 12] + "[]" : noteButtonNames[note % 12], MindyUILoader.blackPiano, () -> {
                                 if(note < octaves * 12) configure(note);
                             }).size(30, 90).padLeft(5).padRight(5).top().visible(i != 2 && i != 6).checked(butt -> note == pitch).disabled(note >= octaves * 12);
                         }
@@ -361,6 +369,8 @@ public class NotePlayer extends Block {
             volume = read.b();
             trig = read.bool();
         }
+
+        //todo logic control & sense
     }
 
     public static class Instrument {

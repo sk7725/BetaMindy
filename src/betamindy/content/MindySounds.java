@@ -9,7 +9,7 @@ import mindustry.*;
 
 public class MindySounds {
     public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan, pipePop, pipeSqueeze, pipeIn, easterEgg1, easterEgg2, portalOpen, portalLoop, portalClose, lightningStrike, shatter, boxOpen, astroCharge, astroShoot, drink, pianoSample, squareSample;
-    public static Sound[] piano, bells, squareWave, squareWave2, sawWave;
+    public static Sound[] piano, bells, squareWave, sawWave, bass, organ;
     public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan", "pipepop", "pipesqueeze", "pipein", "strawberrydeath", "strawberrypredeath", "portalopen", "portalloop", "portalclose", "lstrike", "shatter", "boxopen", "astroCharge", "astroShoot", "drink", "pianoS", "squareS"};
     private static int num = 0;
 
@@ -43,7 +43,11 @@ public class MindySounds {
         //todo more samples
         piano = loadNotes("piano");
         bells = loadNotes("bell"); //btw these are portal bells from the Invasion track
-        sawWave = loadNotes("saw"); //credits to MeepofFaith
+
+        //credits to MeepofFaith
+        sawWave = loadNotes("saw");
+        bass = loadNotes("bass");
+        organ = loadNotes("organ");
     }
 /*
     public static void dispose() {

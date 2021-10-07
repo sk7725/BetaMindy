@@ -17,6 +17,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 
+import static arc.Core.atlas;
 import static betamindy.BetaMindy.uwu;
 import static mindustry.Vars.*;
 
@@ -27,15 +28,18 @@ public class MindyUILoader {
     private static Seq<Font> fonts;
 
     public static Drawable accentEdge2, pane, pane2, buttonEdge2;
+    public static TextButton.TextButtonStyle whitePiano, blackPiano;
 
     public void init(){
         AncientKoruh.load();
         AnucoinTex.load();
 
-        accentEdge2 = Core.atlas.drawable("betamindy-blue-edge-2");
-        pane = Core.atlas.drawable("pane");
-        pane2 = Core.atlas.drawable("pane-2");
-        buttonEdge2 = Core.atlas.drawable("button-edge-2");
+        accentEdge2 = atlas.drawable("betamindy-blue-edge-2");
+        pane = atlas.drawable("pane");
+        pane2 = atlas.drawable("pane-2");
+        buttonEdge2 = atlas.drawable("button-edge-2");
+        whitePiano = new TextButton.TextButtonStyle(atlas.drawable("betamindy-keyw"), atlas.drawable("betamindy-keyw-down"), atlas.drawable("betamindy-keyw-checked"), Fonts.outline);
+        blackPiano = new TextButton.TextButtonStyle(atlas.drawable("betamindy-keyb"), atlas.drawable("betamindy-keyb-down"), atlas.drawable("betamindy-keyb-checked"), Fonts.def);
 
         Core.app.post(() -> {
             hardfrag = new HardmodeFragment();
