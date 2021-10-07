@@ -43,6 +43,7 @@ public class MindySounds {
         //todo more samples
         piano = loadNotes("piano");
         bells = loadNotes("bell"); //btw these are portal bells from the Invasion track
+        sawWave = loadNotes("saw"); //credits to MeepofFaith
     }
 /*
     public static void dispose() {

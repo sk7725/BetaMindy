@@ -48,7 +48,8 @@ public class NotePlayer extends Block {
         instruments = new Instrument[]{
                 new Instrument("Piano", MindySounds.piano),
                 new Instrument("Bells", MindySounds.bells),
-                new Instrument("Square", MindySounds.squareSample)
+                new Instrument("Square", MindySounds.squareSample),
+                new Instrument("Saw", MindySounds.sawWave)
         };
 
         //mode, pitch, vol
@@ -194,13 +195,12 @@ public class NotePlayer extends Block {
         void instButton(Table t, int offset, boolean enabled){
             t.table(bt -> {
                 bt.center();
-                Label l = bt.add(validMode(mode + offset) ? instruments[mode + offset].name : "", Styles.outlineLabel, 1.2f).color(enabled ? Pal.accent : Color.lightGray).visible(() -> validMode(mode + offset)).get();
-                Image li = bt.image(validMode(mode + offset) ? instrumentIcons[mode + offset] : instrumentIcons[0]).size(32).padLeft(-22).color(enabled ? Color.white : Color.lightGray).visible(() -> validMode(mode + offset)).get();
+                Label l = bt.add(instruments[Mathf.mod(mode + offset, instruments.length)].name, Styles.outlineLabel, 1.2f).color(enabled ? Pal.accent : Color.lightGray).get();
+                Image li = bt.image(instrumentIcons[Mathf.mod(mode + offset, instruments.length)]).size(32).padLeft(-22).color(enabled ? Color.white : Color.lightGray).get();
                 l.update(() -> {
-                    if(validMode(mode + offset)){
-                        l.setText(instruments[mode + offset].name);
-                        li.setDrawable(instrumentIcons[mode + offset]);
-                    }
+                    int m = Mathf.mod(mode + offset, instruments.length);
+                    l.setText(instruments[m].name);
+                    li.setDrawable(instrumentIcons[m]);
                 });
             }).size(100, 40);
         }
@@ -214,12 +214,12 @@ public class NotePlayer extends Block {
                     t.defaults().pad(0);
                     instButton(t, -1, false);
                     t.button(Icon.left, Styles.accenti, 30, () -> {
-                        configure(-102 - (mode - 1));
-                    }).size(30).color(Pal.accent).visible(() -> mode > 0);
+                        configure(-102 - Mathf.mod(mode - 1, instruments.length));
+                    }).size(30).color(Pal.accent);
                     instButton(t, 0 , true);
                     t.button(Icon.right, Styles.accenti, 30, () -> {
-                        configure(-102 - (mode + 1));
-                    }).size(30).color(Pal.accent).visible(() -> mode < instruments.length - 1);
+                        configure(-102 - Mathf.mod(mode + 1, instruments.length));
+                    }).size(30).color(Pal.accent);
                     instButton(t, 1, false);
                 }).growX();
 
@@ -235,12 +235,12 @@ public class NotePlayer extends Block {
                         int id = i;
                         t.button("" + (id + 2), Styles.logicTogglet, () -> {
                             int diff = id - pitch / 12;
-                            if(diff != 0){
+                            if(id != octavePage){
                                 configure(pitch + diff * 12);
                                 octavePage = id;
                                 buildConfiguration(table); //refresh
                             }
-                        }).height(30).growX().padRight(3).checked(butt -> pitch / 12 == id);
+                        }).height(30).growX().padRight(3).checked(butt -> octavePage == id);
                     }
                     t.image().color(Pal.gray).growY().width(4).right();
                 }).growX();
