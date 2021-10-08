@@ -38,7 +38,7 @@ public class NotePlayer extends Block {
     public boolean global = false; //whether this block is so loud that it plays all over serpulo
     public Effect soundEffect = MindyFx.noteRipple;
 
-    public TextureRegion topRegion;
+    public TextureRegion topRegion, errorInstrument;
     public TextureRegion[] instrumentIcons;
     public final static String[] noteNames = new String[]{
             "C%d", "C%d#", "D%d",
@@ -136,9 +136,10 @@ public class NotePlayer extends Block {
     public void load(){
         super.load();
         topRegion = atlas.find(name + "-top", "betamindy-note-block-top");
+        errorInstrument = atlas.find(name + "-error");
         instrumentIcons = new TextureRegion[instruments.length];
         for(int i = 0; i < instruments.length; i++){
-            instrumentIcons[i] = atlas.find(name + i, atlas.find("betamindy-instrument" + i, "betamindy-instrument-ohno"));
+            instrumentIcons[i] = atlas.find(name + i, errorInstrument.found() ? errorInstrument : atlas.find("betamindy-instrument" + i, "betamindy-instrument-ohno"));
         }
     }
 
@@ -398,7 +399,7 @@ public class NotePlayer extends Block {
                 //b = volume (float)
                 int inst = p1 < -0.01 ? mode : (int)Math.round(p1) % instruments.length;
                 int p = p2 < -0.01 ? pitch : ((int)Math.round(p1)) % (octaves * 12);
-                int v = (p3 < -0.01 || global) ? volume : Mathf.round((float)(p3 * 10));
+                int v = (p3 < -0.01 || !global) ? volume : Mathf.round((float)(p3 * 10));
                 if(v < 0) v = 0;
                 else if(v > 100) v = 100;
 
@@ -427,7 +428,7 @@ public class NotePlayer extends Block {
             }
             else if(type == LAccess.enabled){
                 if(!Mathf.zero((float)p1)) playNote();
-                super.control(type, p1, p2, p3, p4);
+                //super.control(type, p1, p2, p3, p4);
             }
         }
 
