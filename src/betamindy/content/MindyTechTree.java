@@ -216,6 +216,10 @@ public class MindyTechTree implements ContentList{
         });
 
         margeNode(logicDisplay, () -> {
+            node(noteBlock, () -> {
+                node(starNoteBlock);
+                node(sfxBlock);
+            });
             node(pen, () -> {
                 node(colorModule);
                 node(strokeModule);
