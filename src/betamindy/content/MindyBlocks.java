@@ -67,7 +67,7 @@ public class MindyBlocks implements ContentList {
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, astro, magicTurret, credit, taxation, brokerage, mortgage,
     //power
-    pressurePad, pressurePadLarge, button, buttonLarge, spotlight,
+    pressurePad, pressurePadLarge, button, buttonLarge, spotlight, buttonRouter, buttonDistributor,
     //crafting
     blockFurnace, heavyFurnace, gateSwitch, coffeeMachine,
     //catalysts (pushreact & spinreact & boost)
@@ -1106,12 +1106,12 @@ public class MindyBlocks implements ContentList {
             requirements(Category.logic, with(Items.copper, 40, Items.lead, 20, Items.silicon, 10));
         }};
 
-        notePlayer = new NotePlayer("speaker"){{
+        notePlayer = new NotePlayer("note-block"){{
             consumes.power(0.5f);
             requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.graphite, 10));
         }};
 
-        starPlayer = new NotePlayer("star-speaker"){{
+        starPlayer = new NotePlayer("star-note-block"){{
             global = true;
             consumes.power(0.8f);
             requirements(Category.logic, with(Items.copper, 20, Items.silicon, 5, Items.graphite, 10, MindyItems.starStone, 5));
@@ -1153,7 +1153,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.power, with(Items.titanium, 10, Items.silicon, 15));
             health = 100;
 
-            basicPowerProduction = 1f;
+            basicPowerProduction = 0.5f;
         }};
 
         pressurePadLarge = new ButtonPad("buttonpad-large"){{
@@ -1161,8 +1161,20 @@ public class MindyBlocks implements ContentList {
             size = 2;
             health = 400;
 
-            basicPowerProduction = 2f;
+            basicPowerProduction = 1f;
             detectAir = true;
+        }};
+
+        buttonRouter = new ButtonRouter("buttonrouter"){{
+            powerProduction = 0.3f;
+            requirements(Category.power, with(Items.lead, 10, Items.silicon, 15));
+        }};
+
+        buttonDistributor = new ButtonRouter("buttonrouter-large"){{
+            size = 2;
+            powerProduction = 0.6f;
+            duration = 3f;
+            requirements(Category.power, with(Items.lead, 40, Items.silicon, 50));
         }};
 
         mynamite = new Mynamite("mynamite"){{

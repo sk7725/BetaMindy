@@ -110,7 +110,7 @@ public class MultiTurret extends Turret {
         @Override
         public Object senseObject(LAccess sensor) {
             return switch(sensor){
-//senseObject takes priority over sense unless it is a noSensed
+                //senseObject takes priority over sense unless it is a noSensed
                 case config -> noSensed;
                 default -> super.senseObject(sensor);
             };

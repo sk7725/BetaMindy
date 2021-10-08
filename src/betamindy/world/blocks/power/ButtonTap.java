@@ -12,7 +12,7 @@ import static arc.Core.atlas;
 
 public class ButtonTap extends PowerBlock {
     public float tapTime = 16f;
-    public float powerProduction = 2 * 60f;
+    public float powerProduction = 2f;
     public TextureRegion trigRegion;
 
     public ButtonTap(String name){
@@ -23,7 +23,6 @@ public class ButtonTap extends PowerBlock {
         targetable = false;
         solid = true;
         sync = true;
-        expanded = true;
         configurable = true;
         saveConfig = false;
         noUpdateDisabled = false;
@@ -46,8 +45,7 @@ public class ButtonTap extends PowerBlock {
         public float heat = 0f;
 
         @Override
-        public void draw() {
-            super.draw();
+        public void draw(){
             Draw.rect(pressed() ? trigRegion : region, x, y);
         }
 
@@ -91,11 +89,11 @@ public class ButtonTap extends PowerBlock {
 
         @Override
         public double sense(LAccess sensor){
-            switch(sensor){
-                case heat: return heat / tapTime;
-                case enabled: return heat > 0.001f ? 1 : 0;
-                default: return super.sense(sensor);
-            }
+            return switch(sensor){
+                case heat -> heat / tapTime;
+                case enabled -> heat > 0.001f ? 1 : 0;
+                default -> super.sense(sensor);
+            };
         }
     }
 }

@@ -29,7 +29,6 @@ public class ButtonPad extends PowerBlock {
         targetable = false;
         solid = false;
         sync = true;
-        expanded = true;
         group = BlockGroup.power;
         noUpdateDisabled = false;
 
@@ -102,11 +101,11 @@ public class ButtonPad extends PowerBlock {
 
         @Override
         public double sense(LAccess sensor){
-            switch(sensor){
-                case heat: return heat / pushTime;
-                case enabled: return heat > 0.001f ? 1 : 0;
-                default: return super.sense(sensor);
-            }
+            return switch(sensor){
+                case heat -> heat / pushTime;
+                case enabled -> heat > 0.001f ? 1 : 0;
+                default -> super.sense(sensor);
+            };
         }
     }
 }

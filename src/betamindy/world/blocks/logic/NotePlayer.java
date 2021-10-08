@@ -10,8 +10,10 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.ui.*;
+import mindustry.ctype.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 
@@ -27,16 +29,17 @@ public class NotePlayer extends Block {
     public final static int sampleOctave = 2; //C4
     public final static int octaves = 5; //C2 ~ C6
     public final static int sampleOffset = sampleOctave * 12;
+    public final static int procOffset = -1000;
     public Instrument[] instruments;
     public boolean global = false; //whether this block is so loud that it plays all over serpulo
 
     public TextureRegion topRegion;
     public TextureRegion[] instrumentIcons;
     public final static String[] noteNames = new String[]{
-            "C%o", "C%o#", "D%o",
-            "D%o#", "E%o", "F%o",
-            "F%o#", "G%o", "G%o#",
-            "A%o", "A%o#", "B%o"
+            "C%d", "C%d#", "D%d",
+            "D%d#", "E%d", "F%d",
+            "F%d#", "G%d", "G%d#",
+            "A%d", "A%d#", "B%d"
     };
     //used for black keys where "C4#" won't fit
     public final static String[] noteButtonNames = new String[]{
@@ -63,18 +66,25 @@ public class NotePlayer extends Block {
 
         //mode, pitch, vol
         config(byte[].class, (NotePlayerBuild build, byte[] b) -> {
-            if(b.length != 3) return;
+            if(b.length != 3 && b.length != 4) return;
+
             build.setMode(b[0]);
             if(b[1] >= 0 && b[1] < octaves * 12) build.pitch = b[1];
             if(b[2] >= 0 && b[2] <= 100) build.volume = b[2];
-            build.testNote();
+            if(b.length == 3) build.testNote();
         });
 
         config(Integer.class, (NotePlayerBuild build, Integer i) -> {
+            boolean test = true;
+            if(i <= procOffset){
+                i -= procOffset;
+                test = false;
+            }
+
             if(i >= 0){
                 if(i < octaves * 12){
                     build.pitch = i;
-                    build.testNote();
+                    if(test) build.testNote();
                 }
             }
             else if(i >= -101){//-101...-1
@@ -82,7 +92,7 @@ public class NotePlayer extends Block {
             }
             else{//-102, -103, ...
                 build.setMode(-i - 102);
-                build.testNote();
+                if(test) build.testNote();
             }
         });
     }
@@ -98,7 +108,7 @@ public class NotePlayer extends Block {
     @Override
     public void load(){
         super.load();
-        topRegion = atlas.find(name + "-top");
+        topRegion = atlas.find(name + "-top", "betamindy-note-player-top");
         instrumentIcons = new TextureRegion[instruments.length];
         for(int i = 0; i < instruments.length; i++){
             instrumentIcons[i] = atlas.find("betamindy-instrument" + i, "betamindy-instrument-ohno");
@@ -122,7 +132,11 @@ public class NotePlayer extends Block {
 
         //plays a note quietly for note testing
         public void testNote(){
-            if(headless) return;
+            if(headless || !enabled) return;
+            if(global && consValid()){
+                playNote();
+                return;
+            }
             instruments[mode].at(pitch, x, y);
             effects();
         }
@@ -370,7 +384,79 @@ public class NotePlayer extends Block {
             trig = read.bool();
         }
 
-        //todo logic control & sense
+        @Override
+        public double sense(LAccess sensor){
+            return switch(sensor){
+                case heat -> heat;
+                case config -> (double)(pitch / 12) + ((pitch % 12) * 0.01);
+                default -> super.sense(sensor);
+            };
+        }
+
+        @Override
+        public Object senseObject(LAccess sensor) {
+            return switch(sensor){
+                //senseObject takes priority over sense unless it is a noSensed
+                case config -> noSensed;
+                default -> super.senseObject(sensor);
+            };
+        }
+
+        //used for processor control
+        public void configureP(int c){
+            configure(c + procOffset);
+        }
+
+        @Override
+        public void control(LAccess type, double p1, double p2, double p3, double p4){
+            if(type == LAccess.config){
+                //controlling capability
+                if (p1 < 0.0 || p1 >= octaves - 0.1){ //octave invalid
+                    return;
+                }
+                double rem = p1;
+                int whole = (int) p1; //octave
+                rem -= whole; // pitch
+                rem *= 100;
+                if (rem > 11.1){ // pitch invalid
+                    return;
+                }
+                rem += 0.5; //forces typecast to work
+                int pitch = whole * 12 + (int)rem;
+                configure(pitch);
+            }
+            else if(type == LAccess.color){
+                //r = instrument
+                //g = pitch (int)
+                //b = volume (float)
+                int inst = p1 < 0.0 ? mode : ((int)p1) % instruments.length;
+                int p = p2 < 0.0 ? pitch : ((int)p2) % (octaves * 12);
+                int v = (p3 < 0.0 || global) ? volume : Mathf.round((float)(p3 * 100));
+
+                if(inst == mode){
+                    if(p == pitch){
+                        //configure volume
+                        if(v != volume) configureP(-1 - v);
+                        return;
+                    }
+                    else{
+                        if(v == volume){
+                            //configure pitch
+                            configureP(p);
+                            return;
+                        }
+                        //inst, p wrong
+                    }
+                }
+                else if(p == pitch && v == volume){
+                    configureP(-102 - inst);
+                    return;
+                }
+
+                //two or more are wrong
+                configure(new byte[]{(byte) inst, (byte) p, (byte) v, 1});
+            }
+        }
     }
 
     public static class Instrument {
