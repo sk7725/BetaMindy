@@ -9,6 +9,7 @@ import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.graphics.*;
+import betamindy.world.blocks.logic.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -1178,5 +1179,10 @@ public class MindyFx {
         stroke(Mathf.randomSeed(e.id, 2f, 16f) * e.fout(), e.color);
         lineAngleCenter(e.x, e.y, e.rotation, 4000);
         blend();
+    }),
+
+    noteRipple = new Effect(20f, e -> {
+        stroke(e.fout() * 1.1f, NotePlayer.noteColor((int)e.rotation));
+        circle(e.x, e.y, 4.8f * e.finpow() + 1f);
     });
 }

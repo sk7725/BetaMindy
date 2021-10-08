@@ -12,6 +12,7 @@ import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.ui.*;
 import mindustry.ctype.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -34,6 +35,7 @@ public class NotePlayer extends Block {
     public final static int procOffset = -1000;
     public Instrument[] instruments;
     public boolean global = false; //whether this block is so loud that it plays all over serpulo
+    public Effect soundEffect = MindyFx.noteRipple;
 
     public TextureRegion topRegion;
     public TextureRegion[] instrumentIcons;
@@ -66,7 +68,7 @@ public class NotePlayer extends Block {
                 new Instrument("Saw", MindySounds.sawWave),
                 new Instrument("Bass", MindySounds.bass),
                 new Instrument("Organ", MindySounds.organ),
-                new Instrument("Wind3", Sounds.wind3)
+                new Instrument("Synth", MindySounds.synthSample)
         };
 
         //mode, pitch, vol
@@ -110,6 +112,15 @@ public class NotePlayer extends Block {
         return String.format(noteNames[n % 12], n / 12 + 2);
     }
 
+    public static Color noteColor(int n){
+        return noteColor(Tmp.c1, n);
+    }
+
+    public static Color noteColor(Color tmp, int n){
+        float f = n / (octaves * 12f);
+        return tmp.set(Color.red).shiftHue(f * 360f).add(Tmp.c4.set(Color.red).shiftHue(f * 360f + 40f));
+    }
+
     public boolean isNoteBlock(Block other){
         return (other instanceof NotePlayer) || other.name.equals("esoterum-note-block");
     }
@@ -123,10 +134,10 @@ public class NotePlayer extends Block {
     @Override
     public void load(){
         super.load();
-        topRegion = atlas.find(name + "-top", "betamindy-note-player-top");
+        topRegion = atlas.find(name + "-top", "betamindy-note-block-top");
         instrumentIcons = new TextureRegion[instruments.length];
         for(int i = 0; i < instruments.length; i++){
-            instrumentIcons[i] = atlas.find("betamindy-instrument" + i, "betamindy-instrument-ohno");
+            instrumentIcons[i] = atlas.find(name + i, atlas.find("betamindy-instrument" + i, "betamindy-instrument-ohno"));
         }
     }
 
@@ -168,7 +179,7 @@ public class NotePlayer extends Block {
         }
 
         public void effects(){
-            //todo
+            soundEffect.at(x, y, pitch);
             heat = 1f;
         }
 
@@ -288,7 +299,7 @@ public class NotePlayer extends Block {
                     Table whites = new Table(w -> {
                         for(int i = 0; i < 10; i++){
                             int note = octavePage * 12 + whiteOffset[i];
-                            w.button("\n\n\n\n\n" + (note >= octaves * 12 ? "[gray]" + pitchString(note) + "[]": pitchString(note)), MindyUILoader.whitePiano, () -> {
+                            w.button("\n\n\n\n\n" + (note >= octaves * 12 ? "[gray]" : "[#" + noteColor(note).lerp(Color.white, 0.8f).toString() + "]") + pitchString(note) + "[]", MindyUILoader.whitePiano, () -> {
                                 if(note < octaves * 12) configure(note);
                             }).size(40, 150).checked(butt -> note == pitch).disabled(note >= octaves * 12);
                         }

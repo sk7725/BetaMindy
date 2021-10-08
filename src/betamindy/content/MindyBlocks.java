@@ -63,7 +63,7 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, rejuvenator, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad, teleportPad, portalPad, yutnori,
     //logic
-    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule, notePlayer, starPlayer,
+    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule, noteBlock, starNoteBlock, sfxBlock,
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, astro, magicTurret, credit, taxation, brokerage, mortgage,
     //power
@@ -1106,15 +1106,42 @@ public class MindyBlocks implements ContentList {
             requirements(Category.logic, with(Items.copper, 40, Items.lead, 20, Items.silicon, 10));
         }};
 
-        notePlayer = new NotePlayer("note-block"){{
+        noteBlock = new NotePlayer("note-block"){{
             consumes.power(0.5f);
             requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.graphite, 10));
         }};
 
-        starPlayer = new NotePlayer("star-note-block"){{
+        starNoteBlock = new NotePlayer("star-note-block"){{
             global = true;
             consumes.power(0.8f);
-            requirements(Category.logic, with(Items.copper, 20, Items.silicon, 5, Items.graphite, 10, MindyItems.starStone, 5));
+            requirements(Category.logic, with(Items.copper, 20, Items.silicon, 5, Items.graphite, 10, MindyItems.starStone, 1));
+        }};
+
+        sfxBlock = new NotePlayer("sfx-block"){{
+            consumes.power(0.5f);
+            requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.plastanium, 10));
+            soundEffect = Fx.mine;
+
+            instruments = new Instrument[]{
+                    new Instrument("Place", Sounds.place),
+                    new Instrument("Break", Sounds.breaks),
+                    new Instrument("Click", Sounds.click),
+                    new Instrument("Boom", Sounds.boom),
+                    new Instrument("Shoot", Sounds.shoot),
+                    new Instrument("Sap", Sounds.sap),
+                    new Instrument("[[[[Big Shot]]", Sounds.bigshot),
+                    new Instrument("Laser", Sounds.laser),
+                    new Instrument("LaserB", Sounds.laserblast),
+                    new Instrument("Unlock", Sounds.unlock),
+                    new Instrument("Wave", Sounds.wave),
+                    new Instrument("Flame", Sounds.flame),
+                    new Instrument("PDrop", Sounds.plasmadrop),
+                    new Instrument("PBoom", Sounds.plasmaboom),
+                    new Instrument("CBells", MindySounds.presentBells),
+                    new Instrument("Push", MindySounds.pistonPush),
+                    new Instrument("Shatter", MindySounds.shatter),
+                    new Instrument("Wind3", Sounds.wind3)
+            };
         }};
 
         pen = new Pen("pen"){{
