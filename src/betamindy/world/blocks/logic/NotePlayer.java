@@ -376,7 +376,7 @@ public class NotePlayer extends Block {
         @Override
         public void control(LAccess type, double p1, double p2, double p3, double p4){
             if(type == LAccess.config){
-                //controlling capability
+                //controlling capability, credits to MrDuck557
                 if (p1 < 0.0 || p1 >= octaves - 0.1){ //octave invalid
                     return;
                 }
@@ -423,6 +423,10 @@ public class NotePlayer extends Block {
 
                 //two or more are wrong
                 configure(new byte[]{(byte) inst, (byte) p, (byte) v, 1});
+            }
+            else if(type == LAccess.enabled){
+                if(!Mathf.zero((float)p1)) playNote();
+                super.control(type, p1, p2, p3, p4);
             }
         }
 
