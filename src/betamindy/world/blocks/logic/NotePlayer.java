@@ -4,6 +4,7 @@ import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -251,7 +252,7 @@ public class NotePlayer extends Block {
                     l.setText(instruments[m].name);
                     li.setDrawable(instrumentIcons[m]);
                 });
-            }).size(100, 40);
+            }).size(100, 40).touchable(Touchable.disabled);
         }
 
         @Override
