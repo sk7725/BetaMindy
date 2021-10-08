@@ -33,10 +33,10 @@ public class NotePlayer extends Block {
     public TextureRegion topRegion;
     public TextureRegion[] instrumentIcons;
     public final static String[] noteNames = new String[]{
-            "C%o", "C%o#", "D%o",
-            "D%o#", "E%o", "F%o",
-            "F%o#", "G%o", "G%o#",
-            "A%o", "A%o#", "B%o"
+            "C%s", "C%s#", "D%s",
+            "D%s#", "E%s", "F%s",
+            "F%s#", "G%s", "G%s#",
+            "A%s", "A%s#", "B%s"
     };
     //used for black keys where "C4#" won't fit
     public final static String[] noteButtonNames = new String[]{
