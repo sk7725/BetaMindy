@@ -100,7 +100,7 @@ public class NotePlayer extends Block {
             }
             else{//-102, -103, ...
                 build.setMode(-i - 102);
-                if(test) build.testNote();
+                if(test && build.mode == -i - 102) build.testNote();
             }
         });
     }
@@ -396,9 +396,9 @@ public class NotePlayer extends Block {
                 //r = instrument
                 //g = pitch (int)
                 //b = volume (float)
-                int inst = p1 < 0.0 ? mode : ((int)p1) % instruments.length;
-                int p = p2 < 0.0 ? pitch : ((int)p2) % (octaves * 12);
-                int v = (p3 < 0.0 || global) ? volume : Mathf.round((float)(p3 * 10));
+                int inst = p1 < -0.01 ? mode : (int)Math.round(p1) % instruments.length;
+                int p = p2 < -0.01 ? pitch : ((int)Math.round(p1)) % (octaves * 12);
+                int v = (p3 < -0.01 || global) ? volume : Mathf.round((float)(p3 * 10));
                 if(v < 0) v = 0;
                 else if(v > 100) v = 100;
 

@@ -93,7 +93,7 @@ public class MindySounds {
     public static Sound[] loadNotes(String soundName){
         Sound[] out = new Sound[NotePlayer.octaves];
         for(int i = 0; i < 5; i++){
-            out[i] = loadSound(soundName + "/" + soundName + "C" + (2 + i));
+            out[i] = loadSound("bm" + soundName + "/" + soundName + "C" + (2 + i));
         }
         return out;
     }
