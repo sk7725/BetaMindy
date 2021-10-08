@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
@@ -16,6 +17,7 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
 import static mindustry.Vars.headless;
@@ -55,13 +57,16 @@ public class NotePlayer extends Block {
         super(name);
 
         update = configurable = saveConfig = solid = true;
+        group = BlockGroup.logic;
+
         instruments = new Instrument[]{
                 new Instrument("Piano", MindySounds.piano),
                 new Instrument("Bells", MindySounds.bells),
                 new Instrument("Square", MindySounds.squareSample),
                 new Instrument("Saw", MindySounds.sawWave),
                 new Instrument("Bass", MindySounds.bass),
-                new Instrument("Organ", MindySounds.organ)
+                new Instrument("Organ", MindySounds.organ),
+                new Instrument("Wind3", Sounds.wind3)
         };
 
         //mode, pitch, vol
@@ -105,6 +110,16 @@ public class NotePlayer extends Block {
         return String.format(noteNames[n % 12], n / 12 + 2);
     }
 
+    public boolean isNoteBlock(Block other){
+        return (other instanceof NotePlayer) || other.name.equals("esoterum-note-block");
+    }
+
+    @Override
+    public boolean canReplace(Block other){
+        if(other.alwaysReplace) return true;
+        return other.size == size && isNoteBlock(other);
+    }
+
     @Override
     public void load(){
         super.load();
@@ -119,7 +134,7 @@ public class NotePlayer extends Block {
         public int mode = 0; //instrument
         public int pitch = sampleOctave * 12;
 
-        public int volume = 100; //only for star note players
+        public int volume = 10; //only for star note players
         public float heat;
         public boolean trig;
 
@@ -144,7 +159,7 @@ public class NotePlayer extends Block {
         public void playNote(){
             if(headless) return;
             if(global){
-                instruments[mode].play(pitch, volume / 100f);
+                instruments[mode].play(pitch, volume / 10f);
             }
             else{
                 instruments[mode].at(pitch, x, y);
@@ -294,76 +309,16 @@ public class NotePlayer extends Block {
                 if(global){
                     frame.row();
                     frame.table(Tex.pane, v -> {
-                        Label vol = v.add("Volume: " + volume + "% ", Styles.outlineLabel).padLeft(5).padRight(5).width(160).get();
+                        Label vol = v.add("Volume: " + (volume / 10) + "." + (volume % 10), Styles.outlineLabel).padLeft(5).padRight(5).width(160).get();
                         v.slider(0, 100, 1, volume, f -> {
                             if((int)f != volume){
                                 configure(-1 * (int)f - 1);
                             }
-                            vol.setText("Volume: " + (int)f + "% ");
+                            vol.setText("Volume: " + ((int)f / 10) + "." + ((int)f % 10));
                         }).height(40f).growX();
                     }).growX();
                 }
             });
-        }
-
-        public void buildConfigurationOld(Table table){
-            //table.setBackground(Styles.black5);
-            table.table(n -> {
-                n.add("Note: ").right(); //todo bundles
-                n.label(this::noteString);
-                n.row();
-                n.add("Octave: ").right();
-                n.table(b -> {
-                    b.button("-", () -> {
-                        if(pitch >= 12) configure(pitch - 12);
-                    }).size(48f).growX().disabled(butt -> pitch < 12);
-                    b.button("+", () -> {
-                        if(pitch + 12 < octaves * 12) configure(pitch + 12);
-                    }).size(48f).growX().disabled(butt -> pitch + 12 >= octaves * 12);
-                }).left();
-                n.row();
-                n.add("Key: ").right();
-                n.table(b -> {
-                    b.button("-", () -> {
-                        configure(pitch - 1);
-                    }).size(48f).growX().disabled(butt -> pitch <= 0);
-                    b.button("+", () -> {
-                        configure(pitch + 1);
-                    }).size(48f).growX().disabled(butt -> pitch + 1 >= octaves * 12);
-                }).left();
-            }).growX().get().background(Tex.underline);
-
-            table.row();
-            table.table(s -> {
-                s.label(() -> {
-                    if(mode >= 1){
-                        return instruments[mode - 1].name;
-                    }
-                    return "";
-                }).color(Color.lightGray).labelAlign(Align.center).right().size(60f, 40f);
-                s.button("<", () -> {
-                    configure(-102 - (mode - 1));
-                }).size(40f).right().disabled(butt -> mode < 1);
-                s.label(() -> instruments[mode].name).center().labelAlign(Align.center).size(80f, 40f);
-                s.button(">", () -> {
-                    configure(-102 - (mode + 1));
-                }).size(40f).left().disabled(butt -> mode >= instruments.length - 1);
-                s.label(() -> {
-                    if(mode < instruments.length - 1){
-                        return instruments[mode + 1].name;
-                    }
-                    return "";
-                }).color(Color.lightGray).labelAlign(Align.center).left().size(60f, 40f);
-            }).growX().get().background(Tex.underline);
-
-            if(global){
-                table.row();
-                table.table(v -> {
-                    v.slider(0, 100, 1, volume, f -> {
-                        if((int)f != volume) configure(-1 * (int)f - 1);
-                    }).height(40f).growX();
-                }).growX().get().background(Tex.underline);
-            }
         }
 
         @Override
@@ -431,7 +386,9 @@ public class NotePlayer extends Block {
                 //b = volume (float)
                 int inst = p1 < 0.0 ? mode : ((int)p1) % instruments.length;
                 int p = p2 < 0.0 ? pitch : ((int)p2) % (octaves * 12);
-                int v = (p3 < 0.0 || global) ? volume : Mathf.round((float)(p3 * 100));
+                int v = (p3 < 0.0 || global) ? volume : Mathf.round((float)(p3 * 10));
+                if(v < 0) v = 0;
+                else if(v > 100) v = 100;
 
                 if(inst == mode){
                     if(p == pitch){
@@ -455,6 +412,23 @@ public class NotePlayer extends Block {
 
                 //two or more are wrong
                 configure(new byte[]{(byte) inst, (byte) p, (byte) v, 1});
+            }
+        }
+
+        //esoterum compatibility
+        @Override
+        public void overwrote(Seq<Building> builds){
+            if(builds.first() instanceof NotePlayerBuild build){
+                mode = build.mode;
+                pitch = build.pitch;
+                volume = build.volume;
+            }
+            else if(builds.first().block.name.equals("esoterum-note-block") && builds.first().config() instanceof IntSeq configs){
+                if(configs.size == 5){
+                    mode = configs.get(4) % instruments.length;
+                    pitch = (configs.get(1) + configs.get(2) * 12) % (octaves * 12);
+                    volume = Mathf.clamp(configs.get(3), 0, 100);
+                }
             }
         }
     }
