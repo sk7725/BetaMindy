@@ -1,5 +1,6 @@
 package betamindy.world.blocks.logic;
 
+import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -12,7 +13,6 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.ui.*;
-import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -30,8 +30,8 @@ import static mindustry.Vars.headless;
  * @author MeepofFaith
  */
 public class NotePlayer extends Block {
-    public final static int sampleOctave = 2; //C4
-    public final static int octaves = 5; //C2 ~ C6
+    public final static int sampleOctave = 3; //C4
+    public final static int octaves = 7; //C2 ~ C6
     public final static int sampleOffset = sampleOctave * 12;
     public final static int procOffset = -1000;
     public Instrument[] instruments;
@@ -69,7 +69,8 @@ public class NotePlayer extends Block {
                 new Instrument("Saw", MindySounds.sawWave),
                 new Instrument("Bass", MindySounds.bass),
                 new Instrument("Organ", MindySounds.organ),
-                new Instrument("Synth", MindySounds.synthSample)
+                new Instrument("Synth", MindySounds.synthSample),
+                new Instrument("Chime", MindySounds.chimes)
         };
 
         //mode, pitch, vol
@@ -110,7 +111,7 @@ public class NotePlayer extends Block {
     }
 
     public static String pitchString(int n){
-        return String.format(noteNames[n % 12], n / 12 + 2);
+        return String.format(noteNames[n % 12], n / 12 + 1);
     }
 
     public static Color noteColor(int n){
@@ -151,7 +152,7 @@ public class NotePlayer extends Block {
         public float heat;
         public boolean trig;
 
-        private int octavePage = 2; //ui only
+        private int octavePage = sampleOctave; //ui only
 
         //sets the instrument safely
         public void setMode(int m){
@@ -282,9 +283,9 @@ public class NotePlayer extends Block {
                     t.image().color(Pal.gray).growY().width(4).left();
                     t.add("Octave: ", Styles.outlineLabel).padLeft(5).padRight(5);
 
-                    for(int i = 0; i < 5; i++){
+                    for(int i = 0; i < 7; i++){
                         int id = i;
-                        t.button("" + (id + 2), Styles.logicTogglet, () -> {
+                        t.button("" + (id + 1), Styles.logicTogglet, () -> {
                             int diff = id - pitch / 12;
                             if(id != octavePage){
                                 configure(pitch + diff * 12);
@@ -335,6 +336,11 @@ public class NotePlayer extends Block {
         }
 
         @Override
+        public byte version(){
+            return 2;
+        }
+
+        @Override
         public void write(Writes write){
             super.write(write);
             write.s(mode);
@@ -348,6 +354,8 @@ public class NotePlayer extends Block {
             super.read(read, revision);
             mode = read.s();
             pitch = read.s();
+            if(revision < 2) pitch += 12;
+            pitch = Mathf.clamp(pitch, 0, octaves * 12 - 1); //just in case
             volume = read.b();
             trig = read.bool();
         }
@@ -455,8 +463,8 @@ public class NotePlayer extends Block {
         public Sound note; //C4
 
         //only valid if hasOctaves is true
-        public Sound[] octaves; //C2 ~ C6
-        public boolean hasOctaves;
+        public Sound[] samples; //C1 ~ C7
+        public boolean hasOctaves, legacy = false;
 
         public Instrument(String name, Sound sample){
             hasOctaves = false;
@@ -468,14 +476,29 @@ public class NotePlayer extends Block {
             hasOctaves = true;
             this.name = name;
             if(samples == null) return; //headless
-            note = samples[sampleOctave];
-            octaves = samples;
+            if(samples.length < octaves){ //legacy version with C2 ~ C6
+                Sound[] full = new Sound[octaves];
+                legacy = true;
+                System.arraycopy(samples, 0, full, 1, 5);
+                note = full[sampleOctave];
+                this.samples = full;
+            }
+            else{
+                note = samples[sampleOctave];
+                this.samples = samples;
+            }
         }
 
         public void at(int n, float x, float y){
             if(n < 0) return;
-            if(hasOctaves && n < octaves.length * 12){
-                octaves[n / 12].at(x, y, getPitch(n % 12));
+            if(hasOctaves && n < samples.length * 12){
+                if(samples[n / 12] == null){
+                    if(n < 12) samples[1].at(x, y, getPitch(n % 12 - 12));
+                    else samples[5].at(x, y, getPitch(n % 12 + 12));
+                }
+                else{
+                    samples[n / 12].at(x, y, getPitch(n % 12));
+                }
             }
             else{
                 note.at(x, y, getPitch(n - sampleOffset));
@@ -484,12 +507,21 @@ public class NotePlayer extends Block {
 
         public void play(int n, float volume){
             if(n < 0) return;
-            if(hasOctaves && n < octaves.length * 12){
-                octaves[n / 12].play(volume, getPitch(n % 12), 0);
+            int id;
+            if(hasOctaves && n < samples.length * 12){
+                if(samples[n / 12] == null){
+                    if(n < 12) id = samples[1].play(volume, getPitch(n % 12 - 12), 0);
+                    else id = samples[5].play(volume, getPitch(n % 12 + 12), 0);
+                }
+                else{
+                    id = samples[n / 12].play(volume, getPitch(n % 12), 0);
+                }
             }
             else{
-                note.play(volume, getPitch(n - sampleOffset), 0);
+                id = note.play(volume, getPitch(n - sampleOffset), 0);
             }
+
+            if(id == -1) Log.err("FAILED PLAYING " + instString(name, n) + " FRAME " + Core.graphics.getFrameId());
         }
 
         public float getPitch(int offset){

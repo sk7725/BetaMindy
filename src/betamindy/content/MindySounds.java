@@ -9,7 +9,7 @@ import mindustry.*;
 
 public class MindySounds {
     public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan, pipePop, pipeSqueeze, pipeIn, easterEgg1, easterEgg2, portalOpen, portalLoop, portalClose, lightningStrike, shatter, boxOpen, astroCharge, astroShoot, drink, pianoSample, squareSample, synthSample;
-    public static Sound[] piano, bells, squareWave, sawWave, bass, organ;
+    public static Sound[] piano, bells, squareWave, sawWave, bass, organ, chimes;
     public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan", "pipepop", "pipesqueeze", "pipein", "strawberrydeath", "strawberrypredeath", "portalopen", "portalloop", "portalclose", "lstrike", "shatter", "boxopen", "astroCharge", "astroShoot", "drink", "pianoS", "squareS", "synthS"};
     private static int num = 0;
 
@@ -42,13 +42,14 @@ public class MindySounds {
         synthSample = l();
 
         //todo more samples
-        piano = loadNotes("piano");
-        bells = loadNotes("bell"); //btw these are portal bells from the Invasion track
+        piano = loadNotes5("piano");
+        bells = loadNotes5("bell"); //btw these are portal bells from the Invasion track
 
         //credits to MeepofFaith
-        sawWave = loadNotes("saw");
-        bass = loadNotes("bass");
-        organ = loadNotes("organ");
+        sawWave = loadNotes5("saw");
+        bass = loadNotes5("bass");
+        organ = loadNotes5("organ");
+        chimes = loadNotes("chime");
     }
 /*
     public static void dispose() {
@@ -90,10 +91,18 @@ public class MindySounds {
     /** Go check out Goobrr/Esoterum
      * @author MeepofFaith
      */
-    public static Sound[] loadNotes(String soundName){
-        Sound[] out = new Sound[NotePlayer.octaves];
+    public static Sound[] loadNotes5(String soundName){ //legacy C2 ~ C6
+        Sound[] out = new Sound[5];
         for(int i = 0; i < 5; i++){
             out[i] = loadSound("bm" + soundName + "/" + soundName + "C" + (2 + i));
+        }
+        return out;
+    }
+
+    public static Sound[] loadNotes(String soundName){ //current C1 ~ C7
+        Sound[] out = new Sound[NotePlayer.octaves];
+        for(int i = 0; i < 7; i++){
+            out[i] = loadSound("bm" + soundName + "/" + soundName + "C" + (1 + i));
         }
         return out;
     }
