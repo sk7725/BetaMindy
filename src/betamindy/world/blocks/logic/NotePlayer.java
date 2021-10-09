@@ -398,7 +398,7 @@ public class NotePlayer extends Block {
                 //g = pitch (int)
                 //b = volume (float)
                 int inst = p1 < -0.01 ? mode : (int)Math.round(p1) % instruments.length;
-                int p = p2 < -0.01 ? pitch : ((int)Math.round(p1)) % (octaves * 12);
+                int p = p2 < -0.01 ? pitch : ((int)Math.round(p2)) % (octaves * 12);
                 int v = (p3 < -0.01 || !global) ? volume : Mathf.round((float)(p3 * 10));
                 if(v < 0) v = 0;
                 else if(v > 100) v = 100;
