@@ -154,6 +154,7 @@ public class NotePlayer extends Block {
         public boolean trig;
 
         private int octavePage = sampleOctave; //ui only
+        private long lastFrame;
 
         //sets the instrument safely
         public void setMode(int m){
@@ -170,9 +171,11 @@ public class NotePlayer extends Block {
             instruments[mode].at(pitch, x, y);
             effects();
         }
+
         //plays a note
         public void playNote(){
-            if(headless) return;
+            if(headless || lastFrame == Core.graphics.getFrameId()) return;
+            lastFrame = Core.graphics.getFrameId();
             if(global){
                 instruments[mode].play(pitch, volume / 10f);
             }
