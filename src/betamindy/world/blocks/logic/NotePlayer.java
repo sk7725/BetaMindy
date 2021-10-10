@@ -22,6 +22,7 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
+import static arc.Core.audio;
 import static mindustry.Vars.headless;
 
 /**
@@ -491,6 +492,10 @@ public class NotePlayer extends Block {
 
         public void at(int n, float x, float y){
             if(n < 0) return;
+            float vol = note.calcVolume(x, y);
+            if(vol < 0.01f) return; //discard
+            play(n, vol, note.calcPan(x, y));
+            /*
             if(hasOctaves && n < samples.length * 12){
                 if(samples[n / 12] == null){
                     if(n < 12) samples[1].at(x, y, getPitch(n % 12 - 12));
@@ -502,23 +507,27 @@ public class NotePlayer extends Block {
             }
             else{
                 note.at(x, y, getPitch(n - sampleOffset));
-            }
+            }*/
         }
 
         public void play(int n, float volume){
+            play(n, volume, 0f);
+        }
+
+        public void play(int n, float volume, float pan){
             if(n < 0) return;
             int id;
             if(hasOctaves && n < samples.length * 12){
                 if(samples[n / 12] == null){
-                    if(n < 12) id = samples[1].play(volume, getPitch(n % 12 - 12), 0);
-                    else id = samples[5].play(volume, getPitch(n % 12 + 12), 0);
+                    if(n < 12) id = audio.play(samples[1], volume, getPitch(n % 12 - 12), pan, false);
+                    else id = audio.play(samples[5], volume, getPitch(n % 12 + 12), pan, false);
                 }
                 else{
-                    id = samples[n / 12].play(volume, getPitch(n % 12), 0);
+                    id = audio.play(samples[n / 12], volume, getPitch(n % 12), pan, false);
                 }
             }
             else{
-                id = note.play(volume, getPitch(n - sampleOffset), 0);
+                id = audio.play(note, volume, getPitch(n - sampleOffset), pan, false);
             }
 
             if(id == -1) Log.err("FAILED PLAYING " + instString(name, n) + " FRAME " + Core.graphics.getFrameId());
