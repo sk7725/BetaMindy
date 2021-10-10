@@ -42,13 +42,13 @@ public class MindySounds {
         synthSample = l();
 
         //todo more samples
-        piano = loadNotes5("piano");
-        bells = loadNotes5("bell"); //btw these are portal bells from the Invasion track
+        piano = loadNotes("piano");
+        bells = loadNotes("bell"); //btw these are portal bells from the Invasion track
 
         //credits to MeepofFaith
-        sawWave = loadNotes5("saw");
-        bass = loadNotes5("bass");
-        organ = loadNotes5("organ");
+        sawWave = loadNotes("saw");
+        bass = loadNotes("bass");
+        organ = loadNotes("organ");
         chimes = loadNotes("chime");
     }
 /*
@@ -91,6 +91,7 @@ public class MindySounds {
     /** Go check out Goobrr/Esoterum
      * @author MeepofFaith
      */
+    @Deprecated
     public static Sound[] loadNotes5(String soundName){ //legacy C2 ~ C6
         Sound[] out = new Sound[5];
         for(int i = 0; i < 5; i++){
