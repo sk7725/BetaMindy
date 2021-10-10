@@ -53,7 +53,7 @@ public class MindyBlocks implements ContentList {
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
     //pistons
-    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog,
+    piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog, capacitor, megaCapacitor,
     //effect
     silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore, terraformer1, terraformer2, terraformer3, terraformer4, terraformerC,
     //walls
@@ -680,20 +680,20 @@ public class MindyBlocks implements ContentList {
 
         piston = new Piston("piston"){{
             health = 200;
-            consumes.power(1f);
+            consumes.power(0.2f);
             requirements(Category.distribution, with(Items.graphite, 25, Items.silicon, 10, Items.titanium, 15));
         }};
 
         stickyPiston = new Piston("piston-sticky"){{
             health = 200;
-            consumes.power(1f);
+            consumes.power(0.2f);
             requirements(Category.distribution, with(Items.sporePod, 10, Items.graphite, 15, Items.silicon, 10, Items.titanium, 15));
             sticky = true;
         }};
 
         pistonInfi = new Piston("piston-infi", "betamindy-piston-arm", "betamindy-pistoninf"){{
             health = 200;
-            consumes.power(1f);
+            consumes.power(0.2f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
 
             maxBlocks = 512;
@@ -701,7 +701,7 @@ public class MindyBlocks implements ContentList {
 
         stickyPistonInfi = new Piston("piston-sticky-infi", "betamindy-piston-sticky-arm", "betamindy-pistoninf"){{
             health = 200;
-            consumes.power(1f);
+            consumes.power(0.2f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
             sticky = true;
 
@@ -733,8 +733,18 @@ public class MindyBlocks implements ContentList {
         }};
 
         accel = new AccelBlock("accel"){{
-            health = 150;
             requirements(Category.power, with(Items.lead, 25, Items.silicon, 20, Items.plastanium, 3));
+            health = 150;
+        }};
+
+        capacitor = new Capacitor("capacitor", 60f){{
+            requirements(Category.power, with(Items.lead, 15, Items.silicon, 10, Items.graphite, 3));
+            health = 150;
+        }};
+
+        megaCapacitor = new Capacitor("mega-capacitor", 300f){{
+            requirements(Category.power, with(Items.lead, 35, Items.silicon, 20, Items.surgeAlloy, 3));
+            health = 350;
         }};
 
         cog = new Spinner("cog"){{
