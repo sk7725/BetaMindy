@@ -71,7 +71,9 @@ public class NotePlayer extends Block {
                 new Instrument("Bass", MindySounds.bass),
                 new Instrument("Organ", MindySounds.organ),
                 new Instrument("Synth", MindySounds.synthSample),
-                new Instrument("Chime", MindySounds.chimes)
+                new Instrument("Chime", MindySounds.chimes),
+                new Instrument("Violin", MindySounds.violin),
+                new Instrument("Harp", MindySounds.harp)
         };
 
         //mode, pitch, vol
@@ -249,16 +251,19 @@ public class NotePlayer extends Block {
         }
 
         void instButton(Table t, int offset, boolean enabled){
-            t.table(bt -> {
+            Table b = t.table(bt -> {
                 bt.center();
                 Label l = bt.add(instruments[Mathf.mod(mode + offset, instruments.length)].name, Styles.outlineLabel, 1.2f).color(enabled ? Pal.accent : Color.lightGray).get();
-                Image li = bt.image(instrumentIcons[Mathf.mod(mode + offset, instruments.length)]).size(32).padLeft(-22).color(enabled ? Color.white : Color.lightGray).get();
+                Image li = bt.image(instrumentIcons[Mathf.mod(mode + offset, instruments.length)]).size(32).padLeft(-22).color(enabled ? Color.white : Color.lightGray).touchable(Touchable.disabled).get();
                 l.update(() -> {
                     int m = Mathf.mod(mode + offset, instruments.length);
                     l.setText(instruments[m].name);
                     li.setDrawable(instrumentIcons[m]);
                 });
-            }).size(100, 40).touchable(Touchable.disabled);
+            }).size(100, 40).touchable(enabled ? Touchable.disabled : Touchable.enabled).get();
+            if(!enabled) b.clicked(() -> {
+                configure(-102 - Mathf.mod(mode + offset, instruments.length));
+            });
         }
 
         @Override

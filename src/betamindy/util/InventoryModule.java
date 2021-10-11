@@ -274,7 +274,6 @@ public class InventoryModule {
         result.placeBegan(tile, previous);
 
         if(!headless){
-            //todo lancerlaser build effects & cool stuff
             if(unit != null) MindyFx.buildLaser.at(tile.drawx(), tile.drawy(), result.size, Pal.lancerLaser, unit);
             MindyFx.placeBlockBlue.at(tile.drawx(), tile.drawy(), result.size);
             if(team == player.team()) changed = true;

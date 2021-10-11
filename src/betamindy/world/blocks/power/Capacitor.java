@@ -25,7 +25,7 @@ public class Capacitor extends Battery {
         rotate = true;
         quickRotate = false;
         configurable = saveConfig = true;
-        insulated = true;
+        //insulated = true;
         this.powerCapacity = powerCapacity;
         consumes.powerBuffered(powerCapacity);
 
@@ -69,6 +69,7 @@ public class Capacitor extends Battery {
             }
 
             if(in.power.graph.getLastPowerProduced() + in.power.graph.getLastPowerStored() >= powerCapacity || (in instanceof CapacitorBuild cap && cap.outputting)){
+                in.power.graph.transferPower(-powerCapacity);
                 if(charge >= delay * delayTicks){
                     charge = delay * delayTicks;
                     outputting = true;

@@ -231,6 +231,7 @@ public class Useful {
         }
         cameraPos.lerp(pos, (Core.settings.getBool("smoothcamera") ? 0.08f : 1f) * Time.delta);
         Core.camera.position.set(cameraPos);
+        if(mobile && player.unit() != null) player.unit().vel.setZero();
     }
 
     public static void cutsceneEnd(){
