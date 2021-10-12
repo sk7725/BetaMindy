@@ -69,7 +69,7 @@ public class Capacitor extends Battery {
             }
 
             if(in.power.graph.getLastPowerProduced() + in.power.graph.getLastPowerStored() >= powerCapacity || (in instanceof CapacitorBuild cap && cap.outputting)){
-                in.power.graph.transferPower(-powerCapacity);
+                //in.power.graph.transferPower(-powerCapacity);
                 if(charge >= delay * delayTicks){
                     charge = delay * delayTicks;
                     outputting = true;
