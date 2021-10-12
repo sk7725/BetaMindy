@@ -170,14 +170,14 @@ public class MindyFx {
     }).layer(Layer.space - 0.02f),
 
     smokeRise = new Effect(150f, 150f, e -> {
-        color(Color.gray, Tmp.c1.set(Pal.darkishGray).a(0f), e.fin());
+        color(Color.gray, Tmp.c2.set(Pal.darkishGray).a(0f), e.fin());
         float size = 7f + e.fin()*8f;
         rect("circle", e.x+e.fin()*26f, e.y+e.fin() * 30f, size, size);
     }),
 
     manualFire = new Effect(170f, e -> {
         color(e.color, e.fout());
-        randLenVectors(e.id, 4, 1.5f + 4f * e.fin(), (x, y) -> {
+        randLenVectors(e.id, e.id % 2 + 1, 1.5f + 4f * e.fin(), (x, y) -> {
             Fill.square(e.x + e.fin() * 13f + x, e.y + e.fin() * 9f + y, 0.2f + e.fout());
         });
     }),

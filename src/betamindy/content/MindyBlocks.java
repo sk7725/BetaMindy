@@ -48,6 +48,7 @@ public class MindyBlocks implements ContentList {
             //env - shar
             borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
             chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
+            esotManual,
     //ores
     oreScalar, oreVector, oreTensor,
     //payloads
@@ -1743,6 +1744,10 @@ public class MindyBlocks implements ContentList {
 
             terraBlocks.put(Blocks.boulder, Blocks.router);
             terraBlocks.put(borudaliteDol, Blocks.junction);
+        }};
+
+        esotManual = new LoreManual("esot-manual"){{
+            buildVisibility = uwu ? BuildVisibility.shown : BuildVisibility.editorOnly;
         }};
     }
 }
