@@ -10,7 +10,7 @@ import mindustry.gen.*;
 @SuppressWarnings("unchecked")
 public class MindyUnitTypes implements ContentList{
     private static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
-        prov(GhostEntity.class, GhostEntity::create)
+        prov(Extension.class, Extension::create)
     };
 
     private static ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();

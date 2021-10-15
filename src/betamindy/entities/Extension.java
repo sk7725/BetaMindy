@@ -14,16 +14,17 @@ import mindustry.world.blocks.environment.*;
 import static mindustry.Vars.*;
 
 /**
- * Created when the holder is removed, to keep interacting instead of the holder. <br>
+ * Deprecated in v7.
+ * Same as {ForceDraw}, except it's not hardcoded only to serve force projectors. <br>
  * Won't add itself if the holder is null; always use {@code holder = ...} before calling {@link #add()}. <br>
  * <br>
  * See {@link ExtensionHolder} for usage and example codes.
  * @author GlennFolker
- * @author sunny
 */
 @SuppressWarnings("unchecked")
-public final class GhostEntity implements Drawc{
-    public Building holder;
+@Deprecated
+public final class Extension implements Drawc{
+    public ExtensionHolder holder;
 
     public transient boolean added;
     public transient int id;
@@ -31,47 +32,37 @@ public final class GhostEntity implements Drawc{
     public float x;
     public float y;
 
-    protected GhostEntity(){
+    protected Extension(){
         id = EntityGroup.nextId();
     }
 
-    public static GhostEntity create(){
-        return new GhostEntity();
+    public static Extension create(){
+        return new Extension();
     }
 
     @Override
     public int classId(){
-        return MindyUnitTypes.classID(GhostEntity.class);
+        return MindyUnitTypes.classID(Extension.class);
     }
 
     @Override
     public void draw(){
         if(holder != null){
-            ((GhostHolder)holder).drawGhost();
+            holder.drawExt();
         }
     }
 
     @Override
     public float clipSize(){
         if(holder != null){
-            return holder.block.clipSize;
+            return holder.clipSizeExt();
         }else{
             return 0f;
         }
     }
 
     @Override
-    public void update(){
-        if(holder == null) return;
-        x = holder.x;
-        y = holder.y;
-        if(holder.isAdded()){
-            remove();
-        }
-        else{
-            ((GhostHolder)holder).updateGhost();
-        }
-    }
+    public void update(){}
 
     @Override
     public boolean serialize(){
@@ -230,6 +221,13 @@ public final class GhostEntity implements Drawc{
     public <T> T as(){
         return (T)this;
     }
+
+    /*
+    @Override
+    public <T> T with(Cons<T> cons){
+        cons.get((T)this);
+        return (T)this;
+    }*/
 
     @Override
     public String toString(){
