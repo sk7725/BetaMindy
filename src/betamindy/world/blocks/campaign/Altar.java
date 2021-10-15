@@ -59,7 +59,7 @@ public class Altar extends Block {
         solid = false;
         rotate = false;
         size = 3;
-        expanded = true;
+        clipSize = 200f;
         configurable = true;
         saveConfig = false;
         noUpdateDisabled = false;
@@ -142,15 +142,14 @@ public class Altar extends Block {
                 if(heat > 0.01f) heat -= delta() / 60f;
                 return; //do not do anything
             }
+            //portal is over
             switch(phase){
-                case 1: phase1();
-                break;
-                case 3:
-                    //portal is over
+                case 1 -> phase1();
+                case 3 -> {
                     heat = 0f;
                     phase = 0;
-                    break;
-                default: phase0();
+                }
+                default -> phase0();
             }
         }
 
