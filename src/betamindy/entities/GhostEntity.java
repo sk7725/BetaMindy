@@ -17,7 +17,7 @@ import static mindustry.Vars.*;
  * Created when the holder is removed, to keep interacting instead of the holder. <br>
  * Won't add itself if the holder is null; always use {@code holder = ...} before calling {@link #add()}. <br>
  * <br>
- * See {@link ExtensionHolder} for usage and example codes.
+ * See {@link GhostHolder} for usage and example codes.
  * @author GlennFolker
  * @author sunny
 */
