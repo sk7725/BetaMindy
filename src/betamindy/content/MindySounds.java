@@ -10,35 +10,38 @@ import mindustry.*;
 public class MindySounds {
     public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan, pipePop, pipeSqueeze, pipeIn, easterEgg1, easterEgg2, portalOpen, portalLoop, portalClose, lightningStrike, shatter, boxOpen, astroCharge, astroShoot, drink, pianoSample, squareSample, synthSample;
     public static Sound[] piano, bells, squareWave, sawWave, bass, organ, chimes, violin, harp;
+    public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan", "pipepop", "pipesqueeze", "pipein", "strawberrydeath", "strawberrypredeath", "portalopen", "portalloop", "portalclose", "lstrike", "shatter", "boxopen", "astroCharge", "astroShoot", "drink", "pianoS", "squareS", "synthS"};
+    private static int num = 0;
 
-    public static void load(){
-        pistonPush = loadSound("pistonpush");
-        pistonPull = loadSound("pistonpull");
-        presentBells = loadSound("presentbells");
-        boost = loadSound("boostsound");
-        tntfuse = loadSound("tntfuse");
-        boing = loadSound("boing");
-        freeze = loadSound("freeze");
-        coolingFan = loadSound("coolingfan");
-        pipePop = loadSound("pipepop");
-        pipeSqueeze = loadSound("pipesqueeze");
-        pipeIn = loadSound("pipein");
-        easterEgg1 = loadSound("strawberrydeath");
-        easterEgg2 = loadSound("strawberrypredeath");
-        portalOpen = loadSound("portalopen");
-        portalLoop = loadSound("portalloop");
-        portalClose = loadSound("portalclose");
-        lightningStrike = loadSound("lstrike");
-        shatter = loadSound("shatter");
-        boxOpen = loadSound("boxopen");
-        astroCharge = loadSound("astroCharge");
-        astroShoot = loadSound("astroShoot");
-        drink = loadSound("drink");
-        pianoSample = loadSound("pianoS");
-        squareSample = loadSound("squareS");
-        synthSample = loadSound("synthS");
+    public static void load() {
+        num = 0;
+        pistonPush = l();
+        pistonPull = l();
+        presentBells = l();
+        boost = l();
+        tntfuse = l();
+        boing = l();
+        freeze = l();
+        coolingFan = l();
+        pipePop = l();
+        pipeSqueeze = l();
+        pipeIn = l();
+        easterEgg1 = l();
+        easterEgg2 = l();
+        portalOpen = l();
+        portalLoop = l();
+        portalClose = l();
+        lightningStrike = l();
+        shatter = l();
+        boxOpen = l();
+        astroCharge = l();
+        astroShoot = l();
+        drink = l();
+        pianoSample = l();
+        squareSample = l();
+        synthSample = l();
 
-        //TODO more samples
+        //todo more samples
         //credits to farmerthanos
         piano = loadNotes("piano");
         bells = loadNotes("bell"); //btw these are portal bells from the Invasion track
@@ -51,6 +54,26 @@ public class MindySounds {
         organ = loadNotes("organ");
         chimes = loadNotes("chime");
     }
+/*
+    public static void dispose() {
+        num = 0;
+        pistonPush = d();
+        pistonPull = d();
+        presentBells = d();
+        boost = d();
+        tntfuse = d();
+        boing = d();
+        freeze = d();
+        coolingFan = d();
+    }*/
+
+    protected static Sound l() {
+        return loadSound(soundFiles[num++]);
+    }
+
+    /*protected static Sound d() {
+        return disposeSound(soundFiles[num++]);
+    }*/
 
     protected static Sound loadSound(String soundName) {
         if(!Vars.headless) {
@@ -87,4 +110,17 @@ public class MindySounds {
         }
         return out;
     }
+
+    /*protected static Sound disposeSound(String soundName) {
+        if(!Vars.headless) {
+            String name = "sounds/" + soundName;
+            String path = name + ".ogg";
+
+            if(Core.assets.isLoaded(path, Sound.class)) {
+                Core.assets.unload(path);
+            }
+        }
+
+        return null;
+    }*/
 }
