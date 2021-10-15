@@ -60,6 +60,7 @@ public class BetaMindy extends Mod{
         new MindyBlocks(),
         new MindyWeathers(),
         new MindyPlanets(),
+        new MindySectors(),
         new MindyTechTree(),
         new FireColor()
     };

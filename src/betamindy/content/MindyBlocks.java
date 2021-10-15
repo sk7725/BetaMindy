@@ -48,7 +48,8 @@ public class MindyBlocks implements ContentList {
             //env - shar
             borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
             chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
-            esotManual,
+            //lore - shar
+            esotManual, fallenFlare, fallenAlpha, fallenMono,
     //ores
     oreScalar, oreVector, oreTensor,
     //payloads
@@ -1748,6 +1749,15 @@ public class MindyBlocks implements ContentList {
 
         esotManual = new LoreManual("esot-manual"){{
             buildVisibility = uwu ? BuildVisibility.shown : BuildVisibility.editorOnly;
+        }};
+
+        fallenFlare = new FallenUnit("fallen-flare");
+        fallenMono = new FallenUnit("fallen-mono"){{
+            unitName = "mono";
+        }};
+        fallenAlpha = new FallenUnit("fallen-alpha"){{
+            unitName = "alpha";
+            unitTeam = Team.derelict;
         }};
     }
 }
