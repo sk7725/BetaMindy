@@ -33,7 +33,7 @@ public class SharMoonGenerator extends PlanetGenerator {
     final Color borudaMidColor = new Color();
 
     BaseGenerator basegen = new BaseGenerator();
-    float scl = 3f;
+    float scl = 2.7f;
     float waterOffset = 0.07f;
     boolean genLakes = false;
 
@@ -146,7 +146,7 @@ public class SharMoonGenerator extends PlanetGenerator {
     @Override
     public float getHeight(Vec3 position){
         float height = rawHeight(position);
-        return Math.max(water, height);
+        return Math.max(water, height - 0.3f); //a bit more than the max crater noise is subtracted
         //return waterOffset / (1f + waterOffset); //eh fuck it
     }
 

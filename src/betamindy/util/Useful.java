@@ -19,6 +19,7 @@ import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.actions.*;
 import arc.scene.ui.*;
 import arc.struct.*;
 import arc.util.*;
@@ -46,6 +47,8 @@ public class Useful {
     private static final Vec2 tr = new Vec2();
     private static final Seq<Unit> units = new Seq<>();
     private static final TextField scrollLocker = (Vars.headless) ? null : new TextField();
+
+    public static boolean striping = false;
     //private static IntSet collidedBlocks = new IntSet();
 
     private static Vec2 cameraPos = new Vec2();
@@ -222,6 +225,10 @@ public class Useful {
     }
 
     public static void cutscene(Vec2 pos){
+        cutscene(pos, true);
+    }
+
+    public static void cutscene(Vec2 pos, boolean hideui){
         if(headless) return;
         if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = true;
         if(!Core.scene.hasField()) Core.scene.setKeyboardFocus(scrollLocker);
@@ -232,6 +239,11 @@ public class Useful {
         cameraPos.lerp(pos, (Core.settings.getBool("smoothcamera") ? 0.08f : 1f) * Time.delta);
         Core.camera.position.set(cameraPos);
         if(mobile && player.unit() != null) player.unit().vel.setZero();
+
+        if(hideui && !striping){
+            striping = true;
+            ui.hudGroup.actions(Actions.alpha(0f, 0.17f));
+        }
     }
 
     public static void cutsceneEnd(){
@@ -241,6 +253,10 @@ public class Useful {
         Core.app.post(() -> {
             camLock = false;
         });
+        if(striping){
+            striping = false;
+            ui.hudGroup.actions(Actions.delay(0.2f), Actions.alpha(1f, 0.17f));
+        }
     }
 
     public static boolean dumpPlayerUnit(UnitPayload u, Player player){

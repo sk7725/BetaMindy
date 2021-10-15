@@ -5,6 +5,8 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.actions.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
@@ -17,6 +19,7 @@ import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -29,11 +32,14 @@ import static mindustry.Vars.*;
 //todo lore manual, comes with camera panning to give it attention every time it updates, intangible and stuff
 //This esoterum manual is the unique manual found in the first shar sector. Not to be confused with BallisticManual (portal attack remainders) or LorePage (found on other sectors)
 public class LoreManual extends Block {
-    public static final String loreCutsceneTag = "bm-lore-c", loreQueueTag = "bm-lore-q";
+    public static final String loreCutsceneTag = "bm-lore-c", loreQueueTag = "bm-lore-q", pageTag = "bm-lore-id";
     private static final String[] dott = {".", "..", "..."}; //why the heck is repeat() unsupported
     private static final Vec2[] vecs = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
 
-    public IntMap<Cutscene> cutscenes = IntMap.of(0, new FocusCutscene(240f));
+    public IntMap<Cutscene> cutscenes = IntMap.of(
+            //first landing, notices the manual
+            0, new MultiCutscene(new FocusCutscene(100f, 6f), new Wait(30f), new FocusCutscene(60f){{ offsetY = 20f; }}, new EnemyScanFail())
+    );
     public int lorePages = 5; //this is the least number of lore-related pages needed to restore, not including things like post-game or easter eggs.
     public float scanRange = 80f;
 
@@ -89,8 +95,10 @@ public class LoreManual extends Block {
         public void updateTile(){
             if((uwu || state.isCampaign()) && (headless || !renderer.isCutscene())){
                 if(playing == null){
+                    if(uwu && !cutsceneInit) loreAdded(0); //todo remove
                     if(!cutsceneInit && settings.getBool(loreCutsceneTag, true)){
                         if(cutscenes.containsKey(settings.getInt(loreQueueTag, 0))){
+                            ui.hudGroup.actions(Actions.alpha(0f, 0.17f));
                             playing = cutscenes.get(settings.getInt(loreQueueTag, 0));
                             playing.init();
                         }
@@ -98,13 +106,14 @@ public class LoreManual extends Block {
                     }
                 }
                 else{
-                    if(playing.end()){
+                    if(playing.update(this)){
                         playing = null;
                         settings.put(loreCutsceneTag, false);
                         settings.put(loreQueueTag, 0);
+                        ui.hudGroup.actions(Actions.delay(0.2f), Actions.alpha(1f, 0.17f));
+                        Useful.cutsceneEnd();
                         return;
                     }
-                    playing.update(this);
                 }
             }
 
@@ -286,28 +295,104 @@ public class LoreManual extends Block {
     }
 
     public class Cutscene {
+        public void init(){
+
+        }
+
         public void draw(LoreManualBuild build){
 
         }
 
-        public void update(LoreManualBuild build){
-
-        }
-
-        public boolean end(){
+        /**
+         * Updates every frame.
+         * @return true if cutscene ends at this frame
+         */
+        public boolean update(LoreManualBuild build){
             return true;
         }
+    }
 
+    public class MultiCutscene extends Cutscene {
+        public Cutscene[] multi;
+        protected int now = 0;
+
+        public MultiCutscene(Cutscene... cutscenes){
+            multi = cutscenes;
+        }
+
+        @Override
         public void init(){
+            now = 0;
+            multi[0].init();
+        }
 
+        @Override
+        public void draw(LoreManualBuild build){
+            if(now < multi.length) multi[now].draw(build);
+        }
+
+        @Override
+        public boolean update(LoreManualBuild build){
+            if(multi[now].update(build)){
+                //next
+                now++;
+                if(now >= multi.length) return true;
+                multi[now].init();
+            }
+            return false;
         }
     }
 
     public class FocusCutscene extends Cutscene {
         public float duration;
+        public float zoom; //if negative, doesnt change camera zoom
+        public float moveTime;
+        public float offsetX = 0f, offsetY = 0f;
+
         protected float playtime = 0f;
+        protected final Vec2 campos = new Vec2();
+
+        public FocusCutscene(float duration, float zoom, float moveTime){
+            this.duration = duration;
+            this.zoom = zoom;
+            this.moveTime = moveTime;
+        }
+
+        public FocusCutscene(float duration, float zoom){
+            this(duration, zoom, 50f);
+        }
 
         public FocusCutscene(float duration){
+            this(duration, -1);
+        }
+
+        @Override
+        public void init(){
+            playtime = 0f;
+            campos.set(camera.position);
+        }
+
+        @Override
+        public boolean update(LoreManualBuild build){
+            if(playtime >= duration){
+                return true;
+            }
+
+            Useful.cutscene(playtime >= moveTime ? Tmp.v6.set(build).add(offsetX, offsetY) : Tmp.v6.set(campos).lerp(build.x + offsetX, build.y + offsetY, Interp.smoother.apply(playtime / moveTime)), false); //hidden by the loreBlock
+            if(zoom > -1){
+                if(playtime >= moveTime) renderer.setScale(Scl.scl(zoom));
+                else renderer.setScale(Mathf.lerp(renderer.getScale(), Scl.scl(zoom), playtime / moveTime));
+            }
+            playtime += Time.delta;
+            return false;
+        }
+    }
+
+    public class Wait extends Cutscene {
+        public float duration;
+        protected float playtime = 0f;
+
+        public Wait(float duration){
             this.duration = duration;
         }
 
@@ -317,17 +402,95 @@ public class LoreManual extends Block {
         }
 
         @Override
-        public void update(LoreManualBuild build){
-            Useful.cutscene(Tmp.v6.set(build));
+        public boolean update(LoreManualBuild build){
+            if(playtime >= duration){
+                return true;
+            }
             playtime += Time.delta;
+            return false;
+        }
+    }
+
+    public class EnemyScanFail extends Cutscene {
+        public final float[][] path = { //(moveto) x, y, duration || (lookat) x, y, -duration
+                {50f, 200f, 30f}, //off-screen
+                {65f, -30f, 150f},
+                {65f, -30f, 45f},
+                {0f, 0f, -50f},
+                {19f, -19f, 50f},
+                {0f},
+                {16f, -16f, 50f},
+                {0f, 0f, -350f},
+        };
+
+        public float duration = 600;
+        public UnitType unitType = UnitTypes.flare;
+
+        protected float playtime = 0f, pathtime = 0f, px, py;
+        protected Unit u = null;
+        protected int pathi = 0;
+
+        public EnemyScanFail(){
         }
 
         @Override
-        public boolean end(){
-            if(playtime >= duration){
-                Useful.cutsceneEnd();
+        public void init(){
+            playtime = pathtime = 0f;
+            pathi = 0;
+            u = unitType.create(Team.crux);
+            u.set(world.width() * tilesize - 30f, world.height() * tilesize - 30f);
+            px = u.x; py = u.y;
+            u.rotation = 0f;
+            Events.fire(new EventType.UnitCreateEvent(u, null, null));
+            if(!Vars.net.client()){
+                u.add();
+            }
+        }
+
+        @Override
+        public boolean update(LoreManualBuild build){
+            if(playtime >= duration && pathi >= path.length){
+                u.remove();
                 return true;
             }
+            if(u == null || u.dead) return false; //should not happen
+
+            if(pathi < path.length){
+                if(path[pathi].length == 1){//scan
+                    build.scanning = u;
+                    build.scanTime = 0f;
+                    pathi++;
+                    pathtime = 0;
+                    return false;
+                }
+
+                float d = path[pathi][2];
+                boolean rot = false;
+                if(d < 0){
+                    rot = true;
+                    d *= -1;
+                }
+                pathtime += Time.delta;
+                if(pathtime >= d){
+                    if(!rot){
+                        u.set(Tmp.v2.set(build.x + path[pathi][0], build.y + path[pathi][1]));
+                        u.impulse(Tmp.v1.trns(u.rotation, 4f)); //make it seem natural
+                    }
+                    pathi++;
+                    pathtime = 0;
+                    px = u.x;
+                    py = u.y;
+                }
+                else{
+                    if(rot) u.rotation = Angles.moveToward(u.rotation, u.angleTo(build.x + path[pathi][0], build.y + path[pathi][1]), (180f / d) * Time.delta);
+                    else{
+                        u.lookAt(build.x + path[pathi][0], build.y + path[pathi][1]);
+                        u.set(Tmp.v1.set(px, py).lerp(Tmp.v2.set(build.x + path[pathi][0], build.y + path[pathi][1]), pathtime / d));
+                    }
+                }
+            }
+
+            playtime += Time.delta;
             return false;
         }
     }

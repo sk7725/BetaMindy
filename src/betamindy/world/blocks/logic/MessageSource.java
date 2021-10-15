@@ -1,15 +1,13 @@
 package betamindy.world.blocks.logic;
 
-import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.util.Structs;
-import arc.util.Tmp;
-import mindustry.gen.Building;
-import mindustry.Vars;
-import mindustry.world.blocks.logic.MessageBlock;
-import mindustry.world.blocks.logic.MessageBlock.MessageBuild;
-import mindustry.world.Tile;
-import betamindy.content.MindyBlocks;
+import arc.graphics.*;
+import arc.math.*;
+import arc.util.*;
+import arc.util.*;
+import mindustry.gen.*;
+import mindustry.*;
+import mindustry.world.blocks.logic.*;
+import betamindy.content.*;
 
 public class MessageSource extends MessageBlock {
     public MessageSource(String name) {
@@ -44,12 +42,15 @@ public class MessageSource extends MessageBlock {
             }
             if(Mathf.chance((float)voids / ((float)block().size * 4))) {
                 if(!(message == null || message.length() == 0) && voids == ((float)block().size * 4)) { // surrounded by voids and not empty
-                    configure("");
+                    message.setLength(0);
                 } // if there's a void, do nothing
             } else {
                 float chance = (float)Vars.state.wave / 200.0f;
                 Tmp.c1.set(Color.scarlet).lerp(Color.yellow, Mathf.absin(10.0f - chance * 3.0f, 1.0f)).lerp(Color.white, 1.0f - chance);
-                configure("[#" + Tmp.c1 + "]" + quote(Mathf.random(1, Math.max(Mathf.random(100,160) / 7, 2))));
+                String q = quote(Mathf.random(1, Math.max(Mathf.random(100, 160) / 7, 2)));
+                message.ensureCapacity(q.length() + 11);
+                message.setLength(0);
+                message.append("[#").append(Tmp.c1.toString()).append("]").append(q);
             }
         }
     }
