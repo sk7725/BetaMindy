@@ -9,6 +9,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.production.*;
 
 import static mindustry.Vars.*;
 

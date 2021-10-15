@@ -9,6 +9,7 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.ui.fragments.*;
 
+import static betamindy.BetaMindy.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 

@@ -1,9 +1,9 @@
 package betamindy.world.blocks.power;
 
-import arc.*;
+import arc.Core;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
+import arc.math.geom.Geometry;
 import arc.struct.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -11,7 +11,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 
 public class AccelBlock extends PowerBlock {
     public TextureRegion[] baseRegion = new TextureRegion[2];

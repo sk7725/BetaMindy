@@ -1,19 +1,19 @@
 package betamindy.world.blocks.power;
 
-import arc.*;
+import arc.Core;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
-import mindustry.entities.*;
+import mindustry.entities.Units;
 import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.logic.*;
-import mindustry.ui.*;
+import mindustry.graphics.Pal;
+import mindustry.logic.LAccess;
+import mindustry.ui.Bar;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
-import static mindustry.Vars.*;
+import static arc.Core.atlas;
+import static mindustry.Vars.tilesize;
 
 public class ButtonPad extends PowerBlock {
     public float pushTime = 16f;

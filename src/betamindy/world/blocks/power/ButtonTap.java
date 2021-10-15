@@ -5,10 +5,10 @@ import arc.struct.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.logic.*;
-import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.power.PowerBlock;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 
 public class ButtonTap extends PowerBlock {
     public float tapTime = 16f;

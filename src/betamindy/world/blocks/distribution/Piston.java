@@ -1,22 +1,26 @@
 package betamindy.world.blocks.distribution;
 
-import arc.audio.*;
+import arc.audio.Sound;
 import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
-import betamindy.world.blocks.distribution.PistonArm.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.gen.*;
+import mindustry.type.Category;
 import mindustry.world.*;
+import betamindy.world.blocks.distribution.PistonArm.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
-import static mindustry.Vars.*;
+import static arc.Core.atlas;
+import static mindustry.Vars.tilesize;
 
 public class Piston extends Block {
     public boolean sticky;

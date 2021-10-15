@@ -2,7 +2,7 @@ package betamindy.util;
 
 import arc.*;
 import betamindy.ui.*;
-
+import mindustry.game.*;
 import static mindustry.game.Objectives.*;
 
 public class ObjectivesM {

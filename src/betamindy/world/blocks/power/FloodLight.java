@@ -1,18 +1,20 @@
 package betamindy.world.blocks.power;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
+import betamindy.entities.*;
 import betamindy.world.blocks.logic.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class FloodLight extends LogicSpinBlock{

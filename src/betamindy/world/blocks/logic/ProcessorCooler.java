@@ -14,7 +14,7 @@ import mindustry.world.blocks.logic.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 
 public class ProcessorCooler extends Block {
     public TextureRegion heatRegion, liquidRegion, topRegion;

@@ -1,6 +1,6 @@
 package betamindy.content;
 
-import arc.*;
+import arc.Core;
 import arc.util.*;
 import mindustry.*;
 

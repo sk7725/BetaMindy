@@ -6,11 +6,13 @@ import arc.util.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
+import mindustry.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.headless;
 
 public class PortalLightningBulletType extends BulletType {
     public Color color1, color2;

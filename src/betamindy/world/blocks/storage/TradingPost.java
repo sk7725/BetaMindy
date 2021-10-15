@@ -1,7 +1,7 @@
 package betamindy.world.blocks.storage;
 
 import arc.*;
-import arc.graphics.*;
+import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
@@ -17,8 +17,8 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 
-import static betamindy.BetaMindy.*;
 import static mindustry.Vars.*;
+import static betamindy.BetaMindy.*;
 
 public class TradingPost extends Block {
     private final int[] price = new int[]{0};

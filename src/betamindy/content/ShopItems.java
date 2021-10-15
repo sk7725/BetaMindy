@@ -19,7 +19,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 
 import static java.lang.Float.*;
-import static mindustry.Vars.*;
+import static mindustry.Vars.ui;
 
 public class ShopItems implements ContentList {
     public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11, package12, package13,

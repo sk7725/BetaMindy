@@ -17,7 +17,7 @@ import mindustry.world.blocks.power.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 
 public class Discharger extends Battery {
     /** Lightning damage. */

@@ -1,13 +1,13 @@
 package betamindy.content;
 
-import arc.graphics.*;
+import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
+import mindustry.ctype.ContentList;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -15,7 +15,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.world;
 
 public class MindyBullets implements ContentList {
     public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball, icyZone, icyZoneSmall, voidStar;

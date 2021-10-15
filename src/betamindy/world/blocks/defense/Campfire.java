@@ -20,7 +20,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class Campfire extends Block {

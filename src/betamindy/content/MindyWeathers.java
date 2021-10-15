@@ -1,10 +1,11 @@
 package betamindy.content;
 
-import betamindy.type.weather.*;
-import mindustry.ctype.*;
-import mindustry.gen.*;
-import mindustry.type.*;
-import mindustry.world.meta.*;
+import arc.util.Time;
+import betamindy.type.weather.BlockWeather;
+import mindustry.ctype.ContentList;
+import mindustry.gen.Sounds;
+import mindustry.type.Weather;
+import mindustry.world.meta.Attribute;
 
 public class MindyWeathers implements ContentList {
     public static Weather routerWeather, blockWeather;

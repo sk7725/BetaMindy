@@ -5,7 +5,8 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.world.blocks.payloads.*;
 
 public class HomingPayloadBullet extends PayloadBullet{

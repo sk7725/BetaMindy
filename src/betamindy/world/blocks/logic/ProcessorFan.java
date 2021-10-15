@@ -3,9 +3,10 @@ package betamindy.world.blocks.logic;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import betamindy.content.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 
 public class ProcessorFan extends ProcessorCooler{
     public TextureRegion spinnerRegion;

@@ -1,12 +1,15 @@
 package betamindy.entities.bullet;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.util.*;
-import mindustry.entities.bullet.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
+import arc.util.Time;
+import arc.util.Tmp;
+import mindustry.entities.bullet.LaserBulletType;
+import mindustry.gen.Bullet;
+import mindustry.graphics.Drawf;
 
 
 public class RainbowLaser extends LaserBulletType {

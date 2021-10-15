@@ -1,18 +1,22 @@
 package betamindy.entities.bullet;
 
-import arc.*;
+import arc.Core;
+import arc.Events;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import betamindy.world.blocks.defense.turrets.*;
+import betamindy.world.blocks.defense.turrets.PayloadTurret;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
-import mindustry.entities.*;
+import mindustry.entities.Damage;
+import mindustry.entities.EntityGroup;
 import mindustry.entities.bullet.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 

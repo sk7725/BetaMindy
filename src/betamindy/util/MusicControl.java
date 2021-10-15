@@ -7,6 +7,8 @@ import arc.audio.*;
 import arc.func.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.*;
+import mindustry.audio.*;
 import mindustry.game.*;
 
 import static mindustry.Vars.*;

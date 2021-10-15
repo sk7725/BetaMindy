@@ -2,15 +2,16 @@ package betamindy.world.blocks.environment;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
+import arc.math.Mathf;
 import arc.util.*;
-import mindustry.entities.*;
-import mindustry.game.*;
+import mindustry.entities.Effect;
+import mindustry.entities.Units;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
+import mindustry.type.StatusEffect;
 import mindustry.world.*;
-import mindustry.world.meta.*;
+import mindustry.world.meta.BuildVisibility;
 
 public class GlowPowder extends Block {
     public Color color1, color2;

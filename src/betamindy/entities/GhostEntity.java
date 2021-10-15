@@ -1,5 +1,6 @@
 package betamindy.entities;
 
+import arc.func.*;
 import arc.math.geom.*;
 import arc.util.io.*;
 import betamindy.content.*;

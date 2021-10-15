@@ -21,8 +21,9 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
-import static mindustry.Vars.*;
+import static arc.Core.atlas;
+import static arc.Core.audio;
+import static mindustry.Vars.headless;
 
 /**
  * Note Block. Ported from Commandblocks with some code references to Goobrr/Esoterum.

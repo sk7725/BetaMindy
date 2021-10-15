@@ -7,6 +7,7 @@ import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.style.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;

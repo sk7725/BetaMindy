@@ -1,7 +1,7 @@
 package betamindy.world.blocks.storage;
 
 import arc.*;
-import arc.input.*;
+import arc.input.KeyCode;
 import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -12,15 +12,16 @@ import betamindy.graphics.*;
 import betamindy.type.*;
 import betamindy.ui.*;
 import betamindy.world.blocks.storage.AnucoinNode.*;
+import mindustry.graphics.*;
 import mindustry.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 
 import static mindustry.Vars.*;
+import static mindustry.Vars.world;
 
 public class Store extends Block {
     public int defaultAnucoins = 0;

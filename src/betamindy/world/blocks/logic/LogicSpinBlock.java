@@ -12,8 +12,8 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.world.*;
 
-import static arc.Core.*;
-import static mindustry.Vars.*;
+import static arc.Core.atlas;
+import static mindustry.Vars.tilesize;
 
 /** Can be placed in 4 directions via the player, and rotated a full 360 degrees via processors. A base block for other blocks, do not use directly!*/
 public class LogicSpinBlock extends Block {

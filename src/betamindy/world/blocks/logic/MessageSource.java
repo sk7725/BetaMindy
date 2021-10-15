@@ -1,12 +1,15 @@
 package betamindy.world.blocks.logic;
 
-import arc.graphics.*;
-import arc.math.*;
-import arc.util.*;
-import betamindy.content.*;
-import mindustry.*;
-import mindustry.gen.*;
-import mindustry.world.blocks.logic.*;
+import arc.graphics.Color;
+import arc.math.Mathf;
+import arc.util.Structs;
+import arc.util.Tmp;
+import mindustry.gen.Building;
+import mindustry.Vars;
+import mindustry.world.blocks.logic.MessageBlock;
+import mindustry.world.blocks.logic.MessageBlock.MessageBuild;
+import mindustry.world.Tile;
+import betamindy.content.MindyBlocks;
 
 public class MessageSource extends MessageBlock {
     public MessageSource(String name) {

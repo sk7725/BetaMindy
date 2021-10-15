@@ -15,7 +15,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-import static betamindy.graphics.Drawm.*;
+import static betamindy.graphics.Drawm.ellipse;
 import static mindustry.Vars.*;
 
 public class RepairTurret extends Block{

@@ -1,6 +1,6 @@
 package betamindy.graphics;
 
-import arc.graphics.*;
+import arc.graphics.Color;
 import mindustry.graphics.*;
 
 public class Pal2 {

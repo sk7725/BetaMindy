@@ -2,6 +2,7 @@ package betamindy.world.blocks.production;
 
 import arc.audio.*;
 import betamindy.content.*;
+import betamindy.type.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.production.*;

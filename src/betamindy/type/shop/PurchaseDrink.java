@@ -9,7 +9,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.ui;
 
 public class PurchaseDrink extends PurchaseItem {
     public StatusEffect status;

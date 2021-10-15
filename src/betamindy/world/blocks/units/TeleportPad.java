@@ -8,14 +8,16 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import mindustry.world.blocks.power.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 /** Similar functionality and visuals to the pu's TeleUnit, but the code is 70% made from scratch.

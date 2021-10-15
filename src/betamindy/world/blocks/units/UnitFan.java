@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
+import betamindy.entities.*;
 import betamindy.util.*;
 import betamindy.world.blocks.logic.*;
 import mindustry.content.*;
@@ -17,7 +18,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class UnitFan extends LogicSpinBlock {

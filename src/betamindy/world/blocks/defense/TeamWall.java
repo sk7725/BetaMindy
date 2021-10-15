@@ -1,11 +1,11 @@
 package betamindy.world.blocks.defense;
 
-import arc.*;
+import arc.Core;
 import arc.graphics.g2d.*;
 import arc.util.*;
 import betamindy.graphics.*;
-import mindustry.*;
-import mindustry.entities.*;
+import mindustry.Vars;
+import mindustry.entities.Units;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;

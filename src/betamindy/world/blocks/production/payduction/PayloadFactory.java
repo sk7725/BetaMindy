@@ -5,10 +5,11 @@ import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.world.blocks.production.payduction.GateController.*;
 import betamindy.world.blocks.production.payduction.craft.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -19,12 +20,17 @@ import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.production.*;
+import betamindy.world.blocks.production.payduction.GateController.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 
-import static arc.Core.*;
-import static mindustry.Vars.*;
+import static arc.Core.atlas;
+import static mindustry.Vars.content;
+import static mindustry.Vars.tilesize;
 
 public class PayloadFactory extends PayloadBlock{
     public int maxBlockSize = 2;

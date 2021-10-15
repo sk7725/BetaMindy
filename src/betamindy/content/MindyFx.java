@@ -1,6 +1,6 @@
 package betamindy.content;
 
-import arc.*;
+import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -13,22 +13,23 @@ import betamindy.world.blocks.logic.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.game.*;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.world.*;
+import mindustry.world.Block;
 
 import java.util.*;
 
-import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.circle;
+//I do not want my fills and lines fighting, so no wildcad imports
 import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.*;
-import static betamindy.BetaMindy.*;
-import static betamindy.graphics.Drawm.*;
-import static mindustry.Vars.*;
+import static arc.math.Angles.randLenVectors;
+import static betamindy.BetaMindy.hardmode;
+import static betamindy.graphics.Drawm.shard;
+import static betamindy.graphics.Drawm.spark;
+import static mindustry.Vars.renderer;
+import static mindustry.Vars.tilesize;
 
 public class MindyFx {
     private static final int[] vgld = {0}; //VERY_GOOD_LANGUAGE_DESIGN

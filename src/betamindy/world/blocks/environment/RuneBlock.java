@@ -7,12 +7,14 @@ import arc.util.*;
 import betamindy.content.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.logic.*;
+import betamindy.world.blocks.payloads.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 
 public class RuneBlock extends Block {
     public TextureRegion glowRegion;

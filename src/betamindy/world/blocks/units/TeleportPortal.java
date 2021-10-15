@@ -7,7 +7,7 @@ import betamindy.graphics.*;
 import betamindy.util.*;
 import mindustry.graphics.*;
 
-import static betamindy.BetaMindy.*;
+import static betamindy.BetaMindy.hardmode;
 
 public class TeleportPortal extends TeleportPad {
     public float portalRadius = 14f;

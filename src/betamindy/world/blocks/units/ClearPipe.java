@@ -25,8 +25,8 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
-import static arc.math.geom.Geometry.*;
+import static arc.Core.atlas;
+import static arc.math.geom.Geometry.d4;
 import static mindustry.Vars.*;
 
 public class ClearPipe extends Block {

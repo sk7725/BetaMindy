@@ -24,14 +24,14 @@ import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.content.*;
-import mindustry.*;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.input.*;
-import mindustry.type.*;
+import mindustry.type.Liquid;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 

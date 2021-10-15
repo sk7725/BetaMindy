@@ -8,7 +8,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.*;
+import betamindy.BetaMindy;
 import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.payloads.*;
 import mindustry.content.*;
@@ -16,12 +16,13 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.payloads.PayloadBlock.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class Spinner extends Block {

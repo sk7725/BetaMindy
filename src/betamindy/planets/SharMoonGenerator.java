@@ -17,6 +17,7 @@ import mindustry.world.blocks.environment.*;
 
 import static betamindy.content.MindyBlocks.*;
 import static mindustry.Vars.*;
+import static mindustry.content.Blocks.*;
 
 /**
  * Planet generator thingy.

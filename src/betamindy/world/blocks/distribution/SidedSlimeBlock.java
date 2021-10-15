@@ -1,12 +1,15 @@
 package betamindy.world.blocks.distribution;
 
-import arc.*;
+import arc.Core;
 import arc.graphics.g2d.*;
-import arc.math.geom.*;
+import arc.math.geom.Geometry;
 import mindustry.graphics.*;
-import mindustry.world.meta.*;
+import mindustry.type.Category;
+import mindustry.world.meta.BlockGroup;
 
-import static arc.Core.*;
+//import java.util.regex.*;
+
+import static arc.Core.atlas;
 
 public class SidedSlimeBlock extends SlimeBlock {
     public TextureRegion[] baseRegion = new TextureRegion[4], slabRegion = new TextureRegion[4];

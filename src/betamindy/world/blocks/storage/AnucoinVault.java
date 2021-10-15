@@ -2,13 +2,17 @@ package betamindy.world.blocks.storage;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
+import betamindy.graphics.*;
+import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.world;
 
 public class AnucoinVault extends Block {
     public int capacity = 50000;

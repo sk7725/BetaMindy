@@ -8,13 +8,15 @@ import arc.scene.*;
 import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import betamindy.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.fragments.*;
 
-import static betamindy.BetaMindy.*;
+import static betamindy.BetaMindy.hardmode;
 
 public class HardmodeFragment extends Fragment {
     private Table next;

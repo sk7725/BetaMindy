@@ -17,8 +17,8 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
-import static arc.Core.*;
-import static mindustry.Vars.*;
+import static arc.Core.atlas;
+import static mindustry.Vars.headless;
 
 public class Yutnori extends Block {
     public static final int yutSprites = 8;

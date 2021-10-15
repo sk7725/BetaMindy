@@ -7,7 +7,6 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import betamindy.type.*;
 import mindustry.gen.*;
-
 import java.util.*;
 
 public class DailyStore extends Store {

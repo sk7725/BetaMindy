@@ -12,7 +12,7 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
-import static arc.Core.*;
+import static arc.Core.atlas;
 
 public class CoinSource extends Block {
     public int balance = 10000;

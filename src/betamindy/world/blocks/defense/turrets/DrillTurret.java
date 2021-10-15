@@ -1,6 +1,6 @@
 package betamindy.world.blocks.defense.turrets;
 
-import arc.*;
+import arc.Core;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -15,6 +15,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
