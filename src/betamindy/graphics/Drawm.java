@@ -364,14 +364,13 @@ public class Drawm {
 
         for(Team team : Team.all){
             if(team.hasPalette){
-                Pixmap out = new Pixmap(teamr.width, teamr.height, teamr.pixmap.getFormat());
-                out.setBlending(Pixmap.Blending.none);
+                Pixmap out = new Pixmap(teamr.width, teamr.height);
                 Color pixel = new Color();
                 for(int x = 0; x < teamr.width; x++){
                     for(int y = 0; y < teamr.height; y++){
-                        int color = teamr.getPixel(x, y);
+                        int color = teamr.get(x, y);
                         int index = color == 0xffffffff ? 0 : color == 0xdcc6c6ff ? 1 : color == 0x9d7f7fff ? 2 : -1;
-                        out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
+                        out.set(x, y, index == -1 ? pixel.set(teamr.get(x, y)) : team.palette[index]);
                     }
                 }
                 packer.add(PageType.main, b.name + "-team-" + team.name, out);
@@ -396,14 +395,13 @@ public class Drawm {
 
         for(Team team : Team.all){
             if(team.hasPalette){
-                Pixmap out = new Pixmap(teamr.width, teamr.height, teamr.pixmap.getFormat());
-                out.setBlending(Pixmap.Blending.none);
+                Pixmap out = new Pixmap(teamr.width, teamr.height);
                 Color pixel = new Color();
                 for(int x = 0; x < teamr.width; x++){
                     for(int y = 0; y < teamr.height; y++){
-                        int color = teamr.getPixel(x, y);
+                        int color = teamr.get(x, y);
                         int index = color == 0xffffffff ? 0 : color == 0xdcc6c6ff ? 1 : color == 0x9d7f7fff ? 2 : -1;
-                        out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
+                        out.set(x, y, index == -1 ? pixel.set(teamr.get(x, y)) : team.palette[index]);
                     }
                 }
                 packer.add(PageType.main, name + "-team-" + team.name, out);
@@ -506,21 +504,21 @@ public class Drawm {
         for(int x = 0; x < region.width; x++){
             for(int y = 0; y < region.height; y++){
 
-                region.getPixel(x, y, color);
-                out.draw(x, y, color);
+                region.get(x, y, color);
+                out.set(x, y, color);
                 if(color.a < 1f){
                     boolean found = false;
                     outer:
                     for(int rx = -radius; rx <= radius; rx++){
                         for(int ry = -radius; ry <= radius; ry++){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && color.set(region.getPixel(rx + x, ry + y)).a > 0.01f){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && color.set(region.get(rx + x, ry + y)).a > 0.01f){
                                 found = true;
                                 break outer;
                             }
                         }
                     }
                     if(found){
-                        out.draw(x, y, outlineColor);
+                        out.set(x, y, outlineColor);
                     }
                 }
             }
@@ -540,17 +538,16 @@ public class Drawm {
         PixmapRegion r1 = Core.atlas.getPixmap(a);
         PixmapRegion r2 = Core.atlas.getPixmap(b);
 
-        Pixmap out = new Pixmap(r1.width, r1.height, r1.pixmap.getFormat());
-        out.setBlending(Pixmap.Blending.none);
+        Pixmap out = new Pixmap(r1.width, r1.height);
         Color color1 = new Color();
         Color color2 = new Color();
 
         for(int x = 0; x < r1.width; x++){
             for(int y = 0; y < r1.height; y++){
 
-                r1.getPixel(x, y, color1);
-                r2.getPixel(x, y, color2);
-                out.draw(x, y, color1.lerp(color2, f));
+                r1.get(x, y, color1);
+                r2.get(x, y, color2);
+                out.set(x, y, color1.lerp(color2, f));
             }
         }
 
