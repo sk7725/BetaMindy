@@ -49,6 +49,13 @@ public class Yutnori extends Block {
     }
 
     @Override
+    public void init(){
+        super.init();
+
+        //TODO clipsize. Idk how to calculate the max distance a stick can travel so you do that.
+    }
+
+    @Override
     public void load(){
         super.load();
         backdoRegion = new TextureRegion[yutSprites];

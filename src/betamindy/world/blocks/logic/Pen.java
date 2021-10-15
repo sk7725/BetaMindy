@@ -14,7 +14,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 
 import static arc.Core.atlas;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class Pen extends Block {
     public int drawLength = 40;
@@ -27,6 +27,7 @@ public class Pen extends Block {
         super(name);
         update = solid = true;
         noUpdateDisabled = false;
+        clipSize = 16 * tilesize * 2;
     }
 
     @Override

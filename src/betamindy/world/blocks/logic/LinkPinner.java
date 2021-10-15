@@ -56,6 +56,13 @@ public class LinkPinner extends Block {
     }
 
     @Override
+    public void init(){
+        super.init();
+
+        clipSize = Math.max(range * tilesize + 60f, clipSize);
+    }
+
+    @Override
     public void load() {
         super.load();
         laser = atlas.find(name + "-laser", "betamindy-linkpin-laser");

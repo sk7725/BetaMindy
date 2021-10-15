@@ -85,6 +85,13 @@ public class Altar extends Block {
     }
 
     @Override
+    public void init(){
+        super.init();
+
+        clipSize = Math.max(clipSize, 80f); //idk, the rings look about this wide. Yes, I tested this. I set uwu to true.
+    }
+
+    @Override
     public void load(){
         super.load();
         for(int i = 0; i < 3; i++){

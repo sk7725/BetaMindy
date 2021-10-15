@@ -47,6 +47,7 @@ public class TeleportPad extends Block {
         update = configurable = true;
         solid = false;
         lightColor = Pal.lancerLaser;
+        emitLight = true;
         lightRadius = 80f;
         if(!eventInit){
             eventInit = true;
