@@ -73,7 +73,7 @@ public class InflictStatusEffect extends StatusEffect {
             table.left();
             table.row();
             //table.image(inflicts.uiIcon).size(18f);
-            table.button("[accent]" + inflicts.localizedName + "[]", new TextureRegionDrawable(inflicts.fullIcon), Styles.cleart, 40f, () -> {
+            table.button("[accent]" + inflicts.localizedName + "[]", new TextureRegionDrawable(inflicts.uiIcon), Styles.cleart, 40f, () -> {
                 ui.content.show(inflicts);
             }).left().size(180f, 46f);
             table.image().size(4f, 46f).color(ally ? Pal.accent : Pal.remove).padRight(9f).padLeft(9f);
