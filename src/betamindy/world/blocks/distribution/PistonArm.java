@@ -2,10 +2,10 @@ package betamindy.world.blocks.distribution;
 
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.gen.Building;
+import betamindy.world.blocks.distribution.Piston.*;
+import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import betamindy.world.blocks.distribution.Piston.*;
 
 public class PistonArm extends Block {
     public Piston pistonBlock;

@@ -7,11 +7,11 @@ import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 import mindustry.type.*;
 
-import static mindustry.content.Items.*;
-import static mindustry.content.Blocks.*;
-import static mindustry.content.TechTree.*;
 import static betamindy.content.MindyBlocks.*;
 import static betamindy.content.MindyItems.*;
+import static mindustry.content.Blocks.*;
+import static mindustry.content.Items.*;
+import static mindustry.content.TechTree.*;
 
 public class MindyTechTree implements ContentList{
     static TechTree.TechNode context = null;

@@ -1,12 +1,12 @@
 package betamindy.entities.bullet;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
+import arc.math.*;
 import mindustry.entities.bullet.*;
-import mindustry.gen.Bullet;
-import mindustry.graphics.Layer;
+import mindustry.gen.*;
+import mindustry.graphics.*;
 
 public class GlassBulletType extends BulletType {
     public String sprite;

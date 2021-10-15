@@ -1,7 +1,5 @@
 package betamindy.util;
 
-import arc.*;
-import arc.input.*;
 import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.*;

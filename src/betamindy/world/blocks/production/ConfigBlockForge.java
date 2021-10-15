@@ -2,11 +2,11 @@ package betamindy.world.blocks.production;
 
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import mindustry.Vars;
+import betamindy.world.blocks.payloads.*;
+import mindustry.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
-import betamindy.world.blocks.payloads.*;
 
 public class ConfigBlockForge extends BlockForge{
     protected int[] minSizes = {1, 3, 5};

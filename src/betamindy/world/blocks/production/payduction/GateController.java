@@ -3,13 +3,13 @@ package betamindy.world.blocks.production.payduction;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
+import betamindy.world.blocks.production.payduction.PayloadFactory.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import betamindy.world.blocks.production.payduction.PayloadFactory.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 /** Can be configured O or X (power or procs), forces adjacent payfactories to spit out/eat payloads */
 public class GateController extends Block {

@@ -20,11 +20,10 @@ import mindustry.ui.*;
 import mindustry.ui.fragments.*;
 import mindustry.world.*;
 
-import static betamindy.BetaMindy.uwu;
+import static betamindy.BetaMindy.*;
 import static betamindy.util.InventoryModule.*;
-import static mindustry.game.EventType.*;
-import static betamindy.BetaMindy.inventoryUI;
 import static mindustry.Vars.*;
+import static mindustry.game.EventType.*;
 
 public class PlacementInvFragment extends Fragment {
     final int rowWidth = 6;

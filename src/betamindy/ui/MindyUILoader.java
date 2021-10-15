@@ -4,21 +4,17 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.graphics.g2d.Font.*;
 import arc.input.*;
-import arc.scene.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
-import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import betamindy.*;
 import betamindy.util.*;
 import mindustry.*;
-import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 
-import static arc.Core.atlas;
-import static betamindy.BetaMindy.uwu;
+import static arc.Core.*;
+import static betamindy.BetaMindy.*;
 import static mindustry.Vars.*;
 
 public class MindyUILoader {

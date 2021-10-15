@@ -1,6 +1,6 @@
 package betamindy.world.blocks.storage;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
@@ -14,7 +14,7 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.graphics.*;
 import betamindy.ui.*;
-import mindustry.Vars;
+import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -24,7 +24,6 @@ import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class AnucoinNode extends Block {

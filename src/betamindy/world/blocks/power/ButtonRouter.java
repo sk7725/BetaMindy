@@ -9,7 +9,7 @@ import mindustry.type.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class ButtonRouter extends Router {
     public float duration = 10f;

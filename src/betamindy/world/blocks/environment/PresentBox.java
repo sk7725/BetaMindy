@@ -1,17 +1,16 @@
 package betamindy.world.blocks.environment;
 
 //import arc.Core;
-import arc.audio.Sound;
+
+import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-//import arc.math.geom.Vec2;
 import arc.scene.ui.layout.*;
-//import arc.util.Align;
 import arc.util.io.*;
-import betamindy.content.MindySounds;
+import betamindy.content.*;
 import betamindy.util.*;
-import mindustry.content.Fx;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -19,8 +18,8 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
-import static arc.Core.atlas;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.*;
 

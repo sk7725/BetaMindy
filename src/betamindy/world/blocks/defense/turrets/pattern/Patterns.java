@@ -1,10 +1,9 @@
 package betamindy.world.blocks.defense.turrets.pattern;
 
-import arc.graphics.Color;
+import arc.graphics.*;
 import betamindy.content.*;
-import betamindy.entities.bullet.RainbowLaser;
+import betamindy.entities.bullet.*;
 import mindustry.content.*;
-import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
 
 public class Patterns {

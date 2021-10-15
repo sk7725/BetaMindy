@@ -5,24 +5,19 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import betamindy.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
 import betamindy.util.*;
-import mindustry.*;
 import mindustry.content.*;
-import mindustry.core.*;
-import mindustry.ctype.ContentList;
-import mindustry.entities.*;
-import mindustry.entities.units.WeaponMount;
+import mindustry.ctype.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.StatusEffect;
-import mindustry.ui.*;
+import mindustry.type.*;
 import mindustry.world.meta.*;
 
-import static betamindy.BetaMindy.hardmode;
-import static mindustry.Vars.tilesize;
+import static betamindy.BetaMindy.*;
+import static mindustry.Vars.*;
 
 public class MindyStatusEffects implements ContentList {
     public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift, debugger,

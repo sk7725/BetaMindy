@@ -14,7 +14,7 @@
 
 package betamindy.graphics;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
@@ -23,16 +23,15 @@ import arc.math.geom.*;
 import arc.util.*;
 import betamindy.ui.*;
 import mindustry.*;
-import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 
-import static arc.graphics.g2d.Lines.getStroke;
-import static betamindy.BetaMindy.hardmode;
-import static mindustry.Vars.renderer;
+import static arc.graphics.g2d.Lines.*;
+import static betamindy.BetaMindy.*;
+import static mindustry.Vars.*;
 
 public class Drawm {
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();

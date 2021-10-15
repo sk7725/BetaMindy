@@ -9,10 +9,7 @@ import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
-import betamindy.type.*;
 import betamindy.util.*;
-import mindustry.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -23,7 +20,7 @@ import mindustry.world.meta.*;
 import java.util.*;
 
 import static arc.Core.*;
-import static betamindy.BetaMindy.uwu;
+import static betamindy.BetaMindy.*;
 import static mindustry.Vars.*;
 
 //todo lore manual, comes with camera panning to give it attention every time it updates, intangible and stuff

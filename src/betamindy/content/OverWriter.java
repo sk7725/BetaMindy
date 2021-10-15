@@ -1,6 +1,6 @@
 package betamindy.content;
 
-import arc.func.Cons;
+import arc.func.*;
 import mindustry.ctype.*;
 import mindustry.type.*;
 import mindustry.world.*;

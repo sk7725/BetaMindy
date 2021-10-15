@@ -5,13 +5,13 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import betamindy.content.*;
 import mindustry.entities.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.gen.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class SlimeBlock extends Block {
     public int slimeType;

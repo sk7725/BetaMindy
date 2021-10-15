@@ -3,13 +3,8 @@ package betamindy.type;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.scene.ui.*;
-import betamindy.*;
 import mindustry.gen.*;
-import mindustry.type.*;
-
-import static arc.Core.atlas;
 
 public abstract class PurchaseItem {
     public String name;

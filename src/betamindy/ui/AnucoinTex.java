@@ -4,7 +4,7 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class AnucoinTex {
     /** UI Atlas regions. */

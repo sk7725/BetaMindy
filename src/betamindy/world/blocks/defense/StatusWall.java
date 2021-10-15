@@ -1,7 +1,6 @@
 package betamindy.world.blocks.defense;
 
 import arc.*;
-import arc.math.*;
 import arc.util.*;
 import betamindy.content.*;
 import mindustry.content.*;
@@ -10,11 +9,10 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class StatusWall extends Wall {
     public StatusEffect status = MindyStatusEffects.icy;

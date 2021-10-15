@@ -6,22 +6,20 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.graphics.Drawm;
+import betamindy.graphics.*;
 import betamindy.world.blocks.payloads.*;
-import mindustry.Vars;
+import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.logic.LAccess;
-import mindustry.type.Item;
-import mindustry.type.ItemStack;
+import mindustry.logic.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class BlockCloner extends Block {
     public Color color = Pal.lancerLaser;

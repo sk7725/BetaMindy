@@ -17,9 +17,8 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.logic.LogicBlock.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class LinkPinner extends Block {
     public float range = 8 * 10;

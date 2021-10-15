@@ -16,7 +16,6 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 

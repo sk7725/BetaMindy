@@ -11,7 +11,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class SoundwaveBulletType extends BulletType {
     public Color fromColor = Pal.accent, toColor = Pal.remove;

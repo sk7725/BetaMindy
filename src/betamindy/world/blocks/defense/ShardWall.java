@@ -1,9 +1,7 @@
 package betamindy.world.blocks.defense;
 
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import betamindy.world.blocks.production.payduction.craft.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.world.blocks.defense.*;

@@ -36,10 +36,10 @@ import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
-import static betamindy.BetaMindy.uwu;
+import static betamindy.BetaMindy.*;
 import static betamindy.content.ShopItems.*;
 import static betamindy.util.BlockLib.*;
-import static mindustry.type.ItemStack.with;
+import static mindustry.type.ItemStack.*;
 
 public class MindyBlocks implements ContentList {
     //environment

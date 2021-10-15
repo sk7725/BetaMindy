@@ -1,7 +1,6 @@
 package betamindy.world.blocks.defense.turrets.pattern;
 
 import arc.audio.*;
-import arc.math.*;
 import arc.util.*;
 import betamindy.world.blocks.defense.turrets.MultiTurret.*;
 import mindustry.content.*;

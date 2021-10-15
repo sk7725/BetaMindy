@@ -11,7 +11,6 @@ import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
-import betamindy.util.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.logic.*;
 import mindustry.content.*;
@@ -27,9 +26,8 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class Claw extends Block {
     public float range = 36f;

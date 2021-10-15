@@ -16,7 +16,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class CoinTurret extends Turret {
     public BulletType shootType;

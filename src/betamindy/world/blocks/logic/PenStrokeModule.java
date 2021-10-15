@@ -1,21 +1,15 @@
 package betamindy.world.blocks.logic;
 
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.util.*;
 import arc.util.io.*;
 import betamindy.ui.*;
-import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.logic.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class PenStrokeModule extends Block {
     public int maxStroke = 8;

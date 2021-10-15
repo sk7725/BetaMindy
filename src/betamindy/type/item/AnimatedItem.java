@@ -6,9 +6,8 @@ import arc.graphics.g2d.*;
 import arc.util.*;
 import betamindy.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class AnimatedItem extends Item {
     public final TextureRegion animIcon = new TextureRegion();

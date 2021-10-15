@@ -18,7 +18,7 @@ import mindustry.world.*;
 import java.util.*;
 
 import static mindustry.Vars.*;
-import static mindustry.world.Build.validPlace;
+import static mindustry.world.Build.*;
 
 public class InventoryModule {
     final static int maxAmount = 99; //must be <= 126

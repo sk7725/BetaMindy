@@ -7,22 +7,18 @@ import arc.util.*;
 import betamindy.content.*;
 import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.storage.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
-import static arc.math.geom.Geometry.d4x;
-import static arc.math.geom.Geometry.d4y;
-import static mindustry.Vars.state;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static arc.math.geom.Geometry.*;
+import static mindustry.Vars.*;
 
 public class Crusher extends Block {
     public float damage = 1.2f;

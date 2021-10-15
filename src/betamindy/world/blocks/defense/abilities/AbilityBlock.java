@@ -1,11 +1,9 @@
 package betamindy.world.blocks.defense.abilities;
 
-import arc.struct.*;
 import mindustry.entities.abilities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 
 public class AbilityBlock extends Block {
     public Ability abilityType;

@@ -2,7 +2,7 @@ package betamindy.util;
 
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.Vars;
+import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;

@@ -1,7 +1,6 @@
 package betamindy.content;
 
 import arc.graphics.*;
-import betamindy.graphics.*;
 import betamindy.planets.*;
 import mindustry.content.*;
 import mindustry.ctype.*;

@@ -12,7 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class CrystalBulletType extends ArtilleryBulletType {
     public Crystal crystal;

@@ -10,7 +10,7 @@ import mindustry.type.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class ScidustryCrystal extends Crystal{
     /** Alternative behavior. */

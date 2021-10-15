@@ -14,8 +14,8 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
-import static arc.Core.atlas;
-import static mindustry.type.ItemStack.with;
+import static arc.Core.*;
+import static mindustry.type.ItemStack.*;
 
 public class Crystal extends Block {
     public Item item;

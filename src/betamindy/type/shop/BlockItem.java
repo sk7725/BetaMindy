@@ -10,7 +10,6 @@ import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -19,7 +18,7 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.storage.*;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class BlockItem extends ShopItem{
     public Block item;

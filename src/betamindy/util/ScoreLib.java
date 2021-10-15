@@ -1,7 +1,7 @@
 package betamindy.util;
 
 import arc.struct.*;
-import mindustry.Vars;
+import mindustry.*;
 import mindustry.entities.bullet.*;
 import mindustry.type.*;
 import mindustry.world.*;

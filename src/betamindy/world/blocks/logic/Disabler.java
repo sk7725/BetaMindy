@@ -3,7 +3,6 @@ package betamindy.world.blocks.logic;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import betamindy.world.blocks.production.payduction.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -11,8 +10,7 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.world.*;
 
-import static mindustry.Vars.renderer;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class Disabler extends Block {
     public Color zoneColor = Pal.health;

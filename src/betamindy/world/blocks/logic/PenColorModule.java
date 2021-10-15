@@ -14,7 +14,7 @@ import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class PenColorModule extends Block {
     public float radius = 20f;

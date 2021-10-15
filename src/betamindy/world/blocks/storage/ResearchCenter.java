@@ -9,7 +9,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class ResearchCenter extends Block {
     public TextureRegion lightRegion, topRegion;

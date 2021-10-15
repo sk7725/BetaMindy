@@ -1,9 +1,6 @@
 package betamindy.world.blocks.environment;
 
 import betamindy.*;
-import betamindy.content.*;
-import betamindy.type.*;
-import betamindy.type.shop.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -14,7 +11,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 
-import static mindustry.type.ItemStack.with;
+import static mindustry.type.ItemStack.*;
 
 public class DecorativeFloor extends OverlayFloor {
     public boolean refund = true;

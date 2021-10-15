@@ -1,6 +1,5 @@
 package betamindy.world.blocks.production.payduction.craft;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import betamindy.world.blocks.production.payduction.*;

@@ -1,6 +1,5 @@
 package betamindy.entities.bullet;
 
-import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import betamindy.content.*;

@@ -1,14 +1,12 @@
 package betamindy.type.shop;
 
-import arc.func.*;
-import arc.graphics.Color;
+import arc.graphics.*;
 import arc.scene.ui.*;
-import betamindy.BetaMindy;
+import betamindy.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.storage.Shop.*;
-import mindustry.gen.Icon;
+import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 
 import static mindustry.Vars.*;
 

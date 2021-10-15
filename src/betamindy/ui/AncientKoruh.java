@@ -2,7 +2,7 @@ package betamindy.ui;
 
 import arc.graphics.g2d.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class AncientKoruh {
     public static TextureRegion[] icons = new TextureRegion[30];

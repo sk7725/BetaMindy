@@ -2,20 +2,16 @@ package betamindy.ui;
 
 import arc.*;
 import arc.func.*;
-import arc.input.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
 import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.environment.*;
-import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.units.*;
 import mindustry.*;
-import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
-import mindustry.input.*;
-import mindustry.ui.fragments.HintsFragment.Hint;
+import mindustry.ui.fragments.HintsFragment.*;
 
 import static mindustry.Vars.*;
 

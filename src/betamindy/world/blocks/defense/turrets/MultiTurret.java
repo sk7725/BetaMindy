@@ -1,11 +1,9 @@
 package betamindy.world.blocks.defense.turrets;
 
-import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.util.*;
@@ -15,12 +13,10 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.input.*;
 import mindustry.logic.*;
 import mindustry.world.blocks.defense.turrets.*;
 
-import static mindustry.Vars.player;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class MultiTurret extends Turret {
     public TurretPattern[] patterns;

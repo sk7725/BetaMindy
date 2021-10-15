@@ -14,8 +14,6 @@ import arc.util.noise.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.ui.*;
-import betamindy.util.*;
-import betamindy.world.blocks.units.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -25,7 +23,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
-import static betamindy.graphics.Drawm.ellipse;
+import static betamindy.graphics.Drawm.*;
 import static mindustry.Vars.*;
 
 public class Terraformer extends Block {

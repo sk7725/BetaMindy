@@ -1,30 +1,27 @@
 package betamindy.world.blocks.production;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.io.*;
+import betamindy.content.*;
 import betamindy.world.blocks.environment.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.input.InputHandler;
+import mindustry.input.*;
 import mindustry.logic.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 
-import mindustry.type.Item;
-import mindustry.world.blocks.distribution.Conveyor;
-
-import mindustry.Vars;
-
-import betamindy.content.*;
-
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class Mynamite extends Block {
     public int tier = 0, minTier = 0;

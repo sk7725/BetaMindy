@@ -8,7 +8,6 @@ import betamindy.graphics.*;
 import betamindy.world.blocks.storage.Shop.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 
 import static mindustry.Vars.*;
 

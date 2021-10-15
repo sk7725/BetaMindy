@@ -4,7 +4,6 @@ import arc.*;
 import arc.math.*;
 import arc.scene.style.*;
 import arc.util.*;
-import betamindy.content.*;
 import betamindy.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -14,8 +13,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 
 public class InflictStatusEffect extends StatusEffect {
     public float range = 80f;

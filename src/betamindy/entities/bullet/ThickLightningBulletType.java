@@ -2,15 +2,10 @@ package betamindy.entities.bullet;
 
 import arc.graphics.*;
 import arc.math.*;
-import arc.util.*;
-import betamindy.content.*;
-import betamindy.graphics.*;
 import betamindy.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-
-import static mindustry.Vars.headless;
 
 public class ThickLightningBulletType extends BulletType {
     public Color color1;

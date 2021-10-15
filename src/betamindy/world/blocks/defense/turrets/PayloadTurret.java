@@ -1,16 +1,14 @@
 package betamindy.world.blocks.defense.turrets;
 
 import arc.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.struct.ObjectSet;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.BetaMindy;
+import betamindy.*;
 import betamindy.content.*;
-import mindustry.Vars;
-import mindustry.content.*;
+import mindustry.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -21,7 +19,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")

@@ -1,6 +1,6 @@
 package betamindy.world.blocks.logic;
 
-import mindustry.gen.Building;
+import mindustry.gen.*;
 import mindustry.world.*;
 
 public class GOLBlock extends Block {

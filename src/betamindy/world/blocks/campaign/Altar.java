@@ -19,8 +19,8 @@ import betamindy.world.blocks.defense.*;
 import betamindy.world.blocks.defense.Campfire.*;
 import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -28,11 +28,9 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 
-import static arc.Core.atlas;
-import static arc.Core.settings;
+import static arc.Core.*;
 import static arc.graphics.g2d.Lines.*;
-import static betamindy.BetaMindy.hardmode;
-import static betamindy.BetaMindy.uwu;
+import static betamindy.BetaMindy.*;
 import static mindustry.Vars.*;
 
 //initiator

@@ -1,8 +1,8 @@
 package betamindy.world.blocks.units;
 
-import arc.audio.Sound;
+import arc.audio.*;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import betamindy.content.*;
@@ -11,8 +11,8 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class Bumper extends Wall {
     public float hitSize = tilesize * 1.1f;
