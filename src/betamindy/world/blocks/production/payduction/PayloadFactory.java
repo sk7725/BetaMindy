@@ -32,7 +32,7 @@ import static arc.Core.atlas;
 import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
-public class PayloadFactory extends PayloadAcceptor {
+public class PayloadFactory extends PayloadBlock{
     public int maxBlockSize = 2;
     public float fuelTime = 120f;
     public float baseCraftTime = 5f, baseHeatLerp = 0.001f;
@@ -147,7 +147,7 @@ public class PayloadFactory extends PayloadAcceptor {
         doorRegion = atlas.find(name + "-door");
     }
 
-    public class PayloadFactoryBuild extends PayloadAcceptorBuild<BuildPayload>{
+    public class PayloadFactoryBuild extends PayloadBlockBuild<BuildPayload>{
         public float heat = 0f; //absolute heat value
         public float fuelLeft = 0f, fuelValue = 0f, fuelLerp = baseHeatLerp;
         public float time = 0f; //increases every tick when payload is in.
@@ -218,7 +218,7 @@ public class PayloadFactory extends PayloadAcceptor {
             parent.image().color(Pal.gray).height(4f).growX().padTop(2f).padBottom(8f);
             parent.row();
             parent.table(table -> {
-                table.image(() -> active() ? payload.fullIcon : Icon.cancel.getRegion()).size(36f);
+                table.image(() -> active() ? payload.icon() : Icon.cancel.getRegion()).size(36f);
 
                 table.table(t -> {
                     t.defaults().height(16f).pad(4f).padBottom(1f).padTop(1f).growX();

@@ -19,7 +19,7 @@ import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.production.PayloadAcceptor.*;
+import mindustry.world.blocks.payloads.PayloadBlock.*;
 import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
@@ -184,8 +184,8 @@ public class Spinner extends Block {
                                 if(!multiBuild && t.build != null && t.build.acceptPayload(t.build, payload)){
                                     //payload placing
                                     t.build.handlePayload(t.build, payload);
-                                    if(t.build instanceof PayloadAcceptorBuild){
-                                        ((PayloadAcceptorBuild<?>) t.build).payVector.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle()).add(this).sub(t.build).clamp(-t.build.block.size * tilesize / 2f, -t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f);
+                                    if(t.build instanceof PayloadBlockBuild){
+                                        ((PayloadBlockBuild<?>) t.build).payVector.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle()).add(this).sub(t.build).clamp(-t.build.block.size * tilesize / 2f, -t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f);
                                     }
 
                                     payload = null;

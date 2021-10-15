@@ -60,7 +60,6 @@ public class Claw extends Block {
         super(name);
         update = true;
         rotate = true;
-        expanded = true;
         solid = true;
     }
 

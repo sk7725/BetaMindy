@@ -28,7 +28,7 @@ import mindustry.world.meta.Stat;
 
 import java.util.Arrays;
 
-public class PayloadDeconstructor extends PayloadAcceptor {
+public class PayloadDeconstructor extends PayloadBlock{
     /** The additional refundmultiplier multiplied to the refundmultiplier of the map. Note that the final refund multiplier will not exceed 1, unless the map's refund is already over 1. */
     public float refundMultiplier = 1.5f;
     public float buildSpeed = 0.6f;
@@ -89,7 +89,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
         return defaultStack;
     }
 
-    public class PayloadDeconBuild<T extends Payload> extends PayloadAcceptorBuild<T> {
+    public class PayloadDeconBuild<T extends Payload> extends PayloadBlockBuild<T> {
         public float progress, time, heat;
         //public int lastRot = 0;
 

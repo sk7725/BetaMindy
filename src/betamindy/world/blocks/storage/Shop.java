@@ -37,7 +37,7 @@ import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 @SuppressWarnings("al")
-public class Shop extends PayloadAcceptor {
+public class Shop extends PayloadBlock{
     public int defaultAnucoins = 0;
     public TextureRegion spinRegion;
     public TextureRegion[] spinTeamRegions;
@@ -188,7 +188,7 @@ public class Shop extends PayloadAcceptor {
         return AnucoinTex.emoji;
     }
 
-    public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload> implements CoinBuild, BankLinked{
+    public class ShopBuild extends PayloadBlockBuild<Payload> implements CoinBuild, BankLinked{
         public int anucoins = defaultAnucoins;
         private int anubank = -1; //default is -1
         public UnitType unit;

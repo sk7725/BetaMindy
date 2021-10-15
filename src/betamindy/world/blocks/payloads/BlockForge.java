@@ -22,7 +22,7 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
-public class BlockForge extends PayloadAcceptor{
+public class BlockForge extends PayloadBlock{
     public float buildSpeed = 0.4f;
     public int minBlockSize = 1, maxBlockSize = 2;
 
@@ -77,7 +77,7 @@ public class BlockForge extends PayloadAcceptor{
         Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
     }
     
-    public class BlockForgeBuild extends PayloadAcceptorBuild<BuildPayload>{
+    public class BlockForgeBuild extends PayloadBlockBuild<BuildPayload>{
         public @Nullable Block recipe;
         public float progress, time, heat;
 
