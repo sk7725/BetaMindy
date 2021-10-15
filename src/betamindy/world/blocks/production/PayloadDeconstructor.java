@@ -210,10 +210,10 @@ public class PayloadDeconstructor extends PayloadAcceptor {
 
         public TextureRegion payloadIcon(){
             if(payload instanceof BuildPayload){
-                return ((BuildPayload)payload).build.block.icon(Cicon.full);
+                return ((BuildPayload)payload).build.block.fullIcon;
             }
             else if(payload instanceof UnitPayload){
-                return ((UnitPayload)payload).unit.type().icon(Cicon.full);
+                return ((UnitPayload)payload).unit.type().fullIcon;
             }
             return Core.atlas.find("error");
         }

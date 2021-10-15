@@ -72,8 +72,8 @@ public class InflictStatusEffect extends StatusEffect {
         stats.add(ally || damage != 0 ? Stat.affinities : Stat.damage, table -> {
             table.left();
             table.row();
-            //table.image(inflicts.icon(Cicon.medium)).size(18f);
-            table.button("[accent]" + inflicts.localizedName + "[]", new TextureRegionDrawable(inflicts.icon(Cicon.medium)), Styles.cleart, 40f, () -> {
+            //table.image(inflicts.uiIcon).size(18f);
+            table.button("[accent]" + inflicts.localizedName + "[]", new TextureRegionDrawable(inflicts.fullIcon), Styles.cleart, 40f, () -> {
                 ui.content.show(inflicts);
             }).left().size(180f, 46f);
             table.image().size(4f, 46f).color(ally ? Pal.accent : Pal.remove).padRight(9f).padLeft(9f);

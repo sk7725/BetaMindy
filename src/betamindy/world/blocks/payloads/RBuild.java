@@ -209,7 +209,7 @@ public class RBuild {
         Drawf.shadow(ox + v1.x, oy + v1.y, tilesize * build.block.size * 2f);
         Draw.z(Layer.blockOver + 0.1f);
         if(build instanceof SpinDraw) ((SpinDraw) build).drawSpinning(ox + v1.x, oy + v1.y, rawRotation);
-        else Draw.rect(build.block.icon(Cicon.full), ox + v1.x, oy + v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
+        else Draw.rect(build.block.fullIcon, ox + v1.x, oy + v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
     }
 
     public void kill(float kx, float ky){

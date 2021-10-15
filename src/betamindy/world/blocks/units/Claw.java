@@ -330,7 +330,7 @@ public class Claw extends Block {
             Draw.rect(handRegion, Tmp.v1.x, Tmp.v1.y, angle - clawa - 90f);
             Draw.rect(handOverlay, Tmp.v1.x, Tmp.v1.y, angle - 90f);
 
-            if(heldBuild != null) Draw.rect(heldBuild.build.block.icon(Cicon.full), lastV.x + x, lastV.y + y, heldBuild.block().rotate ? heldBuild.build.rotation * 90f : 0f);
+            if(heldBuild != null) Draw.rect(heldBuild.build.block.fullIcon, lastV.x + x, lastV.y + y, heldBuild.block().rotate ? heldBuild.build.rotation * 90f : 0f);
             Draw.z(lz);
         }
 

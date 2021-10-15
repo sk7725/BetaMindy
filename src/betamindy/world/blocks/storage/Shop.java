@@ -531,7 +531,7 @@ public class Shop extends PayloadAcceptor {
                         t.left();
                         t.table(tt -> {
                             tt.left();
-                            tt.image(stack.item.icon(Cicon.medium)).left();
+                            tt.image(stack.item.fullIcon).left();
                             tt.add("x" + stack.amount).left();
                         }).growX().left();
 

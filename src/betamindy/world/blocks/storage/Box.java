@@ -99,7 +99,7 @@ public class Box extends Block {
             Draw.z(Layer.block + 0.01f);
             Draw.rect(baseRegion, x, y);
             if(items.any()){
-                TextureRegion icon = items.first().icon(Cicon.small);
+                TextureRegion icon = items.first().uiIcon;
                 for(int i = 0; i < items.total() * 5 / itemCapacity; i++){
                     Draw.rect(icon, x + Mathf.randomSeed(id + i) * 3f * size - 1.5f, y + Mathf.randomSeed(id + i + 10) * 3f * size - 1.5f, 4f, 4f);
                 }

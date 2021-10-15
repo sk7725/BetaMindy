@@ -218,7 +218,7 @@ public class PayloadFactory extends PayloadAcceptor {
             parent.image().color(Pal.gray).height(4f).growX().padTop(2f).padBottom(8f);
             parent.row();
             parent.table(table -> {
-                table.image(() -> active() ? payload.icon(Cicon.full) : Icon.cancel.getRegion()).size(36f);
+                table.image(() -> active() ? payload.fullIcon : Icon.cancel.getRegion()).size(36f);
 
                 table.table(t -> {
                     t.defaults().height(16f).pad(4f).padBottom(1f).padTop(1f).growX();

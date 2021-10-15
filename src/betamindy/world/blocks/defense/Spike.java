@@ -80,7 +80,7 @@ public class Spike extends Wall {
         stats.add(Stat.damage, (int)damage + " ~ [coral]" + (int)(damage * pushMultiplier) + "[]");
         if(status == null) return;
         stats.add(Stat.damage, table -> {
-            table.image(status.icon(Cicon.medium)).size(18f);
+            table.image(status.uiIcon).size(18f);
             table.add(" [accent]" + status.localizedName + "[] " + (int)(statusDuration / 60) + " " + Core.bundle.get("unit.seconds"));
         });
     }

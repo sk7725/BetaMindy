@@ -17,9 +17,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.Cicon;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 import static arc.Core.atlas;
@@ -123,7 +121,7 @@ public class PresentBox extends Block {
             if(open){
                 Draw.rect(baseRegion, x, y);
                 if(items.any()){
-                    TextureRegion icon = items.first().icon(Cicon.small);
+                    TextureRegion icon = items.first().uiIcon;
                     for(int i = 0; i < items.total() * 5 / itemCapacity; i++){
                         Draw.rect(icon, x + Mathf.randomSeed(id + i) * 3f - 1.5f, y + Mathf.randomSeed(id + i + 10) * 3f - 1.5f, Draw.scl * Draw.xscl * 16f, Draw.scl * Draw.yscl * 15f);
                     }

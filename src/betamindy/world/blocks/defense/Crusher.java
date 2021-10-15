@@ -60,7 +60,7 @@ public class Crusher extends Block {
         stats.add(Stat.damage, Core.bundle.format("bullet.buildingdamage", buildingMultiplier * 100f));
         if(status == null) return;
         stats.add(Stat.damage, table -> {
-            table.image(status.icon(Cicon.medium)).size(18f);
+            table.image(status.uiIcon).size(18f);
             table.add(" [accent]" + status.localizedName + "[] " + (int)(statusDuration / 60) + " " + Core.bundle.get("unit.seconds"));
         });
     }

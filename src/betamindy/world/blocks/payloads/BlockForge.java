@@ -149,7 +149,7 @@ public class BlockForge extends PayloadAcceptor{
         public void drawSelect(){
             if(recipe != null){
                 float dx = x - size * tilesize/2f, dy = y + size * tilesize/2f;
-                TextureRegion icon = recipe.icon(Cicon.medium);
+                TextureRegion icon = recipe.fullIcon;
                 Draw.mixcol(Color.darkGray, 1f);
                 //Fixes size because modded content icons are not scaled
                 Draw.rect(icon, dx - 0.7f, dy - 1f, Draw.scl * Draw.xscl * 24f, Draw.scl * Draw.yscl * 24f);

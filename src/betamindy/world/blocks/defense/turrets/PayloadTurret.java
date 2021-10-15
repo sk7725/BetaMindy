@@ -16,7 +16,6 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
-import mindustry.ui.Cicon;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
@@ -101,10 +100,10 @@ public class PayloadTurret extends Turret {
 
         public TextureRegion payloadIcon(){
             if(payload instanceof BuildPayload){
-                return ((BuildPayload)payload).build.block.icon(Cicon.full);
+                return ((BuildPayload)payload).build.block.fullIcon;
             }
             else if(payload instanceof UnitPayload){
-                return ((UnitPayload)payload).unit.type().icon(Cicon.full);
+                return ((UnitPayload)payload).unit.type().fullIcon;
             }
             return Core.atlas.find("error");
         }

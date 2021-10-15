@@ -7,7 +7,6 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.ui.Cicon;
 import mindustry.world.blocks.payloads.*;
 
 public class HomingPayloadBullet extends PayloadBullet{
@@ -46,11 +45,11 @@ public class HomingPayloadBullet extends PayloadBullet{
 
         if(b.data instanceof BuildPayload){
             BuildPayload bp = (BuildPayload)b.data;
-            icon = bp.build.block.icon(Cicon.full);
+            icon = bp.build.block.fullIcon;
         }
         else if(b.data instanceof UnitPayload){
             UnitPayload up = (UnitPayload)b.data;
-            icon = up.unit.type().icon(Cicon.full);
+            icon = up.unit.type().fullIcon;
             rotation -= 90f;
         }
         else return;
