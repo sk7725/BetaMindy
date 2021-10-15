@@ -26,7 +26,6 @@ public class Pen extends Block {
     public Pen(String name){
         super(name);
         update = solid = true;
-        expanded = true;
         noUpdateDisabled = false;
     }
 

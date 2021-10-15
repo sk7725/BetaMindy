@@ -30,7 +30,6 @@ public class LinkPinner extends Block {
         super(name);
         update = true;
         solid = true;
-        expanded = true;
         rotate = false;
         configurable = true;
         saveConfig = false;

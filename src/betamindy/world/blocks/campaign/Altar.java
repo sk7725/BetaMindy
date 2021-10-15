@@ -59,7 +59,6 @@ public class Altar extends Block {
         solid = false;
         rotate = false;
         size = 3;
-        expanded = true;
         configurable = true;
         saveConfig = false;
         noUpdateDisabled = false;

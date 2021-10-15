@@ -13,7 +13,6 @@ public class TeleportPortal extends TeleportPad {
     public float portalRadius = 14f;
     public TeleportPortal(String name){
         super(name);
-        expanded = true;
         animateNear = false;
     }
 

@@ -40,7 +40,6 @@ public class Yutnori extends Block {
         super(name);
         update = configurable = true;
         solid = false;
-        expanded = true;
 
         config(Integer.class, (YutnoriBuild b, Integer seed) -> {
             for(int i = 0; i < 4; i++) b.sticks[i].roll(b, seed + i, throwStrength);
