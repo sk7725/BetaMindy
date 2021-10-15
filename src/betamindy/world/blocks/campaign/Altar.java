@@ -358,8 +358,8 @@ public class Altar extends Block {
         public String expText(){
             int l = hardmode.level();
             if(l >= HardMode.maxLevel) return Core.bundle.get("bar.altar.max");
-            float lc = hardmode.expCap(l - 1);
-            return Core.bundle.format("bar.altar.exp", hardmode.experience - lc, hardmode.expCap(l) - lc);
+            float lc = HardMode.expCap(l - 1);
+            return Core.bundle.format("bar.altar.exp", hardmode.experience - lc, HardMode.expCap(l) - lc);
         }
 
         public String phaseText(){
@@ -469,6 +469,7 @@ public class Altar extends Block {
                     Tmp.v1.trns(i * 60 + Time.time * 1.4f, 20 * f3);
                     poly(Tmp.v1.x + x, Tmp.v1.y + y, 3, 3f, Tmp.v1.angle());
                 }
+                Draw.blend();
 
                 if(fin > 0.1f){
                     int n = 30;
