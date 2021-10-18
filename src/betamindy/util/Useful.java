@@ -17,10 +17,13 @@ package betamindy.util;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.*;
 import arc.scene.actions.*;
 import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
@@ -48,10 +51,12 @@ public class Useful {
     private static final Seq<Unit> units = new Seq<>();
     private static final TextField scrollLocker = (Vars.headless) ? null : new TextField();
 
-    public static boolean striping = false;
+    public static boolean striping = false, lockInput = false, initCutscene = false;
+    private static @Nullable Element zebra = null;
+    public static float stripyboi = Scl.scl(77f), stripeProgress = 0f;
     //private static IntSet collidedBlocks = new IntSet();
 
-    private static Vec2 cameraPos = new Vec2();
+    private static final Vec2 cameraPos = new Vec2();
     private static boolean camLock;
 
     /** Returns true once every few ticks. Unreliable, use only in trivial stuff like graphics. */
@@ -230,33 +235,87 @@ public class Useful {
 
     public static void cutscene(Vec2 pos, boolean hideui){
         if(headless) return;
-        if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = true;
-        if(!Core.scene.hasField()) Core.scene.setKeyboardFocus(scrollLocker);
+        //if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = true;
+
+        //initialize input locking
+        if(!initCutscene){
+            initCutscene = true;
+            control.input.addLock(() -> lockInput);
+            Core.scene.add(stripedElement());
+        }
+        lockInput = true; //lock input
+        if(!Core.scene.hasField()) Core.scene.setScrollFocus(scrollLocker); //lock zoom, used to be setKeyboardFocus but
         if(!camLock){
-            cameraPos.set(Core.camera.position);
+            cameraPos.set(Core.camera.position); //start smooth camera lerp
             camLock = true;
         }
-        cameraPos.lerp(pos, (Core.settings.getBool("smoothcamera") ? 0.08f : 1f) * Time.delta);
+        cameraPos.lerp(pos, (Core.settings.getBool("smoothcamera") ? 0.06f : 1f) * Time.delta);
         Core.camera.position.set(cameraPos);
         if(mobile && player.unit() != null) player.unit().vel.setZero();
 
         if(hideui && !striping){
-            striping = true;
+            striping = true; //pu-style cutscene, credits to glenn
             ui.hudGroup.actions(Actions.alpha(0f, 0.17f));
+            stripeProgress = 0.03f; //start striping
         }
     }
 
     public static void cutsceneEnd(){
         if(headless) return;
+        lockInput = false;
         if(control.input instanceof DesktopInput) ((DesktopInput)control.input).panning = false;
-        if(Core.scene.getKeyboardFocus() != null && Core.scene.getKeyboardFocus().equals(scrollLocker)) Core.scene.setKeyboardFocus(null);
+        if(Core.scene.getScrollFocus() != null && Core.scene.getScrollFocus().equals(scrollLocker)) Core.scene.setScrollFocus(null);
         Core.app.post(() -> {
             camLock = false;
         });
         if(striping){
             striping = false;
-            ui.hudGroup.actions(Actions.delay(0.2f), Actions.alpha(1f, 0.17f));
+            ui.hudGroup.actions(Actions.delay(0.6f), Actions.alpha(1f, 0.17f));
         }
+    }
+
+    /**
+     * @author GlennFolker
+     * @return a new black-striped instance that is not a zebra
+     */
+    public static Element stripedElement(){
+        if(zebra != null) zebra.remove();
+        zebra = new Element(){
+            @Override
+            public void act(float delta){
+                setZIndex(ui.hudGroup.getZIndex() + 1);
+                stripeProgress = Mathf.approach(stripeProgress, striping ? 1f : 0f, delta * 0.5f);
+            }
+
+            @Override
+            public void draw(){
+                Draw.color(Color.black);
+
+                var pos = Core.scene.screenToStageCoordinates(Tmp.v1.set(0f, Core.graphics.getHeight()));
+                float
+                        x = pos.x,
+                        y = pos.y,
+                        w = Core.graphics.getWidth(),
+                        h = Core.graphics.getHeight(),
+                        thick = stripyboi * stripeProgress;
+
+                Fill.quad(
+                        x, y,
+                        x + w, y,
+                        x + w, y - thick,
+                        x, y - thick
+                );
+                Fill.quad(
+                        x, y - h,
+                        x + w, y - h,
+                        x + w, y - h + thick,
+                        x, y - h + thick
+                );
+                Draw.color();
+            }
+        };
+        zebra.visible(() -> state.isGame() && stripeProgress > 0.01f);
+        return zebra;
     }
 
     public static boolean dumpPlayerUnit(UnitPayload u, Player player){

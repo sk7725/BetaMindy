@@ -15,6 +15,7 @@ public class InstantHitBulletType extends BulletType {
     private static Unit result;
 
     public float pierceDamage = 0f;
+    public float percentDamage = 0f;
     public float hitRange = 1f;
     public Effect lineEffect = MindyFx.lineShot;
     public Effect cHitEffect = Fx.despawn;
@@ -68,6 +69,7 @@ public class InstantHitBulletType extends BulletType {
         if(result != null){
             b.collision(result, px, py);
             result.damagePierce(pierceDamage);
+            if(percentDamage > 0.0001f) result.damage(result.maxHealth() * percentDamage);
             end.trns(rot, cdist * 0.4f).add(px, py);
             chit = true;
         }else{

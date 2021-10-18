@@ -18,6 +18,7 @@ import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.payloads.*;
 import betamindy.world.blocks.power.*;
 import betamindy.world.blocks.production.*;
+import betamindy.world.blocks.production.PayloadDeconstructor;
 import betamindy.world.blocks.production.payduction.*;
 import betamindy.world.blocks.storage.*;
 import betamindy.world.blocks.units.*;
@@ -33,6 +34,7 @@ import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.logic.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 
@@ -41,6 +43,7 @@ import static betamindy.content.ShopItems.*;
 import static betamindy.util.BlockLib.*;
 import static mindustry.type.ItemStack.with;
 
+@SuppressWarnings("deprecation")
 public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
@@ -49,11 +52,11 @@ public class MindyBlocks implements ContentList {
             borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
             chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
             //lore - shar
-            esotManual, fallenFlare, fallenAlpha, fallenMono,
+            esotManual, fallenFlare, fallenAlpha, fallenMono, sentryGun,
     //ores
     oreScalar, oreVector, oreTensor,
     //payloads
-    payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator,
+    payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator, grandConstructor, payloadPacker, payloadUnpacker,
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog, capacitor, megaCapacitor,
     //effect
@@ -586,19 +589,28 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, with(Items.copper, 1500, Items.titanium, 900, Items.silicon, 650, Items.plastanium, 390, Items.phaseFabric, 180, Items.surgeAlloy, 165));
         }};
 
-        blockWorkshop = new BlockForge("block-workshop"){{
+        payDeconstructor = new PayloadDeconstructor("payload-deconstructor"){{
+            requirements(Category.units, with(Items.copper, 100, Items.titanium, 50, Items.silicon, 25));
             health = 80;
-            size = 5;
-            minBlockSize = 3;
-            maxBlockSize = 4;
-            buildSpeed = 0.4f;
-            liquidCapacity = 120f;
-            consumes.power(3.25f);
-            consumes.liquid(Liquids.water, 1f);
-            requirements(Category.crafting, with(Items.thorium, 360, Items.phaseFabric, 120, Items.surgeAlloy, 60));
+            size = 3;
+            itemCapacity = 400;
+            consumes.power(1f);
         }};
 
-        blockFactory = new ConfigBlockForge("block-factory"){{
+        payEradicator = new PayloadDeconstructor("payload-eradicator"){{
+            requirements(Category.units, with(Items.copper, 610, Items.titanium, 130, Items.silicon, 115, Items.phaseFabric, 35));
+            health = 250;
+            size = 7;
+            maxPaySize = 10f;
+            buildSpeed = 0.8f;
+            itemCapacity = 1500;
+            refundMultiplier = 2f;
+            consumes.power(2.35f);
+            consumes.liquid(Liquids.water, 0.8f);
+        }};
+
+        grandConstructor = new Constructor("grand-constructor"){{
+            requirements(Category.units, with(Items.thorium, 640, Items.silicon, 120, Items.plastanium, 320, Items.phaseFabric, 460, Items.surgeAlloy, 480));
             health = 240;
             size = 7;
             minBlockSize = 1;
@@ -607,7 +619,34 @@ public class MindyBlocks implements ContentList {
             liquidCapacity = 180f;
             consumes.power(4.75f);
             consumes.liquid(Liquids.cryofluid, 1.5f);
-            requirements(Category.crafting, with(Items.thorium, 640, Items.silicon, 120, Items.plastanium, 320, Items.phaseFabric, 460, Items.surgeAlloy, 480));
+        }};
+
+        //deprecated
+        blockWorkshop = new BlockForge("block-workshop"){{
+            replacement = Blocks.largeConstructor;
+            health = 80;
+            size = 5;
+            minBlockSize = 3;
+            maxBlockSize = 4;
+            buildSpeed = 0.4f;
+            liquidCapacity = 120f;
+            consumes.power(3.25f);
+            consumes.liquid(Liquids.water, 1f);
+            requirements(Category.crafting, BuildVisibility.hidden, with(Items.thorium, 360, Items.phaseFabric, 120, Items.surgeAlloy, 60));
+        }};
+
+        //deprecated
+        blockFactory = new ConfigBlockForge("block-factory"){{
+            replacement = grandConstructor;
+            health = 240;
+            size = 7;
+            minBlockSize = 1;
+            maxBlockSize = 6;
+            buildSpeed = 0.6f;
+            liquidCapacity = 180f;
+            consumes.power(4.75f);
+            consumes.liquid(Liquids.cryofluid, 1.5f);
+            requirements(Category.crafting, BuildVisibility.hidden, with(Items.thorium, 640, Items.silicon, 120, Items.plastanium, 320, Items.phaseFabric, 460, Items.surgeAlloy, 480));
         }};
 
         blockFurnace = new PayloadFurnace("block-furnace"){{
@@ -633,30 +672,48 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, with(Items.copper, 20, Items.graphite, 10, Items.silicon, 10));
         }};
 
+        payloadPacker = new PayloadLoader("payload-packer"){{
+            requirements(Category.units, with(Items.thorium, 360, Items.plastanium, 100, Items.phaseFabric, 80));
+            hasPower = true;
+            health = 80;
+            size = 5;
+            maxBlockSize = 4;
+            itemsLoaded = 16;
+            liquidsLoaded = 80f;
+            consumes.power(3.25f);
+        }};
+
+        payloadUnpacker = new PayloadUnloader("payload-unpacker"){{
+            requirements(Category.units, with(Items.thorium, 360, Items.plastanium, 80, Items.phaseFabric, 100));
+            hasPower = true;
+            health = 80;
+            size = 5;
+            maxBlockSize = 4;
+            offloadSpeed = 8;
+            consumes.power(3.25f);
+        }};
+
+        //deprecated
         blockPacker = new BlockLoader("block-packer"){{
+            replacement = payloadPacker;
             health = 80;
             size = 5;
             maxBlockSize = 4;
             consumes.power(3.25f);
-            requirements(Category.distribution, with(Items.thorium, 360, Items.plastanium, 100, Items.phaseFabric, 80));
+            requirements(Category.distribution, BuildVisibility.hidden, with(Items.thorium, 360, Items.plastanium, 100, Items.phaseFabric, 80));
         }};
 
+        //deprecated
         blockUnpacker = new BlockUnloader("block-unpacker"){{
+            replacement = payloadUnpacker;
             health = 80;
             size = 5;
             maxBlockSize = 4;
             consumes.power(3.25f);
-            requirements(Category.distribution, with(Items.thorium, 360, Items.plastanium, 80, Items.phaseFabric, 100));
+            requirements(Category.distribution, BuildVisibility.hidden, with(Items.thorium, 360, Items.plastanium, 80, Items.phaseFabric, 100));
         }};
 
-        payDeconstructor = new PayloadDeconstructor("payload-deconstructor"){{
-            health = 80;
-            size = 3;
-            itemCapacity = 400;
-            consumes.power(1f);
-            requirements(Category.crafting, with(Items.copper, 100, Items.titanium, 50, Items.silicon, 25));
-        }};
-
+        //deprecated
         payDestroyer = new PayloadDeconstructor("payload-destroyer"){{
             health = 120;
             size = 5;
@@ -665,19 +722,7 @@ public class MindyBlocks implements ContentList {
             itemCapacity = 800;
             refundMultiplier = 1.75f;
             consumes.power(1.8f);
-            requirements(Category.crafting, with(Items.copper, 360, Items.titanium, 95, Items.silicon, 65));
-        }};
-
-        payEradicator = new PayloadDeconstructor("payload-eradicator"){{
-            health = 250;
-            size = 7;
-            maxPaySize = 10f;
-            buildSpeed = 0.8f;
-            itemCapacity = 1500;
-            refundMultiplier = 2f;
-            consumes.power(2.35f);
-            consumes.liquid(Liquids.water, 0.8f);
-            requirements(Category.crafting, with(Items.copper, 610, Items.titanium, 130, Items.silicon, 115, Items.phaseFabric, 35));
+            requirements(Category.crafting, BuildVisibility.hidden, with(Items.copper, 360, Items.titanium, 95, Items.silicon, 65));
         }};
 
         piston = new Piston("piston"){{
@@ -1520,6 +1565,8 @@ public class MindyBlocks implements ContentList {
 
         box = new Box("box"){{
             requirements(Category.effect, BuildVisibility.shown, with(Items.graphite, 5));
+            instantDeconstruct = true;
+            placeablePlayer = false;
         }};
 
         present = new PresentBox("present"){{
@@ -1758,6 +1805,18 @@ public class MindyBlocks implements ContentList {
         fallenAlpha = new FallenUnit("fallen-alpha"){{
             unitName = "alpha";
             unitTeam = Team.derelict;
+        }};
+
+        sentryGun = new SentryTurret("sentry-gun"){{
+            buildVisibility = uwu ? BuildVisibility.shown : BuildVisibility.editorOnly;
+            reloadTime = 5f;
+            range = 312f;
+            health = 4096;
+            shootType = new InstantHitBulletType(1f){{
+                hitColor = trailColor = Pal.accent.cpy().lerp(Color.orange, 0.3f);
+                percentDamage = 0.15f; //six shots and ded
+            }};
+            inaccuracy = 0.2f;
         }};
     }
 }

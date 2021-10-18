@@ -30,7 +30,7 @@ import static mindustry.Vars.*;
 
 public class Terraformer extends Block {
     public static final String[] romans = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "SUS", "SUSI", "SUSII", "SUSIII", "AMOGUS", "AMOGI"};
-    public static final float drawLimit = 4000f;
+    public static final float drawLimit = 6500f;
     private static final Color tmpc = new Color();
     public final ObjectMap<Block, Block> terraFloors = new ObjectMap<>(); //these will be checked on floors only
     public final ObjectMap<Block, Block> terraBlocks = new ObjectMap<>(); //blocks only

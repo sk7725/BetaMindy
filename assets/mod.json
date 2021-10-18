@@ -3,9 +3,9 @@
   "displayName": "BetaMindy",
   "author": "[royal]sk7725[]",
   "description": "My first Java mod, has the same amount of chaotic energy of sk7725/Commandblocks.",
-  "version": "1.06",
+  "version": "1.07",
   "main": "betamindy.BetaMindy",
-  "minGameVersion": "131",
+  "minGameVersion": "132",
   "dependencies": [],
   "hidden": false
 }

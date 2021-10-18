@@ -8,13 +8,16 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 
 import static mindustry.Vars.*;
 
+@Deprecated
 public class BlockLoader extends PayloadAcceptor{
     public final int timerLoad = timers++;
+    public Block replacement = null;
 
     public float loadTime = 2f;
     public int itemsLoaded = 5;
@@ -100,6 +103,11 @@ public class BlockLoader extends PayloadAcceptor{
 
         @Override
         public void updateTile(){
+            if(replacement != null){
+                kill();
+                final Tile t = tile;
+                Core.app.post(() -> t.setBlock(replacement, team, rotation));
+            }
             if(shouldExport()){
                 moveOutPayload();
             }else if(moveInPayload()){

@@ -19,22 +19,7 @@ public class MindyTechTree implements ContentList{
     @Override
     public void load(){
         margeNode(payloadConveyor, () -> {
-            node(blockLoader, () -> {
-                node(blockPacker);
-                node(payDeconstructor, () ->{
-                    node(payDestroyer, () -> {
-                        node(payEradicator);
-                    });
-                    node(blockForge, () -> {
-                        node(blockWorkshop, () -> {
-                            node(blockFactory);
-                        });
-                    });
-                });
-            });
-            node(blockUnloader, () -> {
-                node(blockUnpacker);
-            });
+            //todo re-add payload forge blocks when Anuke does so
         });
 
         margeNode(laserDrill, () -> {

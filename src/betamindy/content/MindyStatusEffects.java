@@ -25,7 +25,7 @@ import static betamindy.BetaMindy.hardmode;
 import static mindustry.Vars.tilesize;
 
 public class MindyStatusEffects implements ContentList {
-    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift, debugger,
+    public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift, debugger, cutsceneDrag,
     //drinks
     caffeinated, herbed, blossoming, flowered, glowing, absorbing, sporeSlimed,
     //inflicts
@@ -441,6 +441,12 @@ public class MindyStatusEffects implements ContentList {
 
         sporeSlimed = new LayerStatusEffect("spore-slimed"){{
             color = Pal2.sporeSlime;
+        }};
+
+        cutsceneDrag = new StatusEffect("cutscene-drag"){{
+            dragMultiplier = 2.5f;
+            healthMultiplier = 2f;
+            color = Color.clear;
         }};
     }
 }

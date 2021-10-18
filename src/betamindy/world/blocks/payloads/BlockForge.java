@@ -1,5 +1,6 @@
 package betamindy.world.blocks.payloads;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -22,9 +23,11 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
+@Deprecated
 public class BlockForge extends PayloadAcceptor{
     public float buildSpeed = 0.4f;
     public int minBlockSize = 1, maxBlockSize = 2;
+    public Block replacement = null;
 
     public BlockForge(String name){
         super(name);
@@ -102,6 +105,11 @@ public class BlockForge extends PayloadAcceptor{
 
         @Override
         public void updateTile(){
+            if(replacement != null){
+                kill();
+                final Tile t = tile;
+                Core.app.post(() -> t.setBlock(replacement, team, rotation));
+            }
             boolean produce = recipe != null && consValid() && payload == null;
 
             if(produce){

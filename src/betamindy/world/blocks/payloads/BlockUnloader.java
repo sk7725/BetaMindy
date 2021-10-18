@@ -1,10 +1,13 @@
 package betamindy.world.blocks.payloads;
 
+import arc.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.world.*;
 
 import static mindustry.Vars.*;
 
+@Deprecated
 public class BlockUnloader extends BlockLoader{
 
     public BlockUnloader(String name){
@@ -25,6 +28,11 @@ public class BlockUnloader extends BlockLoader{
 
         @Override
         public void updateTile(){
+            if(replacement != null){
+                kill();
+                final Tile t = tile;
+                Core.app.post(() -> t.setBlock(replacement, team, rotation));
+            }
             if(shouldExport()){
                 moveOutPayload();
             }else if(moveInPayload()){

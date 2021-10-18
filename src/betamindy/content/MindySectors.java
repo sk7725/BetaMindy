@@ -24,7 +24,7 @@ public class MindySectors implements ContentList {
             difficulty = 0;
             startWaveTimeMultiplier = 0.1f;
             useAI = false;
-            //todo disable ui popup (the resources thingy)
+            showSectorLandInfo = false;
         }};
     }
 }

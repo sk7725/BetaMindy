@@ -17,23 +17,6 @@ public class OverWriter implements ContentList{
 
     @Override
     public void load(){
-        //region contents
-
-        forceOverWrite(blockForge, (Block t) -> {
-            t.buildVisibility = BuildVisibility.shown;
-            t.category = Category.crafting;
-        });
-
-        forceOverWrite(blockLoader, (Block t) -> {
-            t.buildVisibility = BuildVisibility.shown;
-            t.category = Category.distribution;
-        });
-
-        forceOverWrite(blockUnloader, (Block t) -> {
-            t.buildVisibility = BuildVisibility.shown;
-            t.category = Category.distribution;
-        });
-
-        //endregion
+        //nothing to do currently
     }
 }

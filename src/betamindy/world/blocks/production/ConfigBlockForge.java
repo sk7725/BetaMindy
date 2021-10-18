@@ -8,6 +8,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import betamindy.world.blocks.payloads.*;
 
+@Deprecated
 public class ConfigBlockForge extends BlockForge{
     protected int[] minSizes = {1, 3, 5};
     protected int[] maxSizes = {2, 4, 6};

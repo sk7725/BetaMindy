@@ -9,18 +9,21 @@ import arc.scene.actions.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
-import betamindy.type.*;
 import betamindy.util.*;
+import betamindy.world.blocks.storage.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 
 import java.util.*;
@@ -65,6 +68,20 @@ public class LoreManual extends Block {
         drawDisabled = false;
         canOverdrive = false;
         targetable = false;
+        config(Integer.class, (LoreManualBuild entity, Integer value) -> {
+            if(!state.isEditor()) return;
+            Building other = world.build(value);
+            boolean contains = entity.links.contains(value);
+
+            if(contains){
+                //unlink
+                entity.links.removeValue(value);
+            }else if(linkValid(entity, other)){
+                if(!entity.links.contains(other.pos())){
+                    entity.links.add(other.pos());
+                }
+            }
+        });
     }
 
     public static boolean loreAdded(int id){
@@ -85,20 +102,25 @@ public class LoreManual extends Block {
         bars.remove("health");
     }
 
+    public boolean linkValid(Building tile, Building link){
+        return tile != link && link != null;
+    }
+
     public class LoreManualBuild extends Building{
         public @Nullable Cutscene playing = null;
         public boolean cutsceneInit = false;
         public @Nullable Unit scanning = null;
         public float scanTime = 0f, heat;
+        public IntSeq links = new IntSeq();
 
         @Override
         public void updateTile(){
-            if((uwu || state.isCampaign()) && (headless || !renderer.isCutscene())){
+            if((uwu || state.isCampaign()) && (headless || !renderer.isCutscene()) && !state.isEditor()){
                 if(playing == null){
                     if(uwu && !cutsceneInit) loreAdded(0); //todo remove
                     if(!cutsceneInit && settings.getBool(loreCutsceneTag, true)){
                         if(cutscenes.containsKey(settings.getInt(loreQueueTag, 0))){
-                            ui.hudGroup.actions(Actions.alpha(0f, 0.17f));
+                            Useful.cutscene(Tmp.v5.set(camera.position), true); //initialize cutscene
                             playing = cutscenes.get(settings.getInt(loreQueueTag, 0));
                             playing.init();
                         }
@@ -120,14 +142,32 @@ public class LoreManual extends Block {
             if(scanning != null){
                 if(scanning.dead() || !scanning.isValid() || !scanning.within(this, scanRange)){
                     scanning = null;
+                    return;
                 }
                 else if(scanTime > 400f){
                     if(scanning.team == team){
                         buildDialog();
                     }
                     scanning = null;
+                    return;
                 }
                 else scanTime += delta();
+
+                for(int i = 0; i < links.size; i++){
+                    Building b = world.build(links.get(i));
+                    if(b != null && b.isValid()){
+                        b.control(LAccess.enabled, scanTime > 200f ? 1 : 0, 0, 0, 0);
+                        if(scanTime > 200f && b instanceof Turret.TurretBuild turret){
+                            turret.control(LAccess.shootp, scanning, (scanTime > 300f && scanning.team != team) ? 1 : 0, 0, 0);
+                        }
+                    }
+                }
+            }
+            else{
+                for(int i = 0; i < links.size; i++){
+                    Building b = world.build(links.get(i));
+                    if(b != null && b.isValid()) b.control(LAccess.enabled, 0, 0, 0, 0);
+                }
             }
 
             heat = Mathf.lerpDelta(heat, scanning == null ? 0f : 1f, 0.05f);
@@ -158,7 +198,7 @@ public class LoreManual extends Block {
             Draw.rect("scorch-0-1", x + 3f, y + 2f);
 
             if(scanning != null){
-                Draw.z(Layer.effect + 0.01f);
+                Draw.z(Layer.overlayUI + 0.01f);
                 if(scanTime > 300f){
                     if(scanning.team == team) drawPlaceText(bundle.get("scan.granted"), tile.x, tile.y, true);
                     else drawPlaceText(bundle.get("scan.deny"), tile.x, tile.y, false);
@@ -246,7 +286,50 @@ public class LoreManual extends Block {
 
             Fill.square(px, py, 1.8f + Mathf.absin(Time.time, 2.2f, 1.1f), ang + 45);
 
+            float f0 = Draw.getColor().a;
             Draw.reset();
+            Draw.z(Layer.effect + 0.005f);
+            Lines.stroke(f0, scanning.team.color);
+            float f1 = Interp.exp10Out.apply(Mathf.clamp(scanTime / 50f));
+            float f2 = Interp.exp10Out.apply(Mathf.clamp(scanTime / 50f - 1f));
+            float s = scanning.hitSize + 12f;
+            Lines.rect(scanning.x - s * f1 * f0 / 2f, scanning.y - s * f2 * f0 / 2f, s * f1 * f0, s * f2 * f0);
+            Draw.z(Layer.buildBeam);
+            Lines.stroke(f2 * Mathf.clamp((250f - scanTime) / 50f) * 4f);
+            Tmp.v3.set(scanning.x, scanning.y + Mathf.sin(18f, f1 * s / 2f - 4f));
+            Lines.lineAngleCenter(Tmp.v3.x, Tmp.v3.y, 0f, s - 4f);
+            Draw.z(Layer.effect + 0.005f);
+
+            float ox = scanning.x - (s / 2f + 1f) * f0;
+            float isize = 7f * f0;
+            if(scanTime > 80f){
+                Draw.color(flameColor);
+                float t = (scanTime - 80f) % 40f / 40f;
+                Lines.stroke(1f - t);
+                Lines.circle(ox - isize / 2f, scanning.y + (s / 2f - 0.5f) - isize / 2f, t * (isize / 2f + 0.5f));
+            }
+
+            Draw.color();
+            Draw.mixcol(scanning.team.color, 1f);
+            Draw.rect(atlas.find("team-" + scanning.team.name, scanning.icon()), ox - isize / 2f, scanning.y + (s / 2f - 0.5f) - isize / 2f,
+                    isize * frac(80f, 20f), isize * (0.2f + 0.8f * frac(100f, 20f)), 0f);
+            Draw.mixcol();
+            Lines.stroke(1f);
+            drawBar(ox, scanning.y - (s / 2f) + 1f, f0 * frac(100f, 40f) * (Mathf.absin(Time.time - 1f, 8f, 10f) + 3f));
+            drawBar(ox, scanning.y - (s / 2f) + 3f, f0 * frac(120f, 30f) * (Mathf.absin(-Time.time, 13f, 8f) + 8f));
+            drawBar(ox, scanning.y - (s / 2f) + 5f, f0 * frac(140f, 20f) * (Mathf.absin(Time.time - 2f, 11f, 2f) + 12f));
+            Draw.color();
+        }
+
+        public float frac(float start, float duration){
+            return Interp.exp10Out.apply(Mathf.clamp((scanTime - start) / duration));
+        }
+
+        public void drawBar(float x, float y, float len){
+            Draw.color(flameColor);
+            Lines.lineAngle(x, y, 180f, len);
+            Draw.color(scanning.team.color);
+            Lines.lineAngle(x, y, 180f, Mathf.absin(Mathf.cos(Time.time, 9f, 6.28f), 1f, len * 0.8f));
         }
 
         public void buildDialog(){
@@ -256,6 +339,7 @@ public class LoreManual extends Block {
         @Override
         public boolean shouldShowConfigure(Player player){
             if(!super.shouldShowConfigure(player) || playing != null) return false;
+            if(state.isEditor()) return true;
             if(scanning == null && player.dst2(this) <= scanRange * scanRange){
                 configure(true);
                 return false;
@@ -268,8 +352,45 @@ public class LoreManual extends Block {
         }
 
         @Override
+        public boolean onConfigureTileTapped(Building other){
+            if(!net.active() && state.isEditor() && linkValid(this, other)){
+                configure(other.pos());
+                return false;
+            }
+            return true;
+        }
+
+        @Override
         public void drawSelect(){
+            if(playing != null) return;
             Drawf.dashCircle(x, y, scanRange, Tmp.c3.set(Pal2.esoterum).a(Mathf.absin(Time.globalTime, 8f, 1f)));
+        }
+
+        void squares(Building b, Color color){
+            float radius = b.block.size * tilesize / 2f;
+            Lines.stroke(3f, Pal.gray);
+            Lines.square(b.x, b.y, radius + 1f);
+            Lines.stroke(1f, color);
+            Lines.square(b.x, b.y, radius);
+        }
+
+        @Override
+        public void drawConfigure(){
+            if(!state.isEditor()) return;
+            squares(this, Pal2.coin);
+
+            for(int i = 0; i < links.size; i++){
+                Building link = world.build(links.get(i));
+
+                if(link != this && linkValid(this, link)){
+                    boolean linked = links.indexOf(link.pos()) >= 0;
+                    if(linked){
+                        squares(link, flameColor);
+                    }
+                }
+            }
+
+            Draw.reset();
         }
 
         @Override
@@ -291,6 +412,37 @@ public class LoreManual extends Block {
 
         @Override
         public void damage(float damage){
+        }
+
+        @Override
+        public boolean canPickup(){
+            return false;
+        }
+
+        @Override
+        public byte version(){
+            return 2;
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.s(links.size);
+            for(int i = 0; i < links.size; i++){
+                write.i(links.get(i));
+            }
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            if(revision < 2) return;
+            links.clear();
+            short amount = read.s();
+            for(int i = 0; i < amount; i++){
+                links.add(read.i());
+            }
         }
     }
 
@@ -414,13 +566,15 @@ public class LoreManual extends Block {
     public class EnemyScanFail extends Cutscene {
         public final float[][] path = { //(moveto) x, y, duration || (lookat) x, y, -duration
                 {50f, 200f, 30f}, //off-screen
-                {65f, -30f, 150f},
-                {65f, -30f, 45f},
+                {45f, -25f, 150f},
+                {0f, 45f},
                 {0f, 0f, -50f},
-                {19f, -19f, 50f},
+                {25f, -25f, 50f},
                 {0f},
-                {16f, -16f, 50f},
-                {0f, 0f, -350f},
+                {0f, 50f},
+                {0f, 0f, -300f},
+                {250f, -10f, 120f, 1f}, //at frame 300, the sentry goes brr
+                {0f, 60f}, //killed by cutscene gun
         };
 
         public float duration = 600;
@@ -429,6 +583,7 @@ public class LoreManual extends Block {
         protected float playtime = 0f, pathtime = 0f, px, py;
         protected Unit u = null;
         protected int pathi = 0;
+        protected @Nullable Cutscene panner = null;
 
         public EnemyScanFail(){
         }
@@ -441,19 +596,23 @@ public class LoreManual extends Block {
             u.set(world.width() * tilesize - 30f, world.height() * tilesize - 30f);
             px = u.x; py = u.y;
             u.rotation = 0f;
+
             Events.fire(new EventType.UnitCreateEvent(u, null, null));
             if(!Vars.net.client()){
                 u.add();
+                u.apply(StatusEffects.unmoving, 999999f);
+                u.apply(StatusEffects.disarmed, 999999f);
+                u.apply(MindyStatusEffects.cutsceneDrag, 999999f);
             }
         }
 
         @Override
         public boolean update(LoreManualBuild build){
             if(playtime >= duration && pathi >= path.length){
-                u.remove();
+                if(!u.dead) u.remove();
                 return true;
             }
-            if(u == null || u.dead) return false; //should not happen
+            if(u == null) return false; //should not happen
 
             if(pathi < path.length){
                 if(path[pathi].length == 1){//scan
@@ -461,34 +620,63 @@ public class LoreManual extends Block {
                     build.scanTime = 0f;
                     pathi++;
                     pathtime = 0;
+                    panner = new FocusCutscene(300f, -1f, 290f){{
+                        offsetY = -15f;
+                    }};
+                    panner.init();
                     return false;
                 }
-
-                float d = path[pathi][2];
-                boolean rot = false;
-                if(d < 0){
-                    rot = true;
-                    d *= -1;
-                }
-                pathtime += Time.delta;
-                if(pathtime >= d){
-                    if(!rot){
-                        u.set(Tmp.v2.set(build.x + path[pathi][0], build.y + path[pathi][1]));
-                        u.impulse(Tmp.v1.trns(u.rotation, 4f)); //make it seem natural
+                else if(path[pathi].length == 2){//wait
+                    if(pathtime >= path[pathi][1]){
+                        pathi++;
+                        pathtime = 0;
+                        return false;
                     }
-                    pathi++;
-                    pathtime = 0;
-                    px = u.x;
-                    py = u.y;
+                    pathtime += Time.delta;
                 }
-                else{
-                    if(rot) u.rotation = Angles.moveToward(u.rotation, u.angleTo(build.x + path[pathi][0], build.y + path[pathi][1]), (180f / d) * Time.delta);
+                else{//move
+                    float d = path[pathi][2];
+                    boolean rot = false;
+                    if(d < 0){
+                        rot = true;
+                        d *= -1;
+                    }
+                    pathtime += Time.delta;
+                    if(u.dead){
+                        if(pathtime >= d){
+                            pathi++;
+                            pathtime = 0;
+                        }
+                        return false;
+                    }
+                    if(pathtime >= d){
+                        if(!rot && pathi != 0 && path[pathi].length != 4){
+                            u.set(Tmp.v2.set(build.x + path[pathi][0], build.y + path[pathi][1]));
+                            Tmp.v3.set(Tmp.v2).sub(px, py);
+                            u.vel.trns(Tmp.v3.angle(), Tmp.v3.len() / d);
+                        }
+                        pathi++;
+                        pathtime = 0;
+                        px = u.x;
+                        py = u.y;
+                    }
                     else{
-                        u.lookAt(build.x + path[pathi][0], build.y + path[pathi][1]);
-                        u.set(Tmp.v1.set(px, py).lerp(Tmp.v2.set(build.x + path[pathi][0], build.y + path[pathi][1]), pathtime / d));
+                        if(rot) u.rotation = Angles.moveToward(u.rotation, u.angleTo(build.x + path[pathi][0], build.y + path[pathi][1]), (180f / d) * Time.delta);
+                        else if(path[pathi].length == 4){
+                            float r = Angles.moveToward(u.rotation, u.angleTo(build.x + path[pathi][0], build.y + path[pathi][1]), 10f * Time.delta);
+                            u.rotation = r;
+                            u.vel.trns(r, path[pathi][3]); //run for it
+                            Useful.cutscene(Tmp.v6.set(camera.position).lerp(Tmp.v2.set(build).lerp(u, 0.5f), Mathf.clamp(playtime / (d / 2f))));
+                        }
+                        else{
+                            u.vel.setZero();
+                            u.rotation = Angles.moveToward(u.rotation, u.angleTo(build.x + path[pathi][0], build.y + path[pathi][1]), 10f * Time.delta);
+                            u.set(Tmp.v1.set(px, py).lerp(Tmp.v2.set(build.x + path[pathi][0], build.y + path[pathi][1]), pathtime / d));
+                        }
                     }
                 }
             }
+            if(panner != null && panner.update(build)) panner = null;
 
             playtime += Time.delta;
             return false;
