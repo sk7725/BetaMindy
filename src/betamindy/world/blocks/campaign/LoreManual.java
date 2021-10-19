@@ -574,7 +574,7 @@ public class LoreManual extends Block {
                 {0f, 50f},
                 {0f, 0f, -300f},
                 {250f, -10f, 120f, 1f}, //at frame 300, the sentry goes brr
-                {0f, 60f}, //killed by cutscene gun
+                {0f, 30f}, //killed by cutscene gun
         };
 
         public float duration = 600;
@@ -621,7 +621,8 @@ public class LoreManual extends Block {
                     pathi++;
                     pathtime = 0;
                     panner = new FocusCutscene(300f, -1f, 290f){{
-                        offsetY = -15f;
+                        offsetY = 15f;
+                        offsetX = 12f;
                     }};
                     panner.init();
                     return false;

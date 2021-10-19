@@ -270,7 +270,7 @@ public class Useful {
         });
         if(striping){
             striping = false;
-            ui.hudGroup.actions(Actions.delay(0.6f), Actions.alpha(1f, 0.17f));
+            ui.hudGroup.actions(Actions.delay(0.9f), Actions.alpha(1f, 0.17f));
         }
     }
 

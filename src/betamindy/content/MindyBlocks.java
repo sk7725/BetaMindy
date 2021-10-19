@@ -32,6 +32,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.*;
@@ -52,11 +53,11 @@ public class MindyBlocks implements ContentList {
             borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
             chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
             //lore - shar
-            esotManual, fallenFlare, fallenAlpha, fallenMono, sentryGun,
+            esotManual, fallenFlare, fallenAlpha, fallenMono, fallenHorizon, sentryGun, baseFloor1, baseFloor2, baseFloor3, baseFloor4,
     //ores
     oreScalar, oreVector, oreTensor,
     //payloads
-    payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator, grandConstructor, payloadPacker, payloadUnpacker,
+    payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator, grandConstructor, payloadPacker, payloadUnpacker, payloadRail,
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog, capacitor, megaCapacitor,
     //effect
@@ -879,6 +880,12 @@ public class MindyBlocks implements ContentList {
             maxBlocks = 120;
             consumes.power(0.3f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
+        }};
+
+        payloadRail = new PayloadConveyor("payload-rail"){{
+            requirements(Category.units, with(Items.graphite, 5, Items.copper, 5));
+            canOverdrive = false;
+            size = 1;
         }};
 
         silo = new StorageBlock("silo"){
@@ -1801,6 +1808,9 @@ public class MindyBlocks implements ContentList {
         fallenFlare = new FallenUnit("fallen-flare");
         fallenMono = new FallenUnit("fallen-mono"){{
             unitName = "mono";
+        }};
+        fallenHorizon = new FallenUnit("fallen-horizon"){{
+            unitName = "horizon";
         }};
         fallenAlpha = new FallenUnit("fallen-alpha"){{
             unitName = "alpha";
