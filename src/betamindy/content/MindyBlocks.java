@@ -69,7 +69,7 @@ public class MindyBlocks implements ContentList {
     //units
     boostPad, rejuvenator, bumper, bumperPlus, bumperBlue, fan, fanMega, clearPipe, clearDuct, claw, phaseClaw, driftPad, teleportPad, portalPad, yutnori,
     //logic
-    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule, noteBlock, starNoteBlock, sfxBlock,
+    linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule, noteBlock, starNoteBlock, sfxBlock, filterDome,
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, astro, magicTurret, credit, taxation, brokerage, mortgage,
     //power
@@ -1206,6 +1206,12 @@ public class MindyBlocks implements ContentList {
                     new Instrument("Shatter", MindySounds.shatter),
                     new Instrument("Wind3", Sounds.wind3)
             };
+        }};
+
+        filterDome = new FilterDome("filter-dome"){{
+            requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.plastanium, 10));
+            size = 2;
+            consumes.power(0.5f);
         }};
 
         pen = new Pen("pen"){{

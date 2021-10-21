@@ -48,6 +48,7 @@ public class BetaMindy extends Mod{
     public static boolean uwu = OS.username.equals("sunny");
     public static boolean inventoryUI = false;
     //public static UnitGravity gravity = new UnitGravity();
+    public static MFilters filters = new MFilters();
 
     private final ContentList[] mindyContent = {
         new OverWriter(),
@@ -168,7 +169,10 @@ public class BetaMindy extends Mod{
         hardmode.init();
         Events.run(Trigger.update, () -> {
             if(state.isPlaying()) hardmode.update();
-            musics.update();
+            if(!headless){
+                musics.update();
+                filters.update();
+            }
             //later, stashed for now
             //gravity.update();
         });
