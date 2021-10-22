@@ -5,6 +5,7 @@ import arc.audio.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.util.*;
+import betamindy.graphics.*;
 import mindustry.*;
 import mindustry.graphics.*;
 
@@ -19,9 +20,30 @@ public class MFilters {
             new FilterModule("Wet", new Filters.BiquadFilter(){{
                 set(0, 500, 1);
             }}, Color.royal),
-            new FilterModule("Lofi", new Filters.LofiFilter(){{
+            new FilterModule("Noise", new Filters.LofiFilter(){{
                 set(8000, 5);
-            }}, Pal.heal)
+            }}, Pal.sapBullet),
+            new FilterModule("Flanger", new Filters.FlangerFilter(){{
+                set(0.005f, 10);
+            }}, Pal.accent),
+            new FilterModule("BassBoost", new Filters.BassBoostFilter(){{
+                set(6f);
+            }}, Pal.lightishGray),
+            new FilterModule("Square", new Filters.RobotizeFilter(){{
+                set(500, 0); //0-square 1-saw 2-sine 3-tri 4-absin 5-s(1/4sine) 6-si(1/2sine) 7-bettersq 8-bettersaw
+            }}, Pal.heal),
+            new FilterModule("Saw", new Filters.RobotizeFilter(){{
+                set(500, 1);
+            }}, Pal2.portal),
+            new FilterModule("Sine", new Filters.RobotizeFilter(){{
+                set(500, 2);
+            }}, Color.cyan),
+            new FilterModule("FSquare", new Filters.RobotizeFilter(){{
+                set(500, 7);
+            }}, Color.green),
+            new FilterModule("FSaw", new Filters.RobotizeFilter(){{
+                set(500, 8);
+            }}, Pal2.portalBack)
     };
 
     public MFilters(){

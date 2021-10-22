@@ -52,7 +52,7 @@ public class FilterDome extends Block {
 
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
-        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.logicBlocks);
+        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.sapBullet);
     }
 
     public class FilterDomeBuild extends Building {
@@ -103,7 +103,7 @@ public class FilterDome extends Block {
                 Lines.circle(x, y, r);
                 float f = Time.time % waveInterval / waveInterval;
                 Lines.stroke(14f * (1f - f));
-                Draw.alpha(1 - f);
+                Draw.alpha(0.8f * (1 - f));
                 Lines.circle(x, y, r * f * fr);
                 Draw.z(Layer.effect);
                 Draw.color(realColor());
@@ -117,7 +117,7 @@ public class FilterDome extends Block {
 
         @Override
         public void drawSelect(){
-            Drawf.dashCircle(x, y, r, realColor());
+            Drawf.dashCircle(x, y, range, realColor());
             drawPlaceText(filters.filters[filter].name, tile.x, tile.y, true);
             Draw.reset();
         }
@@ -126,10 +126,10 @@ public class FilterDome extends Block {
         public void buildConfiguration(Table table){
             //todo better ui
             table.table(Tex.pane, t -> {
-                t.button(Icon.downOpen, Styles.cleari, () -> {
+                t.button(Icon.downOpen, Styles.clearTransi, () -> {
                     configure(filter - 1);
                 }).size(45).disabled(but -> filter <= 0);
-                t.button(Icon.upOpen, Styles.cleari, () -> {
+                t.button(Icon.upOpen, Styles.clearTransi, () -> {
                     configure(filter + 1);
                 }).size(45).disabled(but -> filter >= filters.filters.length - 1);
             });
