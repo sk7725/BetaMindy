@@ -20,6 +20,9 @@ public class MFilters {
             new FilterModule("Wet", new Filters.BiquadFilter(){{
                 set(0, 500, 1);
             }}, Color.royal),
+            new FilterModule("Dry", new Filters.BiquadFilter(){{
+                set(1, 500, 1);
+            }}, Color.orange),
             new FilterModule("Noise", new Filters.LofiFilter(){{
                 set(8000, 5);
             }}, Pal.sapBullet),
@@ -33,7 +36,7 @@ public class MFilters {
                 set(0.005f, 10);
             }}, Pal.accent),
             new FilterModule("Cursed", new Filters.BassBoostFilter(){{
-                set(10f); //"ours go up to 11"
+                set(9f); //"ours go up to 11"
             }}, Pal.remove)
             //i dont think these work
             /*
