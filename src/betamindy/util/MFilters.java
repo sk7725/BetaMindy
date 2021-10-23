@@ -23,27 +23,36 @@ public class MFilters {
             new FilterModule("Noise", new Filters.LofiFilter(){{
                 set(8000, 5);
             }}, Pal.sapBullet),
-            new FilterModule("Flanger", new Filters.FlangerFilter(){{
-                set(0.005f, 10);
-            }}, Pal.accent),
             new FilterModule("BassBoost", new Filters.BassBoostFilter(){{
                 set(6f);
             }}, Pal.lightishGray),
+            new FilterModule("Echo", new Filters.EchoFilter(){{
+                set(0.5f, 0.8f, 0.95f);
+            }}, Pal.lancerLaser),
+            new FilterModule("Flanger", new Filters.FlangerFilter(){{
+                set(0.005f, 10);
+            }}, Pal.accent),
+            new FilterModule("Cursed", new Filters.BassBoostFilter(){{
+                set(10f); //"ours go up to 11"
+            }}, Pal.remove)
+            //i dont think these work
+            /*
             new FilterModule("Square", new Filters.RobotizeFilter(){{
-                set(500, 0); //0-square 1-saw 2-sine 3-tri 4-absin 5-s(1/4sine) 6-si(1/2sine) 7-bettersq 8-bettersaw
+                set(50, 0); //0-square 1-saw 2-sine 3-tri 4-absin 5-s(1/4sine) 6-si(1/2sine) 7-bettersq 8-bettersaw
             }}, Pal.heal),
             new FilterModule("Saw", new Filters.RobotizeFilter(){{
-                set(500, 1);
+                set(20, 1);
             }}, Pal2.portal),
             new FilterModule("Sine", new Filters.RobotizeFilter(){{
-                set(500, 2);
+                set(5000, 2);
             }}, Color.cyan),
             new FilterModule("FSquare", new Filters.RobotizeFilter(){{
-                set(500, 7);
+                set(5, 7);
             }}, Color.green),
             new FilterModule("FSaw", new Filters.RobotizeFilter(){{
-                set(500, 8);
+                set(30, 8);
             }}, Pal2.portalBack)
+             */
     };
 
     public MFilters(){

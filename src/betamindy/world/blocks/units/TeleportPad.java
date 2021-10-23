@@ -237,5 +237,10 @@ public class TeleportPad extends Block {
             Sounds.click.at(this);
             return false;
         }
+
+        @Override
+        public boolean canPickup(){
+            return false;
+        }
     }
 }

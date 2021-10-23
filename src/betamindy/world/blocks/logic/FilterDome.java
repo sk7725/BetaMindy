@@ -11,6 +11,7 @@ import betamindy.graphics.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.logic.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
@@ -22,7 +23,7 @@ import static mindustry.Vars.*;
 public class FilterDome extends Block {
     public float range = 120f;
     public float waveInterval = 120f;
-    public TextureRegion topRegion;
+    public TextureRegion topRegion, lightRegion;
 
     public FilterDome(String name){
         super(name);
@@ -42,6 +43,7 @@ public class FilterDome extends Block {
     public void load(){
         super.load();
         topRegion = atlas.find(name + "-top");
+        lightRegion = atlas.find(name + "-light");
     }
 
     @Override
@@ -105,12 +107,19 @@ public class FilterDome extends Block {
                 Lines.stroke(14f * (1f - f));
                 Draw.alpha(0.8f * (1 - f));
                 Lines.circle(x, y, r * f * fr);
+
+                Draw.z(Layer.block + 1f);
+                Draw.color(realColor(), Mathf.absin(9f, fr));
+                Draw.blend(Blending.additive);
+                Draw.rect(topRegion, x, y);
+                Draw.blend();
+
                 Draw.z(Layer.effect);
                 Draw.color(realColor());
                 Lines.stroke(Mathf.absin(8f, 1.5f) * fr);
                 Lines.square(x, y, size * tilesize / 2f);
                 Draw.alpha(fr);
-                Draw.rect(topRegion, x, y);
+                Draw.rect(lightRegion, x, y);
                 Draw.reset();
             }
         }
@@ -150,6 +159,35 @@ public class FilterDome extends Block {
         public void read(Reads read, byte revision){
             super.read(read, revision);
             filter = read.s();
+        }
+
+        @Override
+        public double sense(LAccess sensor){
+            return switch(sensor){
+                case heat -> heat;
+                case config -> filter;
+                default -> super.sense(sensor);
+            };
+        }
+
+        @Override
+        public Object senseObject(LAccess sensor) {
+            return switch(sensor){
+                //senseObject takes priority over sense unless it is a noSensed
+                case config -> noSensed;
+                default -> super.senseObject(sensor);
+            };
+        }
+
+        @Override
+        public void control(LAccess type, double p1, double p2, double p3, double p4){
+            if(type == LAccess.config){
+                int whole = (int)Math.round(p1);
+                if(whole < 0 || whole >= filters.filters.length){
+                    return;
+                }
+                configure(whole);
+            }
         }
     }
 }

@@ -86,6 +86,13 @@ public class Drawm {
         Drawf.tri(x, y, width, size, r+270f);
     }
 
+    public static void sparks(int sides, float x, float y, float size, float width, float r){
+        float f = 360f / (float)sides;
+        for(int i = 0; i < sides; i++){
+            Drawf.tri(x, y, width, size, r + i * f);
+        }
+    }
+
     public static void shard(float x, float y, float size, float width, float r){
         Drawf.tri(x, y, width, size, r);
         Drawf.tri(x, y, width, size, r+180f);
