@@ -568,7 +568,8 @@ public class MindyBlocks implements ContentList {
             inaccuracy = 5f;
             shootCone = 50f;
             liquidCapacity = 10f;
-            shootEffect = MindyFx.sniperShoot; //todo
+            shootEffect = MindyFx.sequenceShoot;
+            smokeEffect = MindyFx.sequenceSmoke;
             range = 190f;
             health = 150 * size * size;
             extinguish = false;

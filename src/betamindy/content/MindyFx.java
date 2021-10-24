@@ -8,6 +8,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
+import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.logic.*;
 import mindustry.*;
@@ -1186,8 +1187,8 @@ public class MindyFx {
         circle(e.x, e.y, 4.8f * e.finpow() + 1f);
     }),
 
-    starHit = new Effect(25f, e -> {
-        float r = 7f;
+    sequenceStarHit = new Effect(25f, e -> {
+        float r = (e.data instanceof SequenceBulletType type) ? type.realRadius(e.rotation / 100f) : 9f;
         float a = Mathf.randomSeed(e.id, 360f);
         Color c = Drawm.starColor(e.rotation / 100f);
         stroke(e.fout() * r);
@@ -1202,5 +1203,25 @@ public class MindyFx {
         Draw.blend(Blending.additive);
         Draw.rect("circle-shadow", e.x, e.y, r * 5f, r * 5f, 0);
         Draw.blend();
-    });
+    }),
+
+    sequenceShoot = new Effect(17f, e -> {
+        float r = Mathf.randomSeed(e.id, 360f);
+        color(Drawm.starColors[0]);
+        randLenVectors(e.id, 3, e.finpow() * 17f + 2f, e.rotation, 30f, (x, y) -> {
+            spark(e.x + x, e.y + y, e.finpow() * 4f + 2f, 4f * e.fout() + 2f, r + Angles.angle(x, y));
+        });
+
+        stroke(4f * e.fout());
+        circle(e.x, e.y, e.finpow() * 7.5f);
+    }).layer(Layer.bullet - 0.01f),
+
+    sequenceSmoke = new Effect(30f, e -> {
+        color(Pal.lightishGray, Pal2.clearWhite, e.fin());
+        vgld[0] = 0;
+        randLenVectors(e.id, 8, e.finpow() * 17f + 6f, e.rotation, 110f, (x, y) -> {
+            vgld[0]++;
+            Fill.circle(e.x + x, e.y + y, (0.5f + e.fin()) * Mathf.randomSeed(e.id + vgld[0], 2f, 9f));
+        });
+    }).layer(Layer.bullet - 0.011f);
 }

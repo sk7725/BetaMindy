@@ -83,8 +83,8 @@ public class SentryTurret extends Turret {
                 drawTurret((1f - h) * 0.6f, Mathf.clamp(h * 2f - 1f));
                 Draw.z(Layer.floor + 0.03f);
                 float f = 1f - Mathf.clamp(h * 2f);
-                Draw.rect(leftFlap, x - h * 8f, y, leftFlap.width * Draw.scl * Draw.xscl * f, leftFlap.height * Draw.scl * Draw.yscl);
-                Draw.rect(rightFlap, x + h * 8f, y, rightFlap.width * Draw.scl * Draw.xscl * f, rightFlap.height * Draw.scl * Draw.yscl);
+                Draw.rect(leftFlap, x - h * 10f, y, leftFlap.width * Draw.scl * Draw.xscl * f, leftFlap.height * Draw.scl * Draw.yscl);
+                Draw.rect(rightFlap, x + h * 10f, y, rightFlap.width * Draw.scl * Draw.xscl * f, rightFlap.height * Draw.scl * Draw.yscl);
             }
             else{
                 float h = (activeHeat - 0.6f) / 0.4f;

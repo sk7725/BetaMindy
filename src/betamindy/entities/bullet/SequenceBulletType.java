@@ -3,20 +3,17 @@ package betamindy.entities.bullet;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.util.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.blocks.environment.*;
 
 public class SequenceBulletType extends BulletType {
-    public float radius = 7f;
-    public Effect realHitEffect = MindyFx.starHit;
+    public float radius = 9f;
+    public Effect realHitEffect = MindyFx.sequenceStarHit;
 
     public SequenceBulletType(float speed, float damage){
         this.speed = speed;
@@ -41,6 +38,10 @@ public class SequenceBulletType extends BulletType {
         return Drawm.starColor(b.fin());
     }
 
+    public float realRadius(float f){
+        return radius * (0.5f + f * f * 0.5f);
+    }
+
     public void setDamage(Bullet b){
         b.damage = damage * b.damageMultiplier() * (1f + 5f * b.fin());
     }
@@ -59,7 +60,7 @@ public class SequenceBulletType extends BulletType {
 
     @Override
     public void hit(Bullet b, float x, float y){
-        realHitEffect.at(x, y, b.fin() * 100f);
+        realHitEffect.at(x, y, b.fin() * 100f, this);
         setDamage(b);
         super.hit(b, x, y);
     }
@@ -77,7 +78,9 @@ public class SequenceBulletType extends BulletType {
     @Override
     public void draw(Bullet b){
         Draw.color(realColor(b));
-        Fill.circle(b.x, b.y, radius);
+        Fill.circle(b.x, b.y, realRadius(b.fin()));
+        Draw.color(Drawm.starColor(b.fin() * 0.6f + 0.2f));
+        Draw.rect("circle-shadow", b.x, b.y, radius * 1.8f, radius * 1.8f, 0);
         float z = Draw.z();
         Draw.z(Layer.bullet - 1);
         Draw.color(realColor(b), b.fin());

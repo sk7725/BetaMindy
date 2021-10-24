@@ -36,7 +36,7 @@ import static mindustry.Vars.renderer;
 
 public class Drawm {
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
-    public static Color[] starColors = {Color.valueOf("f25555"), Pal.remove, Color.orange, Color.yellow, Color.white, Pal.lancerLaser, Color.sky, Color.valueOf("70d2ff"), Color.royal, Pal2.deepBlue};
+    public static Color[] starColors = {Pal2.deepRed, Pal2.deepRed, Pal.remove, Color.orange, Color.yellow, Color.white, Pal.lancerLaser, Color.sky, Color.valueOf("70d2ff"), Color.royal, Pal2.deepBlue};
 
     public static void construct(Building t, TextureRegion region, float rotation, float progress, float speed, float time, Color color){
         Shaders.build.region = region;
