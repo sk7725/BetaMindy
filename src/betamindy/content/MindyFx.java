@@ -1209,7 +1209,7 @@ public class MindyFx {
         float r = Mathf.randomSeed(e.id, 360f);
         color(Drawm.starColors[0]);
         randLenVectors(e.id, 3, e.finpow() * 17f + 2f, e.rotation, 30f, (x, y) -> {
-            spark(e.x + x, e.y + y, e.finpow() * 5f, 3.5f * e.fout() + 2f, r + Angles.angle(x, y));
+            spark(e.x + x, e.y + y, e.fout() * 5f, 3.5f * e.fout() + 2f, r + Angles.angle(x, y));
         });
 
         stroke(4f * e.fout());
@@ -1228,15 +1228,15 @@ public class MindyFx {
 
     shootStarFlame = new Effect(43f, 80f, e -> {
         randLenVectors(e.id, 8, e.finpow() * 63f, e.rotation, 11f, (x, y) -> {
-            color(Drawm.starColor(Mathf.clamp(Mathf.dst2(e.x, e.y, x, y) / (63f * 63f))));
+            color(Drawm.starColor(Mathf.clamp(Mathf.len(x, y) / 63f)));
             Fill.circle(e.x + x, e.y + y, 0.15f + e.fout() * 1.6f);
         });
 
-        z(Layer.bullet - 1);
+        z(Layer.effect + 1f);
         blend(Blending.additive);
         randLenVectors(e.id, 8, e.finpow() * 63f, e.rotation, 11f, (x, y) -> {
             float r = 0.65f + e.fout() * 1.6f;
-            color(Drawm.starColor(Mathf.clamp(Mathf.dst2(e.x, e.y, x, y) / (63f * 63f))), e.fout());
+            color(Drawm.starColor(Mathf.clamp(Mathf.len(x, y) / 63f)), e.fout());
             rect("circle-shadow", e.x + x, e.y + y, r * 4.4f, r * 4.4f, 0);
         });
         blend();
