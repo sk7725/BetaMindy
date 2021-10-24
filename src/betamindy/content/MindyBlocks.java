@@ -53,9 +53,9 @@ public class MindyBlocks implements ContentList {
             borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
             chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
             //lore - shar
-            esotManual, fallenFlare, fallenAlpha, fallenMono, fallenHorizon, sentryGun, baseFloor1, baseFloor2, baseFloor3, baseFloor4,
+            esotManual, fallenFlare, fallenAlpha, fallenMono, fallenHorizon, sentryGun, baseFloor1, baseFloor2, baseFloor3, baseFloor4, baseFloor5, baseGrid, labCryoFluid,
     //ores
-    oreScalar, oreVector, oreTensor,
+    oreScalar, oreVector, oreTensor, oreStarStone,
     //payloads
     payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator, grandConstructor, payloadPacker, payloadUnpacker, payloadRail,
     //pistons
@@ -71,7 +71,9 @@ public class MindyBlocks implements ContentList {
     //logic
     linkPin, heatSink, heatFan, heatSinkLarge, messageVoid, messageSource, nullifier, pen, starPen, colorModule, strokeModule, noteBlock, starNoteBlock, sfxBlock, filterDome,
     //turrets
-    hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, astro, magicTurret, credit, taxation, brokerage, mortgage,
+    hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, magicTurret, credit, taxation, brokerage, mortgage,
+            //campaign - shar
+            sequence, giant, astro, dwarf, blackHole,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight, buttonRouter, buttonDistributor,
     //crafting
@@ -230,7 +232,7 @@ public class MindyBlocks implements ContentList {
         starryWaterDeep = new Floor("starry-water-deep"){{
             speedMultiplier = 0.5f;
             variants = 0;
-            liquidDrop = Liquids.water;//todo alcohol
+            liquidDrop = MindyLiquids.siloxol;
             liquidMultiplier = 1.5f;
             isLiquid = true;
             status = StatusEffects.wet;
@@ -249,7 +251,7 @@ public class MindyBlocks implements ContentList {
             variants = 0;
             status = StatusEffects.wet;
             statusDuration = 90f;
-            liquidDrop = Liquids.water;
+            liquidDrop = MindyLiquids.siloxol;
             isLiquid = true;
             cacheLayer = MindyShaders.starryLayer;
             albedo = 0.9f;
@@ -263,7 +265,7 @@ public class MindyBlocks implements ContentList {
             variants = 0;
             status = StatusEffects.wet;
             statusDuration = 90f;
-            liquidDrop = Liquids.water;
+            liquidDrop = MindyLiquids.siloxol;
             isLiquid = true;
             cacheLayer = MindyShaders.starryLayer;
             albedo = 0.9f;
@@ -277,7 +279,7 @@ public class MindyBlocks implements ContentList {
             variants = 0;
             status = StatusEffects.wet;
             statusDuration = 90f;
-            liquidDrop = Liquids.water;
+            liquidDrop = MindyLiquids.siloxol;
             isLiquid = true;
             cacheLayer = MindyShaders.starryLayer;
             albedo = 0.9f;
@@ -291,7 +293,7 @@ public class MindyBlocks implements ContentList {
             variants = 0;
             status = StatusEffects.wet;
             statusDuration = 90f;
-            liquidDrop = Liquids.water;
+            liquidDrop = MindyLiquids.siloxol;
             isLiquid = true;
             cacheLayer = MindyShaders.starryLayer;
             albedo = 0.9f;
@@ -309,6 +311,36 @@ public class MindyBlocks implements ContentList {
             variants = 2;
             milksand.asFloor().decoration = this;
         }};
+
+        baseFloor1 = new Floor("base-floor-1", 0);
+        baseFloor2 = new Floor("base-floor-2", 0);
+        baseFloor3 = new Floor("base-floor-3", 0){{
+            blendGroup = baseFloor1;
+        }};
+        baseFloor4 = new Floor("base-floor-4", 0){{
+            blendGroup = baseFloor1;
+        }};
+        baseFloor5 = new Floor("base-floor-5", 0){{
+            blendGroup = baseFloor2;
+        }};
+        baseGrid = new Floor("base-grid", 2){{
+            blendGroup = baseFloor2;
+        }};
+        labCryoFluid = new Floor("lab-cryofluid"){{
+            status = StatusEffects.freezing;
+            statusDuration = 240f;
+            speedMultiplier = 0.75f;
+            variants = 0;
+            liquidDrop = Liquids.cryofluid;
+            liquidMultiplier = 0.5f;
+            isLiquid = true;
+            cacheLayer = CacheLayer.cryofluid;
+            blendGroup = baseFloor2;
+
+            emitLight = true;
+            lightRadius = 25f;
+            lightColor = Color.cyan.cpy().a(0.19f);
+        }};
         //endregion
 
         //ores
@@ -316,6 +348,11 @@ public class MindyBlocks implements ContentList {
             oreDefault = false;
             oreThreshold = 0.841f;
             oreScale = 25.580953f;
+        }};
+        oreStarStone = new OreBlock(MindyItems.starStone){{
+            oreDefault = false;
+            oreThreshold = 0.93f;
+            oreScale = 25.7f;
         }};
         oreVector = new OreBlock(MindyItems.vectorRaw){{
             oreDefault = false;
@@ -519,6 +556,23 @@ public class MindyBlocks implements ContentList {
                         reloadMultiplier = 0.65f;
                     }}
             );
+        }};
+
+        sequence = new LiquidTurret("sequence"){{
+            requirements(Category.turret, with(Items.copper, 50, MindyItems.scalar, 50, Items.metaglass, 10));
+            ammo(
+                    MindyLiquids.siloxol, MindyBullets.sequenceShot
+            );
+            size = 2;
+            reloadTime = 30f;
+            inaccuracy = 5f;
+            shootCone = 50f;
+            liquidCapacity = 10f;
+            shootEffect = MindyFx.sniperShoot; //todo
+            range = 190f;
+            health = 150 * size * size;
+            extinguish = false;
+            flags = EnumSet.of(BlockFlag.turret);
         }};
 
         astro = new UnitTurret("astro"){

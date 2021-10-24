@@ -26,5 +26,6 @@ public class Pal2 {
     path = Color.valueOf("ad986d"),
     inventory = Pal.lancerLaser,
     locked = Color.gray,
-    esoterum = Color.valueOf("8aadff");
+    esoterum = Color.valueOf("8aadff"),
+    deepBlue = Color.valueOf("554deb");
 }

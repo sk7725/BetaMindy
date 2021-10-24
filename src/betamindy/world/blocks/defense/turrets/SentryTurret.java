@@ -3,10 +3,13 @@ package betamindy.world.blocks.defense.turrets;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import mindustry.entities.bullet.*;
+import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+
+import static arc.Core.atlas;
 
 /**
  * Fires bolts guaranteed to kill the target. Used for cutscenes or as an unmovable obstacle, intentionally OP.
@@ -15,11 +18,22 @@ import mindustry.world.meta.*;
  */
 public class SentryTurret extends Turret {
     public BulletType shootType;
-    public TextureRegion flapRegion, leftFlap, rightFlap, holeRegion; //todo
+    public TextureRegion flapRegion, leftFlap, rightFlap, bottomRegion, topRegion; //todo
 
     public SentryTurret(String name){
         super(name);
         buildVisibility = BuildVisibility.editorOnly;
+        hasShadow = false;
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        topRegion = atlas.find(name + "-top");
+        leftFlap = atlas.find(name + "-left");
+        rightFlap = atlas.find(name + "-right");
+        bottomRegion = atlas.find(name + "-bottom");
+        flapRegion = atlas.find(name + "-closed");
     }
 
     @Override
@@ -42,9 +56,55 @@ public class SentryTurret extends Turret {
             if(unit != null){
                 unit.ammo(activeHeat > 0.99f ? unit.type().ammoCapacity : 0f);
             }
-            activeHeat = Mathf.lerpDelta(activeHeat, enabled && loreControlled ? 1f : 0f, 0.04f);
+            activeHeat = Mathf.lerpDelta(activeHeat, enabled && loreControlled ? 1f : 0f, 0.043f);
 
             super.updateTile();
+        }
+
+        @Override
+        public void draw(){
+            if(activeHeat > 0.95f){
+                //draw normally
+                Draw.z(Layer.block - 0.01f);
+                Drawf.shadow(baseRegion, x - elevation, y - elevation, 0f);
+                Draw.z(Layer.block);
+                super.draw();
+            }
+            else if(activeHeat < 0.01f){
+                //draw closed
+                Draw.z(Layer.floor + 0.02f);
+                Draw.rect(flapRegion, x, y);
+            }
+            else if(activeHeat < 0.6f){
+                float h = activeHeat / 0.6f;
+                Draw.z(Layer.floor + 0.01f);
+                Draw.rect(bottomRegion, x, y);
+                Draw.z(Layer.floor + 0.02f);
+                drawTurret((1f - h) * 0.6f, Mathf.clamp(h * 2f - 1f));
+                Draw.z(Layer.floor + 0.03f);
+                float f = 1f - Mathf.clamp(h * 2f);
+                Draw.rect(leftFlap, x - h * 8f, y, leftFlap.width * Draw.scl * Draw.xscl * f, leftFlap.height * Draw.scl * Draw.yscl);
+                Draw.rect(rightFlap, x + h * 8f, y, rightFlap.width * Draw.scl * Draw.xscl * f, rightFlap.height * Draw.scl * Draw.yscl);
+            }
+            else{
+                float h = (activeHeat - 0.6f) / 0.4f;
+                Draw.z(Layer.block - 0.01f);
+                Drawf.shadow(baseRegion, x - elevation * h, y - elevation * h, 0f);
+                Draw.z(Layer.block);
+                Draw.rect(baseRegion, x , y);
+                tr2.trns(rotation, -recoil);
+                Drawf.shadow(region, x + tr2.x - elevation * h, y + tr2.y - elevation * h, rotation - 90);
+                Draw.rect(region, x + tr2.x, y + tr2.y, rotation - 90);
+            }
+            Draw.z(Layer.floor + 0.04f);
+            Draw.rect(topRegion, x, y);
+        }
+
+        public void drawTurret(float off, float f){
+            Draw.rect(baseRegion, x - off, y - off);
+            tr2.trns(rotation, -recoil);
+            //Drawf.shadow(region, x + tr2.x - elevation * f - off, y + tr2.y - elevation * f - off, rotation - 90);
+            Draw.rect(region, x + tr2.x - off, y + tr2.y - off, rotation - 90);
         }
 
         @Override

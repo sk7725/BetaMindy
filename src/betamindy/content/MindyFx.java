@@ -1184,5 +1184,23 @@ public class MindyFx {
     noteRipple = new Effect(20f, e -> {
         stroke(e.fout() * 1.1f, NotePlayer.noteColor((int)e.rotation));
         circle(e.x, e.y, 4.8f * e.finpow() + 1f);
+    }),
+
+    starHit = new Effect(25f, e -> {
+        float r = 7f;
+        float a = Mathf.randomSeed(e.id, 360f);
+        Color c = Drawm.starColor(e.rotation / 100f);
+        stroke(e.fout() * r);
+        Draw.color(Color.white, c, e.fin());
+        Lines.circle(e.x, e.y, r - Lines.getStroke() / 2);
+        for(int i = 0; i < 4; i++){
+            Tmp.v1.trns(a + i * 90f, r - Lines.getStroke() / 2f - 0.1f).add(e.x, e.y);
+            Drawf.tri(Tmp.v1.x, Tmp.v1.y, 6, e.fout() * 25f, a + i * 90f);
+        }
+        Draw.z(Layer.bullet - 1);
+        Draw.color(c, e.fout());
+        Draw.blend(Blending.additive);
+        Draw.rect("circle-shadow", e.x, e.y, r * 5f, r * 5f, 0);
+        Draw.blend();
     });
 }

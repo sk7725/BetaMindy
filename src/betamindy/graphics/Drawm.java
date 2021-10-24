@@ -36,6 +36,7 @@ import static mindustry.Vars.renderer;
 
 public class Drawm {
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
+    public static Color[] starColors = {Color.valueOf("f25555"), Pal.remove, Color.orange, Color.yellow, Color.white, Pal.lancerLaser, Color.sky, Color.valueOf("70d2ff"), Color.royal, Pal2.deepBlue};
 
     public static void construct(Building t, TextureRegion region, float rotation, float progress, float speed, float time, Color color){
         Shaders.build.region = region;
@@ -363,6 +364,10 @@ public class Drawm {
 
     public static void spikeRing(float x, float y, int spikes, float rotation, float radius, float size){
         spikeRing(x, y, spikes, rotation, radius, size, false);
+    }
+
+    public static Color starColor(float lerp){
+        return Tmp.c3.lerp(starColors, lerp);
     }
 
     /** Generates all team regions for this block. Call #getTeamRegion(Block) afterwards to get the region. */

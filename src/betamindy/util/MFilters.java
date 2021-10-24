@@ -10,7 +10,7 @@ import mindustry.*;
 import mindustry.graphics.*;
 
 public class MFilters {
-    public final static int vanillaFilters = 3; //just in case Anuke adds 2 more.
+    public final static int vanillaFilters = 3; //Note: ID goes up to 8
     public static int lastFilter = vanillaFilters - 1;
     private boolean inited = false;
     protected boolean wasPlaying;
@@ -21,7 +21,7 @@ public class MFilters {
                 set(0, 500, 1);
             }}, Color.royal),
             new FilterModule("Dry", new Filters.BiquadFilter(){{
-                set(1, 500, 1);
+                set(1, 680, 1);
             }}, Color.orange),
             new FilterModule("Noise", new Filters.LofiFilter(){{
                 set(8000, 5);
@@ -30,22 +30,19 @@ public class MFilters {
                 set(6f);
             }}, Pal.lightishGray),
             new FilterModule("Echo", new Filters.EchoFilter(){{
-                set(0.5f, 0.8f, 0.95f);
+                set(0.5f, 0.7f, 0.95f);
             }}, Pal.lancerLaser),
             new FilterModule("Flanger", new Filters.FlangerFilter(){{
-                set(0.005f, 10);
-            }}, Pal.accent),
-            new FilterModule("Cursed", new Filters.BassBoostFilter(){{
-                set(9f); //"ours go up to 11"
-            }}, Pal.remove)
-            //i dont think these work
+                set(0.005f, 5);
+            }}, Pal.accent)
+            //out of IDs!
             /*
             new FilterModule("Square", new Filters.RobotizeFilter(){{
-                set(50, 0); //0-square 1-saw 2-sine 3-tri 4-absin 5-s(1/4sine) 6-si(1/2sine) 7-bettersq 8-bettersaw
+                set(50, 7); //0-square 1-saw 2-sine 3-tri 4-absin 5-s(1/4sine) 6-si(1/2sine) 7-bettersq 8-bettersaw
             }}, Pal.heal),
             new FilterModule("Saw", new Filters.RobotizeFilter(){{
-                set(20, 1);
-            }}, Pal2.portal),
+                set(20, 8);
+            }}, Pal2.portal)
             new FilterModule("Sine", new Filters.RobotizeFilter(){{
                 set(5000, 2);
             }}, Color.cyan),
