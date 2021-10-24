@@ -18,7 +18,7 @@ import mindustry.world.*;
 import static mindustry.Vars.world;
 
 public class MindyBullets implements ContentList {
-    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball, icyZone, icyZoneSmall, voidStar, sequenceShot;
+    public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball, icyZone, icyZoneSmall, voidStar, starFlame, sequenceShot;
     @Override
     public void load(){
         payBullet = new PayloadBullet(1.6f){{
@@ -184,8 +184,22 @@ public class MindyBullets implements ContentList {
             lifetime = 300f;
         }};
 
+        starFlame = new BulletType(3.35f, 30f){{
+            ammoMultiplier = 3f;
+            hitSize = 8f;
+            lifetime = 18f;
+            pierce = true;
+            collidesAir = true;
+            shootEffect = MindyFx.shootStarFlame;
+            hitEffect = MindyFx.hitFlameStar;
+            despawnEffect = Fx.none;
+            keepVelocity = false;
+            hittable = false;
+        }};
+
         sequenceShot = new SequenceBulletType(1f, 9){{
             lifetime = 120f;
+            ammoMultiplier = 0.25f;
         }};
 
         voidStar = new BasicBulletType(){

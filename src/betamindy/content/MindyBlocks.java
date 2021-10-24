@@ -73,7 +73,7 @@ public class MindyBlocks implements ContentList {
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, magicTurret, credit, taxation, brokerage, mortgage,
             //campaign - shar
-            sequence, giant, astro, dwarf, blackHole,
+            nebula, sequence, giant, astro, dwarf, blackHole,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight, buttonRouter, buttonDistributor,
     //crafting
@@ -558,8 +558,25 @@ public class MindyBlocks implements ContentList {
             );
         }};
 
+        nebula = new LiquidTurret("nebula"){{
+            requirements(Category.turret, with(Items.copper, 25, MindyItems.scalarRaw, 22));
+            ammo(
+                    MindyLiquids.siloxol, MindyBullets.starFlame
+            );
+            size = 1;
+            reloadTime = 5f;
+            inaccuracy = 5f;
+            shootCone = 50f;
+            liquidCapacity = 10f;
+            recoilAmount = 0f;
+            shootSound = Sounds.flame;
+            range = 65f;
+            health = 300;
+            extinguish = false;
+        }};
+
         sequence = new LiquidTurret("sequence"){{
-            requirements(Category.turret, with(Items.copper, 50, MindyItems.scalar, 50, Items.metaglass, 10));
+            requirements(Category.turret, with(Items.copper, 150, MindyItems.scalarRaw, 150, Items.metaglass, 40));
             ammo(
                     MindyLiquids.siloxol, MindyBullets.sequenceShot
             );
@@ -567,7 +584,7 @@ public class MindyBlocks implements ContentList {
             reloadTime = 30f;
             inaccuracy = 5f;
             shootCone = 50f;
-            liquidCapacity = 10f;
+            liquidCapacity = 12f;
             shootEffect = MindyFx.sequenceShoot;
             smokeEffect = MindyFx.sequenceSmoke;
             range = 190f;

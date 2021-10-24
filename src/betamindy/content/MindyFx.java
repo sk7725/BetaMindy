@@ -1209,7 +1209,7 @@ public class MindyFx {
         float r = Mathf.randomSeed(e.id, 360f);
         color(Drawm.starColors[0]);
         randLenVectors(e.id, 3, e.finpow() * 17f + 2f, e.rotation, 30f, (x, y) -> {
-            spark(e.x + x, e.y + y, e.finpow() * 4f + 2f, 4f * e.fout() + 2f, r + Angles.angle(x, y));
+            spark(e.x + x, e.y + y, e.finpow() * 5f, 3.5f * e.fout() + 2f, r + Angles.angle(x, y));
         });
 
         stroke(4f * e.fout());
@@ -1218,10 +1218,37 @@ public class MindyFx {
 
     sequenceSmoke = new Effect(30f, e -> {
         color(Pal.lightishGray, Pal2.clearWhite, e.fin());
+        alpha(0.6f * e.fout());
         vgld[0] = 0;
-        randLenVectors(e.id, 8, e.finpow() * 17f + 6f, e.rotation, 110f, (x, y) -> {
+        randLenVectors(e.id, 10, e.finpow() * 17f + 6f, e.rotation, 110f, (x, y) -> {
             vgld[0]++;
             Fill.circle(e.x + x, e.y + y, (0.5f + e.fin()) * Mathf.randomSeed(e.id + vgld[0], 2f, 9f));
         });
-    }).layer(Layer.bullet - 0.011f);
+    }).layer(Layer.bullet - 0.011f),
+
+    shootStarFlame = new Effect(43f, 80f, e -> {
+        randLenVectors(e.id, 8, e.finpow() * 63f, e.rotation, 11f, (x, y) -> {
+            color(Drawm.starColor(Mathf.clamp(Mathf.dst2(e.x, e.y, x, y) / (63f * 63f))));
+            Fill.circle(e.x + x, e.y + y, 0.15f + e.fout() * 1.6f);
+        });
+
+        z(Layer.bullet - 1);
+        blend(Blending.additive);
+        randLenVectors(e.id, 8, e.finpow() * 63f, e.rotation, 11f, (x, y) -> {
+            float r = 0.65f + e.fout() * 1.6f;
+            color(Drawm.starColor(Mathf.clamp(Mathf.dst2(e.x, e.y, x, y) / (63f * 63f))), e.fout());
+            rect("circle-shadow", e.x + x, e.y + y, r * 4.4f, r * 4.4f, 0);
+        });
+        blend();
+    }),
+
+    hitFlameStar = new Effect(14, e -> {
+        color(Color.white, Drawm.starColor(e.fin()), e.fin());
+        stroke(0.5f + e.fout());
+
+        randLenVectors(e.id, 2, 1f + e.fin() * 15f, e.rotation, 50f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
+        });
+    });
 }
