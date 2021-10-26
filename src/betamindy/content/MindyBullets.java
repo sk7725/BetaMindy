@@ -197,7 +197,7 @@ public class MindyBullets implements ContentList {
             hittable = false;
         }};
 
-        sequenceShot = new SequenceBulletType(1f, 9){{
+        sequenceShot = new SequenceBulletType(1f, 14f){{
             lifetime = 120f;
             ammoMultiplier = 0.25f;
         }};

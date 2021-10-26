@@ -43,7 +43,7 @@ public class SequenceBulletType extends BulletType {
     }
 
     public void setDamage(Bullet b){
-        b.damage = damage * b.damageMultiplier() * (1f + 5f * b.fin());
+        b.damage = damage * b.damageMultiplier() * (1f + 6.5f * b.fin());
     }
 
     @Override

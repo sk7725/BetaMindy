@@ -11,6 +11,7 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
+import betamindy.world.blocks.storage.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -28,6 +29,9 @@ import static mindustry.Vars.*;
 
 public class PlacementInvFragment extends Fragment {
     final int rowWidth = 6;
+    public boolean chest = false;
+
+    boolean lastShow = false; //what inventoryUI was before chest was set to true
     private Table vanilla; //the 'toggler' or 'full' of the PlacementFragment.
     Table blockTable, toggler;
     ScrollPane blockPane;
@@ -96,10 +100,31 @@ public class PlacementInvFragment extends Fragment {
     }
 
     public void toggle(){
+        if(chest && (control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild)){
+            control.input.frag.config.getSelectedTile().deselect();
+            chest = false; //only happens if F2 is pressed
+        }
         if(net.active()) inventoryUI = false; //todo remove after figuring the sync out
         else inventoryUI = !inventoryUI;
         control.input.block = null;
         if(sideButton != null) sideButton.setDrawable(inventoryUI ? ui.getIcon(ui.hudfrag.blockfrag.currentCategory.name()): Icon.box);
+    }
+
+    public void openChest(){
+        if(!chest){
+            chest = true;
+            lastShow = inventoryUI;
+        }
+        inventoryUI = true;
+    }
+
+    public void storeChest(Block block, int amount){
+        if(block == null) return;
+        amount = Math.min(amount, teams[player.team().id].amount(block.id));
+        if(amount <= 0) return;
+        if(control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild ch){
+            ch.storeChest(block, amount);
+        }
     }
 
     @Override
@@ -228,7 +253,7 @@ public class PlacementInvFragment extends Fragment {
                     blocksSelect.table(bottom -> {
                         bottom.table(control.input::buildPlacementUI).name("inputTable2").growX();
                         bottom.image().color(Pal.gray).width(4f).growY();
-                        bottom.table(backbutt -> {
+                        Table backB = new Table(backbutt -> {
                             backbutt.image().color(Pal.gray).height(4f).colspan(2).growX();
                             backbutt.row();
                             var b1 = backbutt.button(Icon.list, Styles.clearTransi, () -> {
@@ -244,6 +269,23 @@ public class PlacementInvFragment extends Fragment {
                                 b2.tooltip("@back");
                             }
                         });
+                        Table chestB = new Table(backbutt -> {
+                            backbutt.image().color(Pal.gray).height(4f).colspan(2).growX();
+                            backbutt.row();
+                            var b1 = backbutt.button(Icon.up, MindyUILoader.clearAccenti, () -> {
+                                storeChest(control.input.block, 1);
+                            }).size(48f).margin(0);
+                            var b2 = backbutt.button(Icon.upload, MindyUILoader.clearAccenti, () -> {
+                                storeChest(control.input.block, InventoryModule.maxAmount);
+                            }).size(48f).margin(0);
+                            if(!mobile){
+                                b1.tooltip("@storeone");
+                                b2.tooltip("@storeall");
+                            }
+                        });
+                        backB.visible(() -> (!chest || control.input.block == null));
+                        chestB.visible(() -> (chest && control.input.block != null));
+                        bottom.stack(backB, chestB);
                     }).growX();
                 }).fillY().bottom().touchable(Touchable.enabled).width(vanillaWidth);
 

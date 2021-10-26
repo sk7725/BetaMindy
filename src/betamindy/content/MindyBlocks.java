@@ -25,6 +25,7 @@ import betamindy.world.blocks.units.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -73,7 +74,7 @@ public class MindyBlocks implements ContentList {
     //turrets
     hopeBringer, anchor, bermuda, propaganda, spear, justice, sting, ray, tarnation, magicTurret, credit, taxation, brokerage, mortgage,
             //campaign - shar
-            nebula, sequence, giant, astro, dwarf, blackHole,
+            nebula, sequence, giant, astro, dwarf, blackHole, spectrum,
     //power
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight, buttonRouter, buttonDistributor,
     //crafting
@@ -573,6 +574,34 @@ public class MindyBlocks implements ContentList {
             range = 65f;
             health = 300;
             extinguish = false;
+        }};
+
+        spectrum = new ItemTurret("spectrum"){{
+            requirements(Category.turret, with(Items.copper, 30, MindyItems.scalarRaw, 35, Items.silicon, 8));
+
+            range = 130f; //must be set before ammo()
+            ammo(
+                    Items.copper, new ItemTrailBulletType(6, 4.5f, range, FireColor.fromMap.get(Items.copper)),
+                    MindyItems.scalarRaw, new ItemTrailBulletType(9, 4f, range, Pal2.deepRed),
+                    Items.titanium, new ItemTrailBulletType(20, 7f, range, Color.cyan){{
+                        pierceCap = 4;
+                        reloadMultiplier = 1.2f;
+                    }},
+                    MindyItems.scalar, new ItemTrailBulletType(29, 4f, range, Pal2.scalar){{
+                        trailWidth = 1.4f;
+                        pierceCap = 9;
+                    }},
+                    MindyItems.starStone, new ItemTrailBulletType(42, 17f, range, Pal.surge){{
+                        trailWidth = 1f;
+                        pierceCap = 18;
+                        reloadMultiplier = 2f;
+                    }}
+            );
+            health = 500;
+            size = 1;
+            reloadTime = 15f;
+            inaccuracy = 1.5f;
+            shootCone = 30f;
         }};
 
         sequence = new LiquidTurret("sequence"){{

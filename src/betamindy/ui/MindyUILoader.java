@@ -11,6 +11,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
+import betamindy.graphics.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
@@ -29,6 +30,7 @@ public class MindyUILoader {
 
     public static Drawable accentEdge2, pane, pane2, buttonEdge2;
     public static TextButton.TextButtonStyle whitePiano, blackPiano;
+    public static ImageButton.ImageButtonStyle clearAccenti;
 
     public void init(){
         AncientKoruh.load();
@@ -40,6 +42,11 @@ public class MindyUILoader {
         buttonEdge2 = atlas.drawable("button-edge-2");
         whitePiano = new TextButton.TextButtonStyle(atlas.drawable("betamindy-keyw"), atlas.drawable("betamindy-keyw-down"), atlas.drawable("betamindy-keyw-checked"), Fonts.outline);
         blackPiano = new TextButton.TextButtonStyle(atlas.drawable("betamindy-keyb"), atlas.drawable("betamindy-keyb-down"), atlas.drawable("betamindy-keyb-checked"), Fonts.def);
+        clearAccenti = new ImageButton.ImageButtonStyle(Styles.clearTransi);
+        clearAccenti.imageUpColor = Pal.accent;
+        clearAccenti.imageOverColor = Pal2.coin;
+        clearAccenti.imageDownColor = Pal.accentBack;
+        clearAccenti.imageDisabledColor = Pal.accentBack;
 
         Core.app.post(() -> {
             hardfrag = new HardmodeFragment();

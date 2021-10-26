@@ -21,7 +21,7 @@ import static mindustry.Vars.*;
 import static mindustry.world.Build.validPlace;
 
 public class InventoryModule {
-    final static int maxAmount = 99; //must be <= 126
+    public final static int maxAmount = 99; //must be <= 126
     public static final String tag = "bm-inv-";
 
     public static final Inventory[] teams = new Inventory[Team.all.length];

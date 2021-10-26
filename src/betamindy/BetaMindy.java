@@ -58,12 +58,12 @@ public class BetaMindy extends Mod{
         new MindyBullets(),
         new MindyUnitTypes(),
         new ShopItems(),
+        new FireColor(),
         new MindyBlocks(),
         new MindyWeathers(),
         new MindyPlanets(),
         new MindySectors(),
-        new MindyTechTree(),
-        new FireColor()
+        new MindyTechTree()
     };
 
     public BetaMindy() {
