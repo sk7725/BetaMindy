@@ -361,7 +361,7 @@ public class NotePlayer extends Block {
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
-            mode = read.s();
+            mode = read.s() % instruments.length;
             pitch = read.s();
             if(revision < 2) pitch += 12;
             pitch = Mathf.clamp(pitch, 0, octaves * 12 - 1); //just in case
@@ -453,7 +453,7 @@ public class NotePlayer extends Block {
         @Override
         public void overwrote(Seq<Building> builds){
             if(builds.first() instanceof NotePlayerBuild build){
-                mode = build.mode;
+                mode = build.mode % instruments.length;
                 pitch = build.pitch;
                 volume = build.volume;
             }
