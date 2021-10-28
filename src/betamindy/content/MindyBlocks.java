@@ -560,7 +560,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         nebula = new LiquidTurret("nebula"){{
-            requirements(Category.turret, with(Items.copper, 25, MindyItems.scalarRaw, 22));
+            requirements(Category.turret, with(Items.copper, 20, MindyItems.scalarRaw, 25));
             ammo(
                     MindyLiquids.siloxol, MindyBullets.starFlame
             );
@@ -620,6 +620,12 @@ public class MindyBlocks implements ContentList {
             health = 150 * size * size;
             extinguish = false;
             flags = EnumSet.of(BlockFlag.turret);
+        }};
+
+        ray = new RayTurret("ray"){{
+            requirements(Category.turret, with(Items.copper, 320, Items.silicon, 255, Items.titanium, 150, MindyItems.scalar, 200));
+            size = 3;
+            range = 234f;
         }};
 
         astro = new UnitTurret("astro"){
