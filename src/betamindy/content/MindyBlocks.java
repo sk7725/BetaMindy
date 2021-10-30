@@ -25,7 +25,6 @@ import betamindy.world.blocks.units.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -668,7 +667,7 @@ public class MindyBlocks implements ContentList {
             rotateSpeed = 1.8f;
             maxPaySize = 3.5f;
             payloadOffset = 7f;
-            payloadShootOffset = 8f;
+            shootLength = 8f;
             consumes.power(3.75f);
             requirements(Category.turret, with(Items.copper, 1000, Items.titanium, 750, Items.silicon, 450, Items.plastanium, 330));
         }};
@@ -688,7 +687,7 @@ public class MindyBlocks implements ContentList {
             reloadTime = 250f;
             rotateSpeed = 1.3f;
             payloadOffset = 7.5f;
-            payloadShootOffset = 7f;
+            shootLength = 7f;
             payloadScale = 0.85f;
             maxPaySize = 14.5f; //I'm not adding a T3. ...definitely. ...definitely? ...definitely.
             consumes.power(7.25f);
