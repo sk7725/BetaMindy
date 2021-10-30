@@ -62,7 +62,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog, capacitor, megaCapacitor,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore, terraformer1, terraformer2, terraformer3, terraformer4, terraformerC,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore, terraformer1, terraformer2, terraformer3, terraformer4, terraformerC, chest, largeChest,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, graphiteWall, graphiteWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear, crusher, crusherPyra, crusherScalar,
     //drills
@@ -1053,6 +1053,18 @@ public class MindyBlocks implements ContentList {
 
         pressureContainer = new SuperStorageBlock("pressure-container", Blocks.container){{
             requirements(Category.effect, with(Items.titanium, 150, Items.thorium, 50));
+        }};
+
+        chest = new Chest("chest"){{
+            requirements(Category.effect, with(Items.copper, 50, MindyItems.scalarRaw, 50, Items.metaglass, 10));
+            size = 2;
+        }};
+
+        largeChest = new Chest("chest-large"){{
+            requirements(Category.effect, with(Items.copper, 250, MindyItems.scalar, 50, Items.metaglass, 40, Items.silicon, 20));
+            size = 3;
+            slots = 15;
+            capacity = 50;
         }};
 
         leadWall = new Wall("lead-wall"){{

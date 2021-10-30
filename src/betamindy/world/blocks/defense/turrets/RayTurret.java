@@ -7,6 +7,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
+import betamindy.content.*;
 import betamindy.graphics.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -44,6 +45,8 @@ public class RayTurret extends BaseTurret {
     public StatusEffect status = StatusEffects.none;
     public float statusDuration = 300;
 
+    public Effect levelUpEffect = MindyFx.ionBurst;
+    public float effectRadius = 10f;
     public Sound shootSound = Sounds.tractorbeam;
     public float shootSoundVolume = 0.9f;
 
@@ -100,9 +103,10 @@ public class RayTurret extends BaseTurret {
         public void updateTile(){
             //retarget
             if(timer(timerTarget, retargetTime) && (target == null || Units.invalidateTarget(target, team, x, y, range))){
-                lastLevel = level = 0;
+                level = 0;
                 levelCharge = 0f;
                 target = Units.bestEnemy(team, x, y, range, u -> u.checkTarget(targetAir, targetGround), (u, x, y) -> -u.maxHealth);
+                if(target != null) lastLevel = 0;
             }
 
             //consume coolant
@@ -142,7 +146,8 @@ public class RayTurret extends BaseTurret {
                     if(level < levels - 1 && levelCharge > (1 << level) * levelReload){
                         levelCharge = 0f;
                         level++;
-                        //todo effects
+                        Tmp.v1.trns(rotation, shootLength).add(this);
+                        levelUpEffect.at(Tmp.v1.x, Tmp.v1.y, effectRadius * (1f + ((float)level) / levels), edgeColors[Math.min(edgeColors.length - 1, level)]);
                     }
                     if(damage > 0){
                         target.damageContinuous(damage * levelScale(level) * efficiency());
@@ -202,7 +207,7 @@ public class RayTurret extends BaseTurret {
                 Draw.z(Layer.bullet);
                 int level = lastLevel; //override hack
                 int i = Math.min(edgeColors.length - 1, level);
-                float w = laserWidth * (1 + (float)level / levels + Mathf.sin(3f * levels / (level + 1), 0.4f)) * strength * efficiency();
+                float w = laserWidth * (1 + (float)level / levels + Mathf.sin(3f * levels / (level + 1), 0.25f)) * strength * efficiency();
                 float ang = angleTo(lastX, lastY);
                 Draw.color(edgeColors[i], 0.5f);
                 drawLaser(w * 1.6f, ang);

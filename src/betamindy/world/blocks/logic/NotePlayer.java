@@ -73,7 +73,8 @@ public class NotePlayer extends Block {
                 new Instrument("Synth", MindySounds.synthSample),
                 new Instrument("Chime", MindySounds.chimes),
                 new Instrument("Violin", MindySounds.violin),
-                new Instrument("Harp", MindySounds.harp)
+                new Instrument("Harp", MindySounds.harp),
+                new Instrument("DrumKit", MindySounds.drums)
         };
 
         //mode, pitch, vol

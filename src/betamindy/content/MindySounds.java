@@ -9,7 +9,7 @@ import mindustry.*;
 
 public class MindySounds {
     public static Sound pistonPush, pistonPull, presentBells, boost, tntfuse, boing, freeze, coolingFan, pipePop, pipeSqueeze, pipeIn, easterEgg1, easterEgg2, portalOpen, portalLoop, portalClose, lightningStrike, shatter, boxOpen, astroCharge, astroShoot, drink, pianoSample, squareSample, synthSample;
-    public static Sound[] piano, bells, squareWave, sawWave, bass, organ, chimes, violin, harp;
+    public static Sound[] piano, bells, squareWave, sawWave, bass, organ, chimes, violin, harp, drums;
     public static final String[] soundFiles = {"pistonpush", "pistonpull", "presentbells", "boostsound", "tntfuse", "boing", "freeze", "coolingfan", "pipepop", "pipesqueeze", "pipein", "strawberrydeath", "strawberrypredeath", "portalopen", "portalloop", "portalclose", "lstrike", "shatter", "boxopen", "astroCharge", "astroShoot", "drink", "pianoS", "squareS", "synthS"};
     private static int num = 0;
 
@@ -41,7 +41,6 @@ public class MindySounds {
         squareSample = l();
         synthSample = l();
 
-        //todo more samples
         //credits to farmerthanos
         piano = loadNotes("piano");
         bells = loadNotes("bell"); //btw these are portal bells from the Invasion track
@@ -53,6 +52,9 @@ public class MindySounds {
         bass = loadNotes("bass");
         organ = loadNotes("organ");
         chimes = loadNotes("chime");
+
+        //credits to MrDuck
+        drums = loadNotes("drum");
     }
 /*
     public static void dispose() {

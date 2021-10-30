@@ -120,7 +120,7 @@ public class PlacementInvFragment extends Fragment {
 
     public void storeChest(Block block, int amount){
         if(block == null) return;
-        amount = Math.min(amount, teams[player.team().id].amount(block.id));
+        amount = Math.min(amount, teams[player.team().id].amount(block));
         if(amount <= 0) return;
         if(control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild ch){
             ch.storeChest(block, amount);
@@ -160,7 +160,7 @@ public class PlacementInvFragment extends Fragment {
                     for(int i = 0; i < n; i++){
                         final int item = i;
                         Block block = teams[team].block(i);
-                        int amount = teams[team].amount(i);
+                        int amount = teams[team].amountOf(i);
                         if(block == null || amount == 0) continue;
                         if(index++ % rowWidth == 0){
                             blockTable.row();
@@ -169,7 +169,7 @@ public class PlacementInvFragment extends Fragment {
                         Stack sb = new Stack();
                         Table tb = new Table().right().bottom();
                         Table ib = new Table();
-                        tb.label(() -> (teams[team] == null || teams[team].amount(item) == -1) ? "[lightgray]*[]" : teams[team].amount(item) + "").touchable(Touchable.disabled);
+                        tb.label(() -> (teams[team] == null || teams[team].amountOf(item) == -1) ? "[lightgray]*[]" : teams[team].amountOf(item) + "").touchable(Touchable.disabled);
 
                         ImageButton button = ib.button(new TextureRegionDrawable(block.uiIcon), Styles.selecti, () -> {
                             if(unlocked(block)){
@@ -184,7 +184,7 @@ public class PlacementInvFragment extends Fragment {
                         button.resizeImage(32f);
 
                         button.update(() -> { //color unplacable things gray
-                            Color color = player.isBuilder() && teams[team] != null && teams[team].amount(item) != 0 && unlocked(block) ? Color.white : Color.gray;
+                            Color color = player.isBuilder() && teams[team] != null && teams[team].amountOf(item) != 0 && unlocked(block) ? Color.white : Color.gray;
                             button.forEach(elem -> elem.setColor(color));
                             button.setChecked(control.input.block == block);
                         });
@@ -299,6 +299,11 @@ public class PlacementInvFragment extends Fragment {
                     if(player.team() != lastTeam){
                         refreshInventory();
                         lastTeam = player.team();
+                    }
+                    if(chest && !((control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild cb) && cb.shouldShowChest())){
+                        chest = false;
+                        inventoryUI = !lastShow; //toggle fixes the !
+                        toggle();
                     }
                 });
             }).visible(() -> inventoryUI);

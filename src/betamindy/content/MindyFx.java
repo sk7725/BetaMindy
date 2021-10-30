@@ -1250,5 +1250,16 @@ public class MindyFx {
             float ang = Mathf.angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 3 + 1f);
         });
+    }),
+
+    ionBurst = new Effect(20f, e -> {
+        color(Color.white, e.color, e.fin());
+        stroke(e.fout() * 3.5f);
+        circle(e.x, e.y, e.rotation * e.finpow());
+        stroke(e.fout() * 2f);
+        randLenVectors(e.id, 12, 1f + e.fin() * e.rotation * 1.8f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 4f + 1f);
+        });
     });
 }

@@ -99,12 +99,28 @@ public class InventoryModule {
             return content.getByID(ContentType.block, invList.get(index));
         }
 
-        public int amount(int index){
+        /** INDEX IS NOT THE BLOCK'S ID */
+        public int amountOf(int index){
+            return amountList.get(index);
+        }
+
+        public int amount(Block block){
+            int index = invList.indexOf(block.id);
+            if(index < 0) return 0;
             return amountList.get(index);
         }
 
         public int getSize(){
             return invList.size;
+        }
+
+        public int getRealSize(){
+            int n = invList.size;
+            int sum = 0;
+            for(int i = 0; i < n; i++){
+                if(amountOf(i) > 0) sum++;
+            }
+            return sum;
         }
 
         public String compressed(){

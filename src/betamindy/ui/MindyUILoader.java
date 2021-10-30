@@ -46,7 +46,7 @@ public class MindyUILoader {
         clearAccenti.imageUpColor = Pal.accent;
         clearAccenti.imageOverColor = Pal2.coin;
         clearAccenti.imageDownColor = Pal.accentBack;
-        clearAccenti.imageDisabledColor = Pal.accentBack;
+        clearAccenti.imageDisabledColor = Pal.gray;
 
         Core.app.post(() -> {
             hardfrag = new HardmodeFragment();
