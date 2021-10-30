@@ -68,6 +68,12 @@ public class PayloadTurret extends Turret{
     }
 
     @Override
+    public TextureRegion[] icons(){
+        if(atlas.isFound(topRegion)) return new TextureRegion[]{baseRegion, inRegion, topRegion, region};
+        return new TextureRegion[]{baseRegion, inRegion, region};
+    }
+
+    @Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.placing);
         //Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range * blockRangeMultiplier, Pal.accentBack);
