@@ -118,6 +118,7 @@ public class PayloadTurret extends Turret{
         public Vec2 payVector = new Vec2();
         public float payRotation, loadProgress;
         public boolean rotating, loading, loaded, shooting;
+        protected float payheat = 0f;
 
         @Override
         public void updateTile(){
@@ -128,6 +129,7 @@ public class PayloadTurret extends Turret{
 
             recoil = Mathf.lerpDelta(recoil, 0f, restitution);
             heat = Mathf.lerpDelta(heat, 0f, cooldown);
+            if(payheat > 0f) payheat = Mathf.lerpDelta(payheat, 0f, 0.09f);
 
             if(unit != null){
                 unit.health(health);
@@ -194,6 +196,7 @@ public class PayloadTurret extends Turret{
 
                 if(!loading && !rotating){
                     loaded = true;
+                    payheat = 1f;
                 }
             }
         }
@@ -257,7 +260,9 @@ public class PayloadTurret extends Turret{
                 Draw.z(loaded ? Layer.turret + 0.01f : Layer.blockOver);
                 //payload.draw() but with rotation
                 Drawf.shadow(payload.x(), payload.y(), payload.size() * 2f);
+                if(loaded && payheat > 0.001f) Draw.mixcol(team.color, payheat);
                 Draw.rect(payload.icon(), payload.x(), payload.y(), payRotation);
+                Draw.mixcol();
             }
         }
 

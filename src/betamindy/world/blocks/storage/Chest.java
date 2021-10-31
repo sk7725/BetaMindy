@@ -3,6 +3,7 @@ package betamindy.world.blocks.storage;
 import arc.*;
 import arc.graphics.*;
 import arc.input.*;
+import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -55,7 +56,7 @@ public class Chest extends Block {
                 int amount = i.get(2);
                 if(block == null) return;
                 if(amount > 0 && InventoryModule.teams[team.id] != null){
-                    if(!canStore) return;
+                    if(!build.shouldShowChest()) return;
                     //store
                     amount = Math.min(amount, InventoryModule.teams[team.id].amount(block)); //cap max amount to existing items
                     amount = Math.min(amount, capacity - build.inventory.amount(block)); //cap max amount to available space
@@ -115,11 +116,9 @@ public class Chest extends Block {
                 selected = null;
             }
             table.clearChildren();
-            if(shouldShowChest()){
-                Core.app.post(() -> {
-                    BetaMindy.mui.invfrag.openChest();
-                });
-            }
+            Core.app.post(() -> {
+                BetaMindy.mui.invfrag.openChest();
+            });
             table.table(Tex.pane, t -> {
                 ScrollPane blockPane = t.pane(blockTable -> {
                     blockTable.top().left();
@@ -164,6 +163,13 @@ public class Chest extends Block {
                         }
                     }
                     blockTable.act(0f);
+                }).update(pane -> {
+                    if(pane.hasScroll()){
+                        Element result = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
+                        if(result == null || !result.isDescendantOf(pane)){
+                            Core.scene.setScrollFocus(null);
+                        }
+                    }
                 }).grow().get();
                 blockPane.setScrollYForce(0);
                 Core.app.post(() -> {

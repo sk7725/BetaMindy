@@ -1261,5 +1261,38 @@ public class MindyFx {
             float ang = Mathf.angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 4f + 1f);
         });
+    }),
+
+    chainBreak = new Effect(50f, e -> {
+        if(e.data instanceof TextureRegion region){
+            blend(Blending.additive);
+            color(Color.white, e.color, e.fin());
+            alpha(e.fout(0.7f));
+            randLenVectors(e.id, 1, 1f + e.finpow() * 20f, (x, y) -> {
+                rect(region, e.x + x, e.y + y, e.rotation + Mathf.randomSeedRange(e.id * 17, 100f) * e.finpow());
+            });
+            blend();
+        }
+    }).layer(Layer.power),
+
+    chainShatter = new Effect(65f, e -> {
+        e.scaled(30f, s -> {
+            z(Layer.flyingUnit);
+            blend(Blending.additive);
+            color(e.color, s.fout(0.7f));
+            vgld[0] = 0;
+            randLenVectors(e.id, e.id % 4 + 5, 2f + 16f * s.finpow(), (x, y) -> {
+                vgld[0]++;
+                shard(e.x + x, e.y + y, 3f + Mathf.randomSeed(e.id + vgld[0], 6f), 4f * s.fout(), Mathf.angle(x, y));
+            });
+            blend();
+            z(Layer.effect);
+        });
+
+        color(Color.white, e.color, e.fin());
+        randLenVectors(e.id + 1, 7, 3f + 9f * e.finpow(), (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            Fill.square(e.x + x, e.y + y, e.fout() * 0.8f, 45f);
+        });
     });
 }

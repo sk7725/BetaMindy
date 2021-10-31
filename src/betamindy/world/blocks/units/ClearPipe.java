@@ -300,7 +300,7 @@ public class ClearPipe extends Block {
             }
             if(heat >= 0f) heat -= 0.005f * delta();
 
-            if(!headless && unit().isPlayer() && unit().getPlayer() == player){
+            if(!headless && unit() != null && unit().isPlayer() && unit().getPlayer() == player){
                 int input = Useful.dwas();
                 if(input >= 0 && lastPlayerKey != input && timer(timerControl, 25f)){
                     configure(input);

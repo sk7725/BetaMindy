@@ -284,7 +284,7 @@ public class PlacementInvFragment extends Fragment {
                             }
                         });
                         backB.visible(() -> (!chest || control.input.block == null));
-                        chestB.visible(() -> (chest && control.input.block != null));
+                        chestB.visible(() -> (chest && control.input.block != null && (control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild cb && cb.shouldShowChest())));
                         bottom.stack(backB, chestB);
                     }).growX();
                 }).fillY().bottom().touchable(Touchable.enabled).width(vanillaWidth);
@@ -300,7 +300,7 @@ public class PlacementInvFragment extends Fragment {
                         refreshInventory();
                         lastTeam = player.team();
                     }
-                    if(chest && !((control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild cb) && cb.shouldShowChest())){
+                    if(chest && !(control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild)){
                         chest = false;
                         inventoryUI = !lastShow; //toggle fixes the !
                         toggle();

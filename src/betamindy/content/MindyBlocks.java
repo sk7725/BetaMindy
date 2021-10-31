@@ -53,7 +53,7 @@ public class MindyBlocks implements ContentList {
             borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
             chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
             //lore - shar
-            esotManual, fallenFlare, fallenAlpha, fallenMono, fallenHorizon, sentryGun, baseFloor1, baseFloor2, baseFloor3, baseFloor4, baseFloor5, baseGrid, labCryoFluid,
+            esotManual, fallenFlare, fallenAlpha, fallenMono, fallenHorizon, sentryGun, baseFloor1, baseFloor2, baseFloor3, baseFloor4, baseFloor5, baseGrid, labCryoFluid, esotChest, barrier,
     //ores
     oreScalar, oreVector, oreTensor, oreStarStone,
     //payloads
@@ -1951,6 +1951,20 @@ public class MindyBlocks implements ContentList {
                 percentDamage = 0.15f; //six shots and ded
             }};
             inaccuracy = 0.2f;
+        }};
+
+        esotChest = new LoreChest("esot-chest"){{
+            buildVisibility = uwu ? BuildVisibility.shown : BuildVisibility.editorOnly;
+            category = Category.effect;
+            size = 2;
+            clipSize = 360f;
+        }};
+
+        barrier = new Barrier("barrier"){{
+            buildVisibility = uwu ? BuildVisibility.shown : BuildVisibility.editorOnly;
+            category = Category.effect;
+            size = 1;
+            clipSize = 360f;
         }};
     }
 }

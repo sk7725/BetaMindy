@@ -178,6 +178,48 @@ public class Drawm {
         }
     }
 
+    public static void chain(TextureRegion line, TextureRegion edge, float x, float y, float x2, float y2){
+        chain(line, edge, x, y, x2, y2, false);
+    }
+
+    public static void chain(TextureRegion line, TextureRegion edge, float x, float y, float x2, float y2, boolean drawLight){
+        chain(null, line, edge, x, y, x2, y2, 1f, drawLight);
+    }
+
+    public static void chain(@Nullable Team team, TextureRegion line, TextureRegion edge, float x, float y, float x2, float y2, float scale, boolean drawLight){
+        float rot = Mathf.angle(x2 - x, y2 - y);
+        float len = Mathf.len(x2 - x, y2 - y);
+        float c = (line.width - 0.01f) * scale * Draw.scl;
+        int n = (int)(len / c);
+        if(n > 1){
+            Tmp.v1.trns(rot, c * 0.5f).add(x, y);
+            Draw.rect(edge, Tmp.v1.x, Tmp.v1.y, c, edge.height * scale * Draw.scl, rot + 180);
+            for(int i = 1; i < n - 1; i++){
+                Tmp.v1.trns(rot, c * (i + 0.5f)).add(x, y);
+                Draw.rect(line, Tmp.v1.x, Tmp.v1.y, c, line.height * scale * Draw.scl, rot);
+            }
+            Tmp.v1.trns(rot, c * (n - 0.5f)).add(x, y);
+            Draw.rect(edge, Tmp.v1.x, Tmp.v1.y, c, edge.height * scale * Draw.scl, rot);
+        }
+
+        if(drawLight) Drawf.light(team, x, y, x2, y2);
+    }
+
+    public static void border(float x1, float y1, float x2, float y2, Color center){
+        border(x1, y1, x2, y2, 0.4f, center, Pal2.clearWhite);
+    }
+
+    public static void border(float x1, float y1, float x2, float y2, float h, Color center, Color edge){
+        float c1f = center.toFloatBits();
+        float c2f = edge.toFloatBits();
+        float x3 = x1 + h * (x1 - Core.camera.position.x);
+        float y3 = y1 + h * (y1 - Core.camera.position.y);
+        float x4 = x2 + h * (x2 - Core.camera.position.x);
+        float y4 = y2 + h * (y2 - Core.camera.position.y);
+
+        Fill.quad(x1, y1, c1f, x2, y2, c1f, x4, y4, c2f, x3, y3, c2f);
+    }
+
     public static void koruh(float x, float y, float size, float r, char c){
         Draw.rect(AncientKoruh.eng(c), x, y, size, size, r);
     }
