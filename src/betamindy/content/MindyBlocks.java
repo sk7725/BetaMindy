@@ -1220,7 +1220,7 @@ public class MindyBlocks implements ContentList {
 
         driftPad = new DirectionalPad("driftpad"){{
             size = 2;
-            requirements(Category.units, with(Items.copper, 24, Items.metaglass, 20, Items.phaseFabric, 20));
+            requirements(Category.units, with(Items.copper, 24, Items.metaglass, 10, MindyItems.scalarRaw, 20));
             lightColor = Pal.lancerLaser;
             lightRadius = 50f;
             sprites = 5;
@@ -1229,7 +1229,7 @@ public class MindyBlocks implements ContentList {
             status = MindyStatusEffects.drift;
             duration = cooldown = 14f;
             boostEffect = MindyFx.driftBlock;
-            boostSound = Sounds.flame2;//todo
+            boostSound = Sounds.flame2;
             impulseAmount = 9f;
         }};
 

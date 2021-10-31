@@ -15,6 +15,7 @@ import betamindy.world.blocks.storage.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.world.*;
 
 import static arc.Core.atlas;
@@ -35,7 +36,11 @@ public class Barrier extends Block {
     public Effect chainBreakEffect = MindyFx.chainShatter; //played at all chain segments
     public Effect captureEffect = MindyFx.soundwaveHit;
     public Effect chainDestroyEffect = MindyFx.sniperShoot; //played at the connected block only
+
+    public StatusEffect status = MindyStatusEffects.drift;
+    public Effect unitHitEffect = MindyFx.ionBurst;
     public Sound captureSound = MindySounds.easterEgg1;
+    public Sound unitHitSound = Sounds.flame2;
     public float chainScale = 1f;
 
     public Barrier(String name){
@@ -213,14 +218,23 @@ public class Barrier extends Block {
             if(area == null) setArea();
 
             if(area != null){
-                r1.set(area.getBoundingRectangle()).grow(4f);
+                r1.set(area.getBoundingRectangle()).grow(8f);
                 Units.nearby(r1, u -> {
                     if(u.team == team || !kindaContains(area, u.x, u.y, 4f)) return;
                     float ang = Angles.angle(cx, cy, u.x, u.y);
-                    if(!Angles.near(ang, u.vel.angle(), 90f)) u.move(-u.vel.x, -u.vel.y);
+                    if(!Angles.near(ang, u.vel.angle(), 100f)){
+                        u.move(-u.vel.x, -u.vel.y);
+                    }
+                    u.vel.trns(ang, 8f);
+                    u.rotation(ang);
+                    if(status != null && !u.hasEffect(status)){
+                        u.apply(status, 20f);
+                        unitHitEffect.at(u.x, u.y, u.hitSize * 0.8f, status.color);
+                        unitHitSound.at(u.x, u.y, Mathf.random(0.9f, 1.1f));
+                    }
 
                     if(kindaContains(area, u.x, u.y, 4f)){
-                        u.move(Tmp.v3.trns(ang, 3.5f)); //attempt to push it out
+                        u.move(Tmp.v3.trns(ang, Time.delta)); //attempt to push it out, this will be repeated x number of nodes
                     }
                 });
 
