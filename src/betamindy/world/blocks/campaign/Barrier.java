@@ -46,6 +46,7 @@ public class Barrier extends Block {
     public Barrier(String name){
         super(name);
         configurable = solid = update = sync = true;
+        breakable = false;
 
         config(Integer.class, (BarrierBuild entity, Integer value) -> {
             if(!state.isEditor()) return;
@@ -95,7 +96,7 @@ public class Barrier extends Block {
     public boolean groupValid(Building tile, Building link){
         if(tile == link || link == null || tile.team != link.team || link.dead) return false;
 
-        return Math.min(Math.abs(tile.tileX() - link.tileX()), Math.abs(tile.tileY() - link.tileY())) == 0 && link instanceof BarrierBuild;
+        return /*Math.min(Math.abs(tile.tileX() - link.tileX()), Math.abs(tile.tileY() - link.tileY())) == 0 && */link instanceof BarrierBuild;
     }
 
     public class BarrierBuild extends Building {
@@ -122,7 +123,10 @@ public class Barrier extends Block {
         }
 
         public void capture(){
-            setArea(in -> in.health = in.maxHealth);
+            setArea(in -> {
+                in.health = in.maxHealth;
+                if(!visit.contains(in.pos()) && in instanceof BarrierBuild bb) bb.inited = false; //barrier inside barrier
+            });
             if(headless) return;
             captureEffect.at(x, y, chainColor);
             captureSound.at(this);
