@@ -32,7 +32,7 @@ public class Piston extends Block {
     public Sound pushSound = MindySounds.pistonPush, pullSound = MindySounds.pistonPull;
 
     public static final float extendTicks = 8f;
-    public final Boolf<Building> pushBool = b -> !(b.block == Blocks.thoriumWall || b.block == Blocks.thoriumWallLarge);
+    public final Boolf<Building> pushBool = b -> b.block.attributes.get(MindyAttribute.pushless) < 0.5f;
     public final Boolf<Building> stickBool = b -> !(b.block == Blocks.phaseWall || b.block == Blocks.phaseWallLarge);
 
     public String armSprite, baseSprite;

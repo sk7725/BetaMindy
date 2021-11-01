@@ -31,7 +31,7 @@ public class Barrier extends Block {
 
     public Color chainColor = Pal.remove;
     public Color borderColor = Pal2.esoterum;
-    public TextureRegion chain, chainEnd;
+    public TextureRegion topRegion, chain, chainEnd;
 
     public Effect chainBreakEffect = MindyFx.chainShatter; //played at all chain segments
     public Effect captureEffect = MindyFx.soundwaveHit;
@@ -47,6 +47,7 @@ public class Barrier extends Block {
         super(name);
         configurable = solid = update = sync = true;
         breakable = false;
+        attributes.set(MindyAttribute.pushless, 1f);
 
         config(Integer.class, (BarrierBuild entity, Integer value) -> {
             if(!state.isEditor()) return;
@@ -86,8 +87,14 @@ public class Barrier extends Block {
     @Override
     public void load(){
         super.load();
+        topRegion = atlas.find(name + "-top");
         chain = atlas.find(name + "-laser", "betamindy-clear-chain");
         chainEnd = atlas.find(name + "-laser-end", "betamindy-clear-chain-end");
+    }
+
+    @Override
+    protected TextureRegion[] icons(){
+        return new TextureRegion[]{region, topRegion};
     }
 
     public boolean linkValid(Building tile, Building link){
@@ -125,7 +132,7 @@ public class Barrier extends Block {
         public void capture(){
             setArea(in -> {
                 in.health = in.maxHealth;
-                if(!visit.contains(in.pos()) && in instanceof BarrierBuild bb) bb.inited = false; //barrier inside barrier
+                if(!visit.contains(in.pos()) && in instanceof BarrierBuild bb && !bb.captured) bb.inited = false; //reset barriers inside barrier
             });
             if(headless) return;
             captureEffect.at(x, y, chainColor);
@@ -219,7 +226,7 @@ public class Barrier extends Block {
             if(bGroup.size < 2) return;
 
             //push away all units
-            if(area == null) setArea();
+            if(area == null || !inited) setArea();
 
             if(area != null){
                 r1.set(area.getBoundingRectangle()).grow(8f);
@@ -326,7 +333,12 @@ public class Barrier extends Block {
 
         @Override
         public void draw(){
-            super.draw();
+            Draw.rect(region, x, y);
+            if(heat > 0.001f){
+                Draw.alpha(heat);
+                Draw.rect(topRegion, x, y);
+                Draw.color();
+            }
 
             Draw.z(Layer.power);
             Draw.blend(Blending.additive);

@@ -63,7 +63,8 @@ public class MindyBlocks implements ContentList {
     //effect
     silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore, terraformer1, terraformer2, terraformer3, terraformer4, terraformerC, chest, largeChest,
     //walls
-    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, graphiteWall, graphiteWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, teamWall, spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear, crusher, crusherPyra, crusherScalar,
+    leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, graphiteWall, graphiteWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, heavyWall, teamWall, borderWall,
+    spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear, crusher, crusherPyra, crusherScalar,
     //drills
     drillMini, drillMega, mynamite, mynamiteLarge,
     //units
@@ -156,6 +157,7 @@ public class MindyBlocks implements ContentList {
         borudalite = new Floor("borudalite"){{
             variants = 13;
             albedo = 0.6f;
+            attributes.set(MindyAttribute.metallic, 0.2f);
         }};
         mossyBorudalite = new Floor("mossy-borudalite"){{
             variants = 5;
@@ -165,10 +167,12 @@ public class MindyBlocks implements ContentList {
         bandalite = new Floor("bandalite"){{
             variants = 3;
             albedo = 0.5f;
+            attributes.set(MindyAttribute.metallic, 0.5f);
         }};
         chosudalite = new Floor("chosudalite"){{
             variants = 3;
             albedo = 0.5f;
+            attributes.set(MindyAttribute.metallic, 0.9f);
         }};
 
         twilightMoss = new Floor("twilight-moss"){{
@@ -193,14 +197,15 @@ public class MindyBlocks implements ContentList {
             albedo = 0.5f;
         }};
 
-        //todo magnetic affinity
         halfEclipseOxide = new Floor("half-eclipse-oxide"){{
             variants = 2;
             albedo = 0.5f;
+            attributes.set(MindyAttribute.magnetic, 0.4f);
         }};
         eclipseOxide = new Floor("eclipse-oxide"){{
             variants = 3;
             albedo = 0.5f;
+            attributes.set(MindyAttribute.magnetic, 0.8f);
         }};
 
         borudaliteWall = new StaticWall("borudalite-wall"){{
@@ -1174,6 +1179,16 @@ public class MindyBlocks implements ContentList {
             health = 6400;
             size = 2;
             requirements(Category.defense, with(MindyItems.cryonite, 24, MindyItems.vector, 8));
+        }};
+
+        heavyWall = new JointWall("heavy-wall"){{
+            requirements(Category.defense, with(MindyItems.scalar, 6, Items.titanium, 6));
+            health = 2000;
+        }};
+
+        borderWall = new JointWall("border-wall"){{
+            requirements(Category.defense, BuildVisibility.editorOnly, with(MindyItems.tungsten, 8, Items.titanium, 6));
+            health = 2048;
         }};
 
         teamWall = new TeamWall("team-wall"){{
