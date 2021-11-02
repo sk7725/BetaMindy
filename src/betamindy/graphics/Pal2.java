@@ -6,6 +6,7 @@ import mindustry.graphics.*;
 public class Pal2 {
     public static Color clearWhite = Color.white.cpy().a(0f),
     boostColor = Color.valueOf("ffbb77"),
+    drift = Color.valueOf("2acdff"),
     scalar = Color.valueOf("f5bbf1"),
     vector = Color.valueOf("7f9cfa"),
     zeta = Color.valueOf("82ffe8"),

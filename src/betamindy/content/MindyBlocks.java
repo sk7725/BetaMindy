@@ -61,7 +61,7 @@ public class MindyBlocks implements ContentList {
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog, capacitor, megaCapacitor,
     //effect
-    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore, terraformer1, terraformer2, terraformer3, terraformer4, terraformerC, chest, largeChest,
+    silo, warehouse, pressureContainer, altar, box, itemShop, unitShop, extraShop, anucoinNode, anucoinSafe, anucoinVault, tradingPost, coinSource, testShop, cafe, ancientStore, terraformer1, terraformer2, terraformer3, terraformer4, terraformerC, chest, largeChest, ionJet, ionThruster, corruptedJet,
     //walls
     leadWall, leadWallLarge, metaglassWall, metaglassWallLarge, siliconWall, siliconWallLarge, graphiteWall, graphiteWallLarge, coalWall, coalWallLarge, pyraWall, pyraWallLarge, blastWall, blastWallLarge, cryoWall, cryoWallLarge, heavyWall, teamWall, borderWall,
     spikeScrap, spikeSurge, spikePyra, spikeCryo, spikeClear, crusher, crusherPyra, crusherScalar,
@@ -1057,6 +1057,35 @@ public class MindyBlocks implements ContentList {
 
         pressureContainer = new SuperStorageBlock("pressure-container", Blocks.container){{
             requirements(Category.effect, with(Items.titanium, 150, Items.thorium, 50));
+        }};
+
+        ionJet = new IonThruster("ion-jet"){{
+            requirements(Category.effect, with(Items.lead, 20, MindyItems.scalar, 50, Items.silicon, 20));
+            size = 2;
+            health = 600;
+            consumes.power(3f);
+        }};
+
+        ionThruster = new IonThruster("ion-thruster"){{
+            requirements(Category.effect, with(Items.lead, 70, MindyItems.scalar, 150, Items.titanium, 100, Items.phaseFabric, 20));
+            size = 3;
+            health = 2400;
+            range = 150f;
+            strength = 0.11f;
+            smokeX = 22f;
+            smokeY = 6f;
+            consumes.power(6f);
+        }};
+
+        corruptedJet = new IonThruster("corrupted-jet"){{
+            requirements(Category.effect, BuildVisibility.sandboxOnly, with(Items.lead, 8, MindyItems.scalar, 50, Items.silicon, 20, MindyItems.pixellium, 16));
+            corrupted = true;
+            size = 1;
+            health = 1500;
+            range = 140f;
+            strength = 0.5f;
+            lightColor = Pal.accent;
+            consumes.power(1f);
         }};
 
         chest = new Chest("chest"){{
