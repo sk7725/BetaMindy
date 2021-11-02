@@ -36,7 +36,9 @@ import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
 import static betamindy.BetaMindy.uwu;
@@ -79,6 +81,8 @@ public class MindyBlocks implements ContentList {
     pressurePad, pressurePadLarge, button, buttonLarge, spotlight, buttonRouter, buttonDistributor,
     //crafting
     blockFurnace, heavyFurnace, gateSwitch, coffeeMachine,
+            //campaign - shar
+            arcKiln, electroRefiner, siliconCondenser, fusionChamber,
     //catalysts (pushreact & spinreact & boost)
     discharger, fireCan, campfire,
     //floorpapers
@@ -836,6 +840,44 @@ public class MindyBlocks implements ContentList {
             consumes.power(1.8f);
             requirements(Category.crafting, BuildVisibility.hidden, with(Items.copper, 360, Items.titanium, 95, Items.silicon, 65));
         }};
+
+        arcKiln = new AttributeCrafter("arc-kiln"){{
+            requirements(Category.crafting, with(Items.copper, 60, MindyItems.scalarRaw, 15, Items.sand, 45));
+            craftEffect = Fx.smeltsmoke; //todo
+            outputItem = new ItemStack(Items.metaglass, 2);
+            craftTime = 80f;
+            size = 2;
+            hasPower = hasItems = true;
+            drawer = new DrawSmelter(Pal.lancerLaser.cpy());
+            ambientSound = Sounds.smelter;
+            ambientSoundVolume = 0.07f;
+            baseEfficiency = 0f;
+            attribute = MindyAttribute.metallic;
+
+            consumes.items(with(Items.sand, 2));
+            consumes.power(0.60f);
+        }};
+
+        electroRefiner = new LiquidConverter("electro-refiner"){{
+            requirements(Category.crafting, with(Items.copper, 40, MindyItems.scalarRaw, 25, Items.sand, 65, Items.metaglass, 20));
+            hasItems = true;
+            craftTime = 100f;
+            outputLiquid = new LiquidStack(Liquids.water, 0.3f);
+            outputsLiquid = true;
+            size = 3;
+            health = 420;
+            hasPower = hasLiquids = true;
+            craftEffect = Fx.formsmoke;
+            updateEffect = MindyFx.powerDust;
+            drawer = new DrawArcSmelter(){{
+                flameColor = Pal.lancerLaser;
+            }};
+
+            consumes.liquid(MindyLiquids.siloxol, 0.3f);
+            consumes.power(0.4f);
+            consumes.item(Items.sand);
+        }};
+        //todo silicon condenser: only works on adjacent electorRefiners
 
         piston = new Piston("piston"){{
             health = 200;
