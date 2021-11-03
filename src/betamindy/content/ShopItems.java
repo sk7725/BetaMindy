@@ -157,8 +157,11 @@ public class ShopItems implements ContentList {
 
         pancake = new PurchaseDrink("pancake", 100, MindyStatusEffects.absorbing){{
             duration = 60 * 60 * 1.5f;
+            drinkSound = MindySounds.boxOpen;
         }};
-        glowstick = new PurchaseDrink("glowstick", 140, MindyStatusEffects.glowing);
+        glowstick = new PurchaseDrink("glowstick", 140, MindyStatusEffects.glowing){{
+            drinkSound = MindySounds.shatter;
+        }};
         sporeJuice = new PurchaseDrink("spore-juice", 40, MindyStatusEffects.sporeSlimed){{
             duration = 60 * 60 * 5;
         }};
@@ -167,8 +170,11 @@ public class ShopItems implements ContentList {
         }};
         diodeCookie = new PurchaseDrink("diode-cookie", 325, MindyStatusEffects.forwardBiased){{
             duration = 60 * 60 * 1.5f;
+            drinkSound = MindySounds.boxOpen;
         }};
-        bossCake = new PurchaseDrink("boss-cake", 800, StatusEffects.boss);
+        bossCake = new PurchaseDrink("boss-cake", 800, StatusEffects.boss){{
+            drinkSound = MindySounds.boxOpen;
+        }};
 
         cocktail = new PurchaseRunnable("cocktail", 330){
             final Seq<StatusEffect> statusList = new Seq<>();

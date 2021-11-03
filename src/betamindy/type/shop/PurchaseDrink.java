@@ -1,19 +1,24 @@
 package betamindy.type.shop;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import betamindy.content.*;
 import betamindy.type.*;
+import mindustry.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 
+import static mindustry.Vars.headless;
 import static mindustry.Vars.ui;
 
 public class PurchaseDrink extends PurchaseItem {
     public StatusEffect status;
     public float duration = 60 * 60 * 10;
+    public Sound drinkSound = MindySounds.drink;
 
     public PurchaseDrink(String name, int cost, StatusEffect status){
         super(name, cost);
@@ -49,6 +54,7 @@ public class PurchaseDrink extends PurchaseItem {
     public boolean purchase(Building source, Unit player){
         if(player == null || player.dead()) return false;
         player.apply(status, status.permanent ? 1f : duration);
+        if(!headless) drinkSound.at(player);
         return true;
     }
 
