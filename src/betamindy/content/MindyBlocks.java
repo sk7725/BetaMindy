@@ -877,7 +877,7 @@ public class MindyBlocks implements ContentList {
             consumes.power(0.4f);
             consumes.item(Items.sand);
         }};
-        //todo silicon condenser: only works on adjacent electorRefiners
+        //todo silicon condenser: only works on adjacent electorRefiners, graphite -> sili
 
         piston = new Piston("piston"){{
             health = 200;
@@ -914,6 +914,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.distribution, with(Items.sporePod, 6));
 
             color = Pal2.sporeSlime;
+            instantDeconstruct = true;
         }};
 
         sporeSlimeSided = new SidedSlimeBlock("spore-slime-sided", 0){{
@@ -921,6 +922,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.distribution, with(Items.sporePod, 3, Items.lead, 3));
 
             color = Pal2.sporeSlime;
+            instantDeconstruct = true;
         }};
 
         surgeSlime = new SlimeBlock("surge-slime", 0){{
@@ -931,6 +933,7 @@ public class MindyBlocks implements ContentList {
             consumesPower = false;
 
             color = Color.valueOf("F3E979");
+            instantDeconstruct = true;
         }};
 
         accel = new AccelBlock("accel"){{
@@ -1238,7 +1241,7 @@ public class MindyBlocks implements ContentList {
         cryoWall = new StatusWall("cryo-wall"){{
             puddle = MindyBullets.icyZoneSmall;
             destroyEffect = MindyFx.iceBurst;
-            breakSound = MindySounds.freeze;
+            destroySound = MindySounds.freeze;
             health = 1600;
             requirements(Category.defense, with(MindyItems.cryonite, 6, MindyItems.vector, 2));
         }};
@@ -1246,7 +1249,7 @@ public class MindyBlocks implements ContentList {
         cryoWallLarge = new StatusWall("cryo-wall-large"){{
             destroyEffect = MindyFx.iceBurstBig;
             shotEffect = MindyFx.spikeBig;
-            breakSound = MindySounds.freeze;
+            destroySound = MindySounds.freeze;
             health = 6400;
             size = 2;
             requirements(Category.defense, with(MindyItems.cryonite, 24, MindyItems.vector, 8));
@@ -1723,7 +1726,7 @@ public class MindyBlocks implements ContentList {
         crystalSpace = new ShaderCrystal("space-crystal", MindyItems.spaceMatter){{
             sprites = 6;
             updateEffect = MindyFx.sparkleSpace;
-            destroyEffect = MindyFx.crystalBreakSpace;
+            breakEffect = destroyEffect = MindyFx.crystalBreakSpace;
             shader = MindyShaders.space;
 
             color1 = Color.magenta;
@@ -1735,7 +1738,7 @@ public class MindyBlocks implements ContentList {
         crystalBittrium = new ShaderCrystal("bittrium-crystal", MindyItems.bittrium){{
             sprites = 2;
             updateEffect = MindyFx.sparkleBittrium;
-            destroyEffect = MindyFx.crystalBreakBittrium;
+            breakEffect = destroyEffect = MindyFx.crystalBreakBittrium;
             status = MindyStatusEffects.bittriumBane;
             shader = MindyShaders.bittrium;
             glowOpacity = 0.9f;

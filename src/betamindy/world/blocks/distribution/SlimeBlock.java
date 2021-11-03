@@ -18,7 +18,7 @@ public class SlimeBlock extends Block {
     public Color color;
     public TextureRegion coreRegion, topRegion;
     public boolean useTopRegion = false;
-    public Effect destroyEffect = MindyFx.slimeBreak;
+    //public Effect destroyEffect = MindyFx.slimeBreak;
 
     public SlimeBlock(String name, int stype){
         super(name);
@@ -27,6 +27,7 @@ public class SlimeBlock extends Block {
         solid = true;
         rotate = false;
         hasColor = true;
+        destroyEffect = breakEffect = MindyFx.slimeBreak;
     }
 
     @Override

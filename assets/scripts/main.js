@@ -1,6 +1,6 @@
 print("hi from BetaMindy");
 
-if(Version.number > 6 && !Vars.headless){
+if(false && Version.number > 6 && !Vars.headless){
     print("Setting up 7.0 compatibility JS...");
 
     function bmItem(name){

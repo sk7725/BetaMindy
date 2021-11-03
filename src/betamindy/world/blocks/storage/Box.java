@@ -26,7 +26,7 @@ public class Box extends Block {
     public TextureRegion[] topRegions;
     public TextureRegion boxRegion, baseRegion, boxTopRegion, bottle, bottleTop;
 
-    public Effect destroyEffect = MindyFx.openBox;
+    //public Effect destroyEffect = MindyFx.openBox;
     public Effect despawnEffect = MindyFx.despawnBox;
     public Sound openSound = MindySounds.boxOpen;
     public Box(String name){
@@ -43,8 +43,10 @@ public class Box extends Block {
         //alwaysUnlocked = true;
         unloadable = true;
         rebuildable = false;
-        breakSound = MindySounds.boxOpen;
+        destroySound = breakSound = MindySounds.boxOpen;
+        destroyEffect = breakEffect = MindyFx.openBox;
         placeablePlayer = false;
+        instantDeconstruct = true;
     }
     //todo unlock this block when shop is researched
 

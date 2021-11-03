@@ -21,7 +21,6 @@ public class StatusWall extends Wall {
     public float statusDuration = 600f;
 
     public Effect shotEffect = MindyFx.spike;
-    public Effect destroyEffect = Fx.none;
     public BulletType puddle = MindyBullets.icyZone;
 
     public StatusWall(String name){ super(name); }

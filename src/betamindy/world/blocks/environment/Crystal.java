@@ -24,7 +24,6 @@ public class Crystal extends Block {
     public StatusEffect status = StatusEffects.none;
 
     public Effect updateEffect = MindyFx.sparkle;
-    public Effect destroyEffect = MindyFx.crystalBreak;
     public float effectChance = 0.001f;
     public TextureRegion[] regions;
     public TextureRegion[] shineRegion;
@@ -41,7 +40,9 @@ public class Crystal extends Block {
         this.item = item;
         requirements(Category.effect, with(item, amount));
 
-        breakSound = MindySounds.shatter;
+        destroySound = breakSound = MindySounds.shatter;
+        destroyEffect = breakEffect = MindyFx.crystalBreak;
+        instantDeconstruct = true;
         deconstructThreshold = 1f; //deconstructing it is a crime
         rebuildable = false;
         hasColor = true;
