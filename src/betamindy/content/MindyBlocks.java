@@ -55,7 +55,7 @@ public class MindyBlocks implements ContentList {
             borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
             chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
             //lore - shar
-            esotManual, fallenFlare, fallenAlpha, fallenMono, fallenHorizon, sentryGun, baseFloor1, baseFloor2, baseFloor3, baseFloor4, baseFloor5, baseGrid, labCryoFluid, esotChest, barrier,
+            esotManual, esotPage1, fallenFlare, fallenAlpha, fallenMono, fallenHorizon, sentryGun, baseFloor1, baseFloor2, baseFloor3, baseFloor4, baseFloor5, baseGrid, labCryoFluid, esotChest, barrier,
     //ores
     oreScalar, oreVector, oreTensor, oreStarStone,
     //payloads
@@ -2016,6 +2016,11 @@ public class MindyBlocks implements ContentList {
 
         esotManual = new LoreManual("esot-manual"){{
             buildVisibility = uwu ? BuildVisibility.shown : BuildVisibility.editorOnly;
+        }};
+
+        esotPage1 = new ManualPiece("esot-piece-1", LorePages.esot1){{
+            buildVisibility = BuildVisibility.editorOnly;
+            parent = (LoreManual) esotManual;
         }};
 
         fallenFlare = new FallenUnit("fallen-flare");

@@ -3,7 +3,7 @@ package betamindy.content;
 import mindustry.ctype.*;
 import mindustry.world.meta.*;
 
-public class MindyAttribute{
+public class MindyAttribute {
     public static final Attribute
     /** Heavy metal content. Used for blocks that make lead from scratch. */
     metallic = Attribute.add("metallic"),

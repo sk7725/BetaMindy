@@ -12,8 +12,8 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
+import betamindy.ui.*;
 import betamindy.util.*;
-import betamindy.world.blocks.storage.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -22,6 +22,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.type.*;
+import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
@@ -32,7 +33,6 @@ import static arc.Core.*;
 import static betamindy.BetaMindy.uwu;
 import static mindustry.Vars.*;
 
-//todo lore manual, comes with camera panning to give it attention every time it updates, intangible and stuff
 //This esoterum manual is the unique manual found in the first shar sector. Not to be confused with BallisticManual (portal attack remainders) or LorePage (found on other sectors)
 public class LoreManual extends Block {
     public static final String loreCutsceneTag = "bm-lore-c", loreQueueTag = "bm-lore-q", pageTag = "bm-lore-id";
@@ -43,10 +43,13 @@ public class LoreManual extends Block {
             //first landing, notices the manual
             0, new MultiCutscene(new FocusCutscene(100f, 6f), new Wait(30f), new FocusCutscene(60f){{ offsetY = 20f; }}, new EnemyScanFail())
     );
-    public int lorePages = 5; //this is the least number of lore-related pages needed to restore, not including things like post-game or easter eggs.
+    public int lorePages = 1; //this is the least number of lore-related pages needed to restore, not including things like post-game or easter eggs. Set automatically.
+    public LorePages.Chapter defaultChapter = LorePages.esot0;
+    public final Seq<ManualPiece> pageBlocks = new Seq<>(); //added automatically
     public float scanRange = 80f;
 
     public Color flameColor = Pal2.esoterum;
+    public Color effectColor = Pal2.esoterum;
     public Effect smokeEffect = MindyFx.smokeRise;
     public Effect flameEffect = MindyFx.manualFire;
     public Vec2 effectOffset = new Vec2(3f, 3f);
@@ -54,6 +57,8 @@ public class LoreManual extends Block {
     public float smokeChance = 0.06f;
     public float drawRotation = 18f; //there will only be one, and it just looks the best at this angle
     private static final Rect rect = new Rect();
+    protected boolean isPage = false;
+    BaseDialog baseDialog = null;
 
     public LoreManual(String name){
         super(name);
@@ -91,6 +96,10 @@ public class LoreManual extends Block {
         return true;
     }
 
+    public static boolean loreEmpty(){
+        return !settings.getBool(loreCutsceneTag, false) || settings.getInt(loreQueueTag, 0) == 0;
+    }
+
     @Override
     public boolean canBreak(Tile tile){
         return false;
@@ -117,7 +126,7 @@ public class LoreManual extends Block {
         public void updateTile(){
             if((uwu || state.isCampaign()) && (headless || !renderer.isCutscene()) && !state.isEditor()){
                 if(playing == null){
-                    if(uwu && !cutsceneInit) loreAdded(0); //todo remove
+                    //if(uwu && !cutsceneInit) loreAdded(0);
                     if(!cutsceneInit && settings.getBool(loreCutsceneTag, true)){
                         if(cutscenes.containsKey(settings.getInt(loreQueueTag, 0))){
                             Useful.cutscene(Tmp.v5.set(camera.position), true); //initialize cutscene
@@ -176,7 +185,7 @@ public class LoreManual extends Block {
                 //todo make chance get smaller with more restoration
                 if(Mathf.chance(effectChance)){
                     Tmp.v1.rnd(1f).add(this).add(effectOffset);
-                    flameEffect.at(Tmp.v1.x, Tmp.v1.y, flameColor);
+                    flameEffect.at(Tmp.v1.x, Tmp.v1.y, effectColor);
                 }
                 if(Mathf.chance(smokeChance)){
                     Tmp.v1.rnd(3.5f).add(this).add(effectOffset, 0.5f);
@@ -333,7 +342,8 @@ public class LoreManual extends Block {
         }
 
         public void buildDialog(){
-            //todo
+            if(baseDialog == null) baseDialog = new ManualDialog((LoreManual) block);
+            baseDialog.show();
         }
 
         @Override
@@ -393,12 +403,16 @@ public class LoreManual extends Block {
             Draw.reset();
         }
 
+        public void onScan(Unit builder){
+            scanning = builder;
+            scanTime = 0f;
+        }
+
         @Override
         public void configured(Unit builder, Object value){
             if(value instanceof Boolean goobie){
                 if(goobie && scanning == null){
-                    scanning = builder;
-                    scanTime = 0f;
+                    onScan(builder);
                 }
             }
             else super.configured(builder, value);
@@ -446,7 +460,7 @@ public class LoreManual extends Block {
         }
     }
 
-    public class Cutscene {
+    public static class Cutscene {
         public void init(){
 
         }
@@ -464,7 +478,7 @@ public class LoreManual extends Block {
         }
     }
 
-    public class MultiCutscene extends Cutscene {
+    public static class MultiCutscene extends Cutscene {
         public Cutscene[] multi;
         protected int now = 0;
 
@@ -495,7 +509,7 @@ public class LoreManual extends Block {
         }
     }
 
-    public class FocusCutscene extends Cutscene {
+    public static class FocusCutscene extends Cutscene {
         public float duration;
         public float zoom; //if negative, doesnt change camera zoom
         public float moveTime;
@@ -540,7 +554,7 @@ public class LoreManual extends Block {
         }
     }
 
-    public class Wait extends Cutscene {
+    public static class Wait extends Cutscene {
         public float duration;
         protected float playtime = 0f;
 
@@ -563,7 +577,7 @@ public class LoreManual extends Block {
         }
     }
 
-    public class EnemyScanFail extends Cutscene {
+    public static class EnemyScanFail extends Cutscene {
         public final float[][] path = { //(moveto) x, y, duration || (lookat) x, y, -duration
                 {50f, 200f, 30f}, //off-screen
                 {45f, -25f, 150f},

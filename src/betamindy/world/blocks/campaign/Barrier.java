@@ -11,7 +11,6 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
-import betamindy.world.blocks.storage.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;

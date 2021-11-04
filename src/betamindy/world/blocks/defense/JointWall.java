@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import betamindy.content.*;
-import mindustry.*;
 import mindustry.world.blocks.defense.*;
 
 import static arc.Core.atlas;

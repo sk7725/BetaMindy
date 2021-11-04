@@ -1,11 +1,8 @@
 package betamindy.content;
 
 import arc.func.Cons;
-import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 
 import static mindustry.content.Blocks.*;
 
