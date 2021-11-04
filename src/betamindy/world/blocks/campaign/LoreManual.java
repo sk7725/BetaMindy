@@ -121,6 +121,7 @@ public class LoreManual extends Block {
         public @Nullable Unit scanning = null;
         public float scanTime = 0f, heat;
         public IntSeq links = new IntSeq();
+        public boolean scannedOnce = false;
 
         @Override
         public void updateTile(){
@@ -153,9 +154,10 @@ public class LoreManual extends Block {
                     scanning = null;
                     return;
                 }
-                else if(scanTime > 400f){
+                else if(scanTime > 400f || (scannedOnce && scanning.team == team)){
                     if(scanning.team == team){
                         buildDialog();
+                        scannedOnce = true;
                     }
                     scanning = null;
                     return;

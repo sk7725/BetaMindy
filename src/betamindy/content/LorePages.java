@@ -97,13 +97,13 @@ public class LorePages {
         }
 
         public void addText(String content){
-            if(tableMode) cont.add(content).pad(2);
+            if(tableMode) cont.add(content).pad(3.5f).padLeft(tablePad).padRight(tablePad);
             else cont.labelWrap(content).pad(5).grow();
             row();
         }
 
         public void addRawText(String content){
-            cont.add(content).pad(2);
+            cont.add(content).pad(3.5f).padLeft(tablePad).padRight(tablePad);
             row();
         }
 
@@ -166,21 +166,21 @@ public class LorePages {
             if(alighLeft) cont.defaults().pad(2).left();
             else cont.defaults().pad(2).center();
             if(title != null){
-                cont.image().color(tableColor).fillX().growX().height(tableStroke).colspan(tableColspan).pad(0);
+                cont.image().color(tableColor).fillX().height(tableStroke).colspan(tableColspan).pad(0);
                 cont.row();
-                cont.add(title).fillX().growX().colspan(lineCol ? tableColspan - 1 : tableColspan).center();
+                cont.add(title).fillX().colspan(lineCol ? tableColspan - 1 : tableColspan).center();
                 if(lineCol){
                     cont.image().color(tableColor).fillY().growY().width(tableStroke).pad(0);
                 }
                 cont.row();
             }
-            cont.image().color(tableColor).fillX().growX().height(tableStroke).colspan(tableColspan).pad(0);
+            cont.image().color(tableColor).fillX().height(tableStroke).colspan(tableColspan).pad(0); //test 2: only fillX
             cont.row();
         }
 
         public void addRowImage(){
             cont.row();
-            cont.image().color(tableColor).fillX().growX().height(tableStroke).colspan(tableColspan).pad(0);
+            cont.image().color(tableColor).fillX().height(tableStroke).colspan(tableColspan).pad(0);
             cont.row();
         }
 
@@ -190,7 +190,7 @@ public class LorePages {
                     table.image().color(tableColor).fillY().growY().width(tableStroke).pad(0);
                     table.add(cont).growX();
                     if(!lineCol) table.image().color(tableColor).fillY().growY().width(tableStroke).pad(0);
-                }).pad(7).growX();
+                }).pad(7);
                 cont = frame;
                 cont.row();
             }
@@ -205,9 +205,23 @@ public class LorePages {
 
     // returns a file in the pages/ asset directory as a string array of lines separated by two newlines (\n\n).
     public static String[] getPageFile(String name){
-        Fi file = Vars.tree.get("pages/" + name);
+        String lang = Core.bundle.getLocale().getLanguage();
+        String co = Core.bundle.getLocale().getCountry();
+        Fi file = null; //localized file
+        if(!lang.equals("")){
+            String suf = (co.equals("") ? "_" + lang : "_" + lang + "_" + co);
+            file = Vars.tree.get("pages/" + name + suf);
+            if(!file.exists()){
+                Log.info("Failed to load [sky]" + name + suf +"[], defaulting...");
+                file = null;
+            }
+        }
 
-        if (!file.exists()) {
+        if(file == null){ //no localized file
+            file = Vars.tree.get("pages/" + name);
+        }
+
+        if(!file.exists()){
             Log.info("Failed to load " + name);
             return new String[]{"[accent]File missing or corrupted.[]"};
         }
@@ -217,7 +231,7 @@ public class LorePages {
 
     static boolean tableMode, lineCol, alighLeft;
     static Color tableColor = Pal.lightishGray;
-    static float tableStroke = 4f;
+    static float tableStroke = 4f, tablePad = 7.5f;
     static int tableColspan = 1;
     static String div = "";
 
@@ -254,6 +268,7 @@ public class LorePages {
                     tableMode = true;
                     tableColor = Pal.gray;
                     tableStroke = 4f;
+                    tablePad = 7.5f;
                     tableColspan = 1;
                     lineCol = alighLeft = false;
                     div = "";
@@ -291,6 +306,12 @@ public class LorePages {
                         }
                         else if(s.startsWith("t:")){
                             title = s.substring(2);
+                        }
+                        else if(s.startsWith("pad:")){
+                            try{
+                                tablePad = Float.parseFloat(s.substring(4));
+                            }
+                            catch(Exception ignored){}
                         }
                         else if(s.equals("col")){
                             lineCol = true;
