@@ -1,11 +1,14 @@
 package betamindy.world.blocks.campaign;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.actions.*;
+import arc.scene.event.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -41,7 +44,8 @@ public class LoreManual extends Block {
 
     public IntMap<Cutscene> cutscenes = IntMap.of(
             //first landing, notices the manual
-            0, new MultiCutscene(new FocusCutscene(100f, 6f), new Wait(30f), new FocusCutscene(60f){{ offsetY = 20f; }}, new EnemyScanFail())
+            0, new MultiCutscene(new FocusCutscene(100f, 6f), new Wait(30f), new FocusCutscene(60f){{ offsetY = 20f; }}, new EnemyScanFail()),
+            1, new PieceCutscene()
     );
     public int lorePages = 1; //this is the least number of lore-related pages needed to restore, not including things like post-game or easter eggs. Set automatically.
     public LorePages.Chapter defaultChapter = LorePages.esot0;
@@ -117,15 +121,28 @@ public class LoreManual extends Block {
 
     public class LoreManualBuild extends Building{
         public @Nullable Cutscene playing = null;
-        public boolean cutsceneInit = false;
         public @Nullable Unit scanning = null;
+        public boolean cutsceneInit = false, invInit = false;
         public float scanTime = 0f, heat;
         public IntSeq links = new IntSeq();
-        public boolean scannedOnce = false;
+
+        public boolean scannedOnce = uwu;
+        private @Nullable ManualPiece lastScanned = null;
 
         @Override
         public void updateTile(){
-            if((uwu || state.isCampaign()) && (headless || !renderer.isCutscene()) && !state.isEditor()){
+            if(!invInit){
+                for(ManualPiece p : pageBlocks){
+                    if(InventoryModule.add(p, -1, team)){
+                        if(p.chapter != null) p.chapter.unlock();
+                        lastScanned = p;
+                        break;
+                    }
+                }
+                invInit = true;
+            }
+
+            if((uwu || state.isCampaign()) && (!net.active() && !renderer.isCutscene()) && !state.isEditor()){ //cutscene disabled for multiplayer
                 if(playing == null){
                     //if(uwu && !cutsceneInit) loreAdded(0);
                     if(!cutsceneInit && settings.getBool(loreCutsceneTag, true)){
@@ -460,6 +477,10 @@ public class LoreManual extends Block {
                 links.add(read.i());
             }
         }
+
+        public ManualPiece getLastPiece(){
+            return lastScanned == null ? (pageBlocks.size == 0 ? (ManualPiece) MindyBlocks.esotPage1 : pageBlocks.get(0)) : lastScanned;
+        }
     }
 
     public static class Cutscene {
@@ -576,6 +597,85 @@ public class LoreManual extends Block {
             }
             playtime += Time.delta;
             return false;
+        }
+    }
+
+    public static class PieceCutscene extends Cutscene {
+        public final float startDelay = 45f, passDelay = 30f;
+        public Effect addEffect;
+        public Sound addSound = MindySounds.synthSample;
+        public float baseDuration = startDelay + 30f + passDelay;
+        public float duration;
+
+        protected float playtime = 0f;
+        protected boolean started, added;
+        protected ManualPiece piece;
+
+        public PieceCutscene(Effect addEffect){
+            this.addEffect = addEffect;
+            duration = baseDuration + addEffect.lifetime + 10f;
+        }
+        public PieceCutscene(){
+            this(MindyFx.ionBurstSmall);//todo?
+        }
+
+        @Override
+        public void init(){
+            piece = null;
+            playtime = 0f;
+            started = added = false;
+            Image white = new Image();
+            white.touchable = Touchable.disabled;
+            white.setColor(0f, 0f, 0f, 0f);
+            white.setFillParent(true);
+            white.actions(Actions.fadeIn(startDelay / 60f), Actions.delay(0.25f), Actions.fadeOut(0.5f), Actions.remove());
+            white.update(() -> {
+                if(!Vars.state.isGame()){
+                    white.remove();
+                }
+            });
+            Core.scene.add(white);
+        }
+
+        @Override
+        public boolean update(LoreManualBuild build){
+            if(piece == null){
+                piece = build.getLastPiece();
+            }
+            if(playtime >= startDelay + 2f && !started){
+                started = true;
+
+                Useful.snapCam(Tmp.v6.set(build.x + 20f, build.y - 40f));
+                player.unit().set(Tmp.v6);
+                player.unit().rotation = player.unit().angleTo(build);
+            }
+
+            if(started && playtime >= startDelay + 30f && !added){
+                if((playtime - startDelay - 30f) > passDelay){
+                    added = true;
+                    addEffect.at(build);
+                    addSound.at(build, (float)Math.pow(2, piece.chapter == null ? 0 : piece.chapter.id / 12.0));
+                }
+            }
+
+            if(playtime >= duration){
+                return true;
+            }
+            playtime += Time.delta;
+            return false;
+        }
+
+        @Override
+        public void draw(LoreManualBuild build){
+            if(started && playtime >= startDelay + 30f && !added){
+                float f = Mathf.clamp((playtime - startDelay - 30f) / passDelay);
+                Tmp.v1.set(player.unit()).lerp(build, f);
+                float h = 40f * f * (1 - f);
+                float z = Draw.z();
+                Draw.z(Layer.overlayUI - 0.01f);
+                Draw.rect(piece.region, Tmp.v1.x, Tmp.v1.y + h, Interp.fastSlow.apply(f) * 100f + 15f);
+                Draw.z(z);
+            }
         }
     }
 

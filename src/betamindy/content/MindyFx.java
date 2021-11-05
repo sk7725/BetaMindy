@@ -1263,6 +1263,17 @@ public class MindyFx {
         });
     }),
 
+    ionBurstSmall = new Effect(30f, e -> {
+        color(Color.white, Pal2.deepBlue, e.fin());
+        stroke(e.fout() * 3.5f);
+        circle(e.x, e.y, 40f * e.finpow());
+        stroke(e.fout() * 2f);
+        randLenVectors(e.id, 12, 1f + e.fin() * 40f * 1.8f, (x, y) -> {
+            float ang = Mathf.angle(x, y);
+            lineAngle(e.x + x, e.y + y, ang, e.fout() * 4f + 1f);
+        });
+    }),
+
     chainBreak = new Effect(50f, e -> {
         if(e.data instanceof TextureRegion region){
             blend(Blending.additive);

@@ -333,7 +333,7 @@ public class AnucoinNode extends Block {
                     tt.add(build.block.localizedName + Strings.format(" [gray](@,@)[]", build.tileX(), build.tileY())).growX().left().color(build instanceof BankLinked ? Color.coral : Pal2.coin);
                     tt.row();
                     tt.label(() -> Core.bundle.format("ui.trans.button", cb.coins(), cb.requiredCoin(this), cb.outputCoin())).growX().left();
-                }).growX();
+                }).fillX();
 
                 t.button(Icon.upload, Styles.clearPartiali, () -> {
                     //configure [pos, bank receiving amount] as Point2

@@ -260,6 +260,11 @@ public class Useful {
         }
     }
 
+    public static void snapCam(Vec2 pos){
+        cameraPos.set(pos);
+        Core.camera.position.set(cameraPos);
+    }
+
     public static void cutsceneEnd(){
         if(headless) return;
         lockInput = false;

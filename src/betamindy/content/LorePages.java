@@ -5,6 +5,8 @@ import arc.files.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -25,12 +27,14 @@ public class LorePages {
     public static Chapter
     esot0 = new Chapter("Introduction", new Page[]{
         makePage("esot/introduction"),
-        makePage("esot/history"),
+        makePage("esot/manual"),
         makePage("esot/warning"),
     }),
     esot1 = new Chapter("LOG_SER_01", new Page[]{
         makePage("esot/geology_1")
     });
+
+    private static final Color tmpc = new Color();
 
     public static class Chapter {
         public Page[] pages;
@@ -76,6 +80,7 @@ public class LorePages {
     public static class Page {
         Table cont, frame;
         Cons<Page> content;
+        Color tc1 = new Color(), tc2 = new Color();
 
         public Page(Cons<Page> con){
             content = con;
@@ -99,6 +104,12 @@ public class LorePages {
         public void addText(String content){
             if(tableMode) cont.add(content).pad(3.5f).padLeft(tablePad).padRight(tablePad);
             else cont.labelWrap(content).pad(5).grow();
+            row();
+        }
+
+        public void addText(String content, float scl){
+            if(tableMode) cont.add(content, scl).pad(3.5f).padLeft(tablePad).padRight(tablePad);
+            else cont.labelWrap(content).fontScale(scl).pad(5).grow();
             row();
         }
 
@@ -157,6 +168,51 @@ public class LorePages {
                             .get().setAlignment(Align.right);
                 }
             }).pad(5).growX();
+            row();
+        }
+
+        public void addWarning(Color c1, @Nullable Color c2, @Nullable String title, @Nullable String sub){
+            tc1.set(c1); tc2.set(c2);
+            if(title != null){
+                cont.table(t -> {
+                    t.center();
+
+                    Image i1 = t.image().color(c1).fillX().growX().height(6f).pad(0).get();
+                    t.row();
+                    Label l = t.add(title, Styles.techLabel).fontScale(2.5f)
+                            .center()
+                            .pad(15).color(c1).get();
+                    t.row();
+                    Image i2 = t.image().color(c1).fillX().growX().height(6f).pad(0).get();
+                    if(sub != null){
+                        t.row();
+                        t.labelWrap(sub).center().pad(15).fillX();
+                    }
+                    if(c2 != null){
+                        i2.update(() -> {
+                            l.setColor(tmpc.set(tc1).lerp(tc2, Mathf.absin(Time.globalTime, 12f, 1f)));
+                            i1.setColor(tmpc.set(tc1).lerp(tc2, Mathf.absin(Time.globalTime, 12f, 1f)));
+                            i2.setColor(tmpc.set(tc1).lerp(tc2, Mathf.absin(Time.globalTime, 12f, 1f)));
+                        });
+                    }
+                }).pad(0).padTop(20).padBottom(20).grow().center();
+            }
+            else{
+                cont.table(t -> {
+                    t.center();
+
+                    Image i1 = t.image(Icon.warning).color(c1).fillX().size(180).pad(0).get();
+                    if(sub != null){
+                        t.row();
+                        t.labelWrap(sub).center().pad(15);
+                    }
+                    if(c2 != null){
+                        i1.update(() -> {
+                            i1.setColor(tmpc.set(tc1).lerp(tc2, Mathf.absin(Time.globalTime, 12f, 1f)));
+                        });
+                    }
+                }).pad(0).padTop(20).padBottom(20).growX().center();
+            }
             row();
         }
 
@@ -260,6 +316,36 @@ public class LorePages {
                 if(line.startsWith("[n]")){
                     String[] tmp = line.substring(3).split("\\[t]");
                     t.addNote(tmp[0], tmp.length == 2 ? tmp[1] : null);
+                    continue;
+                }
+
+                // if the line starts with [#], parse it as a warning
+                if(line.startsWith("[#]")){
+                    String[] tmp = line.substring(3).split("\\[t]");
+                    String[] colorst = tmp[0].split(",");
+                    if(colorst.length <= 0 || colorst.length > 2) return;
+                    try{
+                        Color.valueOf(Tmp.c2, colorst[0]);
+                        if(colorst.length > 1) Color.valueOf(Tmp.c3, colorst[1]);
+                    }
+                    catch(Exception ignored){
+                        Tmp.c2.set(Color.scarlet);
+                        Tmp.c3.set(Color.white);
+                    }
+
+                    t.addWarning(Tmp.c2, colorst.length > 1 ? Tmp.c3 : null, tmp.length >= 2 && !tmp[1].equals("") ? tmp[1] : null, tmp.length >= 3 ? tmp[2] : null);
+                    continue;
+                }
+
+                // if the line starts with [b], parse it as a scaled text
+                if(line.startsWith("[b]")){
+                    String[] tmp = line.substring(3).split("\\[t]");
+                    if(tmp.length != 2) continue;
+                    try{
+                        float scl = Float.parseFloat(tmp[0]);
+                        t.addText(tmp[1], scl);
+                    }
+                    catch(Exception ignored){}
                     continue;
                 }
 

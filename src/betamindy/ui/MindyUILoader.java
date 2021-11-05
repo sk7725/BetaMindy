@@ -59,7 +59,8 @@ public class MindyUILoader {
             }
         });
 
-        if(uwu && (mods.getMod(MusicControl.musicMod) == null || !mods.getMod(MusicControl.musicMod).enabled()) && !Core.settings.getBool("nomusicask", false)){
+        //if(uwu) Core.settings.put("nomusicask", false);
+        if((mods.getMod(MusicControl.musicMod) == null || !mods.getMod(MusicControl.musicMod).enabled()) && !Core.settings.getBool("nomusicask", false)){
             Core.app.post(() -> {
                 BaseDialog dialog = new BaseDialog("@mod.betamindy.name");
                 dialog.cont.add(Core.bundle.format("ui.musicmodplease", MusicControl.musicRepo)).width(Vars.mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);
