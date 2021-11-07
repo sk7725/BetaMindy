@@ -2,6 +2,7 @@ package betamindy.ui;
 
 import arc.*;
 import arc.scene.style.*;
+import arc.scene.ui.*;
 import arc.util.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
@@ -34,6 +35,12 @@ public class ManualDialog extends BaseDialog {
 
     public boolean exists(int chapter){
         return manual != null && (manual.defaultChapter.id == chapter || manual.pageBlocks.contains(p -> p.chapter.id == chapter));
+    }
+
+    @Override
+    public Dialog show(){
+        if(cont != null && manual != null) build();
+        return super.show();
     }
 
     public void build(){

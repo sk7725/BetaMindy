@@ -192,4 +192,9 @@ public class BetaMindy extends Mod{
         }
         hardmode.load();
     }
+
+    public static void clearCampaign(){
+        hardmode.deleteCampaign();
+        LorePages.clearCampaign();
+    }
 }

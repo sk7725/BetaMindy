@@ -48,6 +48,8 @@ public class RayTurret extends BaseTurret {
     public Effect levelUpEffect = MindyFx.ionBurst;
     public float effectRadius = 10f;
     public Sound shootSound = Sounds.tractorbeam;
+    public Sound levelUpSound = MindySounds.easterEgg1;
+    public float[] edgeSounds = {0, 4, 7, 12};
     public float shootSoundVolume = 0.9f;
 
     public RayTurret(String name){
@@ -145,6 +147,7 @@ public class RayTurret extends BaseTurret {
                     levelCharge += edelta();
                     if(level < levels - 1 && levelCharge > (1 << level) * levelReload){
                         levelCharge = 0f;
+                        if(!headless) levelUpSound.at(x, y, Mathf.pow(2, edgeSounds[Mathf.mod(level, edgeSounds.length)]));
                         level++;
                         Tmp.v1.trns(rotation, shootLength).add(this);
                         levelUpEffect.at(Tmp.v1.x, Tmp.v1.y, effectRadius * (1f + ((float)level) / levels), edgeColors[Math.min(edgeColors.length - 1, level)]);

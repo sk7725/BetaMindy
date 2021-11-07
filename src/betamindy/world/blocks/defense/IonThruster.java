@@ -35,6 +35,8 @@ public class IonThruster extends LogicSpinBlock {
         lightColor = Pal2.drift;
         priority = TargetPriority.turret;
         flags = EnumSet.of(BlockFlag.turret);
+        ambientSound = MindySounds.coolingFan;
+        ambientSoundVolume = 0.2f;
     }
 
     @Override
@@ -106,8 +108,8 @@ public class IonThruster extends LogicSpinBlock {
                 Draw.z(Layer.turret + 1f);
                 Draw.blend(Blending.additive);
                 Draw.color(lightColor, (Mathf.absin(7f, 0.6f) + 0.3f) * heat);
-                drawJet(x, y, realRotation(), smokeX * (0.35f + Mathf.absin(11f, 0.15f)) * 1.8f, 18f * size * (1.5f - Mathf.absin(11f, 0.5f)));
-                drawJet(x, y, realRotation(), smokeX * (0.25f + Mathf.absin(Time.time + 16.57f, 11f, 0.25f)) * 1.8f, (16f * size + 6f) * (1.5f - Mathf.absin(Time.time + 16.57f, 11f, 0.5f)));
+                drawJet(x, y, realRotation(), smokeX * (0.35f + Mathf.absin(11f, 0.15f)) * 2f, 18f * size * (1.5f - Mathf.absin(11f, 0.5f)));
+                drawJet(x, y, realRotation(), smokeX * (0.25f + Mathf.absin(Time.time + 16.57f, 11f, 0.25f)) * 2f, (16f * size + 6f) * (1.5f - Mathf.absin(Time.time + 16.57f, 11f, 0.5f)));
                 Draw.blend();
                 Draw.color();
             }
@@ -117,6 +119,11 @@ public class IonThruster extends LogicSpinBlock {
         public void drawSelect(){
             super.drawSelect();
             Drawf.dashCircle(x, y, range, Pal2.drift);
+        }
+
+        @Override
+        public boolean shouldAmbientSound(){
+            return efficiency() > 0.1f;
         }
     }
 }

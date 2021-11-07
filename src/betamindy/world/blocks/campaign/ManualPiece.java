@@ -40,6 +40,7 @@ public class ManualPiece extends LoreManual {
         drawRotation = Mathf.randomSeed(chapter.id, 20f, 170f);
         targetable = false;
         breakable = false;
+        hasShadow = false;
         cutscenes = IntMap.of();
     }
 

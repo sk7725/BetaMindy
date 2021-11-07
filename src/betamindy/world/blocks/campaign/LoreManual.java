@@ -128,6 +128,7 @@ public class LoreManual extends Block {
 
         public boolean scannedOnce = uwu;
         private @Nullable ManualPiece lastScanned = null;
+        protected float currentPages = -1f;
 
         @Override
         public void updateTile(){
@@ -201,12 +202,17 @@ public class LoreManual extends Block {
             heat = Mathf.lerpDelta(heat, scanning == null ? 0f : 1f, 0.05f);
 
             if(!headless){
-                //todo make chance get smaller with more restoration
-                if(Mathf.chance(effectChance)){
+                if(currentPages < 0f){
+                    currentPages = 0;
+                    for(ManualPiece p : pageBlocks){
+                        if(p.chapter != null && p.chapter.unlocked()) currentPages++;
+                    }
+                }
+                if(Mathf.chance(effectChance * (currentPages / (1f + lorePages)))){
                     Tmp.v1.rnd(1f).add(this).add(effectOffset);
                     flameEffect.at(Tmp.v1.x, Tmp.v1.y, effectColor);
                 }
-                if(Mathf.chance(smokeChance)){
+                if(Mathf.chance(smokeChance * (currentPages / ((float)lorePages)))){
                     Tmp.v1.rnd(3.5f).add(this).add(effectOffset, 0.5f);
                     smokeEffect.at(Tmp.v1.x, Tmp.v1.y, Pal.gray);
                 }
@@ -248,6 +254,10 @@ public class LoreManual extends Block {
             }
             drawIndicator();
             Draw.reset();
+            if(playing != null){
+                playing.draw(this);
+                Draw.reset();
+            }
         }
 
         @Override
@@ -601,10 +611,10 @@ public class LoreManual extends Block {
     }
 
     public static class PieceCutscene extends Cutscene {
-        public final float startDelay = 45f, passDelay = 30f;
+        public final float startDelay = 45f, passDelay = 90f;
         public Effect addEffect;
         public Sound addSound = MindySounds.synthSample;
-        public float baseDuration = startDelay + 30f + passDelay;
+        public float baseDuration = startDelay + 60f + passDelay;
         public float duration;
 
         protected float playtime = 0f;
@@ -650,11 +660,12 @@ public class LoreManual extends Block {
                 player.unit().rotation = player.unit().angleTo(build);
             }
 
-            if(started && playtime >= startDelay + 30f && !added){
-                if((playtime - startDelay - 30f) > passDelay){
+            if(started && playtime >= startDelay + 60f && !added){
+                if((playtime - startDelay - 60f) > passDelay){
                     added = true;
                     addEffect.at(build);
                     addSound.at(build, (float)Math.pow(2, piece.chapter == null ? 0 : piece.chapter.id / 12.0));
+                    build.currentPages = -1;
                 }
             }
 
@@ -667,8 +678,8 @@ public class LoreManual extends Block {
 
         @Override
         public void draw(LoreManualBuild build){
-            if(started && playtime >= startDelay + 30f && !added){
-                float f = Mathf.clamp((playtime - startDelay - 30f) / passDelay);
+            if(started && playtime >= startDelay + 60f && !added){
+                float f = Mathf.clamp((playtime - startDelay - 60f) / passDelay);
                 Tmp.v1.set(player.unit()).lerp(build, f);
                 float h = 40f * f * (1 - f);
                 float z = Draw.z();

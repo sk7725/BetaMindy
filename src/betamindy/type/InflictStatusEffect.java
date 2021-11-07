@@ -4,7 +4,6 @@ import arc.*;
 import arc.math.*;
 import arc.scene.style.*;
 import arc.util.*;
-import betamindy.content.*;
 import betamindy.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -73,7 +72,7 @@ public class InflictStatusEffect extends StatusEffect {
             table.left();
             table.row();
             //table.image(inflicts.icon(Cicon.medium)).size(18f);
-            table.button("[accent]" + inflicts.localizedName + "[]", new TextureRegionDrawable(inflicts.icon(Cicon.medium)), Styles.cleart, 40f, () -> {
+            table.button("[accent]" + inflicts.localizedName + "[]", new TextureRegionDrawable(inflicts.uiIcon), Styles.cleart, 40f, () -> {
                 ui.content.show(inflicts);
             }).left().size(180f, 46f);
             table.image().size(4f, 46f).color(ally ? Pal.accent : Pal.remove).padRight(9f).padLeft(9f);

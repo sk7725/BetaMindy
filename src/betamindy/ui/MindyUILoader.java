@@ -57,6 +57,24 @@ public class MindyUILoader {
                 touchpad = new TouchpadFragment();
                 touchpad.build(ui.hudGroup);
             }
+            if(uwu){
+                Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> {
+                    if(Core.input.keyDown(KeyCode.down) && Core.input.keyDown(KeyCode.shiftRight)){
+                        //delete campaign for testing
+                        BaseDialog dialog = new BaseDialog("@mod.betamindy.name");
+                        dialog.cont.add("[scarlet]Debug key input detected:\nDelete modded campaign data?").width(Vars.mobile ? 400f : 500f).wrap().pad(4f).get().setAlignment(Align.center, Align.center);
+                        dialog.buttons.defaults().size(200f, 54f).pad(2f);
+                        dialog.setFillParent(false);
+                        dialog.cont.row();
+                        dialog.buttons.button("@cancel", dialog::hide);
+                        dialog.buttons.button("@ok", () -> {
+                            dialog.hide();
+                            BetaMindy.clearCampaign();
+                        });
+                        dialog.show();
+                    }
+                })));
+            }
         });
 
         //if(uwu) Core.settings.put("nomusicask", false);

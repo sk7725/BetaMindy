@@ -31,7 +31,11 @@ public class LorePages {
         makePage("esot/warning"),
     }),
     esot1 = new Chapter("LOG_SER_01", new Page[]{
+            makePage("esot/title_1"),
         makePage("esot/geology_1")
+    }),
+    esot2 = new Chapter("LOG_SER_02", new Page[]{
+            makePage("esot/test")
     });
 
     private static final Color tmpc = new Color();
@@ -62,6 +66,10 @@ public class LorePages {
             settings.put(LoreManual.pageTag + id, true);
         }
 
+        public void lock(){
+            settings.remove(LoreManual.pageTag + id);
+        }
+
         public TextureRegion getIcon(){
             return Core.atlas.find(icon, Icon.file == null ? Core.atlas.find("router") : Icon.file.getRegion());
         }
@@ -72,6 +80,14 @@ public class LorePages {
         cont.defaults().center();
         cont.labelWrap("[accent]File missing or corrupted.[]").pad(5).growX();
         cont.row();
+    }
+
+    public static void clearCampaign(){
+        for(IntMap.Entry<Chapter> chapterEntry : idMap){
+            chapterEntry.value.lock();
+        }
+        settings.remove(LoreManual.loreCutsceneTag);
+        settings.remove(LoreManual.loreQueueTag);
     }
 
     /** Makes a page. Go check out Goobrr/Esoterum!
@@ -172,7 +188,8 @@ public class LorePages {
         }
 
         public void addWarning(Color c1, @Nullable Color c2, @Nullable String title, @Nullable String sub){
-            tc1.set(c1); tc2.set(c2);
+            tc1.set(c1);
+            if(c2 != null) tc2.set(c2);
             if(title != null){
                 cont.table(t -> {
                     t.center();
@@ -293,15 +310,19 @@ public class LorePages {
 
     // build a ManualPage from an array of strings
     public static Page buildPage(String[] contents){
-        Log.info("Lines: "+contents.length);
+        //Log.info("Lines: "+contents.length);
         tableMode = false;
         return new Page(t -> {
             for(int i = 0; i < contents.length; i++){
                 String line = contents[i];
-                Log.info("L->"+line);
+                //Log.info("L->"+line);
                 // if the line starts with [h], parse it as a header element
                 if(line.startsWith("[h]")){
                     t.addHeader(line.substring(3));
+                    continue;
+                }
+                if(line.startsWith("# ")){ //sugar
+                    t.addHeader(line.substring(2));
                     continue;
                 }
 
@@ -399,6 +420,10 @@ public class LorePages {
                             }
                             catch(Exception ignored){}
                         }
+                        else if(s.startsWith("style:")){
+                            String st = s.substring(6);
+
+                        }
                         else if(s.equals("col")){
                             lineCol = true;
                         }
@@ -469,4 +494,21 @@ public class LorePages {
             }
         });
     }
+
+    /*
+    public static class PageTableStyle {
+        public @Nullable Color titleColor = null;
+        public @Nullable Color titleBackColor = null;
+        public @Nullable Color backColor = null;
+
+        public PageTableStyle(){
+            this(null, null, null);
+        }
+
+        public PageTableStyle(Color titleColor, Color titleBackColor, Color backColor){
+            this.titleColor = titleColor;
+            this.titleBackColor = titleBackColor;
+            this.backColor = backColor;
+        }
+    }*/
 }

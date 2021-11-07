@@ -20,9 +20,11 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 
+import static mindustry.Vars.emptyTile;
+
 public class PayloadBullet extends ArtilleryBulletType {
     public float altitude = 40f;
-    protected boolean correctView;
+    protected boolean correctView = true; //due to payloads updating, the building should be where it is supposed to be
 
     public PayloadBullet(float speed){
         super(speed, 1f);
@@ -43,9 +45,9 @@ public class PayloadBullet extends ArtilleryBulletType {
     @Override
     public void load(){
         super.load();
-        Events.run(Trigger.update, () -> {
-           correctView = Core.settings.getBool("correctview");
-        });
+        //Events.run(Trigger.update, () -> {
+        //   correctView = Core.settings.getBool("correctview");
+        //});
     }
 
     @Override
@@ -56,20 +58,27 @@ public class PayloadBullet extends ArtilleryBulletType {
         float rotation = b.rotation();
 
         if(b.data instanceof BuildPayload bp){
-            icon = bp.build.block.fullIcon;
-            if(bp.build.block.rotate) rotation = Mathf.lerp(rotation, (int)((rotation + 45f) / 90f) * 90f, b.fin());
-            else rotation = Mathf.lerp((rotation + 45f) % 90f - 45f, 0f, b.fin());
+            //if(bp.build.block.rotate) rotation = Mathf.lerp(rotation, (int)((rotation + 45f) / 90f) * 90f, b.fin());
+            //else rotation = Mathf.lerp((rotation + 45f) % 90f - 45f, 0f, b.fin());
+            drawBuild(b, bp);
         }
         else if(b.data instanceof UnitPayload up){
             icon = up.unit.type().fullIcon;
             rotation -= 90f;
+            drawNew(b, icon, rotation); //stays the same
         }
-        else return;
-
-        if(correctView) drawNew(b, icon, rotation);
-        else drawOriginal(b, icon, rotation);
     }
 
+    public float payloadRotation(Bullet b){
+        float rotation = b.rotation();
+        if(b.data instanceof BuildPayload bp){
+            if(bp.build.block.rotate) return Mathf.lerp(rotation, (int)((rotation + 45f) / 90f) * 90f, b.fin());
+            return Mathf.lerp((rotation + 45f) % 90f - 45f, 0f, b.fin());
+        }
+        return rotation;
+    }
+
+    @Deprecated
     public void drawOriginal(Bullet b, TextureRegion icon, float rotation){
         Draw.color(Pal.shadow);
         Draw.rect(icon, b.x, b.y, rotation);
@@ -95,14 +104,31 @@ public class PayloadBullet extends ArtilleryBulletType {
         Draw.reset();
     }
 
+    public void drawBuild(Bullet b, BuildPayload bp){
+        Draw.color(Pal.shadow);
+        float offset = b.fin() * (1 - b.fin()) * altitude * b.lifetime / lifetime;
+        Draw.rect(bp.block().fullIcon, b.x - offset, b.y - offset, bp.rotation());
+
+        float sizeScl = offset * 0.02f + 1f;
+        float pxScl = Draw.xscl, pyScl = Draw.yscl;
+        Draw.color();
+        Draw.zTransform(z -> z >= Layer.flyingUnit ? z : 0.0011f + Mathf.clamp(z, Layer.flyingUnit + 1f - 0.001f, Layer.flyingUnit + 1.9f));
+        bp.build.tile = emptyTile;
+        Draw.scl(sizeScl * pxScl, sizeScl * pyScl);
+        bp.build.payloadDraw();
+        Draw.zTransform();
+        Draw.scl(pxScl, pyScl);
+        Draw.z(Layer.flyingUnit);
+    }
+
     @Override
     public void update(Bullet b){
         if(b.timer(0, (3 + b.fslope() * 2f) * trailMult)){
-            if(!correctView){
-                float offset = b.fin() * (1 - b.fin()) * altitude * b.lifetime / lifetime;
-                trailEffect.at(b.x + offset, b.y + offset, b.fslope() * trailSize, b.team.color);
-            }
-            else trailEffect.at(b.x, b.y, b.fslope() * trailSize, b.team.color);
+            trailEffect.at(b.x, b.y, b.fslope() * trailSize, b.team.color);
+        }
+        if(b.data instanceof Payload pay){
+            pay.set(b.x, b.y, payloadRotation(b));
+            pay.update(false);
         }
     }
 
@@ -110,74 +136,81 @@ public class PayloadBullet extends ArtilleryBulletType {
     public void hit(Bullet b, float x, float y){
         Tile on = Vars.world.tileWorld(x, y);
 
-        if(b.data instanceof Payload){
-            Payload payload = (Payload) b.data;
+        if(b.data instanceof Payload payload){
             if(on != null && on.build != null && on.build.acceptPayload(on.build, payload)){
                 Fx.unitDrop.at(on.build);
                 on.build.handlePayload(on.build, payload);
             }
             else{
-                if(payload instanceof BuildPayload) dropBuild((BuildPayload)payload, b, x, y, (Building)b.owner);
-                else if(payload instanceof UnitPayload) dropUnit((UnitPayload)payload, b, x, y, (Building)b.owner, on);
+                if(payload instanceof BuildPayload) dropBuild((BuildPayload)payload, b, x, y);
+                else if(payload instanceof UnitPayload) dropUnit((UnitPayload)payload, b, x, y, on);
             }
         }
 
         super.hit(b, x, y);
     }
 
-    public void dropBuild(BuildPayload bp, Bullet b, float x, float y, Building o){
-        PayloadTurret owner = (PayloadTurret) o.block;
+    public void dropBuild(BuildPayload bp, Bullet b, float x, float y){
+        float damageP = 0.7f;
+        float ownerDamage = b.damage, selfDamage = 0.3f;
+
+        if((b.owner instanceof Building o) && (o.block instanceof PayloadTurret owner)){
+            float dist = Tmp.v1.set(x, y).dst(o);
+            damageP = owner.maxDamagePercent * dist / (owner.range * owner.blockRangeMultiplier);
+            ownerDamage = owner.damage;
+            selfDamage = dist > owner.safeRange ? damageP : 0f;
+        }
+
         bp.set(x, y, b.rotation());
         Building tile = bp.build;
         int tx = World.toTile(x - tile.block.offset), ty = World.toTile(y - tile.block.offset);
         Tile tileon = Vars.world.tile(tx, ty);
+
         if(tileon != null && Build.validPlace(tile.block, tile.team, tx, ty, tile.rotation, false)){
-            //print("Dst: " + Tmp.v1.set(x, y).dst(o));
-            float dist = Tmp.v1.set(x, y).dst(o);
-            float damageP = owner.maxDamagePercent * dist / (owner.range * owner.blockRangeMultiplier);
-            //print("DamageP: " + damageP);
             int rot = (int)((b.rotation() + 45f) / 90f) % 4;
 
             bp.place(tileon, rot);
-            if(dist > owner.safeRange && tileon.build != null) tileon.build.damage(damageP * bp.build.health);
+            if(tileon.build != null && selfDamage * bp.build.health > 0.1f) tileon.build.damage(selfDamage * bp.build.health);
 
             Fx.unitDrop.at(tile);
             Fx.placeBlock.at(tileon.drawx(), tileon.drawy(), tileon.block().size);
-            healthDamage(bp.build.block.health * owner.damage * damageP, b);
+            healthDamage(bp.build.block.health * ownerDamage * damageP, b);
         }
-        else {
+        else{
             //Fx.dynamicExplosion.at(tile, bp.block().size / 1.3f);
-            healthDamage(bp.build.block.health * owner.damage * 0.65f, b);
+            healthDamage(bp.build.block.health * ownerDamage * 0.65f, b);
             if(tileon != null){
                 try{
-                    //@Nullable Tile temptile = tile.tile;
                     tile.tile = tileon;
                     tile.onDestroyed();
-                    //tile.tile = temptile;
                 }
                 catch(Exception ignore){
-                    print(ignore.toString());
                 }
             }
         }
     }
 
-    public void dropUnit(UnitPayload up, Bullet b, float x, float y, Building o, Tile on){
-        if(Vars.net.client()) Vars.netClient.clearRemovedEntity(((UnitPayload)up).unit.id);
+    public void dropUnit(UnitPayload up, Bullet b, float x, float y, @Nullable Tile on){
+        if(Vars.net.client()) Vars.netClient.clearRemovedEntity(up.unit.id);
 
-        PayloadTurret owner = (PayloadTurret) o.block;
+        float damageP = 0.7f;
+        float ownerDamage = b.damage, selfDamage = 0.3f;
+
+        if((b.owner instanceof Building o) && (o.block instanceof PayloadTurret owner)){
+            float dist = Tmp.v1.set(x, y).dst(o);
+            damageP = owner.maxDamagePercent * dist / owner.range;
+            ownerDamage = owner.damage;
+            selfDamage = dist > owner.safeRange ? damageP : 0f;
+        }
+
         Unit u = up.unit;
 
-        float dist = Tmp.v1.set(x, y).dst(o);
-        float damageP = owner.maxDamagePercent * dist / owner.range;
-
         //can't drop ground units
-        if(!u.canPass(on.x, on.y)){
-            healthDamage(up.unit.type.health * owner.damage * 0.65f, b);
+        if(on != null && !u.canPass(on.x, on.y)){
+            healthDamage(up.unit.type.health * ownerDamage * 0.7f, b);
         }
         else{
-
-            healthDamage(up.unit.type.health * owner.damage * damageP, b);
+            healthDamage(up.unit.type.health * ownerDamage * damageP, b);
         }
 
         Fx.unitDrop.at(b);
@@ -193,7 +226,7 @@ public class PayloadBullet extends ArtilleryBulletType {
         //decrement count to prevent double increment
         if(!u.isAdded()) u.team.data().updateCount(u.type, -1);
         u.add();
-        if(dist > owner.safeRange) u.damage(u.health * damageP);
+        if(selfDamage * u.health > 0.1f) u.damage(u.health * selfDamage);
     }
 
     public void healthDamage(float health, Bullet b){
