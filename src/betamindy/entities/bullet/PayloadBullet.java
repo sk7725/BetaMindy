@@ -112,9 +112,10 @@ public class PayloadBullet extends ArtilleryBulletType {
         float sizeScl = offset * 0.02f + 1f;
         float pxScl = Draw.xscl, pyScl = Draw.yscl;
         Draw.color();
+        Draw.scl(sizeScl * pxScl, sizeScl * pyScl);
+        Draw.z(Layer.flyingUnit);
         Draw.zTransform(z -> z >= Layer.flyingUnit ? z : 0.0011f + Mathf.clamp(z, Layer.flyingUnit + 1f - 0.001f, Layer.flyingUnit + 1.9f));
         bp.build.tile = emptyTile;
-        Draw.scl(sizeScl * pxScl, sizeScl * pyScl);
         bp.build.payloadDraw();
         Draw.zTransform();
         Draw.scl(pxScl, pyScl);
