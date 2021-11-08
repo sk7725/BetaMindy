@@ -1038,8 +1038,8 @@ public class MindyBlocks implements ContentList {
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
         }};
 
-        payloadRail = new PayloadConveyor("payload-rail"){{
-            requirements(Category.units, with(Items.graphite, 5, Items.copper, 5));
+        payloadRail = new PayloadRail("payload-rail"){{
+            requirements(Category.units, with(Items.titanium, 2, Items.silicon, 1, MindyItems.scalarRaw, 5));
             canOverdrive = false;
             size = 1;
         }};

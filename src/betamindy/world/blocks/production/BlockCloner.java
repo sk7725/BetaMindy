@@ -20,8 +20,7 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 
 import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class BlockCloner extends Block {
     public Color color = Pal.lancerLaser;
@@ -94,6 +93,8 @@ public class BlockCloner extends Block {
         }
 
         public Tile destTile(int size, int dir){
+            Tile tile = this.tile == emptyTile ? Vars.world.tileWorld(x, y) : this.tile;
+            if(tile == null) return null;
             if(size <= 1) return tile.nearby(dir);
             else if(size % 2 == 1){
                 int o = size / 2 + 1;
@@ -237,7 +238,7 @@ public class BlockCloner extends Block {
                     dx += RBuild.evenOffsets[dir][0] * tilesize + 4f;
                     dy += RBuild.evenOffsets[dir][1] * tilesize + 4f;
                 }
-                Draw.rect(recipe.icon(Cicon.full), dx, dy, recipeRot * 90f);
+                Draw.rect(recipe.fullIcon, dx, dy, recipeRot * 90f);
                 Draw.blend();
                 Draw.reset();
 
@@ -245,7 +246,7 @@ public class BlockCloner extends Block {
                     float finalDx = dx;
                     float finalDy = dy;
                     Draw.draw(Layer.blockOver, () -> {
-                        Drawm.constructLineless(finalDx, finalDy, recipe.icon(Cicon.full), recipeRot * 90f, progress / constructTime(), heat, time, color);
+                        Drawm.constructLineless(finalDx, finalDy, recipe.fullIcon, recipeRot * 90f, progress / constructTime(), heat, time, color);
                     });
                 }
             }
