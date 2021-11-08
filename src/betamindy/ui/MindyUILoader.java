@@ -4,10 +4,8 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.graphics.g2d.Font.*;
 import arc.input.*;
-import arc.scene.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
-import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.*;
@@ -195,9 +193,7 @@ public class MindyUILoader {
         oglyph.fixedWidth = true;
         oglyph.page = 0;
 
-        fonts.each(f -> {
-            f.getData().setGlyph(unicode, f == Fonts.outline ? oglyph : glyph);
-        });
+        fonts.each(f -> f.getData().setGlyph(unicode, f == Fonts.outline ? oglyph : glyph));
         return ((char) unicode) + "";
     }
 }

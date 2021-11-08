@@ -24,7 +24,7 @@ public class PayloadRail extends PayloadConveyor {
     protected static final int stateMove = 0, stateLoad = 1, stateUnload = 2;
     public float loadTime = 60f, unloadTime = 40f;
 
-    public TextureRegion roombaRegion;
+    public TextureRegion roombaRegion, iconRegion;
     public Effect loadEffect = Fx.plasticburn;
     public Effect unloadEffect = MindyFx.ionBurn;
     private final Rect tr1 = new Rect(), tr2 = new Rect();
@@ -34,7 +34,7 @@ public class PayloadRail extends PayloadConveyor {
         super(name);
         interp = Interp.linear;
         size = 1;
-        payloadLimit = 2f;
+        payloadLimit = 2.5f;
         moveTime = 20f;
         moveForce = 70f;
     }
@@ -43,6 +43,12 @@ public class PayloadRail extends PayloadConveyor {
     public void load(){
         super.load();
         roombaRegion = atlas.find(name + "-roomba", "plastanium-conveyor-stack");
+        iconRegion = atlas.find(name + "-full");
+    }
+
+    @Override
+    protected TextureRegion[] icons(){
+        return new TextureRegion[]{iconRegion};
     }
 
     public class PayloadRailBuild extends PayloadConveyorBuild {
@@ -98,6 +104,12 @@ public class PayloadRail extends PayloadConveyor {
                         item = null;
                         unloading = false;
                         unloadEffect.at(this);
+                        return;
+                    }
+                    else if(state != stateUnload){
+                        //give up
+                        unloading = false;
+                        animation = 0.99f;
                         return;
                     }
                 }
