@@ -1332,5 +1332,12 @@ public class MindyFx {
         float s = (e.fout() + 1f) * Mathf.randomSeed(e.id, 3f, 7f);
         rect("circle-shadow", e.x + Tmp.v1.x, e.y + Tmp.v1.y, s, s);
         blend();
-    }).layer(Layer.flyingUnit + 3f);
+    }).layer(Layer.flyingUnit + 3f),
+
+    ionBurn = new Effect(45, e -> {
+        randLenVectors(e.id, 7, 3f + e.fin() * 5f, (x, y) -> {
+            color(Color.white, Pal.accent, Color.gray, e.fin());
+            Fill.circle(e.x + x, e.y + y, e.fout() * 1.2f);
+        });
+    });
 }

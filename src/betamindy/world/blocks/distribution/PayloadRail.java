@@ -4,6 +4,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import betamindy.content.*;
 import betamindy.world.blocks.payloads.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -19,15 +20,13 @@ import java.util.*;
 import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
-//todo little roombas, allow it to pick up & place the blocks at the end
-//scalar ore tier
 public class PayloadRail extends PayloadConveyor {
     protected static final int stateMove = 0, stateLoad = 1, stateUnload = 2;
     public float loadTime = 60f, unloadTime = 40f;
 
     public TextureRegion roombaRegion;
     public Effect loadEffect = Fx.plasticburn;
-    public Effect unloadEffect = Fx.plasticburn;
+    public Effect unloadEffect = MindyFx.ionBurn;
     private final Rect tr1 = new Rect(), tr2 = new Rect();
     private static final Vec2[] vecs = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
 
