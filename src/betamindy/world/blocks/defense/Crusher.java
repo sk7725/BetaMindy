@@ -7,13 +7,11 @@ import arc.util.*;
 import betamindy.content.*;
 import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.storage.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
@@ -60,7 +58,7 @@ public class Crusher extends Block {
         stats.add(Stat.damage, Core.bundle.format("bullet.buildingdamage", buildingMultiplier * 100f));
         if(status == null) return;
         stats.add(Stat.damage, table -> {
-            table.image(status.icon(Cicon.medium)).size(18f);
+            table.image(status.uiIcon).size(18f);
             table.add(" [accent]" + status.localizedName + "[] " + (int)(statusDuration / 60) + " " + Core.bundle.get("unit.seconds"));
         });
     }

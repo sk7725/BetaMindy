@@ -375,6 +375,7 @@ public class NotePlayer extends Block {
             return switch(sensor){
                 case heat -> heat;
                 case config -> (double)(pitch / 12) + ((pitch % 12) * 0.01);
+                case ammo -> mode;
                 default -> super.sense(sensor);
             };
         }

@@ -7,12 +7,14 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
+import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.logic.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 
 import static arc.Core.atlas;
@@ -21,10 +23,12 @@ import static mindustry.Vars.tilesize;
 public class IonThruster extends LogicSpinBlock {
     public float range = 80f;
     public float strength = 0.045f;
+    public boolean affectPayloads = false;
     public boolean corrupted = false;
 
     public TextureRegion jetRegion;
     public Effect hitEffect = MindyFx.ionHit;
+    public Effect payloadHitEffect = MindyFx.ionHitPayload;
     public Effect smokeEffect = MindyFx.ionJet;
     public float smokeChance = 0.2f, smokeX = 14f, smokeY = 6f, effectChance = 0.2f;
     private final Vec2 tmp = new Vec2();
@@ -72,10 +76,19 @@ public class IonThruster extends LogicSpinBlock {
             float rot = realRotation();
             tmp.trns(rot, strength);
             Groups.bullet.intersect(x - range, y - range, range * 2f, range * 2f, b -> {
-                if(b.type != null && b.within(this, range) && (corrupted || b.type.hittable)){
-                    b.vel.add(tmp);
-                    if(b.type.speed < 1f || b.type.drag > 0.00001f) b.rotation(b.vel.angle()); //these look awful
-                    if(Mathf.chance(effectChance)) hitEffect.at(b.x + Mathf.range(b.hitSize() / 2f), b.y + Mathf.range(b.hitSize() / 2f), rot, lightColor);
+                if(b.type != null && b.within(this, range)){
+                    if(affectPayloads && b.type instanceof PayloadBullet){
+                        if(b.data instanceof Payload pay){
+                            b.vel.add(tmp.x * 2.5f / pay.size(), tmp.y * 2.5f / pay.size());
+                            b.rotation(b.vel.angle());
+                            if(Mathf.chance(effectChance)) payloadHitEffect.at(b.x + Mathf.range(pay.size() / 2f), b.y + Mathf.range(pay.size() / 2f), rot, lightColor);
+                        }
+                    }
+                    else if(corrupted || b.type.hittable){
+                        b.vel.add(tmp);
+                        if(b.type.speed < 1f || b.type.drag > 0.00001f) b.rotation(b.vel.angle()); //these look awful
+                        if(Mathf.chance(effectChance)) hitEffect.at(b.x + Mathf.range(b.hitSize() / 2f), b.y + Mathf.range(b.hitSize() / 2f), rot, lightColor);
+                    }
                 }
             });
         }
@@ -102,7 +115,7 @@ public class IonThruster extends LogicSpinBlock {
 
         @Override
         public void draw(){
-            super.draw();//todo
+            super.draw();
 
             if(heat > 0.001f){
                 Draw.z(Layer.turret + 1f);

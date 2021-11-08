@@ -5,15 +5,10 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
-import betamindy.graphics.*;
 import betamindy.util.*;
-import betamindy.world.blocks.campaign.LoreManual.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
-import mindustry.world.*;
-
-import java.util.*;
 
 import static mindustry.Vars.*;
 import static mindustry.Vars.ui;
@@ -49,7 +44,7 @@ public class ManualPiece extends LoreManual {
         super.init();
         if(parent != null && chapter != null){
             parent.pageBlocks.add(this);
-            parent.pageBlocks.sort(Comparator.comparingInt(ManualPiece::getCID));
+            parent.pageBlocks.sort(Structs.comparingInt(ManualPiece::getCID)); //comparingInt is not available in Android
             if(!chapter.optional) parent.lorePages++;
         }
     }

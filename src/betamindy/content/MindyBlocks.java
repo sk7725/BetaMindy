@@ -1119,14 +1119,16 @@ public class MindyBlocks implements ContentList {
             health = 2400;
             range = 150f;
             strength = 0.11f;
-            smokeX = 22f;
+            smokeX = 13.2f;
             smokeY = 6f;
+            affectPayloads = true;
             consumes.power(6f);
         }};
 
         corruptedJet = new IonThruster("corrupted-jet"){{
             requirements(Category.effect, BuildVisibility.sandboxOnly, with(Items.lead, 8, MindyItems.scalar, 50, Items.silicon, 20, MindyItems.pixellium, 16));
             corrupted = true;
+            affectPayloads = true;
             size = 1;
             health = 1500;
             range = 140f;

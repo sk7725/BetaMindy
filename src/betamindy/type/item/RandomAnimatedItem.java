@@ -22,14 +22,14 @@ public class RandomAnimatedItem extends AnimatedItem {
         animateLevel = Core.settings.getInt("animlevel", 2);
         if(animateLevel >= 1){
             if(left > 0){
-                if(Time.globalTime % animDelay < 1){
+                if(Time.globalTime % animDelay < Time.delta){
                     left--;
                     fullIcon.set(animRegions[(int)(Mathf.random() * n)]);
                 }
             }
             else{
                 fullIcon.set(animRegions[0]);
-                if(Time.globalTime % animDelay < 1){
+                if(Time.globalTime % animDelay < Time.delta){
                     if(Mathf.chance(chance * animDelay)){
                         left = consecutive + Mathf.random(3) - 1;
                     }

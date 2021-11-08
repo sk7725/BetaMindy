@@ -1323,5 +1323,14 @@ public class MindyFx {
         float s = e.fout() + 2.1f;
         rect("circle-shadow", e.x + Tmp.v1.x, e.y + Tmp.v1.y, s, s);
         blend();
-    }).layer(Layer.bullet - 2f);
+    }).layer(Layer.bullet - 2f),
+
+    ionHitPayload = new Effect(17f, e -> {
+        blend(Blending.additive);
+        color(e.color, Mathf.clamp(e.fin() * 8f) * e.fout());
+        Tmp.v1.trns(e.rotation, e.fin() * 11f);
+        float s = (e.fout() + 1f) * Mathf.randomSeed(e.id, 3f, 7f);
+        rect("circle-shadow", e.x + Tmp.v1.x, e.y + Tmp.v1.y, s, s);
+        blend();
+    }).layer(Layer.flyingUnit + 3f);
 }
