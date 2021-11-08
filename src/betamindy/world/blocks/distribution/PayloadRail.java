@@ -81,6 +81,7 @@ public class PayloadRail extends PayloadConveyor {
             }
             unitMove();
 
+            if(!enabled) return;
             if(loading){
                 boolean nextTime = updateIdle();
                 if(loadProgress >= loadTime && nextTime){
@@ -191,7 +192,7 @@ public class PayloadRail extends PayloadConveyor {
         }
 
         public Tile destTile(int size, int dir){
-            Tile tile = this.tile == emptyTile ? Vars.world.tileWorld(x, y) : this.tile;
+            Tile tile = isPayload() ? Vars.world.tileWorld(x, y) : this.tile;
             if(tile == null) return null;
             if(size <= 1) return tile.nearby(dir);
             else if(size % 2 == 1){

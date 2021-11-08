@@ -93,7 +93,7 @@ public class BlockCloner extends Block {
         }
 
         public Tile destTile(int size, int dir){
-            Tile tile = this.tile == emptyTile ? Vars.world.tileWorld(x, y) : this.tile;
+            Tile tile = isPayload() ? Vars.world.tileWorld(x, y) : this.tile;
             if(tile == null) return null;
             if(size <= 1) return tile.nearby(dir);
             else if(size % 2 == 1){
@@ -137,8 +137,7 @@ public class BlockCloner extends Block {
             Tile t = tile.nearby(rotation);
             if(t == null || t.block() == null) recipe = null;
             else{
-                if(t.build != null && t.build.getPayload() != null && (t.build.getPayload() instanceof BuildPayload)){
-                    BuildPayload p = (BuildPayload) t.build.getPayload();
+                if(t.build != null && t.build.getPayload() != null && (t.build.getPayload() instanceof BuildPayload p)){
                     if(!obstructed(p.block())){
                         recipe = p.block();
                         recipeRot = (recipe.rotate) ? t.build.rotation : 0; //default to the carrier's rotation

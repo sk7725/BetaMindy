@@ -291,6 +291,7 @@ public class ClearPipe extends Block {
 
         @Override
         public void updateTile(){
+            if(isPayload()) return;
             if(connections == 0){
                 suck(0);
                 suck(2);
