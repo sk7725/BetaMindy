@@ -203,7 +203,7 @@ public class PayloadRail extends PayloadConveyor {
                 tr2.setCentered(item.x(), item.y(), item.size());
                 float pad = 5f;
                 Units.nearby(tr2.x - pad, tr2.y - pad, tr2.width + 2 * pad, tr2.height + 2 * pad, unit -> {
-                    //if(unit.isFlying()) return;
+                    if(unit.isFlying()) return;
                     unit.hitboxTile(tr1);
 
                     if(tr1.overlaps(tr2)){
@@ -212,8 +212,8 @@ public class PayloadRail extends PayloadConveyor {
                         if(tr1.overlaps(tr2)){
                             Tmp.v2.set(Geometry.overlap(tr1, tr2, rotation % 2 == 0));
                             unit.move(Tmp.v2);
-                            if(rotation % 2 == 0) unit.vel.scl(0f, 1f);
-                            else unit.vel.scl(1f, 0f);
+                            //if(rotation % 2 == 0) unit.vel.scl(0f, 1f);
+                            //else unit.vel.scl(1f, 0f);
                         }
                         /*
                         if(rotation % 2 == 0){
