@@ -74,6 +74,7 @@ public class PayloadRail extends PayloadConveyor {
                 loading = false;
                 unloading = false;
             }
+            unitMove();
 
             if(loading){
                 boolean nextTime = updateIdle();
@@ -92,7 +93,7 @@ public class PayloadRail extends PayloadConveyor {
                 boolean nextTime = updateIdle();
                 if(loadProgress >= unloadTime && nextTime){
                     loadProgress = unloadTime;
-                    if(other != null && RBuild.validPlace(bp.block(), other.x, other.y, true)){
+                    if(other != null && Build.validPlace(bp.block(), team, other.x, other.y, bp.build.rotation)){
                         //place da blocc
                         bp.place(other, rotation);
                         item = null;
@@ -194,11 +195,49 @@ public class PayloadRail extends PayloadConveyor {
 
         @Override
         public void unitOn(Unit unit){
+
+        }
+
+        public void unitMove(){
             if(item != null){
-                unit.hitboxTile(tr1);
                 tr2.setCentered(item.x(), item.y(), item.size());
-                Tmp.v2.set(Geometry.overlap(tr1, tr2, rotation % 2 == 1));
-                unit.move(Tmp.v2.x, Tmp.v2.y);
+                float pad = 5f;
+                Units.nearby(tr2.x - pad, tr2.y - pad, tr2.width + 2 * pad, tr2.height + 2 * pad, unit -> {
+                    //if(unit.isFlying()) return;
+                    unit.hitboxTile(tr1);
+
+                    if(tr1.overlaps(tr2)){
+                        unit.move(-unit.vel.x, -unit.vel.y);
+                        unit.hitboxTile(tr1);
+                        if(tr1.overlaps(tr2)){
+                            Tmp.v2.set(Geometry.overlap(tr1, tr2, rotation % 2 == 0));
+                            unit.move(Tmp.v2);
+                            if(rotation % 2 == 0) unit.vel.scl(0f, 1f);
+                            else unit.vel.scl(1f, 0f);
+                        }
+                        /*
+                        if(rotation % 2 == 0){
+                            if(Math.abs(tr1.y + tr1.height / 2f - (tr2.y + tr2.height / 2f)) > 0.7f * tr2.height){
+                                Tmp.v2.set(Geometry.overlap(tr1, tr2, false));
+                                unit.move(0, Tmp.v2.y);
+                            }
+                            else{
+                                float dx = (rotation == 0) ? tr2.x + tr2.width + tr1.width / 2f : tr2.x - tr1.width / 2f;
+                                unit.move(dx - unit.x, 0);
+                            }
+                        }
+                        else{
+                            if(Math.abs(tr1.x + tr1.width / 2f - (tr2.x + tr2.width / 2f)) > 0.7f * tr2.width){
+                                Tmp.v2.set(Geometry.overlap(tr1, tr2, true));
+                                unit.move(Tmp.v2.x, 0);
+                            }
+                            else{
+                                float dx = (rotation == 1) ? tr2.y + tr2.height + tr1.height / 2f : tr2.y - tr1.height / 2f;
+                                unit.move(0, dx - unit.y);
+                            }
+                        }*/
+                    }
+                });
             }
         }
 
