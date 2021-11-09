@@ -54,7 +54,7 @@ public class Crusher extends Block {
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.damage, damage * 60, StatUnit.powerSecond);
+        stats.add(Stat.damage, damage * 60, StatUnit.perSecond);
         stats.add(Stat.damage, Core.bundle.format("bullet.buildingdamage", buildingMultiplier * 100f));
         if(status == null) return;
         stats.add(Stat.damage, table -> {

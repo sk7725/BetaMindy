@@ -12,6 +12,7 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.payloads.*;
 
@@ -128,7 +129,7 @@ public class PayloadRail extends PayloadConveyor {
                     //look for new items
                     if(updateIdle() && nearby((rotation + 2) % 4) != null){
                         Building front = nearby((rotation + 2) % 4);
-                        if(front.team == team && front.canPickup() && front.block.size <= payloadLimit && !(front.block instanceof PayloadConveyor)){
+                        if(front.team == team && front.canPickup() && front.block.size <= payloadLimit && !(front.block instanceof PayloadConveyor) && !(front.block instanceof ConstructBlock)){
                             front.pickedUp();
                             front.tile.remove();
                             item = new BuildPayload(front);
