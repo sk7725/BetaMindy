@@ -210,7 +210,7 @@ public class ShopItems implements ContentList {
                     tt.row();
                     tt.table(b -> {
                         b.left();
-                        b.button("@purchase.cocktail.description", new TextureRegionDrawable(MindyStatusEffects.glitched.icon(Cicon.medium)), Styles.cleart, 25f, () -> {
+                        b.button("@purchase.cocktail.description", new TextureRegionDrawable(MindyStatusEffects.glitched.uiIcon), Styles.cleart, 25f, () -> {
                             ui.content.show(statusList.random(MindyStatusEffects.ouch));
                         }).left().size(180f, 27f);
                         b.add(" [lightgray](5:00)[]");

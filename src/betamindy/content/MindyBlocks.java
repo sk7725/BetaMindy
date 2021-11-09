@@ -59,7 +59,7 @@ public class MindyBlocks implements ContentList {
     //ores
     oreScalar, oreVector, oreTensor, oreStarStone,
     //payloads
-    payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator, grandConstructor, payloadPacker, payloadUnpacker, payloadRail,
+    payCannon, payCatapult, blockWorkshop, blockFactory, blockPacker, blockUnpacker, payDeconstructor, payDestroyer, payEradicator, grandConstructor, payloadPacker, payloadUnpacker, payloadRail, railSorter,
     //pistons
     piston, stickyPiston, pistonInfi, stickyPistonInfi, sporeSlime, sporeSlimeSided, surgeSlime, accel, cloner, spinner, spinnerInert, spinnerInfi, spinnerInertInfi, cog, titaniumCog, armoredCog, plastaniumCog, woodenCog, capacitor, megaCapacitor,
     //effect
@@ -1040,6 +1040,12 @@ public class MindyBlocks implements ContentList {
 
         payloadRail = new PayloadRail("payload-rail"){{
             requirements(Category.units, with(Items.titanium, 2, Items.silicon, 1, MindyItems.scalarRaw, 5));
+            canOverdrive = false;
+            size = 1;
+        }};
+
+        railSorter = new RailSorter("rail-sorter"){{
+            requirements(Category.units, with(Items.titanium, 3, Items.silicon, 3, MindyItems.scalarRaw, 5));
             canOverdrive = false;
             size = 1;
         }};

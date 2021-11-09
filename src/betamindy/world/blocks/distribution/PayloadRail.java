@@ -43,7 +43,7 @@ public class PayloadRail extends PayloadConveyor {
     @Override
     public void load(){
         super.load();
-        roombaRegion = atlas.find(name + "-roomba", "plastanium-conveyor-stack");
+        roombaRegion = atlas.find(name + "-roomba", "betamindy-payload-rail-roomba");
         iconRegion = atlas.find(name + "-full");
     }
 
@@ -257,6 +257,10 @@ public class PayloadRail extends PayloadConveyor {
         @Override
         public void draw(){
             super.draw();
+            drawRoomba();
+        }
+
+        public void drawRoomba(){
             if(item != null){
                 float rot = Mathf.slerp(itemRotation, rotdeg(), animation);
                 float len = Mathf.clamp(item.size() / 2f, 1f, 7f);

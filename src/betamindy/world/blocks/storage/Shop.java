@@ -58,7 +58,7 @@ public class Shop extends PayloadAcceptor {
 
     OrderedMap<Item, Float> itemScores;
     OrderedMap<UnitType, Float> unitScores;
-    OrderedMap<UnitType, Integer> unitTypeMap = new OrderedMap<>();
+    public static final OrderedMap<UnitType, Integer> unitTypeMap = new OrderedMap<>();
 
     float[] scrollPos = {0, 0, 0, 0};
 
@@ -129,16 +129,16 @@ public class Shop extends PayloadAcceptor {
             itemScores = BetaMindy.itemScores;
             unitScores = BetaMindy.unitScores;
 
-            if(purchases != null) {
-                for (PurchaseItem purchase : purchases) {
-                    if (purchase instanceof PackageShopItem p && p.cost == 0) {
+            if(purchases != null){
+                for(PurchaseItem purchase : purchases){
+                    if(purchase instanceof PackageShopItem p && p.cost == 0){
                         p.definePrice();
                     }
                 }
             }
 
-            for (UnitType unit : Vars.content.units()) {
-                if (unitScores.containsKey(unit)) {
+            for(UnitType unit : Vars.content.units()){
+                if(unitScores.containsKey(unit) && !unitTypeMap.containsKey(unit)){
                     unitTypeMap.put(unit, checkUnitType(unit));
                 }
             }
