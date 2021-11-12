@@ -12,9 +12,9 @@ import static mindustry.Vars.*;
 //partial credits to GlennFolker
 public class MindyShaders {
     public static @Nullable BlockShader bittrium, dreamJelly, space;
-    public static @Nullable ModSurfaceShader starryWater;
+    public static @Nullable ModSurfaceShader starryWater, coffee;
 
-    public static CacheLayer.ShaderLayer starryLayer;
+    public static CacheLayer.ShaderLayer starryLayer, coffeeLayer;
     protected static boolean loaded;
 
     public static void load(){
@@ -23,11 +23,14 @@ public class MindyShaders {
             dreamJelly = new ResBlockShader("dreamjelly");
             space = new ResBlockShader("spacefire");
             starryWater = new SpaceSurfaceShader("starwater");
+            coffee = new ModSurfaceShader("coffee");
             loaded = true;
         }
         Log.info("[accent]<FTE + POST (CACHELAYER)>[]");
         starryLayer = new CacheLayer.ShaderLayer(starryWater);
+        coffeeLayer = new CacheLayer.ShaderLayer(coffee);
         CacheLayer.add(starryLayer);
+        CacheLayer.add(coffeeLayer);
     }
 
     public static void dispose(){

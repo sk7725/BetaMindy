@@ -228,7 +228,7 @@ public class RailSorter extends PayloadRail {
         }
 
         public void sortButton(Table cont, ButtonGroup<ImageButton> group, int item){
-            ImageButton button = cont.button(Tex.whiteui, Styles.clearToggleTransi, item < 0 ? 36 : 24, () -> {}).group(group).get(); //why the heck are custom images smaller
+            ImageButton button = cont.button(Tex.whiteui, Styles.clearToggleTransi, item < 0 ? 33 : 24, () -> {}).group(group).get(); //why the heck are custom images smaller
             button.changed(() -> configure(button.isChecked() ? item : null));
             button.getStyle().imageUp = getSortIcon(item);
             button.update(() -> button.setChecked(sorter == item));

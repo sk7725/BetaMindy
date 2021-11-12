@@ -32,7 +32,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.*;
@@ -50,7 +49,7 @@ import static mindustry.type.ItemStack.with;
 public class MindyBlocks implements ContentList {
     //environment
     public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
-    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree,
+    blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree, coffee,
             //env - shar
             borudalite, borudaliteWall, mossyBorudalite, twilightMoss, starryMoss, twilightMossWall, borudaliteDol, milksandBoulder, starBoulder, starTree, starPine, milksand, milkduneWall, starryWater, starryWaterDeep, starryMossWater, starrySandWater, starryBorudaliteWater,
             chosudalite, chosudaliteWall, bandalite, bandaliteWall, eclipseOxide, halfEclipseOxide, eclipseOxideDune,
@@ -117,6 +116,19 @@ public class MindyBlocks implements ContentList {
             dragMultiplier = 0.00001f;
 
             attributes.set(Attribute.water, 0.9f);
+        }};
+
+        coffee = new Floor("milky-coffee"){{
+            speedMultiplier = 0.7f;
+            variants = 0;
+            liquidDrop = MindyLiquids.coffee;
+            liquidMultiplier = 0.5f;
+            isLiquid = true;
+            status = MindyStatusEffects.caffeinated;
+            statusDuration = 120f;
+            drownTime = 240f;
+            cacheLayer = MindyShaders.coffeeLayer;
+            albedo = 0.2f;
         }};
 
         ohno = new Floor("ohno"){{
@@ -1048,6 +1060,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.units, with(Items.titanium, 3, Items.silicon, 3, MindyItems.scalarRaw, 5));
             canOverdrive = false;
             size = 1;
+            roombaGroup = payloadRail;
         }};
 
         silo = new StorageBlock("silo"){
@@ -1868,7 +1881,7 @@ public class MindyBlocks implements ContentList {
             purchases = new PurchaseItem[]{firstAid, invincibleCore, package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11, package12, package13};
         }};
 
-        cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie, bossCake}, "block", new PurchaseItem[]{new PurchaseInvBlock(coffeeMachine, 6280, 1)}){{
+        cafe = new Store("cafe", "drink", new PurchaseItem[]{milk, ShopItems.coffee, herbTea, flowerTea, sporeJuice, cocktail}, "snack", new PurchaseItem[]{pancake, glowstick, diodeCookie, bossCake}, "block", new PurchaseItem[]{new PurchaseInvBlock(coffeeMachine, 6280, 1)}){{
             requirements(Category.effect, with(Items.sand, 500, Items.lead, 250, Items.titanium, 250, Items.graphite, 150, Items.metaglass, 100, Items.silicon, 50));
 
             size = 4;
@@ -1917,7 +1930,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.effect, uwu ? BuildVisibility.shown : BuildVisibility.debugOnly, with(Items.copper, 1));
             size = 3;
             defaultAnucoins = 1000;
-            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1), new PurchaseInvBlock(Blocks.arc, 1699, 3), asPurchase(routerFloor, 69420, 99)};
+            purchases = new PurchaseItem[]{package1, new ItemItem(MindyItems.source, 420, 69), new LiquidItem(Liquids.cryofluid, 5, 50f), new LiquidItem(Liquids.slag, 5, 50f), milk, ShopItems.coffee, herbTea, flowerTea, cocktail, holyRouter, new PurchaseInvBlock(starPen, 1, 1), new PurchaseInvBlock(Blocks.arc, 1699, 3), asPurchase(routerFloor, 69420, 99)};
             sellAllItems = sellAllUnits = sellAllBlocks = navigationBar = true;
             alwaysUnlocked = uwu;
         }};

@@ -11,7 +11,6 @@ import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
-import betamindy.util.*;
 import betamindy.world.blocks.distribution.*;
 import betamindy.world.blocks.logic.*;
 import mindustry.content.*;
@@ -60,7 +59,6 @@ public class Claw extends Block {
         super(name);
         update = true;
         rotate = true;
-        expanded = true;
         solid = true;
     }
 
@@ -68,6 +66,12 @@ public class Claw extends Block {
     public void setBars(){
         super.setBars();
         bars.add("tension", (ClawBuild entity) -> new Bar(() -> Core.bundle.get("bar.tension"), () -> Pal.ammo, () -> Mathf.clamp(entity.tension / maxTension)));
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        clipSize = Math.max(clipSize, (range + maxSize + 16f) * 2f);
     }
 
     @Override
@@ -136,8 +140,7 @@ public class Claw extends Block {
                 if(tile == null || tile.build == null) return;
 
                 //prevent grabbing unit payloads from solid blocks, because it will fail if the unit is a ground one
-                if(!tile.solid() && (tile.build.getPayload() instanceof UnitPayload)){
-                    UnitPayload up = (UnitPayload) tile.build.getPayload();
+                if(!tile.solid() && (tile.build.getPayload() instanceof UnitPayload up)){
                     if(up.unit.hitSize <= maxSize){
                         Payload tp = tile.build.takePayload();
                         if(tp == null) return;
@@ -159,8 +162,7 @@ public class Claw extends Block {
             Tile tile = world.tileWorld(x, y);
             if(tile == null || tile.build == null) return;
 
-            if(tile.build.getPayload() instanceof BuildPayload){
-                BuildPayload bp = (BuildPayload) tile.build.getPayload();
+            if(tile.build.getPayload() instanceof BuildPayload bp){
                 if(bp.block().size <= maxBlockSize && !(bp.block() instanceof Claw)){
                     heldBuild = (BuildPayload) tile.build.takePayload();
                     grabSound.at(x, y);
@@ -236,8 +238,9 @@ public class Claw extends Block {
             if(logicControlTime > 0){
                 logicControlTime -= Time.delta;
             }
-            boolean con = !spinning && logicControlled();
+            boolean con = !isPayload() && !spinning && logicControlled();
             boolean on = (!spinning && consValid() && efficiency() > 0.9f) || (spinning && notNullified(x, y));
+            if(!spinning && isPayload()) on = notNearNull(x, y);
 
             if(!con) targetV.trns(r, spinning ? Math.min(spinningRadius, range) : 8f);
             if(on){
@@ -282,7 +285,7 @@ public class Claw extends Block {
 
             if(dst > range){
                 Tmp.v1.set(toV).setLength(range).add(x, y).sub(unit);
-                if(!spinning || dst < range + 16f) unit.move(Tmp.v1.x, Tmp.v1.y);
+                if((!spinning && !isPayload() && dst < range + 24f) || dst < range + 16f) unit.move(Tmp.v1.x, Tmp.v1.y);
                 //unit.vel.setZero();
                 if(unit.dst(x, y) > range + 4f || tension > maxTension){
                     detach(unit.x, unit.y);
@@ -330,7 +333,7 @@ public class Claw extends Block {
             Draw.rect(handRegion, Tmp.v1.x, Tmp.v1.y, angle - clawa - 90f);
             Draw.rect(handOverlay, Tmp.v1.x, Tmp.v1.y, angle - 90f);
 
-            if(heldBuild != null) Draw.rect(heldBuild.build.block.icon(Cicon.full), lastV.x + x, lastV.y + y, heldBuild.block().rotate ? heldBuild.build.rotation * 90f : 0f);
+            if(heldBuild != null) Draw.rect(heldBuild.build.block.fullIcon, lastV.x + x, lastV.y + y, heldBuild.block().rotate ? heldBuild.build.rotation * 90f : 0f);
             Draw.z(lz);
         }
 
@@ -338,6 +341,18 @@ public class Claw extends Block {
             Building n = world.buildWorld(x, y);
             if(n == null || !(n.block instanceof Disabler)) return true;
             return !n.consValid();
+        }
+
+        public boolean notNearNull(float x, float y){
+            Tile t = world.tileWorld(x, y);
+            if(t == null) return true;
+            if(!notNullified(x, y)) return false;
+            for(int i = 0; i < 4; i++){
+                Building n = t.nearbyBuild(i);
+                if(n == null || !(n.block instanceof Disabler) || !n.consValid()) continue;
+                return false;
+            }
+            return true;
         }
 
         @Override

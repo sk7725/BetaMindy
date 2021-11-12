@@ -28,6 +28,8 @@ public class PayloadRail extends PayloadConveyor {
     public TextureRegion roombaRegion, iconRegion;
     public Effect loadEffect = Fx.plasticburn;
     public Effect unloadEffect = MindyFx.ionBurn;
+    public Block roombaGroup;
+
     private final Rect tr1 = new Rect(), tr2 = new Rect();
     private static final Vec2[] vecs = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
 
@@ -38,6 +40,12 @@ public class PayloadRail extends PayloadConveyor {
         payloadLimit = 2.5f;
         moveTime = 20f;
         moveForce = 70f;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        if(roombaGroup == null) roombaGroup = this;
     }
 
     @Override
@@ -185,7 +193,7 @@ public class PayloadRail extends PayloadConveyor {
         @Override
         public void handlePayload(Building source, Payload payload){
             super.handlePayload(source, payload);
-            if(source != this && source.block != block) loadEffect.at(this);
+            if(!headless && source != this && source.block != block && (!(source.block instanceof PayloadRail pr) || pr.roombaGroup != roombaGroup)) loadEffect.at(this);
         }
 
         public Tile destTile(){

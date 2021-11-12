@@ -69,6 +69,7 @@ public class ClearPipe extends Block {
         drawDisabled = conditional;
         rotate = false;
         sync = true;
+        updateInUnits = false;
 
         config(Integer.class, (ClearPipeBuild build, Integer i) -> {
             if(0 <= i && i < 4) build.lastPlayerKey = i;
@@ -191,7 +192,7 @@ public class ClearPipe extends Block {
         }
 
         public void suck(int dir){
-            if(conditional && (!enabled || (power != null && power.status < 0.9f) || heat > 0f)) return;
+            if(conditional && (!enabled || (power != null && power.status < 0.9f) || heat > 0f) || isPayload()) return;
             float ox = d4(dir).x * (size * 4f + 4f);
             float oy = d4(dir).y * (size * 4f + 4f);
 
@@ -226,7 +227,7 @@ public class ClearPipe extends Block {
         }
 
         public void acceptUnit(Unit unit, int dir){
-            if(!unit.isValid() || unit.dead() || !unit.isAdded() || unit.team != team) return;
+            if(!unit.isValid() || unit.dead() || !unit.isAdded() || unit.team != team || isPayload()) return;
 
             if(unit.isPlayer()){
                 if(unit() != null && unit().isPlayer() && unit().getPlayer() != unit.getPlayer()){
@@ -291,7 +292,7 @@ public class ClearPipe extends Block {
 
         @Override
         public void updateTile(){
-            if(isPayload()) return;
+            if(tile == emptyTile) return;
             if(connections == 0){
                 suck(0);
                 suck(2);
