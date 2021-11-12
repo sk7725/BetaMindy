@@ -18,7 +18,7 @@ public class Pal2 {
     expBack = Color.valueOf("4d8f07"),
     portal = Color.valueOf("ef8aff"),
     portalBack = Color.valueOf("c744db"),
-    coffee = Color.valueOf("80623c"),
+    coffee = Color.valueOf("814427"),
     cherry = Color.valueOf("ffd6f7"),
     darkPink = Color.valueOf("cc6eaf"),
     coin = Color.valueOf("f3e979"),

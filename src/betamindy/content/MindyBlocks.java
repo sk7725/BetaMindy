@@ -119,7 +119,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         coffee = new Floor("milky-coffee"){{
-            speedMultiplier = 0.7f;
+            speedMultiplier = 1.7f;
             variants = 0;
             liquidDrop = MindyLiquids.coffee;
             liquidMultiplier = 0.5f;
