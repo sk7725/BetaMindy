@@ -2,6 +2,7 @@
 #define NSCALE 150.0
 #define CSCALE 4.0
 #define S1 vec3(129.0, 68.0, 39.0) / 255.0
+#define S2 vec3(242.0, 230.0, 208.0) / 255.0
 
 uniform sampler2D u_texture;
 uniform sampler2D u_noise;
@@ -12,7 +13,7 @@ uniform float u_time;
 
 varying vec2 v_texCoords;
 
-const float speed = 0.0005;
+const float speed = 0.005;
 
 void main(){
     vec2 c = v_texCoords.xy;
@@ -35,6 +36,6 @@ void main(){
     float ro = smoothstep(0.75,0.0,r);
     vec3 color = r * S1 + ro;
 
-    vec4 ship = texture2D(u_texture, c);
-    gl_FragColor = vec4(color, ship.a);
+    float ship = texture2D(u_texture, c).a;
+    gl_FragColor = vec4(color * ship + S2 * (1.0 - ship), ship);
 }

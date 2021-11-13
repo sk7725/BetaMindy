@@ -417,6 +417,7 @@ public class MindyBlocks implements ContentList {
             shootShake = 3f;
             burstSpacing = 1f;
             shootLength = 6.5f;
+            spread = 0;
         }};
 
         brokerage = new CoinTurret("brokerage"){{
