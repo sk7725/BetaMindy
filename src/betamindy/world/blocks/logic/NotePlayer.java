@@ -158,6 +158,7 @@ public class NotePlayer extends Block {
 
         private int octavePage = sampleOctave; //ui only
         private long lastFrame;
+        private boolean[] played = new boolean[octaves * 12];
 
         //sets the instrument safely
         public void setMode(int m){
@@ -177,14 +178,23 @@ public class NotePlayer extends Block {
 
         //plays a note
         public void playNote(){
-            if(headless || lastFrame == Core.graphics.getFrameId()) return;
-            lastFrame = Core.graphics.getFrameId();
+            if(headless) return;
+            if (lastFrame != Core.graphics.getFrameId()){
+                lastFrame = Core.graphics.getFrameId();
+                // I could init a new array instead of doing this
+                // meh
+                for (int i = 0; i < played.length; i++){
+                    played[i] = false;
+                }
+            }
+            if (played[pitch]) return;
             if(global){
                 instruments[mode].play(pitch, volume / 10f);
             }
             else{
                 instruments[mode].at(pitch, x, y);
             }
+            played[pitch] = true;
             effects();
         }
 
@@ -410,7 +420,6 @@ public class NotePlayer extends Block {
                 }
                 rem += 0.5; //forces typecast to work
                 int pitch = whole * 12 + (int)rem;
-                lastFrame = 0;
                 configure(pitch);
             }
             else if(type == LAccess.color){
@@ -432,7 +441,6 @@ public class NotePlayer extends Block {
                     else{
                         if(v == volume){
                             //configure pitch
-                            lastFrame = 0;
                             configureP(p);
                             return;
                         }
@@ -445,7 +453,6 @@ public class NotePlayer extends Block {
                 }
 
                 //two or more are wrong
-                lastFrame = 0;
                 configure(new byte[]{(byte) inst, (byte) p, (byte) v, 1});
             }
             else if(type == LAccess.enabled){
