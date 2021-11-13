@@ -410,6 +410,7 @@ public class NotePlayer extends Block {
                 }
                 rem += 0.5; //forces typecast to work
                 int pitch = whole * 12 + (int)rem;
+                lastFrame = 0;
                 configure(pitch);
             }
             else if(type == LAccess.color){
@@ -431,6 +432,7 @@ public class NotePlayer extends Block {
                     else{
                         if(v == volume){
                             //configure pitch
+                            lastFrame = 0;
                             configureP(p);
                             return;
                         }
@@ -443,6 +445,7 @@ public class NotePlayer extends Block {
                 }
 
                 //two or more are wrong
+                lastFrame = 0;
                 configure(new byte[]{(byte) inst, (byte) p, (byte) v, 1});
             }
             else if(type == LAccess.enabled){
