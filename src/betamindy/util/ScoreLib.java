@@ -229,6 +229,8 @@ public class ScoreLib {
                         if(ammoTypes.containsKey(item) && tmpItemArray.contains(item)){
                             BulletType bullet = ammoTypes.get(item);
 
+                            if (bullet == null) continue;
+
                             //Bullet score
                             float score = getScoreBullet(bullet);
 
