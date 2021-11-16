@@ -466,8 +466,8 @@ public class MindyStatusEffects implements ContentList {
             public void update(Unit unit, float time){
                 super.update(unit, time);
 
-                if(unit instanceof Minerc mine && mine.mining()){
-                    mine.mineTimer(mine.mineTimer() + Time.delta * unit.type.mineSpeed);
+                if(unit.mining()){
+                    unit.mineTimer(unit.mineTimer() + Time.delta * unit.type.mineSpeed);
                 }
             }
         };
