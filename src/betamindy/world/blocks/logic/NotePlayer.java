@@ -183,6 +183,7 @@ public class NotePlayer extends Block {
         public void playNote(){
             if(headless) return;
             if (multiNote){
+                //only disable played pitches
                 if (lastFrame != Core.graphics.getFrameId()){
                     lastFrame = Core.graphics.getFrameId();
                     for (int i = 0; i < played.length; i++){
@@ -191,6 +192,7 @@ public class NotePlayer extends Block {
                 }
                 if (played[pitch]) return;
             } else {
+                //disable all pitches if one pitch was played
                 if (lastFrame == Core.graphics.getFrameId()){
                     return;
                 }
