@@ -1735,6 +1735,7 @@ public class MindyBlocks implements ContentList {
 
         crystalScalar = new ScidustryCrystal("scalar-crystal", MindyItems.scalarRaw){{
             sprites = 4;
+            status = MindyStatusEffects.starDrunk;
         }};
 
         crystalVector = new ScidustryCrystal("vector-crystal", MindyItems.vectorRaw){{

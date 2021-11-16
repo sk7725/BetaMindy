@@ -463,6 +463,15 @@ public class MindyFx {
         });
     }),
 
+    starSparkle = new Effect(35f, e -> {
+        color(Color.white, Color.yellow, Mathf.randomSeed(e.id));
+        vgld[0] = 0;
+        Angles.randLenVectors(e.id, e.id % 3 == 0 ? 2 : 1, 8f, (x, y) -> {
+            vgld[0]++;
+            spark(e.x+x, e.y+y, e.fout()*3.5f, 0.8f+e.fout(), e.id * vgld[0]);
+        });
+    }),
+
     crystalBreak = new Effect(90f, e -> {
         e.scaled(25f, s -> {
             color(Color.white, e.color, s.finpow());

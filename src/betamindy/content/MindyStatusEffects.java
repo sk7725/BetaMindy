@@ -27,7 +27,7 @@ import static mindustry.Vars.tilesize;
 public class MindyStatusEffects implements ContentList {
     public static StatusEffect radiation, controlSwap, booster, creativeShock, amnesia, ouch, icy, pause, dissonance, ideology, glitched, cozy, portal, bittriumBane, drift, debugger, cutsceneDrag,
     //drinks
-    caffeinated, herbed, blossoming, flowered, glowing, absorbing, sporeSlimed,
+    caffeinated, herbed, blossoming, flowered, glowing, absorbing, sporeSlimed, starDrunk,
     //inflicts
     reverseBiased, forwardBiased, selfishRepair, decay;
 
@@ -448,5 +448,28 @@ public class MindyStatusEffects implements ContentList {
             healthMultiplier = 2f;
             color = Color.clear;
         }};
+
+        starDrunk = new StatusEffect("star-drunk"){
+            {
+                color = Color.yellow;
+                effect = MindyFx.starSparkle;
+                buildSpeedMultiplier = 0.8f;
+            }
+
+            @Override
+            public void setStats(){
+                super.setStats();
+                stats.add(Stat.mineSpeed, "200%");
+            }
+
+            @Override
+            public void update(Unit unit, float time){
+                super.update(unit, time);
+
+                if(unit instanceof Minerc mine && mine.mining()){
+                    mine.mineTimer(mine.mineTimer() + Time.delta * unit.type.mineSpeed);
+                }
+            }
+        };
     }
 }

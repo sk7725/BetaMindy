@@ -18,7 +18,7 @@ public class Pal2 {
     expBack = Color.valueOf("4d8f07"),
     portal = Color.valueOf("ef8aff"),
     portalBack = Color.valueOf("c744db"),
-    coffee = Color.valueOf("814427"),
+    coffee = Color.valueOf("7c4427"),
     cherry = Color.valueOf("ffd6f7"),
     darkPink = Color.valueOf("cc6eaf"),
     coin = Color.valueOf("f3e979"),
@@ -29,5 +29,6 @@ public class Pal2 {
     locked = Color.gray,
     esoterum = Color.valueOf("8aadff"),
     deepRed = Color.valueOf("f25555"),
-    deepBlue = Color.valueOf("554deb");
+    deepBlue = Color.valueOf("554deb"),
+    siloxol = Color.valueOf("ededff");
 }

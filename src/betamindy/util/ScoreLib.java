@@ -45,6 +45,7 @@ public class ScoreLib {
     }
 
     public float getScoreBullet(BulletType bullet){
+        if(bullet == null) return 1024f; //if a bullet is null the turret/unit is actually full-on java, and its creator is definitely up to something horrible.
         return (
                 bullet.healPercent / 100f +
                         bullet.buildingDamageMultiplier * bullet.damage +
