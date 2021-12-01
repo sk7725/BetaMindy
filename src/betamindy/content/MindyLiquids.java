@@ -22,9 +22,14 @@ public class MindyLiquids implements ContentList {
             viscosity = 0.3f;
         }};
 
-        siloxol = new AnimatedLiquid("siloxol", Color.white.cpy().a(0.5f)){{ //Alcohol + Siloxane
+        siloxol = new AnimatedLiquid("siloxol", Pal2.siloxol.cpy().a(0.7f)){{ //Alcohol + Siloxane
+            effect = MindyStatusEffects.starDrunk;
             temperature = Liquids.water.temperature;
-            viscosity = Liquids.water.viscosity;
+            viscosity = 0.6f;
+            heatCapacity = 0.2f;
+            explosiveness = 0.8f;
+            lightColor = Pal2.siloxol.cpy().a(0.8f);
+            barColor = Pal2.siloxol;
         }};
 
         if(!Vars.headless){

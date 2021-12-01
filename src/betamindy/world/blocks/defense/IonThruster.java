@@ -25,6 +25,8 @@ public class IonThruster extends LogicSpinBlock {
     public float strength = 0.045f;
     public boolean affectPayloads = false;
     public boolean corrupted = false;
+    public float damageReduction = 0.995f; //hits 40% damage in 3 seconds according to wolframalpha
+    public float minDamage = 0.3f;
 
     public TextureRegion jetRegion;
     public Effect hitEffect = MindyFx.ionHit;
@@ -88,6 +90,12 @@ public class IonThruster extends LogicSpinBlock {
                         b.vel.add(tmp);
                         if(b.type.speed < 1f || b.type.drag > 0.00001f) b.rotation(b.vel.angle()); //these look awful
                         if(Mathf.chance(effectChance)) hitEffect.at(b.x + Mathf.range(b.hitSize() / 2f), b.y + Mathf.range(b.hitSize() / 2f), rot, lightColor);
+                        if(b.team == team){
+                            //nerf allied bullets: speed exchanged with damage
+                            float defdam = b.type.damage * b.damageMultiplier();
+                            if(defdam > 1f && b.damage > defdam * minDamage) b.damage(b.damage * damageReduction);
+                            //this doesnt account for deltatime, but the way to do it involves power to the Time.delta, and considering the float precision its just as bad.
+                        }
                     }
                 }
             });
