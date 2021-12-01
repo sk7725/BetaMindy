@@ -626,7 +626,7 @@ public class LoreManual extends Block {
             duration = baseDuration + addEffect.lifetime + 10f;
         }
         public PieceCutscene(){
-            this(MindyFx.ionBurstSmall);//todo?
+            this(MindyFx.ionBurstSmall);
         }
 
         @Override

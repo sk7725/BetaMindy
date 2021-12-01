@@ -302,6 +302,12 @@ public class Shop extends PayloadAcceptor {
             return true;
         }
 
+        @Override
+        public void playerPlaced(Object config){
+            super.playerPlaced(config);
+            if(!headless && state.isCampaign() && !MindyBlocks.box.unlocked()) MindyBlocks.box.quietUnlock();
+        }
+
         public void itemButton(Table pane, Item item){
             int price = Math.max(Math.round(itemScores.get(item)), 15);
 

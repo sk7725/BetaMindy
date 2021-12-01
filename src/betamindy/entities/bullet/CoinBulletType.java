@@ -11,7 +11,6 @@ public class CoinBulletType extends InstantHitBulletType{
         hitColor = trailColor = color;
         cHitEffect = MindyFx.coinHit;
         cFailEffect = MindyFx.coinDespawn;
-        //todo hitsound
     }
 
     public CoinBulletType(float damage){

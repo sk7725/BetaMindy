@@ -1,6 +1,7 @@
 package betamindy.content;
 
 import arc.func.Cons;
+import mindustry.core.*;
 import mindustry.ctype.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
@@ -26,7 +27,8 @@ public class OverWriter implements ContentList{
         setAll((Block b) -> b.attributes.set(MindyAttribute.magnetic, 1f), darkMetal, metalFloor, metalFloor2, metalFloor3, metalFloor4, metalFloor5, metalFloorDamaged);
         setAll((Block b) -> b.attributes.set(MindyAttribute.pushless, 1f), thoriumWall, thoriumWallLarge);
 
-        //re-set the vanilla attributes because its wiped TODO remove or something when Anuke fixes this
+        if(Version.build >= 135 || Version.build == -1) return;
+        //re-set the vanilla attributes because its wiped
         set(taintedWater, (Block b) -> b.attributes.set(Attribute.spores, 0.15f));
         set(deepTaintedWater, (Block b) -> b.attributes.set(Attribute.spores, 0.15f));
         set(darksandTaintedWater, (Block b) -> b.attributes.set(Attribute.spores, 0.1f));

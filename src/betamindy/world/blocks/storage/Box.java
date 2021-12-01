@@ -48,7 +48,6 @@ public class Box extends Block {
         placeablePlayer = false;
         instantDeconstruct = true;
     }
-    //todo unlock this block when shop is researched
 
     @Override
     public void load(){
