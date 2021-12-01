@@ -18,7 +18,7 @@ import static arc.Core.atlas;
  */
 public class SentryTurret extends Turret {
     public BulletType shootType;
-    public TextureRegion flapRegion, leftFlap, rightFlap, bottomRegion, topRegion; //todo
+    public TextureRegion flapRegion, leftFlap, rightFlap, bottomRegion, topRegion;
 
     public SentryTurret(String name){
         super(name);

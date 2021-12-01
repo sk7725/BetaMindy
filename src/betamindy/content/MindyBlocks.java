@@ -854,7 +854,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, BuildVisibility.hidden, with(Items.copper, 360, Items.titanium, 95, Items.silicon, 65));
         }};
 
-        arcKiln = new AttributeCrafter("arc-kiln"){{
+        arcKiln = new ArcCrafter("arc-kiln"){{
             requirements(Category.crafting, with(Items.copper, 60, MindyItems.scalarRaw, 15, Items.sand, 45));
             craftEffect = Fx.smeltsmoke; //todo
             outputItem = new ItemStack(Items.metaglass, 2);
@@ -1125,7 +1125,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         ionJet = new IonThruster("ion-jet"){{
-            requirements(Category.effect, with(Items.lead, 20, MindyItems.scalar, 50, Items.silicon, 20));
+            requirements(Category.effect, with(Items.titanium, 60, MindyItems.scalar, 50, Items.silicon, 50));
             size = 2;
             health = 600;
             smokeX = 9.5f;
@@ -1134,7 +1134,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         ionThruster = new IonThruster("ion-thruster"){{
-            requirements(Category.effect, with(Items.lead, 70, MindyItems.scalar, 150, Items.titanium, 100, Items.phaseFabric, 20));
+            requirements(Category.effect, with(Items.lead, 70, MindyItems.scalar, 150, Items.thorium, 120, Items.phaseFabric, 50, Items.surgeAlloy, 25));
             size = 3;
             health = 2400;
             range = 150f;

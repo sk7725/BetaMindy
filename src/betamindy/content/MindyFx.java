@@ -789,7 +789,7 @@ public class MindyFx {
             Drawf.light(e.x, e.y, unit.hitSize * 1.3f, e.color, e.fout());
             //Drawf.light(null, e.x, e.y, unit.shadowRegion, e.color, e.fout() * 0.7f);
         }
-    }),
+    }).followParent(false).rotWithParent(false),
 
     sparkTrail = new Effect(90f, e -> {
         blend(Blending.additive);
@@ -1348,5 +1348,10 @@ public class MindyFx {
             color(Color.white, Pal.accent, Color.gray, e.fin());
             Fill.circle(e.x + x, e.y + y, e.fout() * 1.2f);
         });
+    }),
+
+    smolSquare = new Effect(25f, e -> {
+        color(e.color);
+        Fill.square(e.x, e.y, e.fout() * 1.3f + 0.01f, 45f);
     });
 }

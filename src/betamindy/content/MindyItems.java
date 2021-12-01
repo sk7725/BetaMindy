@@ -91,7 +91,6 @@ public class MindyItems implements ContentList {
             sprites = 10;
         }};
 
-        //todo animation?
         spaceMatter = new Item("space-matter", Color.valueOf("7c067c")){{
             hardness = 9;
             cost = 4;
