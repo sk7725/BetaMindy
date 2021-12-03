@@ -1,8 +1,11 @@
 package betamindy.content;
 
 import arc.func.Cons;
+import arc.struct.*;
+import mindustry.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
@@ -27,6 +30,10 @@ public class OverWriter implements ContentList{
         setAll((Block b) -> b.attributes.set(MindyAttribute.magnetic, 1f), darkMetal, metalFloor, metalFloor2, metalFloor3, metalFloor4, metalFloor5, metalFloorDamaged);
         setAll((Block b) -> b.attributes.set(MindyAttribute.pushless, 1f), thoriumWall, thoriumWallLarge);
 
+        if(Version.build <= 135){
+            //Anuke new release when
+            weathers().each(weather -> weather.attrs.get(Attribute.water));//invoke each weather
+        }
         if(Version.build >= 135 || Version.build == -1) return;
         //re-set the vanilla attributes because its wiped
         set(taintedWater, (Block b) -> b.attributes.set(Attribute.spores, 0.15f));
@@ -50,5 +57,9 @@ public class OverWriter implements ContentList{
         set(shale, (Block b) -> b.attributes.set(Attribute.oil, 1.6f));
         set(moss, (Block b) -> b.attributes.set(Attribute.spores, 0.15f));
         set(sporeMoss, (Block b) -> b.attributes.set(Attribute.spores, 0.3f));
+    }
+
+    public Seq<Weather> weathers(){
+        return Vars.content.getBy(ContentType.weather);
     }
 }

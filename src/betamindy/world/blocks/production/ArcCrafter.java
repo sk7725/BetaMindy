@@ -7,6 +7,7 @@ import arc.util.*;
 import betamindy.content.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
@@ -20,13 +21,14 @@ public class ArcCrafter extends AttributeCrafter {
     public float flashChance = 0.01f;
     public float sizeScl = 15 * 6f;
     public Color color1 = Pal.lancerLaser, color2 = Pal.sapBullet;
+    public int craftParticles = 5;
     public Effect edgeEffect = MindyFx.smolSquare;
     public TextureRegion topRegion, lightRegion, heatRegion, shadowRegion;
 
     private final Color midc = new Color();
     public ArcCrafter(String name){
         super(name);
-        updateEffect = Fx.none;
+        updateEffect = craftEffect = Fx.none;
         lightRadius = 30f;
         emitLight = true;
     }
@@ -39,6 +41,16 @@ public class ArcCrafter extends AttributeCrafter {
         heatRegion = atlas.find(name + "-heat");
         shadowRegion = atlas.find("circle-shadow");
         midc.set(color1).lerp(color2, 0.5f);
+    }
+
+    @Override
+    public boolean canPlaceOn(Tile tile, Team team, int rotation){
+        float sum = tile.getLinkedTilesAs(this, tempTiles).sumf(t -> canPump(t) ? baseEfficiency + (attribute != null ? t.floor().attributes.get(attribute) : 0f) : 0f);
+        return sum > 0.00001f;
+    }
+
+    protected boolean canPump(Tile tile){
+        return tile != null && !tile.floor().isLiquid;
     }
 
     @Override
@@ -55,16 +67,8 @@ public class ArcCrafter extends AttributeCrafter {
         @Override
         public void updateTile(){
             super.updateTile();
-            if(Mathf.chance(updateEffectChance * edelta()) && consValid()){
-                Tmp.v1.trns(Mathf.random(360f), size * tilesize / 1.414f).clamp(-size * tilesize /2f, -size * tilesize / 2f, size * tilesize /2f, size * tilesize / 2f);
-                Tmp.v2.set(Tmp.v1).scl((size * tilesize / 2f + 4f) / (size * tilesize / 2f));
-                Tile t = world.tileWorld(Tmp.v2.x + x, Tmp.v2.y + y);
-                if(t == null || !t.solid()){
-                    edgeEffect.at(Tmp.v1.x + x, Tmp.v1.y + y, Mathf.chance(0.33f) ? color1 : (Mathf.chance(0.5f) ? color2 : midc));
-                }
-            }
 
-            if(!nextFlash && heat < 0.001f && Mathf.chance(flashChance * edelta()) && consValid()){
+            if(!nextFlash && heat < 0.001f && Mathf.chance(flashChance * edelta()) && consValid() && efficiency() > 0.0001f){
                 nextFlash = true;
                 heat = 1f;
             }
@@ -72,12 +76,26 @@ public class ArcCrafter extends AttributeCrafter {
                 nextFlash = false;
                 heat = 1f;
             }
-            heat = Mathf.approachDelta(heat, 0f, 0.06f);
+            heat = Mathf.approachDelta(heat, 0f, 0.05f);
             warmup2 = Mathf.approachDelta(warmup2, efficiency(), 0.04f);
         }
 
         public void setFlameColor(Color tmp){
             tmp.set(color1).lerp(color2, Mathf.absin(Time.time + Mathf.randomSeed(pos(), 0f, 9f * 6.29f), 9f, 1f));
+        }
+
+        @Override
+        public void craft(){
+            super.craft();
+            int n = Mathf.random(0, 3) + craftParticles;
+            for(int i = 0; i < n; i++){
+                Tmp.v1.trns(Mathf.random(360f), size * tilesize / 1.414f).clamp(-size * tilesize /2f, -size * tilesize / 2f, size * tilesize /2f, size * tilesize / 2f);
+                Tmp.v2.set(Tmp.v1).scl((size * tilesize / 2f + 4f) / (size * tilesize / 2f));
+                Tile t = world.tileWorld(Tmp.v2.x + x, Tmp.v2.y + y);
+                if(t == null || !t.solid()){
+                    edgeEffect.at(Tmp.v1.x + x, Tmp.v1.y + y, Mathf.chance(0.33f) ? color1 : (Mathf.chance(0.5f) ? color2 : midc));
+                }
+            }
         }
 
         @Override

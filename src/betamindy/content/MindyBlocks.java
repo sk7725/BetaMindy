@@ -856,9 +856,8 @@ public class MindyBlocks implements ContentList {
 
         arcKiln = new ArcCrafter("arc-kiln"){{
             requirements(Category.crafting, with(Items.copper, 60, MindyItems.scalarRaw, 15, Items.sand, 45));
-            craftEffect = Fx.smeltsmoke; //todo
             outputItem = new ItemStack(Items.metaglass, 2);
-            craftTime = 80f;
+            craftTime = 130f;
             size = 2;
             hasPower = hasItems = true;
             drawer = new DrawSmelter(Pal.lancerLaser.cpy());
@@ -867,7 +866,7 @@ public class MindyBlocks implements ContentList {
             baseEfficiency = 0f;
             attribute = MindyAttribute.metallic;
 
-            consumes.items(with(Items.sand, 2));
+            consumes.items(with(Items.sand, 3));
             consumes.power(0.60f);
         }};
 
