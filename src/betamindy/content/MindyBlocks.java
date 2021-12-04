@@ -860,7 +860,6 @@ public class MindyBlocks implements ContentList {
             craftTime = 130f;
             size = 2;
             hasPower = hasItems = true;
-            drawer = new DrawSmelter(Pal.lancerLaser.cpy());
             ambientSound = Sounds.smelter;
             ambientSoundVolume = 0.07f;
             baseEfficiency = 0f;
@@ -870,7 +869,7 @@ public class MindyBlocks implements ContentList {
             consumes.power(0.60f);
         }};
 
-        electroRefiner = new LiquidConverter("electro-refiner"){{
+        electroRefiner = new LiquidRefiner("electro-refiner"){{
             requirements(Category.crafting, with(Items.copper, 40, MindyItems.scalarRaw, 25, Items.sand, 65, Items.metaglass, 20));
             hasItems = true;
             craftTime = 100f;
@@ -880,16 +879,33 @@ public class MindyBlocks implements ContentList {
             health = 420;
             hasPower = hasLiquids = true;
             craftEffect = Fx.formsmoke;
-            updateEffect = MindyFx.powerDust;
-            drawer = new DrawArcSmelter(){{
-                flameColor = Pal.lancerLaser;
+            updateEffect = Fx.none;
+            drawer = new DrawCultivator(){{
+                plantColor = Liquids.water.color;
+                plantColorLight = Color.royal.cpy().lerp(Color.white, 0.3f);
             }};
 
             consumes.liquid(MindyLiquids.siloxol, 0.3f);
             consumes.power(0.4f);
             consumes.item(Items.sand);
+            gasProduce = 18f;
         }};
-        //todo silicon condenser: only works on adjacent electorRefiners, graphite -> sili
+
+        siliconCondenser = new Condenser("silicon-condenser"){{
+            requirements(Category.crafting, with(Items.copper, 60, Items.graphite, 35, Items.metaglass, 35));
+            outputItem = new ItemStack(Items.silicon, 1);
+            craftTime = 175f;
+            size = 3;
+            hasPower = hasItems = true;
+            ambientSound = Sounds.respawning;
+            ambientSoundVolume = 0.07f;
+            craftEffect = Fx.formsmoke;
+
+            ((LiquidRefiner) electroRefiner).condenser = this;
+            consumes.items(with(Items.graphite, 1));
+            consumes.power(0.90f);//todo drawer 2 electric boogaloo
+        }};
+        //todo graphite -> sili, 1x1 RTG
 
         piston = new Piston("piston"){{
             health = 200;

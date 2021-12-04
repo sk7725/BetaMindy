@@ -1353,5 +1353,15 @@ public class MindyFx {
     smolSquare = new Effect(25f, e -> {
         color(e.color);
         Fill.square(e.x, e.y, e.fout() * 1.3f + 0.01f, 45f);
-    });
+    }),
+
+    releaseSteam = new Effect(40f, e -> {
+        color(Pal.lightishGray, Pal2.clearWhite, e.fin());
+        alpha(0.6f * e.fout());
+        vgld[0] = 0;
+        randLenVectors(e.id, 6, e.finpow() * 12f + 3f, (x, y) -> {
+            vgld[0]++;
+            Fill.circle(e.x + x, e.y + y, (0.2f + e.fin()) * Mathf.randomSeed(e.id + vgld[0], 1f, 6f));
+        });
+    }).layer(Layer.bullet - 0.011f);
 }

@@ -50,16 +50,16 @@ public class MindyItems implements ContentList {
 
         scalarRaw = new Item("ore-scalar", Pal2.scalar){{
             flammability = 0.45f;
-            hardness = 5;
+            hardness = 1;
         }};
 
         vectorRaw = new Item("ore-vector", Pal2.vector){{
             explosiveness = 0.33f;
-            hardness = 6;
+            hardness = 3;
         }};
 
         tensorRaw = new Item("ore-tensor", Pal2.zeta){{
-            hardness = 7;
+            hardness = 5;
         }};
 
         scalar = new Item("scalar", Color.valueOf("ec83af")){{
