@@ -59,6 +59,10 @@ public class Capacitor extends Battery {
         public float charge;
         public boolean outputting = false;
 
+        public float getPowerCap(){
+            return powerCapacity;
+        }
+
         @Override
         public void updateTile(){
             Building in = nearby((rotation + 2) % 4);
@@ -68,7 +72,7 @@ public class Capacitor extends Battery {
                 return;
             }
 
-            if(in.power.graph.getLastPowerProduced() + in.power.graph.getLastPowerStored() >= powerCapacity || (in instanceof CapacitorBuild cap && cap.outputting)){
+            if((!(in instanceof BatteryBuild) && in.power.graph.getLastPowerProduced() + in.power.graph.getLastPowerStored() >= powerCapacity / 60f) || (in instanceof CapacitorBuild cap && cap.outputting && cap.getPowerCap() >= powerCapacity)){
                 //in.power.graph.transferPower(-powerCapacity);
                 if(charge >= delay * delayTicks){
                     charge = delay * delayTicks;

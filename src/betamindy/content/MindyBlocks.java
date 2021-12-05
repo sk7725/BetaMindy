@@ -856,7 +856,7 @@ public class MindyBlocks implements ContentList {
         }};
 
         arcKiln = new ArcCrafter("arc-kiln"){{
-            requirements(Category.crafting, with(Items.copper, 60, MindyItems.scalarRaw, 15, Items.sand, 45));
+            requirements(Category.crafting, with(Items.copper, 30, MindyItems.scalarRaw, 15, Items.sand, 45));
             outputItem = new ItemStack(Items.metaglass, 2);
             craftTime = 130f;
             size = 2;
@@ -892,6 +892,28 @@ public class MindyBlocks implements ContentList {
             gasProduce = 18f;
         }};
 
+        fusionChamber = new ImpactCrafter("fusion-chamber"){{
+            requirements(Category.crafting, with(Items.copper, 60, MindyItems.scalarRaw, 35, Items.sand, 15, Items.metaglass, 40));
+            hasItems = true;
+            itemDuration = 160f;
+
+            warmupSpeed = 0.01f;
+            explosionRadius = 6;
+            explosionDamage = 500;
+            explodeEffect = MindyFx.impactChamberExplosion;
+            squareSprite = false;
+
+            size = 2;
+            health = 300;
+            powerProduction = 8.2f;
+            ambientSound = Sounds.pulse;
+            ambientSoundVolume = 0.05f;
+            consumes.power(2.5f);
+            consumes.item(MindyItems.scalarRaw);
+            consumes.liquid(Liquids.water, 0.15f);
+            outputItem = new ItemStack(Items.graphite, 1);
+        }};
+
         siliconCondenser = new Condenser("silicon-condenser"){{
             requirements(Category.crafting, with(Items.copper, 60, Items.graphite, 35, Items.metaglass, 35));
             outputItem = new ItemStack(Items.silicon, 1);
@@ -900,21 +922,21 @@ public class MindyBlocks implements ContentList {
             hasPower = hasItems = true;
             ambientSound = Sounds.respawning;
             ambientSoundVolume = 0.07f;
-            craftEffect = Fx.cloudsmoke;
+            craftEffect = MindyFx.releaseSteamSmall;
+            squareSprite = false;
 
             drawer = new DrawCondenser();
             ((LiquidRefiner) electroRefiner).condenser = this;
             consumes.items(with(Items.graphite, 1));
             consumes.power(0.90f);
         }};
-        //todo graphite -> sili
 
         isotopeReactor = new IsotopeReactor("isotope-reactor"){{
             requirements(Category.power, with(Items.copper, 30, MindyItems.scalarRaw, 30));
             size = 1;
             powerProduction = 1f;
             ores.put(oreScalar, 0.9f);
-            ores.put(oreStarStone, 2f);
+            ores.put(oreStarStone, 3f);
             ores.put(oreVector, 1.2f);
             ores.put(oreTensor, 2.5f);
         }};

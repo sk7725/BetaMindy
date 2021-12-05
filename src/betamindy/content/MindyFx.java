@@ -35,6 +35,8 @@ import static mindustry.Vars.tilesize;
 public class MindyFx {
     private static final int[] vgld = {0}; //VERY_GOOD_LANGUAGE_DESIGN
     static final Vec2[] vecs = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
+    private static final Rand rand = new Rand();
+
     public static final Effect
     directionalSmoke = new Effect(160f, e -> {
         Draw.z(Layer.flyingUnit + 0.1f);
@@ -1363,5 +1365,56 @@ public class MindyFx {
             vgld[0]++;
             Fill.circle(e.x + x, e.y + y, (0.2f + e.fin()) * Mathf.randomSeed(e.id + vgld[0], 1f, 6f));
         });
-    }).layer(Layer.bullet - 0.011f);
+    }).layer(Layer.bullet - 0.011f),
+
+    releaseSteamSmall = new Effect(40f, e -> {
+        color(Pal2.siloxol, Pal2.clearWhite, e.fin());
+        alpha(e.fout());
+        vgld[0] = 0;
+        randLenVectors(e.id, 6, e.finpow() * 4f + 0.1f, (x, y) -> {
+            vgld[0]++;
+            Fill.circle(e.x + x, e.y + y, (0.2f + e.fin()) * Mathf.randomSeed(e.id + vgld[0], 1f, 4f));
+        });
+    }).layer(Layer.bullet - 0.011f),
+
+    impactChamberExplosion = new Effect(30, 300f, b -> {
+        float intensity = 3f;
+        float baseLifetime = 25f + intensity * 15f;
+        b.lifetime = 50f + intensity * 64f;
+
+        color(Pal.lighterOrange);
+        alpha(0.8f);
+        for(int i = 0; i < 5; i++){
+            rand.setSeed(b.id*2 + i);
+            float lenScl = rand.random(0.25f, 1f);
+            int fi = i;
+            b.scaled(b.lifetime * lenScl, e -> {
+                randLenVectors(e.id + fi - 1, e.fin(Interp.pow10Out), (int)(2.8f * intensity), 15f * intensity, (x, y, in, out) -> {
+                    float fout = e.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
+                    float rad = fout * ((2f + intensity) * 1.35f);
+
+                    Fill.circle(e.x + x, e.y + y, rad);
+                    Drawf.light(e.x + x, e.y + y, rad * 2.6f, Pal.lighterOrange, 0.7f);
+                });
+            });
+        }
+
+        b.scaled(baseLifetime, e -> {
+            Draw.color();
+            e.scaled(5 + intensity * 2f, i -> {
+                stroke((3.1f + intensity/5f) * i.fout());
+                Lines.circle(e.x, e.y, (3f + i.fin() * 14f) * intensity);
+                Drawf.light(e.x, e.y, i.fin() * 14f * 2f * intensity, Color.white, 0.9f * e.fout());
+            });
+
+            color(Color.white, Pal.lighterOrange, e.fin());
+            stroke((2f * e.fout()));
+
+            Draw.z(Layer.effect + 0.001f);
+            randLenVectors(e.id + 1, e.finpow() + 0.001f, (int)(8 * intensity), 30f * intensity, (x, y, in, out) -> {
+                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + out * 4 * (4f + intensity));
+                Drawf.light(e.x + x, e.y + y, (out * 4 * (3f + intensity)) * 3.5f, Draw.getColor(), 0.8f);
+            });
+        });
+    });
 }

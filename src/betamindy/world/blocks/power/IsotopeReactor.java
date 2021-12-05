@@ -4,19 +4,14 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.scene.ui.*;
-import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
-import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 
@@ -33,6 +28,12 @@ public class IsotopeReactor extends PowerGenerator {
 
     public IsotopeReactor(String name){
         super(name);
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        clipSize = Math.max(clipSize, 100f * size * 2);
     }
 
     @Override
@@ -53,11 +54,9 @@ public class IsotopeReactor extends PowerGenerator {
                 for(int i = 0; i < list.size; i++){
                     Block item = list.get(i);
 
-                    l.stack(new Image(item.uiIcon).setScaling(Scaling.fit),
-                            new Table(t -> t.bottom().right().add((int)(ores.get(item, 0f) * 100) + "%").style(Styles.outlineLabel).color(item.mapColor))).size(32f);
-                    if(i % 5 == 4){
-                        l.row();
-                    }
+                    l.image(item.uiIcon).size(32f);
+                    l.add(" " + (int)(ores.get(item, 0f) * 100) + "%").color(item.mapColor);
+                    if(i < list.size - 1) l.add(" / ");
                 }
             });
         });

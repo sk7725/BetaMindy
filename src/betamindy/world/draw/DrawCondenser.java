@@ -38,10 +38,11 @@ public class DrawCondenser extends DrawBlock {
                 Fill.circle(build.x + Angles.trnsx(angle, len), build.y + Angles.trnsy(angle, len), particleLen * roff * fout + 0.01f);
             }
             Draw.color(midColor, lightFlameColor, si);
+            Draw.alpha(a);
             for(int i = 0; i < 3; i++){
-                float r = rand.random(0.8f, 1.1f) * particleLen;
+                float r = rand.random(0.4f, 0.8f) * particleLen * (1f + Mathf.absin(centerRadScl * 1.5f, centerRadMag));
                 float len = rand.random(0.25f, 0.45f) * r * (1f + Mathf.absin(centerRadScl, centerRadMag));
-                float angle = rand.range(20f) + i * 120f;
+                float angle = rand.range(20f) + i * 120f + Time.time;
                 Fill.circle(build.x + Angles.trnsx(angle, len), build.y + Angles.trnsy(angle, len), r * build.warmup + 0.01f);
             }
 
