@@ -22,6 +22,7 @@ import betamindy.world.blocks.production.PayloadDeconstructor;
 import betamindy.world.blocks.production.payduction.*;
 import betamindy.world.blocks.storage.*;
 import betamindy.world.blocks.units.*;
+import betamindy.world.draw.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
@@ -77,7 +78,7 @@ public class MindyBlocks implements ContentList {
             //campaign - shar
             nebula, sequence, giant, astro, dwarf, blackHole, spectrum,
     //power
-    pressurePad, pressurePadLarge, button, buttonLarge, spotlight, buttonRouter, buttonDistributor,
+    pressurePad, pressurePadLarge, button, buttonLarge, spotlight, buttonRouter, buttonDistributor, isotopeReactor,
     //crafting
     blockFurnace, heavyFurnace, gateSwitch, coffeeMachine,
             //campaign - shar
@@ -899,13 +900,24 @@ public class MindyBlocks implements ContentList {
             hasPower = hasItems = true;
             ambientSound = Sounds.respawning;
             ambientSoundVolume = 0.07f;
-            craftEffect = Fx.formsmoke;
+            craftEffect = Fx.cloudsmoke;
 
+            drawer = new DrawCondenser();
             ((LiquidRefiner) electroRefiner).condenser = this;
             consumes.items(with(Items.graphite, 1));
-            consumes.power(0.90f);//todo drawer 2 electric boogaloo
+            consumes.power(0.90f);
         }};
-        //todo graphite -> sili, 1x1 RTG
+        //todo graphite -> sili
+
+        isotopeReactor = new IsotopeReactor("isotope-reactor"){{
+            requirements(Category.power, with(Items.copper, 30, MindyItems.scalarRaw, 30));
+            size = 1;
+            powerProduction = 1f;
+            ores.put(oreScalar, 0.9f);
+            ores.put(oreStarStone, 2f);
+            ores.put(oreVector, 1.2f);
+            ores.put(oreTensor, 2.5f);
+        }};
 
         piston = new Piston("piston"){{
             health = 200;
