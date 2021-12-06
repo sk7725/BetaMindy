@@ -24,6 +24,11 @@ public class ImpactCrafter extends ImpactReactor {
         }
     }
 
+    @Override
+    public boolean outputsItems(){
+        return outputItem != null;
+    }
+
     public class ImpactCrafterBuild extends ImpactReactorBuild {
         @Override
         public void consume(){

@@ -895,7 +895,7 @@ public class MindyBlocks implements ContentList {
         fusionChamber = new ImpactCrafter("fusion-chamber"){{
             requirements(Category.crafting, with(Items.copper, 60, MindyItems.scalarRaw, 35, Items.sand, 15, Items.metaglass, 40));
             hasItems = true;
-            itemDuration = 160f;
+            itemDuration = 60f;
 
             warmupSpeed = 0.01f;
             explosionRadius = 6;
@@ -910,13 +910,13 @@ public class MindyBlocks implements ContentList {
             ambientSoundVolume = 0.05f;
             consumes.power(2.5f);
             consumes.item(MindyItems.scalarRaw);
-            consumes.liquid(Liquids.water, 0.15f);
+            consumes.liquid(Liquids.water, 0.1f);
             outputItem = new ItemStack(Items.graphite, 1);
         }};
 
         siliconCondenser = new Condenser("silicon-condenser"){{
             requirements(Category.crafting, with(Items.copper, 60, Items.graphite, 35, Items.metaglass, 35));
-            outputItem = new ItemStack(Items.silicon, 1);
+            outputItem = new ItemStack(Items.silicon, 4);
             craftTime = 175f;
             size = 3;
             hasPower = hasItems = true;
@@ -927,7 +927,7 @@ public class MindyBlocks implements ContentList {
 
             drawer = new DrawCondenser();
             ((LiquidRefiner) electroRefiner).condenser = this;
-            consumes.items(with(Items.graphite, 1));
+            consumes.items(with(Items.graphite, 4));
             consumes.power(0.90f);
         }};
 
