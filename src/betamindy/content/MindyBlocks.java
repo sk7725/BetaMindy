@@ -38,6 +38,7 @@ import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
+import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
@@ -82,7 +83,7 @@ public class MindyBlocks implements ContentList {
     //crafting
     blockFurnace, heavyFurnace, gateSwitch, coffeeMachine,
             //campaign - shar
-            arcKiln, electroRefiner, siliconCondenser, fusionChamber,
+            arcKiln, electroRefiner, siliconCondenser, fusionChamber, lancerKiln,
     //catalysts (pushreact & spinreact & boost)
     discharger, fireCan, campfire,
     //floorpapers
@@ -865,9 +866,33 @@ public class MindyBlocks implements ContentList {
             ambientSoundVolume = 0.07f;
             baseEfficiency = 0f;
             attribute = MindyAttribute.metallic;
+            boostScale = 1f;
 
             consumes.items(with(Items.sand, 3));
             consumes.power(0.60f);
+        }};
+
+        lancerKiln = new ArcCrafter("lancer-kiln"){{
+            requirements(Category.crafting, with(Items.titanium, 120, Items.metaglass, 80, MindyItems.scalar, 35, Items.silicon, 60));
+            outputItem = new ItemStack(Items.metaglass, 8);
+            craftTime = 185f;
+            size = 3;
+            hasPower = hasItems = true;
+            ambientSound = Sounds.smelter;
+            ambientSoundVolume = 0.07f;
+            baseEfficiency = 0f;
+            attribute = MindyAttribute.metallic;
+            boostScale = 0.45f;
+            itemCapacity = 20;
+
+            consumes.items(with(Items.sand, 10));
+            consumes.power(3.8f);
+            boostItem = new ItemStack(Items.lead, 4);
+            boostAmount = 1f;
+
+            craftParticles = 9;
+            drawLarge = true;
+            sizeScl = 120f;
         }};
 
         electroRefiner = new LiquidRefiner("electro-refiner"){{
