@@ -873,8 +873,8 @@ public class MindyBlocks implements ContentList {
         electroRefiner = new LiquidRefiner("electro-refiner"){{
             requirements(Category.crafting, with(Items.copper, 40, MindyItems.scalarRaw, 25, Items.sand, 65, Items.metaglass, 20));
             hasItems = true;
-            craftTime = 100f;
-            outputLiquid = new LiquidStack(Liquids.water, 0.3f);
+            craftTime = 50f;
+            outputLiquid = new LiquidStack(Liquids.water, 0.15f);
             outputsLiquid = true;
             size = 3;
             health = 420;
@@ -886,10 +886,10 @@ public class MindyBlocks implements ContentList {
                 plantColorLight = Color.royal.cpy().lerp(Color.white, 0.3f);
             }};
 
-            consumes.liquid(MindyLiquids.siloxol, 0.3f);
+            consumes.liquid(MindyLiquids.siloxol, 0.15f);
             consumes.power(0.4f);
             consumes.item(Items.sand);
-            gasProduce = 18f;
+            gasProduce = 16f;
         }};
 
         fusionChamber = new ImpactCrafter("fusion-chamber"){{
@@ -928,7 +928,9 @@ public class MindyBlocks implements ContentList {
             drawer = new DrawCondenser();
             ((LiquidRefiner) electroRefiner).condenser = this;
             consumes.items(with(Items.graphite, 4));
-            consumes.power(0.90f);
+            consumes.power(1.05f);
+            gasCapacity = 108f;
+            gasUse = 27f;
         }};
 
         isotopeReactor = new IsotopeReactor("isotope-reactor"){{
