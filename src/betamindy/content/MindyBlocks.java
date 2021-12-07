@@ -83,7 +83,7 @@ public class MindyBlocks implements ContentList {
     //crafting
     blockFurnace, heavyFurnace, gateSwitch, coffeeMachine,
             //campaign - shar
-            arcKiln, electroRefiner, siliconCondenser, fusionChamber, lancerKiln,
+            arcKiln, electroRefiner, siliconCondenser, fusionChamber, lancerKiln, colloidMixer, scalarFurnace,
     //catalysts (pushreact & spinreact & boost)
     discharger, fireCan, campfire,
     //floorpapers
@@ -625,6 +625,7 @@ public class MindyBlocks implements ContentList {
             reloadTime = 15f;
             inaccuracy = 1.5f;
             shootCone = 30f;
+            //shootSound = MindySounds.pewRetro; //this breaks the audio bus for some reason
         }};
 
         sequence = new LiquidTurret("sequence"){{
@@ -787,7 +788,7 @@ public class MindyBlocks implements ContentList {
 
             consumes.power(2f);
             crafts(Blocks.siliconSmelter, 2, Blocks.kiln, 1, Blocks.surgeSmelter, 2);
-            crafts(MindyItems.scalar, 1, 4).using(with(MindyItems.scalarRaw, 5, Items.plastanium, 3, Items.thorium, 10));
+            crafts(MindyItems.scalar, 1, 4).using(with(MindyItems.scalarRaw, 3, Items.graphite, 1, Items.thorium, 1, Items.metaglass, 1));
             requirements(Category.crafting, with(Items.copper, 410, Items.titanium, 230, Items.graphite, 60, Items.silicon, 115, Items.metaglass, 65, Items.plastanium, 30));
         }};
 
@@ -930,7 +931,7 @@ public class MindyBlocks implements ContentList {
 
             size = 2;
             health = 300;
-            powerProduction = 8.2f;
+            powerProduction = 8.5f;
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.05f;
             consumes.power(2.5f);
@@ -956,6 +957,39 @@ public class MindyBlocks implements ContentList {
             consumes.power(1.05f);
             gasCapacity = 108f;
             gasUse = 27f;
+        }};
+
+        colloidMixer = new LiquidConverter("colloid-mixer"){{
+            requirements(Category.crafting, with(MindyItems.scalarRaw, 65, Items.silicon, 40, Items.titanium, 60));
+            outputLiquid = new LiquidStack(MindyLiquids.colloid, 0.2f);
+            craftTime = 120f;
+            size = 2;
+            hasPower = true;
+            hasItems = true;
+            hasLiquids = true;
+            rotate = false;
+            solid = true;
+            outputsLiquid = true;
+            drawer = new DrawMixer(true);
+
+            consumes.power(1.5f);
+            consumes.item(Items.titanium);
+            consumes.liquid(MindyLiquids.siloxol, 0.2f);
+        }};
+
+        scalarFurnace = new NuclearCrafter("scalar-furnace"){{
+            requirements(Category.crafting, with(Items.copper, 400, Items.silicon, 100, Items.graphite, 100, Items.thorium, 150, MindyItems.scalarRaw, 450));
+            ambientSound = Sounds.hum;
+            ambientSoundVolume = 0.24f;
+            size = 4;
+            health = 1200;
+            itemDuration = 120f;
+            itemCapacity = 24;
+            powerProduction = 17f;
+            consumes.items(with(MindyItems.scalarRaw, 3, Items.graphite, 1, Items.thorium, 1, Items.metaglass, 1));
+            outputItem = new ItemStack(MindyItems.scalar, 1);
+            heating = 0.01f;
+            consumes.liquid(MindyLiquids.colloid, heating * 2f / coolantPower).update(false);
         }};
 
         isotopeReactor = new IsotopeReactor("isotope-reactor"){{

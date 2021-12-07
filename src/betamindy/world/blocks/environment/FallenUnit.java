@@ -11,6 +11,7 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.game.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -28,7 +29,9 @@ public class FallenUnit extends Prop {
 
     public FallenUnit(String name){
         super(name);
-        variants = 0;//todo breakEffect
+        variants = 0;
+        destroyEffect = breakEffect = Fx.explosion;
+        destroySound = breakSound = Sounds.explosion;
     }
 
     public void initUnit(){

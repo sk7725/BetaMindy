@@ -14,7 +14,7 @@ public class ItemTrailBulletType extends BulletType {
         trailWidth = 1.2f;
         trailLength = 6;
         pierce = true;
-        hitEffect = MindyFx.sparkle;
-        despawnEffect = MindyFx.sparkle;
+        hitEffect = MindyFx.sparkleHit;
+        despawnEffect = MindyFx.sparkleHit;
     }
 }

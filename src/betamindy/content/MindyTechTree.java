@@ -18,6 +18,34 @@ public class MindyTechTree implements ContentList{
 
     @Override
     public void load(){
+        //Shar branch
+        margeNode(mechanicalDrill, () -> {
+            node(isotopeReactor, () -> {
+                node(arcKiln, () -> {
+                    node(lancerKiln);
+                    node(fusionChamber, () -> {
+                        node(scalarFurnace);
+                    });
+                    node(electroRefiner, () -> {
+                        node(siliconCondenser, () -> {
+
+                        });
+                    });
+                });
+            });
+        });
+        margeNode(duo, () -> {
+            node(spectrum, () -> {
+                node(ray, () -> {
+                    node(astro);
+                });
+            });
+            node(nebula, () -> {
+                node(sequence);
+            });
+        });
+        //end region
+
         margeNode(payloadConveyor, () -> {
             //todo re-add payload forge blocks when Anuke does so
         });
@@ -97,14 +125,15 @@ public class MindyTechTree implements ContentList{
             });
         });
         margeNode(tsunami, () -> {
-            node(propaganda, () -> {
-                node(astro);
-            });
+            node(propaganda);
         });
 
         margeNode(vault, () -> {
             node(silo, () -> {
                 node(warehouse);
+            });
+            node(chest, () -> {
+                node(largeChest);
             });
         });
         margeNode(container, () -> {
@@ -188,10 +217,17 @@ public class MindyTechTree implements ContentList{
                     node(armoredCog);
                 });
             });
+
+            node(payloadRail, () -> {
+                node(railSorter);
+            });
         });
 
         margeNode(battery, () -> {
             node(discharger);
+            node(capacitor, () -> {
+                node(megaCapacitor);
+            });
         });
 
         margeNode(incinerator, () -> {

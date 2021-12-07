@@ -57,6 +57,7 @@ public class ArcCrafter extends AttributeCrafter {
             consumes.add(new ConsumeItemDynamic((ArcCrafterBuild e) -> e.useBooster() ? withBoost : withoutBoost));
         }
         super.init();
+        clipSize = Math.max(clipSize, (lightRadius + 20f) * size * 2.2f);
     }
 
     @Override

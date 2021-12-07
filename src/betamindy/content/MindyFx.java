@@ -25,6 +25,7 @@ import java.util.*;
 import static arc.graphics.g2d.Draw.*;
 //I do not want my fills and lines fighting, so no wildcad imports
 import static arc.graphics.g2d.Lines.*;
+import static arc.math.Angles.angle;
 import static arc.math.Angles.randLenVectors;
 import static betamindy.BetaMindy.hardmode;
 import static betamindy.graphics.Drawm.shard;
@@ -462,6 +463,21 @@ public class MindyFx {
             vgld[0]++;
             color(Tmp.c1.fromHsv((Mathf.randomSeed(vgld[0], -60f, 130f) + 360f) % 360f, 0.8f, 1f).a(1f));
             Lines.poly(e.x+x, e.y+y, 4, e.fslope()*0.7f+0.55f * Mathf.randomSeed(vgld[0]));
+        });
+    }),
+
+    sparkleHit = new Effect(55f, e -> {
+        color(e.color);
+        vgld[0] = 0;
+        Angles.randLenVectors(e.id, e.id % 2 + 1, 6f * e.fin() + 2f, (x, y) -> {
+            vgld[0]++;
+            spark(e.x+x, e.y+y, e.fout()*2.5f, 0.5f+e.fout(), e.id * vgld[0]);
+        });
+        e.scaled(18f, s -> {
+            stroke(0.8f, e.color);
+            Angles.randLenVectors(e.id, 3, 15f * s.fin() + 0.1f, (x, y) -> {
+                lineAngle(e.x+x, e.y+y, angle(x, y), 5.4f * s.fout() + 0.01f);
+            });
         });
     }),
 
