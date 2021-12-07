@@ -8,6 +8,7 @@ public class Pal2 {
     boostColor = Color.valueOf("ffbb77"),
     drift = Color.valueOf("2acdff"),
     scalar = Color.valueOf("f5bbf1"),
+    scalar2 = Color.valueOf("ff82cd"),
     vector = Color.valueOf("7f9cfa"),
     zeta = Color.valueOf("82ffe8"),
     production = Color.valueOf("94fff6"),

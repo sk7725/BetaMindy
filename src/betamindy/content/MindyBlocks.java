@@ -981,6 +981,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.crafting, with(Items.copper, 400, Items.silicon, 100, Items.graphite, 100, Items.thorium, 150, MindyItems.scalarRaw, 450));
             ambientSound = Sounds.hum;
             ambientSoundVolume = 0.24f;
+            explodeEffect = MindyFx.scalarReactorExplosion;
             size = 4;
             health = 1200;
             itemDuration = 120f;
@@ -990,6 +991,9 @@ public class MindyBlocks implements ContentList {
             outputItem = new ItemStack(MindyItems.scalar, 1);
             heating = 0.01f;
             consumes.liquid(MindyLiquids.colloid, heating * 2f / coolantPower).update(false);
+
+            explosionRadius = 24;
+            explosionDamage = 1850;
         }};
 
         isotopeReactor = new IsotopeReactor("isotope-reactor"){{
