@@ -985,7 +985,7 @@ public class MindyBlocks implements ContentList {
             size = 4;
             health = 1200;
             itemDuration = 120f;
-            itemCapacity = 24;
+            itemCapacity = 30;
             powerProduction = 17f;
             consumes.items(with(Items.thorium, 1, Items.graphite, 1, Items.metaglass, 1, MindyItems.scalarRaw, 3));
             outputItem = new ItemStack(MindyItems.scalar, 1);
@@ -993,7 +993,7 @@ public class MindyBlocks implements ContentList {
             consumes.liquid(MindyLiquids.colloid, heating * 2f / coolantPower).update(false);
             coolantPower = 0.1f;
 
-            explosionRadius = 30;
+            explosionRadius = 24;
             explosionDamage = 1850;
         }};
 
