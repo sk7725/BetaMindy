@@ -987,7 +987,7 @@ public class MindyBlocks implements ContentList {
             itemDuration = 120f;
             itemCapacity = 24;
             powerProduction = 17f;
-            consumes.items(with(MindyItems.scalarRaw, 3, Items.graphite, 1, Items.thorium, 1, Items.metaglass, 1));
+            consumes.items(with(Items.thorium, 1, Items.graphite, 1, Items.metaglass, 1, MindyItems.scalarRaw, 3));
             outputItem = new ItemStack(MindyItems.scalar, 1);
             heating = 0.01f;
             consumes.liquid(MindyLiquids.colloid, heating * 2f / coolantPower).update(false);

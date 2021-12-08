@@ -8,7 +8,7 @@ import mindustry.world.meta.*;
 
 public class ImpactCrafter extends ImpactReactor {
     public ItemStack outputItem;
-    public Effect craftEffect = Fx.mineBig;
+    public Effect craftEffect = Fx.mine;
 
     public ImpactCrafter(String name){
         super(name);

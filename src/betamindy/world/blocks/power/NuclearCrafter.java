@@ -32,9 +32,10 @@ public class NuclearCrafter extends NuclearReactor {
     public class NuclearCrafterBuild extends NuclearReactorBuild {
         @Override
         public void consume(){
+            boolean valid = consValid();
             super.consume();
 
-            if(outputItem != null && hasItems){
+            if(outputItem != null && hasItems && valid){
                 for(int i = 0; i < outputItem.amount; i++){
                     offload(outputItem.item);
                 }
@@ -55,6 +56,7 @@ public class NuclearCrafter extends NuclearReactor {
 
         @Override
         public void updateTile(){
+            if(enabled) enabled = shouldConsume();
             super.updateTile();
             dumpOutputs();
         }
