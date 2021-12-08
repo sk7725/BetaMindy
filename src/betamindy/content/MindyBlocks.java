@@ -991,8 +991,9 @@ public class MindyBlocks implements ContentList {
             outputItem = new ItemStack(MindyItems.scalar, 1);
             heating = 0.01f;
             consumes.liquid(MindyLiquids.colloid, heating * 2f / coolantPower).update(false);
+            coolantPower = 0.1f;
 
-            explosionRadius = 24;
+            explosionRadius = 30;
             explosionDamage = 1850;
         }};
 

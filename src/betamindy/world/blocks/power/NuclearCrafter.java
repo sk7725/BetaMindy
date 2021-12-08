@@ -1,7 +1,11 @@
 package betamindy.world.blocks.power;
 
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
@@ -9,6 +13,7 @@ import mindustry.world.meta.*;
 public class NuclearCrafter extends NuclearReactor {
     public ItemStack outputItem;
     public Effect craftEffect = Fx.mineBig;
+    public Color heatColor = Pal.turretHeat;
 
     public NuclearCrafter(String name){
         super(name);
@@ -30,6 +35,7 @@ public class NuclearCrafter extends NuclearReactor {
     }
 
     public class NuclearCrafterBuild extends NuclearReactorBuild {
+        public float warmup;
         @Override
         public void consume(){
             boolean valid = consValid();
@@ -59,6 +65,19 @@ public class NuclearCrafter extends NuclearReactor {
             if(enabled) enabled = shouldConsume();
             super.updateTile();
             dumpOutputs();
+            warmup = Mathf.lerpDelta(warmup, (consValid() && enabled && outputItem != null) ? 1f : 0f, 0.035f);
+        }
+
+        @Override
+        public void draw(){
+            super.draw();
+            if(warmup > 0.001f){
+                Draw.blend(Blending.additive);
+                Draw.color(heatColor, warmup * Mathf.absin(3f, 1f));
+                Draw.rect(topRegion, x, y);
+                Draw.blend();
+                Draw.reset();
+            }
         }
 
         public void dumpOutputs(){
