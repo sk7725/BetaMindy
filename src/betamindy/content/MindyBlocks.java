@@ -1416,7 +1416,7 @@ public class MindyBlocks implements ContentList {
             itemCapacity = 25;
             hasPower = true;
             consumes.power(1f);
-            requirements(Category.production, with(Items.copper, 15, Items.lead, 15, Items.graphite, 25, Items.titanium, 10, Items.silicon, 15));
+            requirements(Category.production, with(Items.copper, 30, Items.graphite, 25, Items.titanium, 10, Items.silicon, 15));
         }};
 
         drillMega = new DrillTurret("drill-mega"){{
