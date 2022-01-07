@@ -104,5 +104,11 @@ public class AnucoinVault extends Block {
             if(world.build(anubank) instanceof AnucoinNode.AnucoinNodeBuild bank) return bank;
             return null;
         }
+
+        @Override
+        public void pickedUp(){
+            super.pickedUp();
+            anubank = -1;
+        }
     }
 }

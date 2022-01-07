@@ -124,7 +124,7 @@ public class RailSorter extends PayloadRail {
                     }
                     //this condition intentionally uses "accept from itself" conditions, because payload conveyors only accept during the start
                     //"accept from self" conditions are for dropped payloads and are less restrictive
-                }while((blocked || next == null || !next.acceptPayload(next, item) || sorter == 0 || ((gets && rotation != setRotation) || (!gets && rotation == setRotation))) && ++rotations < 4);
+                }while((blocked || next == null || !next.acceptPayload(next, item) || (sorter != 0 && ((gets && rotation != setRotation) || (!gets && rotation == setRotation)))) && ++rotations < 4);
             }
         }
 

@@ -1,14 +1,14 @@
 package betamindy.content;
 
 import arc.util.Time;
-import betamindy.type.weather.BlockWeather;
+import betamindy.type.weather.*;
 import mindustry.ctype.ContentList;
 import mindustry.gen.Sounds;
 import mindustry.type.Weather;
 import mindustry.world.meta.Attribute;
 
 public class MindyWeathers implements ContentList {
-    public static Weather routerWeather, blockWeather;
+    public static Weather routerWeather, blockWeather, ionWind;
 
     @Override
     public void load() {
@@ -41,5 +41,7 @@ public class MindyWeathers implements ContentList {
             soundVolOscScl = 1100f;
             soundVolMin = 0.02f;
         }};
+
+        ionWind = new IonWind("ion-wind");
     }
 }
