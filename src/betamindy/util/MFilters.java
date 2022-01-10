@@ -20,10 +20,10 @@ public class MFilters {
 
     public MFilters(){
         if(Vars.headless){
-            filters = {};
+            filters = new FilterModule[0];
         }
         else{
-            filters = {
+            FilterModule[] f = {
                 new FilterModule("Wet", new Filters.BiquadFilter(){{
                     set(0, 500, 1);
                 }}, Color.royal),
@@ -61,6 +61,7 @@ public class MFilters {
                 }}, Pal2.portalBack)
                  */
             };
+            filters = f;
             setupFilters();
         }
     }
