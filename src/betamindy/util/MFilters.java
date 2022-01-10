@@ -16,47 +16,53 @@ public class MFilters {
     protected boolean wasPlaying;
     protected Interval timer = new Interval(1);
 
-    public final FilterModule[] filters = {
-            new FilterModule("Wet", new Filters.BiquadFilter(){{
-                set(0, 500, 1);
-            }}, Color.royal),
-            new FilterModule("Dry", new Filters.BiquadFilter(){{
-                set(1, 680, 1);
-            }}, Color.orange),
-            new FilterModule("Noise", new Filters.LofiFilter(){{
-                set(8000, 5);
-            }}, Pal.sapBullet),
-            new FilterModule("BassBoost", new Filters.BassBoostFilter(){{
-                set(6f);
-            }}, Pal.lightishGray),
-            new FilterModule("Echo", new Filters.EchoFilter(){{
-                set(0.5f, 0.7f, 0.95f);
-            }}, Pal.lancerLaser),
-            new FilterModule("Flanger", new Filters.FlangerFilter(){{
-                set(0.005f, 5);
-            }}, Pal.accent)
-            //out of IDs!
-            /*
-            new FilterModule("Square", new Filters.RobotizeFilter(){{
-                set(50, 7); //0-square 1-saw 2-sine 3-tri 4-absin 5-s(1/4sine) 6-si(1/2sine) 7-bettersq 8-bettersaw
-            }}, Pal.heal),
-            new FilterModule("Saw", new Filters.RobotizeFilter(){{
-                set(20, 8);
-            }}, Pal2.portal)
-            new FilterModule("Sine", new Filters.RobotizeFilter(){{
-                set(5000, 2);
-            }}, Color.cyan),
-            new FilterModule("FSquare", new Filters.RobotizeFilter(){{
-                set(5, 7);
-            }}, Color.green),
-            new FilterModule("FSaw", new Filters.RobotizeFilter(){{
-                set(30, 8);
-            }}, Pal2.portalBack)
-             */
-    };
+    public final FilterModule[] filters;
 
     public MFilters(){
-        setupFilters();
+        if(Vars.headless){
+            filters = {};
+        }
+        else{
+            filters = {
+                new FilterModule("Wet", new Filters.BiquadFilter(){{
+                    set(0, 500, 1);
+                }}, Color.royal),
+                new FilterModule("Dry", new Filters.BiquadFilter(){{
+                    set(1, 680, 1);
+                }}, Color.orange),
+                new FilterModule("Noise", new Filters.LofiFilter(){{
+                    set(8000, 5);
+                }}, Pal.sapBullet),
+                new FilterModule("BassBoost", new Filters.BassBoostFilter(){{
+                    set(6f);
+                }}, Pal.lightishGray),
+                new FilterModule("Echo", new Filters.EchoFilter(){{
+                    set(0.5f, 0.7f, 0.95f);
+                }}, Pal.lancerLaser),
+                new FilterModule("Flanger", new Filters.FlangerFilter(){{
+                    set(0.005f, 5);
+                }}, Pal.accent)
+                //out of IDs!
+                /*
+                new FilterModule("Square", new Filters.RobotizeFilter(){{
+                    set(50, 7); //0-square 1-saw 2-sine 3-tri 4-absin 5-s(1/4sine) 6-si(1/2sine) 7-bettersq 8-bettersaw
+                }}, Pal.heal),
+                new FilterModule("Saw", new Filters.RobotizeFilter(){{
+                    set(20, 8);
+                }}, Pal2.portal)
+                new FilterModule("Sine", new Filters.RobotizeFilter(){{
+                    set(5000, 2);
+                }}, Color.cyan),
+                new FilterModule("FSquare", new Filters.RobotizeFilter(){{
+                    set(5, 7);
+                }}, Color.green),
+                new FilterModule("FSaw", new Filters.RobotizeFilter(){{
+                    set(30, 8);
+                }}, Pal2.portalBack)
+                 */
+            };
+            setupFilters();
+        }
     }
 
     /**
@@ -98,7 +104,7 @@ public class MFilters {
     }
 
     public void enableFilter(int idZero){
-        if(!inited || idZero < 0 || idZero >= filters.length) return;
+        if(Vars.headless || !inited || idZero < 0 || idZero >= filters.length) return;
         filters[idZero].enabled = true;
     }
 
