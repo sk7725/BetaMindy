@@ -679,7 +679,7 @@ public class MindyBlocks implements ContentList {
         phisher = new HijackTurret("phisher"){{
             requirements(Category.turret, with(Items.silicon, 60, Items.titanium, 30, MindyItems.scalarRaw, 24, MindyItems.source, 12));
             size = 1;
-            range = 80f;
+            range = 145f;
             health = 200;
             reloadTime = 10f;
             maxLinks = 4;
@@ -731,6 +731,7 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, BuildVisibility.sandboxOnly, with());
             size = 1;
             ignoreSize = true;
+            ignoreDrawSize = true;
             range = 360f;
             health = 2000;
             reloadTime = 10f;
@@ -739,6 +740,7 @@ public class MindyBlocks implements ContentList {
             powerUse = 4f;
             reloadMultiplier = 2f;
             shotsMultiplier = 1f;
+            lightColor = Pal.accent;
         }};
 
         //sting = new PowerTurret(I)
