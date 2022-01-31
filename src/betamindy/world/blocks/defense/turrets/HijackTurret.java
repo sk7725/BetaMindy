@@ -91,6 +91,7 @@ public class HijackTurret extends Turret {
         if(chargeXRand < 0) chargeXRand = chargeShootLength * 0.8f;
         if(minSize < 0) minSize = Math.max(1, size - 1);
         if(maxSize < 0) maxSize = size;
+        clipSize = Math.max(clipSize, (range + 9) * tilesize * 2f);
     }
 
     @Override
