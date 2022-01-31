@@ -684,7 +684,8 @@ public class MindyBlocks implements ContentList {
             reloadTime = 10f;
             maxLinks = 4;
             powerUse = 4f;
-            shotsMultiplier = 0.33f;
+            shotsMultiplier = 0.67f;
+            coolantUsage = 0.1f;
         }};
 
         trojan = new HijackTurret("trojan"){{
@@ -692,45 +693,66 @@ public class MindyBlocks implements ContentList {
             size = 2;
             range = 180f;
             health = 800;
-            reloadTime = 12f;
+            reloadTime = 35f;
+            burstSpacing = 8f;
+            shots = 3;
+            spread = 0f;
             maxLinks = 5;
             linkRange = 7;
             powerUse = 18f;
-            reloadMultiplier = 1.6f;
-            shotsMultiplier = 0.5f;
+            reloadMultiplier = 1f;
+            shotsMultiplier = 0.3f;
+            hijackReload = 0.2f;
+            coolantUsage = 0.1f;
+            powerMultiplier = 1.2f;
         }};
 
         spyware = new HijackTurret("spyware"){{
-            requirements(Category.turret, with(Items.silicon, 420, Items.thorium, 190, Items.phaseFabric, 80, MindyItems.scalar, 150, MindyItems.source, 70));
+            requirements(Category.turret, with(Items.silicon, 420, Items.thorium, 290, Items.phaseFabric, 180, MindyItems.scalar, 150, MindyItems.source, 90));
             size = 3;
-            range = 240f;
+            range = 260f;
             health = 1800;
-            reloadTime = 14f;
+            reloadTime = 20f;
+            burstSpacing = 0f;
+            shots = 5;
+            spread = 15f;
+            inaccuracy = 4f;
             maxLinks = 7;
             linkRange = 9;
             powerUse = 36f;
-            reloadMultiplier = 1.7f;
-            shotsMultiplier = 0.67f;
+            reloadMultiplier = 1.5f;
+            shotsMultiplier = 0.25f;
+            hijackReload = 0.3f;
+            chargeXRand = 0.01f;
+            coolantUsage = 0.1f;
+            powerMultiplier = 1.2f;
         }};
 
         backdoor = new HijackTurret("backdoor"){{
             requirements(Category.turret, with(Items.silicon, 640, Items.thorium, 550, Items.surgeAlloy, 350, MindyItems.scalar, 450, MindyItems.source, 200));
             size = 4;
-            ignoreSize = true;
+            maxSize = 8;
             range = 390f;
             health = 3000;
             reloadTime = 15f;
+            burstSpacing = 3f;
+            inaccuracy = 1f;
+            shots = 2;
+            spread = 0f;
             maxLinks = 9;
             linkRange = 10;
             powerUse = 80f;
             reloadMultiplier = 1.8f;
             shotsMultiplier = 1f;
+            hijackReload = 0.5f;
+            coolantUsage = 0.1f;
+            powerMultiplier = 2.5f;
         }};
 
         masterkey = new HijackTurret("masterkey"){{
             requirements(Category.turret, BuildVisibility.sandboxOnly, with());
             size = 1;
-            ignoreSize = true;
+            maxSize = 16;
             ignoreDrawSize = true;
             range = 360f;
             health = 2000;
