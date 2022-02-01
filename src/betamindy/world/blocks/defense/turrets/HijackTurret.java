@@ -275,14 +275,14 @@ public class HijackTurret extends Turret {
                 float rotation = this.rotation + rotOffset;
                 build.useAmmo();
 
-                tr.trns(rotation, shootLength, xoff);
+                tr.trns(rotation, b.shootLength, xoff);
                 b.chargeBeginEffect.at(x + tr.x, y + tr.y, rotation);
                 b.chargeSound.at(x + tr.x, y + tr.y, 1);
 
                 for(int i = 0; i < b.chargeEffects; i++){
                     Time.run(Mathf.random(b.chargeMaxDelay), () -> {
                         if(dead) return;
-                        tr.trns(rotation, shootLength, xoff);
+                        tr.trns(rotation, b.shootLength, xoff);
                         b.chargeEffect.at(x + tr.x, y + tr.y, rotation);
                     });
                 }
@@ -293,7 +293,7 @@ public class HijackTurret extends Turret {
 
                 Time.run(b.chargeTime, () -> {
                     if(dead) return;
-                    tr.trns(rotation, shootLength, xoff);
+                    tr.trns(rotation, b.shootLength, xoff);
                     build.heat = 1f;
                     bullet(type, rotation + Mathf.range(inaccuracy + type.inaccuracy));
                     effects(type, build, b);
@@ -310,10 +310,10 @@ public class HijackTurret extends Turret {
                 if(b.alternate && b.burstSpacing <= 0.0001f){
                     float i = (shotCounter % b.shots) - (b.shots-1)/2f;
 
-                    tr.trns(rotation - 90 + rotOffset, b.spread * i + Mathf.range(b.xRand), shootLength);
+                    tr.trns(rotation - 90 + rotOffset, b.spread * i + Mathf.range(b.xRand), b.shootLength);
                     bullet(type, rotation + Mathf.range(inaccuracy + type.inaccuracy) + rotOffset);
                 }else{
-                    tr.trns(rotation + rotOffset, shootLength, Mathf.range(b.xRand));
+                    tr.trns(rotation + rotOffset, b.shootLength, Mathf.range(b.xRand));
                     int sh = Mathf.ceilPositive(b.shots * shotsMultiplier);
                     //if(b.burstSpacing > 0.0001f) sh = 1;
                     float inac = inaccuracy;
