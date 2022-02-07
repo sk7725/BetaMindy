@@ -552,7 +552,7 @@ public class HijackTurret extends Turret {
                         for(int y = tile.y - linkRange; y <= tile.y + linkRange; y++){
                             Building link = world.build(x, y);
 
-                            if(link != this && !tmpe.contains(link) && linkValid(this, link)){
+                            if(link != null && link != this && !tmpe.contains(link) && linkValid(this, link)){
                                 tmpe.add(link);
                                 configure(link.pos());
                             }
