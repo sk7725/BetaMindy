@@ -45,7 +45,7 @@ public class BetaMindy extends Mod{
     public static MindyUILoader mui = new MindyUILoader();
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
-    public static boolean uwu = OS.username.equals("sunny") || OS.username.equals("MEEP");
+    public static boolean uwu = OS.username.equals("sunny") || OS.username.equals("starw");
     public static boolean inventoryUI = false;
     //public static UnitGravity gravity = new UnitGravity();
     public static MFilters filters = new MFilters();
