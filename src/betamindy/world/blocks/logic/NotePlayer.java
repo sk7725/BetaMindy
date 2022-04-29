@@ -57,6 +57,9 @@ public class NotePlayer extends Block {
     public final static int[] whiteOffset = {0, 2, 4, 5, 7, 9, 11, 12, 14, 16};
     public final static int[] blackOffset = {1, 3, 0, 6, 8, 10, 0, 13, 15};
 
+    //if true, this noteblock can play multiple notes per frame, but not the same note
+    public boolean multiNote = false;
+
     public NotePlayer(String name){
         super(name);
 
@@ -158,6 +161,7 @@ public class NotePlayer extends Block {
 
         private int octavePage = sampleOctave; //ui only
         private long lastFrame;
+        private boolean[] played = new boolean[octaves * 12];
 
         //sets the instrument safely
         public void setMode(int m){
@@ -177,14 +181,30 @@ public class NotePlayer extends Block {
 
         //plays a note
         public void playNote(){
-            if(headless || lastFrame == Core.graphics.getFrameId()) return;
-            lastFrame = Core.graphics.getFrameId();
+            if(headless) return;
+            if (multiNote){
+                //only disable played pitches
+                if (lastFrame != Core.graphics.getFrameId()){
+                    lastFrame = Core.graphics.getFrameId();
+                    for (int i = 0; i < played.length; i++){
+                        played[i] = false;
+                    }
+                }
+                if (played[pitch]) return;
+            } else {
+                //disable all pitches if one pitch was played
+                if (lastFrame == Core.graphics.getFrameId()){
+                    return;
+                }
+                lastFrame = Core.graphics.getFrameId();
+            }
             if(global){
                 instruments[mode].play(pitch, volume / 10f);
             }
             else{
                 instruments[mode].at(pitch, x, y);
             }
+            played[pitch] = true;
             effects();
         }
 
