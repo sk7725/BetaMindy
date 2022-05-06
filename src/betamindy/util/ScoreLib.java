@@ -132,24 +132,16 @@ public class ScoreLib {
                     float tmpScoreB = 0;
 
                     if(crafter.outputItem != null) {
-                        if (crafter.consumes.has(ConsumeType.item)) {
-                            if (crafter.consumes.get(ConsumeType.item) instanceof ConsumeItems) {
-                                ConsumeItems itemStacks = crafter.consumes.get(ConsumeType.item);
-
-                                for (int f = 0; f < itemStacks.items.length; f++) {
-                                    int id = tmpItemArray.indexOf(itemStacks.items[f].item);
-                                    tmpScoreA += (tmpItemScores.get(id == -1 ? tmpItemScores.size -1 : id) * Math.max(itemStacks.items[f].amount, 1));
-                                }
+                        if(crafter.findConsumer(c -> c instanceof ConsumeItems) instanceof ConsumeItems itemStacks){
+                            for (int f = 0; f < itemStacks.items.length; f++) {
+                                int id = tmpItemArray.indexOf(itemStacks.items[f].item);
+                                tmpScoreA += (tmpItemScores.get(id == -1 ? tmpItemScores.size -1 : id) * Math.max(itemStacks.items[f].amount, 1));
                             }
                         }
 
-                        if (crafter.consumes.has(ConsumeType.liquid)) {
-                            if (crafter.consumes.get(ConsumeType.liquid) instanceof ConsumeLiquid) {
-                                ConsumeLiquid liquidStacks = crafter.consumes.get(ConsumeType.liquid);
-
-                                int id = tmpLiquidArray.indexOf(liquidStacks.liquid);
-                                tmpScoreB += tmpLiquidScores.get(id == -1 ? tmpLiquidScores.size -1 : id) * liquidStacks.amount;
-                            }
+                        if(crafter.findConsumer(c -> c instanceof ConsumeLiquidBase) instanceof ConsumeLiquid liquidStacks){
+                            int id = tmpLiquidArray.indexOf(liquidStacks.liquid);
+                            tmpScoreB += tmpLiquidScores.get(id == -1 ? tmpLiquidScores.size -1 : id) * liquidStacks.amount;
                         }
 
                         int id = tmpItemArray.indexOf(crafter.outputItem.item);
@@ -164,30 +156,23 @@ public class ScoreLib {
                         float tmpScoreC = 0;
                         float tmpScoreD = 0;
 
+                        //TODO what was this for, exactly? -Anuke
                         float liquidConvAmount = 0;
 
-                        if(crafter.consumes.has(ConsumeType.item)){
-                            if(crafter.consumes.get(ConsumeType.item) instanceof ConsumeItems){
-                                ConsumeItems itemStacks = crafter.consumes.get(ConsumeType.item);
-
-                                for(int f = 0; f < itemStacks.items.length; f++){
-                                    int id = tmpItemArray.indexOf(itemStacks.items[f].item);
-                                    tmpScoreC += (tmpItemScores.get(id == -1 ? tmpItemScores.size -1 : id) * Math.max(itemStacks.items[f].amount, 1));
-                                }
+                        if(crafter.findConsumer(c -> c instanceof ConsumeItems) instanceof ConsumeItems itemStacks){
+                            for(int f = 0; f < itemStacks.items.length; f++){
+                                int id = tmpItemArray.indexOf(itemStacks.items[f].item);
+                                tmpScoreC += (tmpItemScores.get(id == -1 ? tmpItemScores.size -1 : id) * Math.max(itemStacks.items[f].amount, 1));
                             }
                         }
 
-                        if(crafter.consumes.has(ConsumeType.liquid)){
-                            if(crafter.consumes.get(ConsumeType.liquid) instanceof ConsumeLiquid){
-                                ConsumeLiquid liquidStacks = crafter.consumes.get(ConsumeType.liquid);
+                        if(crafter.findConsumer(c -> c instanceof ConsumeLiquidBase) instanceof ConsumeLiquid liquidStacks){
+                            int id = tmpLiquidArray.indexOf(liquidStacks.liquid);
+                            tmpScoreD += tmpLiquidScores.get(id == -1 ? tmpLiquidScores.size -1 : id) * liquidStacks.amount;
+                            liquidConvAmount = liquidStacks.amount;
+                        }
 
-                                int id = tmpLiquidArray.indexOf(liquidStacks.liquid);
-                                tmpScoreD += tmpLiquidScores.get(id == -1 ? tmpLiquidScores.size -1 : id) * liquidStacks.amount;
-                                liquidConvAmount = liquidStacks.amount;
-                            }
-                        };
-
-                        float trueAmount = !(block instanceof LiquidConverter) ? crafter.outputLiquid.amount : liquidConvAmount;
+                        float trueAmount = crafter.outputLiquid.amount;
 
                         int id = tmpLiquidArray.indexOf(crafter.outputLiquid.liquid);
                         id = id == -1 ? tmpLiquidScores.size -1 : id;

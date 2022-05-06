@@ -46,6 +46,28 @@ public class MindyFx {
         randLenVectors(e.id, 1, e.fin() * 40f, (x, y) -> Fill.circle(e.x + x, e.y + y, 0.85f + e.fin() * 8.5f));
     }),
 
+    //note: this was copy-pasted from old mindustry source, not sure why you need it but this seemed like the easiest solution -Anuke
+    blockExplosion = new Effect(30, e -> {
+        e.scaled(7, i -> {
+            stroke(3.1f * i.fout());
+            Lines.circle(e.x, e.y, 3f + i.fin() * 14f);
+        });
+
+        color(Color.gray);
+
+        randLenVectors(e.id, 6, 2f + 19f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 3f + 0.5f);
+            Fill.circle(e.x + x / 2f, e.y + y / 2f, e.fout());
+        });
+
+        color(Pal.lighterOrange, Pal.lightOrange, Color.gray, e.fin());
+        stroke(1.7f * e.fout());
+
+        randLenVectors(e.id + 1, 9, 1f + 23f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+        });
+    }),
+
     exoticDust = new Effect(20f, e -> {
         Draw.color(Color.white, (Mathf.randomSeed(e.id + 2) > 0.5f) ? Team.crux.color : Pal.sapBullet, e.fin());
         float i = (Mathf.randomSeed(e.id) > 0.5f) ? 1f : -1f;
@@ -237,7 +259,7 @@ public class MindyFx {
         });
 
         color();
-        Drawf.light(Team.derelict, e.x, e.y, 20f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
+        Drawf.light(e.x, e.y, 20f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
     }),
 
     bigFire = new Effect(60f, e -> {
@@ -248,7 +270,7 @@ public class MindyFx {
         });
 
         color();
-        Drawf.light(Team.derelict, e.x, e.y, 40f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
+        Drawf.light(e.x, e.y, 40f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
     }),
 
     ballfire = new Effect(25f, e -> {
@@ -267,7 +289,7 @@ public class MindyFx {
         });
 
         color();
-        Drawf.light(Team.derelict, e.x, e.y, 18f * e.fout(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
+        Drawf.light(e.x, e.y, 18f * e.fout(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
     }),
 
     bigFireDust = new Effect(30f, e -> {
@@ -278,7 +300,7 @@ public class MindyFx {
         });
 
         color();
-        Drawf.light(Team.derelict, e.x, e.y, 35f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
+        Drawf.light(e.x, e.y, 35f * e.fslope(), e.data == null ? Pal.lightFlame : FireColor.from((Item)e.data), 0.5f);
     }),
 
     question = new Effect(25f, e -> {
@@ -592,7 +614,7 @@ public class MindyFx {
 
         if(renderer.lights.enabled()){
             for(int i = 0; i < n - 1; i++){
-                Drawf.light(null, lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f);
+                Drawf.light(lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f);
             }
         }
     }),
@@ -614,7 +636,7 @@ public class MindyFx {
 
         if(renderer.lights.enabled()){
             for(int i = 0; i < lines.size - 1; i++){
-                Drawf.light(null, lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f * e.fout());
+                Drawf.light(lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f * e.fout());
             }
         }
     }),
@@ -805,7 +827,7 @@ public class MindyFx {
             reset();
             blend();
             Drawf.light(e.x, e.y, unit.hitSize * 1.3f, e.color, e.fout());
-            //Drawf.light(null, e.x, e.y, unit.shadowRegion, e.color, e.fout() * 0.7f);
+            //Drawf.light(e.x, e.y, unit.shadowRegion, e.color, e.fout() * 0.7f);
         }
     }).followParent(false).rotWithParent(false),
 
@@ -840,7 +862,7 @@ public class MindyFx {
             reset();
             blend();
             Drawf.light(e.x, e.y, unit.hitSize * 1.3f, Color.cyan, e.fout());
-            //Drawf.light(null, e.x, e.y, unit.shadowRegion, Color.cyan, e.fout() * 0.7f);
+            //Drawf.light(e.x, e.y, unit.shadowRegion, Color.cyan, e.fout() * 0.7f);
         }
     }),
 

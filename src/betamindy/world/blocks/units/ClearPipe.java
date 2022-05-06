@@ -37,7 +37,7 @@ public class ClearPipe extends Block {
 
     public float speed = 1f / 6f;
     public float ejectStrength = 6f;
-    /** Whether to only input units when consValid() */
+    /** Whether to only input units when canConsume() */
     public boolean conditional = false;
     public boolean hasBaseRegion = false;  //set automatically
     public boolean hasLightRegion = false; //set automatically
@@ -106,12 +106,12 @@ public class ClearPipe extends Block {
     public void setBars(){
         super.setBars();
         if(conditional){
-            bars.remove("power");
-            ConsumePower cons = consumes.getPower();
+            removeBar("power");
+            ConsumePower cons = consPower;
             boolean buffered = cons.buffered;
             float capacity = cons.capacity;
 
-            bars.add("power", entity -> new Bar(() -> buffered ? Core.bundle.format("bar.poweramount", Float.isNaN(entity.power.status * capacity) ? "<ERROR>" : (int)(entity.power.status * capacity)) :
+            addBar("power", entity -> new Bar(() -> buffered ? Core.bundle.format("bar.poweramount", Float.isNaN(entity.power.status * capacity) ? "<ERROR>" : (int)(entity.power.status * capacity)) :
                     Core.bundle.get("bar.power"), () -> Mathf.zero(cons.requestedPower(entity)) ? Pal.lightishGray : Pal.powerBar, () -> Mathf.zero(cons.requestedPower(entity)) ? 1f : entity.power.status));
         }
     }
@@ -122,7 +122,7 @@ public class ClearPipe extends Block {
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         tiling = 0;
         list.each(other -> {
             if(other.breaking || other == req || !(other.block instanceof ClearPipe)) return;
@@ -563,7 +563,7 @@ public class ClearPipe extends Block {
             UnitType type = unit.unit.type;
             if(type.lightRadius <= 0) return;
             vector(Tmp.v1, build);
-            Drawf.light(build.team, Tmp.v1.x, Tmp.v1.y, type.lightRadius, type.lightColor, type.lightOpacity);
+            Drawf.light(Tmp.v1.x, Tmp.v1.y, type.lightRadius, type.lightColor, type.lightOpacity);
         }
 
         public void effects(ClearPipeBuild build){

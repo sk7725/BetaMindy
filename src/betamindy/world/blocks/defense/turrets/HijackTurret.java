@@ -17,14 +17,12 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.logic.*;
-import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class HijackTurret extends Turret {
@@ -85,7 +83,8 @@ public class HijackTurret extends Turret {
 
     @Override
     public void init(){
-        consumes.powerDynamic(HijackTurretBuild::powerUsage);
+        //TODO: uncomment -Anuke
+        //consumePowerDynamic(HijackTurretBuild::powerUsage);
         super.init();
         if(chargeShootLength < 0) chargeShootLength = size * tilesize * 0.7f;
         if(chargeXRand < 0) chargeXRand = chargeShootLength * 0.8f;
@@ -116,8 +115,8 @@ public class HijackTurret extends Turret {
         super.setStats();
         stats.add(Stat.reload, "[green]" + Iconc.turret + Mathf.round(reloadMultiplier * 100) + "%[]");
         stats.add(Stat.shots, "[coral]" + Iconc.turret + Mathf.round(shotsMultiplier * 100) + "%[]");
-        if(shots > 1){
-            stats.add(Stat.shots, "[green]x" + shots + "[]");
+        if(shoot.shots > 1){
+            stats.add(Stat.shots, "[green]x" + shoot.shots + "[]");
         }
         stats.add(Stat.linkRange, linkRange, StatUnit.blocks);
         stats.add(Stat.linkRange, "@ "+Iconc.turret + " ([green]@x@[] ~ [green]@x@[])", maxLinks, minSize, minSize, maxSize, maxSize);
@@ -126,7 +125,7 @@ public class HijackTurret extends Turret {
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("links", (HijackTurretBuild entity) -> new Bar(() -> Core.bundle.format("bar.iconlinks", entity.links.size, maxLinks, Iconc.turret), () -> Pal2.source, () -> entity.links.size / (float)maxLinks));
+        addBar("links", (HijackTurretBuild entity) -> new Bar(() -> Core.bundle.format("bar.iconlinks", entity.links.size, maxLinks, Iconc.turret), () -> Pal2.source, () -> entity.links.size / (float)maxLinks));
     }
 
     public boolean linkValid(Building tile, Building link){
@@ -167,18 +166,20 @@ public class HijackTurret extends Turret {
 
         @Override
         public BulletType peekAmmo(){
-            return Bullets.standardThoriumBig; //nothing, actually
+            return Bullets.placeholder; //nothing, actually
         }
+
+        /*TODO: re-implement this -Anuke
 
         @Override
         protected void updateShooting(){
-            reload += delta() * baseReloadSpeed();
+            reloadCounter += delta() * baseReloadSpeed();
 
-            if(reload >= reloadTime && !charging){
+            if(reloadCounter >= reload && !charging){
                 sanitize();
 
                 if(tryShoot(current)){
-                    reload %= reloadTime;
+                    reloadCounter %= reload;
                     if(!headless){
                         Block b = links.size == 0 ? block : world.tile(links.get(current % links.size)).block();
                         prevTurret = curTurret;
@@ -194,7 +195,7 @@ public class HijackTurret extends Turret {
                 Building b = world.build(links.get(i));
                 if(b instanceof TurretBuild tb && !b.dead){
                     //b.control(LAccess.enabled, 0,0,0,0);
-                    tb.reload = Math.max(0f, tb.reload - tb.delta() * tb.efficiency() * hijackReload);
+                    tb.reloadCounter = Math.max(0f, tb.reloadCounter - tb.delta() * tb.efficiency() * hijackReload);
                 }
             }
         }
@@ -218,6 +219,8 @@ public class HijackTurret extends Turret {
             }
             return false;
         }
+
+
 
         public float powerUsage(){
             if(isActive() && links.size > 0){
@@ -257,7 +260,7 @@ public class HijackTurret extends Turret {
             //consume coolant
             float coolant = 1f;
             if(setOccupied){
-                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount * realReload(b.reloadTime);
+                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount * realReload(b.reload);
                 Liquid liquid = liquids.current();
 
                 float used = Math.min(liquids.get(liquid), maxUsed) * baseReloadSpeed();
@@ -289,7 +292,7 @@ public class HijackTurret extends Turret {
 
                 //charging = true;
                 if(setOccupied) occupied.set(n, true);
-                float rl = Math.max(b.chargeTime, realReload(b.reloadTime) / coolant);
+                float rl = Math.max(b.chargeTime, realReload(b.reload) / coolant);
 
                 Time.run(b.chargeTime, () -> {
                     if(dead) return;
@@ -324,7 +327,7 @@ public class HijackTurret extends Turret {
                     }
                 }
 
-                float rl = realReload(b.reloadTime + b.chargeTime) / coolant;
+                float rl = realReload(b.reload + b.chargeTime) / coolant;
                 //if(b.burstSpacing > 0.0001f) rl /= b.shots;
                 Time.run(rl, () -> {
                     if(setOccupied && occupied.size > n) occupied.set(n, false);
@@ -354,10 +357,10 @@ public class HijackTurret extends Turret {
         @Override
         protected void bullet(BulletType type, float angle){
             float rangem = Math.min((powerMultiplier - 1f) * 0.5f + 1f, 1.5f);
-            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / (type.range() * rangem), minRange / type.range(), range / type.range()) : 1f;
+            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / (type.range() * rangem), minRange / type.range(), range / type.range()) : 1f;
 
             type.create(this, team, x + tr.x, y + tr.y, angle, powerMultiplier * type.damage, rangem + Mathf.range(velocityInaccuracy), lifeScl, null);
-        }
+        }*/
 
         public void sanitize(){
             for(int i = 0; i < links.size; i++){
@@ -372,39 +375,42 @@ public class HijackTurret extends Turret {
 
         @Override
         public void draw(){
-            Draw.rect(baseRegion, x, y);
+            //TODO please use a custom DrawTurret for this -Anuke
+            TextureRegion base = ((DrawTurret)drawer).base;
+
+            Draw.rect(base, x, y);
             Draw.color();
 
             //Draw.z(Layer.effect + 4f);
-            tr2.trns(rotation, -recoil);
+            recoilOffset.trns(rotation, -recoil);
 
             progress += Math.max(1f, edelta());
-            //float f = Mathf.clamp(progress * (burstSpacing > 0.001f ? shots : 1f) / reloadTime);
-            float f = Mathf.clamp(progress / Math.min(reloadTime, 9f));
+            //float f = Mathf.clamp(progress * (burstSpacing > 0.001f ? shots : 1f) / reload);
+            float f = Mathf.clamp(progress / Math.min(reload, 9f));
 
             /*
             Draw.mixcol(Tmp.c1.set(lightColor).mul(0.2f), 0.9f);
             Draw.alpha(warmup * (Mathf.random(0.5f,0.8f)));
-            rectSquished(prevTurret, x + tr2.x, y + tr2.y, rotation - 90f, 1 - f);
+            rectSquished(prevTurret, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f, 1 - f);
             rectSquished(f);
             Draw.blend(Blending.additive);
             Draw.color(lightColor, warmup);
-            rectSquished(prevTurret, x + tr2.x, y + tr2.y, rotation - 90f, 1 - f);
+            rectSquished(prevTurret, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f, 1 - f);
             rectSquished(f);*/
 
             Draw.z(Layer.turret + 1f);
             Draw.mixcol(Tmp.c1.set(lightColor).lerp(Color.white, Mathf.absin(5, 0.5f)), 1);
             float o = (1-f) * 0.7f;
-            rectSquished(prevTurret, x + tr2.x + o, y + tr2.y + o, rotation - 90f, 1 - f);
-            rectSquished(prevTurret, x + tr2.x - o, y + tr2.y - o, rotation - 90f, 1 - f);
+            rectSquished(prevTurret, x + recoilOffset.x + o, y + recoilOffset.y + o, rotation - 90f, 1 - f);
+            rectSquished(prevTurret, x + recoilOffset.x - o, y + recoilOffset.y - o, rotation - 90f, 1 - f);
             o = f * 0.7f;
-            rectSquished(curTurret, x + tr2.x + o, y + tr2.y + o, rotation - 90f, f);
-            rectSquished(curTurret, x + tr2.x - o, y + tr2.y - o, rotation - 90f, f);
+            rectSquished(curTurret, x + recoilOffset.x + o, y + recoilOffset.y + o, rotation - 90f, f);
+            rectSquished(curTurret, x + recoilOffset.x - o, y + recoilOffset.y - o, rotation - 90f, f);
             Draw.mixcol();
 
             Draw.z(Layer.turret + 1.1f);
             Draw.alpha(Mathf.absin(5, 0.2f) + 0.8f);
-            rectSquished(prevTurret, x + tr2.x, y + tr2.y, rotation - 90f, 1 - f);
+            rectSquished(prevTurret, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f, 1 - f);
             rectSquished(f);
             Draw.color();
 
@@ -413,10 +419,10 @@ public class HijackTurret extends Turret {
                 int c = (int)(Mathf.randomSeed(current) * 3f);
                 Draw.mixcol(c == 0 ? Color.magenta : c == 1 ? Color.yellow : Color.cyan, 1f);
                 Draw.color(Color.white, heat * Mathf.random());
-                tr2.trns(rotation, -recoil * 0.5f, heat * 3f * f);
+                recoilOffset.trns(rotation, -recoil * 0.5f, heat * 3f * f);
                 rectSquished(f);
                 Draw.mixcol(c == 0 ? Color.cyan : c == 1 ? Color.magenta : Color.yellow, 1f);
-                tr2.trns(rotation, -recoil * 0.5f, -heat * 3f * f);
+                recoilOffset.trns(rotation, -recoil * 0.5f, -heat * 3f * f);
                 rectSquished(f);
                 Draw.blend();
             }
@@ -481,7 +487,7 @@ public class HijackTurret extends Turret {
         }
 
         private void rectSquished(float f){
-            rectSquished(curTurret, x + tr2.x, y + tr2.y, rotation - 90f, f);
+            rectSquished(curTurret, x + recoilOffset.x, y + recoilOffset.y, rotation - 90f, f);
         }
 
         void squares(Building b, Color color){
@@ -507,7 +513,7 @@ public class HijackTurret extends Turret {
         @Override
         public void drawLight(){
             super.drawLight();
-            Drawf.light(team, x, y, lightRadius * warmup, lightColor, 0.5f);
+            Drawf.light(x, y, lightRadius * warmup, lightColor, 0.5f);
         }
 
         @Override
@@ -537,7 +543,7 @@ public class HijackTurret extends Turret {
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(!headless && !mobile && Core.input.keyDown(Binding.control)) return true;
 
             if(linkValid(this, other)){

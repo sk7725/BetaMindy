@@ -7,7 +7,6 @@ import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.style.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -144,7 +143,7 @@ public class HardMode {
                 Lines.circle(core.x, core.y, rad - 1f);
                 Lines.circle(core.x, core.y, rad - 5f);
                 Lines.stroke(1.2f);
-                Lines.polySeg(30, 0, (int)(30f * Mathf.clamp(1f - coreDamage / maxCoreDamage)), core.x, core.y, rad - 3f, 0f);
+                Lines.arc(core.x, core.y, rad - 3f, Mathf.clamp(1f - coreDamage / maxCoreDamage), 0f, 30);
 
                 float f = (Time.globalTime % 90f) / 90f;
                 Lines.stroke(2f * (1f - f));
@@ -613,7 +612,7 @@ public class HardMode {
 
         public void shoot(BulletType b){
             if(net.client()) return;
-            Posc target = Units.bestTarget(Vars.state.rules.waveTeam, x, y, Math.max(radius * 3f, b.range()), u -> !u.spawnedByCore, build -> !(build.block instanceof CoreBlock), Unit::dst2);
+            Posc target = Units.bestTarget(Vars.state.rules.waveTeam, x, y, Math.max(radius * 3f, b.range), u -> !u.spawnedByCore, build -> !(build.block instanceof CoreBlock), Unit::dst2);
             float rot = target == null ? Angles.angle(x, y, world.width()/2f * tilesize, world.height()/2f * tilesize) : target.angleTo(this) + 180f;
             Tmp.v1.trns(Mathf.random(360f), radius * 2.3f).add(x, y);
             Call.createBullet(b, Vars.state.rules.waveTeam, Tmp.v1.x, Tmp.v1.y, rot, b.damage, 1f, 1f);
@@ -646,7 +645,7 @@ public class HardMode {
                 }
                 if(t == null) return;
                 Tmp.v1.set(t.worldx(), t.worldy());
-                float lifeScl = Mathf.dst(x, y, Tmp.v1.x, Tmp.v1.y) / crystals[id].range();
+                float lifeScl = Mathf.dst(x, y, Tmp.v1.x, Tmp.v1.y) / crystals[id].range;
                 Call.createBullet(crystals[id], Vars.state.rules.defaultTeam, x, y, 180f + Tmp.v1.angleTo(this), -1, 1f, lifeScl);
             }
         }

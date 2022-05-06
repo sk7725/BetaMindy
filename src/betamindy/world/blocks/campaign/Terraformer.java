@@ -14,8 +14,6 @@ import arc.util.noise.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
 import betamindy.ui.*;
-import betamindy.util.*;
-import betamindy.world.blocks.units.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -25,7 +23,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
-import static betamindy.graphics.Drawm.ellipse;
+import static betamindy.graphics.Drawm.*;
 import static mindustry.Vars.*;
 
 public class Terraformer extends Block {
@@ -44,7 +42,7 @@ public class Terraformer extends Block {
     public float threshMultiplier = 0.89f; //the lower, the more ores it generates. [0~1], 0 just fills the entire thing with ore
 
     public float animDuration = 700f, midDuration = 25f, shakeAmount = 5f, ringAlignDuration = 200f, endDuration = 150f;
-    public Effect explodeEffect = Fx.impactShockwave;//todo
+    public Effect explodeEffect = Fx.shockwave;//todo
     public Effect beamEffect = MindyFx.terraBeam;
     public Effect beamSmokeEffect = Fx.none;
     public float beamEffectChance = 0.08f, beamSmokeChance = 0.1f;
@@ -65,7 +63,7 @@ public class Terraformer extends Block {
 
     @Override
     public void init(){
-        consumes.powerCond(powerUse, TerraformerBuild::isCharging);
+        consumePowerCond(powerUse, TerraformerBuild::isCharging);
         super.init();
         if(maxCharge < 0f) maxCharge = (float) (400000 << tier);
     }
@@ -73,9 +71,9 @@ public class Terraformer extends Block {
     @Override
     public void setBars(){
         super.setBars();
-        bars.remove("power");
-        bars.add("charge", (TerraformerBuild entity) -> new Bar(() -> Core.bundle.format("bar.terraformer.charge", (int)entity.displayCharge()), () -> lightColor, () -> entity.displayCharge() / maxCharge));
-        bars.add("uses", (TerraformerBuild entity) -> new Bar(() -> Core.bundle.format("bar.uses", maxUses - entity.used), () -> Pal.accent, () -> ((float) maxUses - entity.used) / maxUses));
+        removeBar("power");
+        addBar("charge", (TerraformerBuild entity) -> new Bar(() -> Core.bundle.format("bar.terraformer.charge", (int)entity.displayCharge()), () -> lightColor, () -> entity.displayCharge() / maxCharge));
+        addBar("uses", (TerraformerBuild entity) -> new Bar(() -> Core.bundle.format("bar.uses", maxUses - entity.used), () -> Pal.accent, () -> ((float) maxUses - entity.used) / maxUses));
     }
 
 
@@ -231,11 +229,11 @@ public class Terraformer extends Block {
                 }
             }
             else if(charging && charge < maxCharge){
-                if(consValid()) charge += delta() * power.status * powerUse;
+                if(canConsume()) charge += delta() * power.status * powerUse;
                 else charge -= delta() * 0.5f;
             }
 
-            heat = Mathf.lerpDelta(heat, terraforming || consValid() ? 1f : 0f, 0.05f);
+            heat = Mathf.lerpDelta(heat, terraforming || canConsume() ? 1f : 0f, 0.05f);
         }
 
         @Override
@@ -413,13 +411,13 @@ public class Terraformer extends Block {
             table.table(t -> {
                 t.defaults().size(265f, 40f);
                 if(HardmodeFragment.background != null) t.background(HardmodeFragment.background);
-                TextButton ibut = t.button("> INSTALL", Styles.transt, () -> configure(true)).pad(4f).padBottom(4f).disabled(l -> !consValid() || charging || terraforming).get();
+                TextButton ibut = t.button("> INSTALL", Styles.cleart, () -> configure(true)).pad(4f).padBottom(4f).disabled(l -> !canConsume() || charging || terraforming).get();
                 ibut.getLabel().setStyle(new Label.LabelStyle(Styles.techLabel));
-                ibut.update(() -> ibut.getLabel().setColor(terraforming || (charging && charge >= maxCharge) ? Color.green : (charging ? Pal.accent : (consValid() && heat > 0.8f) ? lightColor : Pal.gray)));
+                ibut.update(() -> ibut.getLabel().setColor(terraforming || (charging && charge >= maxCharge) ? Color.green : (charging ? Pal.accent : (canConsume() && heat > 0.8f) ? lightColor : Pal.gray)));
                 t.row();
                 t.image().color(Pal.gray).fillX().growX().height(4f).padTop(2f).padBottom(2f);
                 t.row();
-                TextButton ebut = t.button("> EXECUTE", Styles.transt, () -> configure(false)).pad(4f).padBottom(4f).disabled(l -> terraforming || !charging || charge < maxCharge).get();
+                TextButton ebut = t.button("> EXECUTE", Styles.cleart, () -> configure(false)).pad(4f).padBottom(4f).disabled(l -> terraforming || !charging || charge < maxCharge).get();
                 ebut.getLabel().setStyle(new Label.LabelStyle(Styles.techLabel));
                 ebut.update(() -> ebut.getLabel().setColor(terraforming ? Color.green : ((charging && charge >= maxCharge) ? tmpc.set(Pal.accent).lerp(Color.scarlet, Mathf.absin(Time.globalTime, 10f, 1f)) : Pal.gray)));
             });

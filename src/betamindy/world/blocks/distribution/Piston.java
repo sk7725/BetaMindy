@@ -150,10 +150,10 @@ public class Piston extends Block {
         @Override
         public void updateTile(){
             if(extended){
-                if(!consValid() && canRetract()) retract();
+                if(!canConsume() && canRetract()) retract();
             }
             else{
-                if(consValid() && canExtend()) extendArm();
+                if(canConsume() && canExtend()) extendArm();
             }
         }
 

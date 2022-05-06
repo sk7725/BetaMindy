@@ -1,20 +1,17 @@
 package betamindy.world.blocks.power;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.entities.*;
 import betamindy.world.blocks.logic.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class FloodLight extends LogicSpinBlock{
@@ -100,7 +97,7 @@ public class FloodLight extends LogicSpinBlock{
         }
 
         public void drawExt(){
-            if(renderer != null && (team == Team.derelict || team == player.team() || state.rules.enemyLights)){
+            if(renderer != null){
                 for(int i = -2; i <= 2; i++){
                     //GLENN: not a very good way of doing this    ~DINGUS~
                     float e = stroke * efficiency();

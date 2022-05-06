@@ -37,19 +37,19 @@ public class ConfigBlockForge extends BlockForge{
             table.table(t -> {
                 //float w = 172f;
                 t.top();
-                t.button("1~2", Styles.clearTogglet, () -> {
+                t.button("1~2", Styles.flatTogglet, () -> {
                     selection = 0;
                     rebuild(table);
                 }).update(b -> {
                     b.setChecked(selection == 0);
                 }).size(58f, 40f);
-                t.button("3~4", Styles.clearTogglet, () -> {
+                t.button("3~4", Styles.flatTogglet, () -> {
                     selection = 1;
                     rebuild(table);
                 }).update(b -> {
                     b.setChecked(selection == 1);
                 }).size(58f, 40f);
-                t.button("5+", Styles.clearTogglet, () -> {
+                t.button("5+", Styles.flatTogglet, () -> {
                     selection = 2;
                     rebuild(table);
                 }).update(b -> {

@@ -3,10 +3,9 @@ package betamindy.world.blocks.logic;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.util.*;
 import betamindy.content.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 
 public class ProcessorFan extends ProcessorCooler{
     public TextureRegion spinnerRegion;
@@ -56,7 +55,7 @@ public class ProcessorFan extends ProcessorCooler{
 
         @Override
         public boolean shouldAmbientSound(){
-            return consValid() && heat > 0.1f;
+            return canConsume() && heat > 0.1f;
         }
     }
 }

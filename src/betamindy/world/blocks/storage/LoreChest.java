@@ -164,7 +164,7 @@ public class LoreChest extends Chest{
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(!net.active() && state.isEditor() && linkValid(this, other)){
                 configure(other.pos());
                 return false;

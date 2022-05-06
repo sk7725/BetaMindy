@@ -5,11 +5,11 @@ import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.scene.style.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
+import betamindy.content.*;
+import betamindy.world.blocks.production.payduction.GateController.*;
 import betamindy.world.blocks.production.payduction.craft.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -20,19 +20,14 @@ import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.production.*;
-import betamindy.world.blocks.production.payduction.GateController.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.consumers.*;
-import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.content;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
-public class PayloadFactory extends PayloadAcceptor {
+public class PayloadFactory extends PayloadBlock {
     public int maxBlockSize = 2;
     public float fuelTime = 120f;
     public float baseCraftTime = 5f, baseHeatLerp = 0.001f;
@@ -95,11 +90,11 @@ public class PayloadFactory extends PayloadAcceptor {
     public void setBars(){
         super.setBars();
 
-        bars.add("heat", entity -> new Bar(() -> Core.bundle.format("bar.efficiency", (int)(((PayloadFactoryBuild)entity).heat * 100)), () -> heatColor, ((PayloadFactoryBuild) entity)::fract));
+        addBar("heat", entity -> new Bar(() -> Core.bundle.format("bar.efficiency", (int)(((PayloadFactoryBuild)entity).heat * 100)), () -> heatColor, ((PayloadFactoryBuild) entity)::fract));
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(region, req.drawx(), req.drawy());
         Draw.rect(doorRegion, req.drawx(), req.drawy());
         Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
@@ -108,12 +103,12 @@ public class PayloadFactory extends PayloadAcceptor {
 
     protected void setDefaults(){
         if(hasItems){
-            consumes.add(new ConsumeItemFilter(item -> getFuelValue(item) >= minItemEfficiency)).update(false).optional(true, false);
+            consume(new ConsumeItemFilter(item -> getFuelValue(item) >= minItemEfficiency)).update(false).optional(true, false);
         }
 
         /*
         if(hasLiquids){
-            consumes.add(new ConsumeLiquidFilter(liquid -> getLiquidEfficiency(liquid) >= minLiquidEfficiency, maxLiquidGenerate)).update(false).optional(true, false);
+            consume(new ConsumeLiquidFilter(liquid -> getLiquidEfficiency(liquid) >= minLiquidEfficiency, maxLiquidGenerate)).update(false).optional(true, false);
         }*/
 
         defaults = true;
@@ -147,7 +142,7 @@ public class PayloadFactory extends PayloadAcceptor {
         doorRegion = atlas.find(name + "-door");
     }
 
-    public class PayloadFactoryBuild extends PayloadAcceptorBuild<BuildPayload>{
+    public class PayloadFactoryBuild extends PayloadBlockBuild<BuildPayload>{
         public float heat = 0f; //absolute heat value
         public float fuelLeft = 0f, fuelValue = 0f, fuelLerp = baseHeatLerp;
         public float time = 0f; //increases every tick when payload is in.
@@ -165,7 +160,7 @@ public class PayloadFactory extends PayloadAcceptor {
             //consume the item
             fuelLeft -= delta();
             if(fuelLeft > 0) return;
-            if(items.total() == 0 || !consValid()){
+            if(items.total() == 0 || !canConsume()){
                 fuelValue = 0;
                 fuelLerp = baseHeatLerp;
                 return;
@@ -218,7 +213,7 @@ public class PayloadFactory extends PayloadAcceptor {
             parent.image().color(Pal.gray).height(4f).growX().padTop(2f).padBottom(8f);
             parent.row();
             parent.table(table -> {
-                table.image(() -> active() ? payload.icon(Cicon.full) : Icon.cancel.getRegion()).size(36f);
+                table.image(() -> active() ? payload.block().uiIcon : Icon.cancel.getRegion()).size(36f);
 
                 table.table(t -> {
                     t.defaults().height(16f).pad(4f).padBottom(1f).padTop(1f).growX();
@@ -255,7 +250,7 @@ public class PayloadFactory extends PayloadAcceptor {
                     moveOutPayload();
                     if(payload == null) outputting = false;
                 }
-                else if(consValid() && moveInPayload()){
+                else if(canConsume() && moveInPayload()){
                     if(isCatalyst(payload.block())){
                         catalystEffect.at(this, payload.block().size);
                         catalystSound.at(this);
@@ -279,7 +274,7 @@ public class PayloadFactory extends PayloadAcceptor {
                         float d = baseCraftTime * damageAmount;
 
                         if(d + 1f >= payload.build.health){
-                            Fx.blockExplosion.at(this);
+                            MindyFx.blockExplosion.at(this);
                             Fx.smokeCloud.at(this);
                             Sounds.explosion.at(this);
 

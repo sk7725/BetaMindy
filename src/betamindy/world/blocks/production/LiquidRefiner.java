@@ -1,13 +1,11 @@
 package betamindy.world.blocks.production;
 
-import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
 import betamindy.ui.*;
-import betamindy.world.blocks.production.payduction.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -17,14 +15,13 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.headless;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 /**
  * Same as a LiquidConverter but also gives out "gas" to adjacent Condensers.
  */
-public class LiquidRefiner extends LiquidConverter {
+public class LiquidRefiner extends GenericCrafter {
     public @Nullable Condenser condenser = null;
     public float gasProduce = 20f;
     public boolean drawJoint;
@@ -58,7 +55,7 @@ public class LiquidRefiner extends LiquidConverter {
         return new TextureRegion[]{region, topRegion};
     }
 
-    public class LiquidRefinerBuild extends LiquidConverterBuild {
+    public class LiquidRefinerBuild extends GenericCrafterBuild {
         @Override
         public void consume(){
             super.consume();

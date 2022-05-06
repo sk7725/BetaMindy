@@ -2,15 +2,10 @@ package betamindy.entities.bullet;
 
 import arc.graphics.*;
 import arc.math.*;
-import arc.util.*;
-import betamindy.content.*;
-import betamindy.graphics.*;
 import betamindy.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-
-import static mindustry.Vars.headless;
 
 public class ThickLightningBulletType extends BulletType {
     public Color color1;
@@ -33,7 +28,7 @@ public class ThickLightningBulletType extends BulletType {
     }
 
     @Override
-    public float range(){
+    public float calculateRange(){
         return (lightningLength + lightningLengthRand/2f) * 15f;
     }
 

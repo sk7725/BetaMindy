@@ -5,17 +5,15 @@ import arc.graphics.g2d.*;
 import arc.struct.*;
 import betamindy.content.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 
-public class FireColor implements ContentList {
+public class FireColor{
     public static ObjectMap<Item, Color> fromMap = new ObjectMap<>();
     public static ObjectMap<Item, Color> toMap = new ObjectMap<>();
     public static Seq<Item> items = new Seq<>();
 
-    @Override
-    public void load(){
+    public static void load(){
         c(MindyItems.bittrium, Color.magenta, Color.cyan, false);
         c(Items.sand, Color.gray, Color.gray, false); //extinguish
 
@@ -63,17 +61,17 @@ public class FireColor implements ContentList {
         else Draw.color(fromMap.get(i), toMap.get(i), smoke, lerp);
     }
 
-    public void c(Item i, Color a, Color b, boolean register){
+    public static void c(Item i, Color a, Color b, boolean register){
         fromMap.put(i, a);
         toMap.put(i, b);
         if(register) items.add(i);
     }
 
-    public void c(Item i, Color a){
+    public static void c(Item i, Color a){
         c(i, a, a.cpy().shiftValue(1f - a.value()).lerp(Color.gray, 0.7f), true);
     }
 
-    public void c(Item i, String a){
+    public static void c(Item i, String a){
         c(i, Color.valueOf(a));
     }
 }

@@ -6,12 +6,10 @@ import arc.util.io.*;
 import betamindy.ui.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.logic.*;
 import mindustry.world.blocks.power.*;
 
-import static arc.Core.atlas;
-import static arc.math.geom.Geometry.d4x;
-import static arc.math.geom.Geometry.d4y;
+import static arc.Core.*;
+import static arc.math.geom.Geometry.*;
 
 public class Capacitor extends Battery {
     public int maxDelay = 6; //inclusive
@@ -27,7 +25,7 @@ public class Capacitor extends Battery {
         configurable = saveConfig = true;
         //insulated = true;
         this.powerCapacity = powerCapacity;
-        consumes.powerBuffered(powerCapacity);
+        consumePowerBuffered(powerCapacity);
 
         config(Integer.class, (CapacitorBuild build, Integer i) -> {
             if(i >= 1 && i <= maxDelay) build.delay = i;

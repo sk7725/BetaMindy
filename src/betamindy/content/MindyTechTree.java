@@ -13,11 +13,10 @@ import static mindustry.content.TechTree.*;
 import static betamindy.content.MindyBlocks.*;
 import static betamindy.content.MindyItems.*;
 
-public class MindyTechTree implements ContentList{
+public class MindyTechTree{
     static TechTree.TechNode context = null;
 
-    @Override
-    public void load(){
+    public static void load(){
         //Shar branch
         margeNode(mechanicalDrill, () -> {
             node(isotopeReactor, () -> {
@@ -175,21 +174,19 @@ public class MindyTechTree implements ContentList{
             });
         });
 
-        margeNode(commandCenter, () -> {
-            node(boostPad, () -> {
-                node(driftPad, () -> {
-                    nodePortal(teleportPad, 9);
-                });
-                node(bumper, () -> {
-                    node(bumperBlue);
-                    node(bumperPlus);
-                });
-                node(claw, () -> {
-                    node(phaseClaw);
-                });
-                node(clearPipe, () -> {
-                    node(clearDuct);
-                });
+        node(boostPad, () -> {
+            node(driftPad, () -> {
+                nodePortal(teleportPad, 9);
+            });
+            node(bumper, () -> {
+                node(bumperBlue);
+                node(bumperPlus);
+            });
+            node(claw, () -> {
+                node(phaseClaw);
+            });
+            node(clearPipe, () -> {
+                node(clearDuct);
             });
         });
 

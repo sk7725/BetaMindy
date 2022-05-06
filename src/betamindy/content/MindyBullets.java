@@ -7,7 +7,6 @@ import arc.util.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import mindustry.content.*;
-import mindustry.ctype.ContentList;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -17,10 +16,10 @@ import mindustry.world.*;
 
 import static mindustry.Vars.world;
 
-public class MindyBullets implements ContentList {
+public class MindyBullets{
     public static BulletType payBullet, payBulletBig, homingPay, homingPayBig, glassPiece, glassPieceBig, bigStar, smallStar, biggerStar, colorFireball, icyZone, icyZoneSmall, voidStar, starFlame, sequenceShot;
-    @Override
-    public void load(){
+
+    public static void load(){
         payBullet = new PayloadBullet(1.6f){{
             hitEffect = Fx.mineBig;
             despawnEffect = Fx.none;
@@ -209,6 +208,7 @@ public class MindyBullets implements ContentList {
                 speed = 2;
                 damage = 0;
                 despawnEffect = MindyFx.voidStarDespawn;
+                chargeEffect = MindyFx.astroCharge;
             }
 
             public float dist(Bullet b, float x, float y){

@@ -1,35 +1,32 @@
 package betamindy.world.blocks.environment;
 
 //import arc.Core;
-import arc.audio.Sound;
+
+import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-//import arc.math.geom.Vec2;
 import arc.scene.ui.layout.*;
-//import arc.util.Align;
 import arc.util.io.*;
-import betamindy.content.MindySounds;
+import betamindy.content.*;
 import betamindy.util.*;
-import mindustry.content.Fx;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.Cicon;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 
+import static arc.Core.*;
 import static mindustry.Vars.*;
-import static arc.Core.atlas;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.*;
 
 public class PresentBox extends Block {
     //How many colors do you want?
     //yes.
-    public static final Color[] colors = {Team.sharded.color, Team.crux.color, Team.blue.color, Team.green.color, Team.purple.color, thorium.color, titanium.color, plastanium.color, pyratite.color, cryofluid.color, slag.color, blastCompound.color, Pal.place, Pal.engine, surgeAlloy.color, Pal.lancerLaser, Pal.sapBullet, Pal.heal};
+    public static final Color[] colors = {Team.sharded.color, Team.crux.color, Team.blue.color, Team.green.color, Team.malis.color, thorium.color, titanium.color, plastanium.color, pyratite.color, cryofluid.color, slag.color, blastCompound.color, Pal.place, Pal.engine, surgeAlloy.color, Pal.lancerLaser, Pal.sapBullet, Pal.heal};
     public int itemCount = 15, naughtyItemCount = 3;
     public float naughtyChance = 0.05f;
     public Item naughtyItem = coal;
@@ -123,7 +120,7 @@ public class PresentBox extends Block {
             if(open){
                 Draw.rect(baseRegion, x, y);
                 if(items.any()){
-                    TextureRegion icon = items.first().icon(Cicon.small);
+                    TextureRegion icon = items.first().fullIcon;
                     for(int i = 0; i < items.total() * 5 / itemCapacity; i++){
                         Draw.rect(icon, x + Mathf.randomSeed(id + i) * 3f - 1.5f, y + Mathf.randomSeed(id + i + 10) * 3f - 1.5f, Draw.scl * Draw.xscl * 16f, Draw.scl * Draw.yscl * 15f);
                     }

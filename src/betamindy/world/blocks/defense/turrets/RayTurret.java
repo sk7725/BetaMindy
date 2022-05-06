@@ -16,12 +16,10 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.headless;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class RayTurret extends BaseTurret {
     public final int timerTarget = timers++;
@@ -80,7 +78,7 @@ public class RayTurret extends BaseTurret {
 
     @Override
     public void init(){
-        consumes.powerDynamic((RayBuild b) -> b.target == null ? 0f : powerUse * levelScale(b.level));
+        consumePowerDynamic((RayBuild b) -> b.target == null ? 0f : powerUse * levelScale(b.level));
         super.init();
 
         clipSize = Math.max(clipSize, (range + tilesize) * 2);
@@ -97,7 +95,7 @@ public class RayTurret extends BaseTurret {
         public @Nullable Unit target;
         public float lastX, lastY, strength;
         public boolean any, had;
-        public float coolant = 1f;
+        public float coolantLevel = 1f;
         public int level = 0, lastLevel = 0;
         public float levelCharge = 0f;
 
@@ -112,8 +110,8 @@ public class RayTurret extends BaseTurret {
             }
 
             //consume coolant
-            if(target != null && acceptCoolant){
-                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+            if(target != null && coolant != null){
+                float maxUsed = coolant.amount;
 
                 Liquid liquid = liquids.current();
 
@@ -125,7 +123,7 @@ public class RayTurret extends BaseTurret {
                     coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
                 }
 
-                coolant = 1f + (used * liquid.heatCapacity * coolantMultiplier);
+                coolantLevel = 1f + (used * liquid.heatCapacity * coolantMultiplier);
             }
 
             any = false;
@@ -178,7 +176,7 @@ public class RayTurret extends BaseTurret {
 
         @Override
         public float efficiency(){
-            return super.efficiency() * coolant;
+            return super.efficiency() * coolantLevel;
         }
 
         public void drawLaser(float w, float ang){

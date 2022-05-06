@@ -1,11 +1,9 @@
 package betamindy.world.blocks.defense.turrets;
 
-import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.util.*;
@@ -15,12 +13,10 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.input.*;
 import mindustry.logic.*;
 import mindustry.world.blocks.defense.turrets.*;
 
-import static mindustry.Vars.player;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class MultiTurret extends Turret {
     public TurretPattern[] patterns;
@@ -42,7 +38,7 @@ public class MultiTurret extends Turret {
 
     @Override
     public void init(){
-        consumes.powerCond(powerUse, TurretBuild::isActive);
+        consumePowerCond(powerUse, TurretBuild::isActive);
         super.init();
     }
 
@@ -156,20 +152,21 @@ public class MultiTurret extends Turret {
             recoil = recoilAmount;
         }
 
+        //TODO reimplement -Anuke
         public void settr(){
-            tr.trns(rotation, shootLength, Mathf.range(xRand));
+            //tr.trns(rotation, shootLength, Mathf.range(xRand));
         }
 
         public void doBullet(BulletType type, float rotation){
-            bullet(type, rotation);
+            //bullet(type, rotation);
         }
 
         public void playSound(Sound sound){
-            sound.at(x + tr.x, y + tr.y, 1);
+            //sound.at(x + tr.x, y + tr.y, 1);
         }
 
         public void playEffect(Effect e){
-            e.at(x + tr.x, y + tr.y, rotation);
+            //e.at(x + tr.x, y + tr.y, rotation);
         }
 
         //draw start

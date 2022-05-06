@@ -40,7 +40,7 @@ public class MindyUILoader {
         buttonEdge2 = atlas.drawable("button-edge-2");
         whitePiano = new TextButton.TextButtonStyle(atlas.drawable("betamindy-keyw"), atlas.drawable("betamindy-keyw-down"), atlas.drawable("betamindy-keyw-checked"), Fonts.outline);
         blackPiano = new TextButton.TextButtonStyle(atlas.drawable("betamindy-keyb"), atlas.drawable("betamindy-keyb-down"), atlas.drawable("betamindy-keyb-checked"), Fonts.def);
-        clearAccenti = new ImageButton.ImageButtonStyle(Styles.clearTransi);
+        clearAccenti = new ImageButton.ImageButtonStyle(Styles.cleari);
         clearAccenti.imageUpColor = Pal.accent;
         clearAccenti.imageOverColor = Pal2.coin;
         clearAccenti.imageDownColor = Pal.accentBack;

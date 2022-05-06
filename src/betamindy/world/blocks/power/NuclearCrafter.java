@@ -38,7 +38,7 @@ public class NuclearCrafter extends NuclearReactor {
         public float warmup;
         @Override
         public void consume(){
-            boolean valid = consValid();
+            boolean valid = canConsume();
             super.consume();
 
             if(outputItem != null && hasItems && valid){
@@ -65,7 +65,7 @@ public class NuclearCrafter extends NuclearReactor {
             if(enabled) enabled = shouldConsume();
             super.updateTile();
             dumpOutputs();
-            warmup = Mathf.lerpDelta(warmup, (consValid() && enabled && outputItem != null) ? 1f : 0f, 0.035f);
+            warmup = Mathf.lerpDelta(warmup, (canConsume() && enabled && outputItem != null) ? 1f : 0f, 0.035f);
         }
 
         @Override

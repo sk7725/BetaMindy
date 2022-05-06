@@ -4,18 +4,15 @@ import arc.*;
 import arc.graphics.*;
 import betamindy.graphics.*;
 import betamindy.type.*;
-import betamindy.type.item.*;
 import mindustry.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.type.*;
 
-public class MindyLiquids implements ContentList {
+public class MindyLiquids{
     public static Liquid coffee, siloxol, colloid, tensorflow;
 
-    @Override
-    public void load(){
+    public static void load(){
         coffee = new Liquid("coffee", Pal2.coffee){{
             effect = MindyStatusEffects.caffeinated;
             temperature = 0.6f;

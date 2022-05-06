@@ -47,7 +47,7 @@ public class SlimeBlock extends Block {
     public void setBars() {
         super.setBars();
         if(hasPower){
-            bars.add("power", (SlimeBuild entity) -> new Bar(() ->
+            addBar("power", (SlimeBuild entity) -> new Bar(() ->
                 Core.bundle.get("bar.power"),
                 () -> Pal.powerBar,
                 () -> entity.power.graph.getSatisfaction()

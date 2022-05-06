@@ -8,7 +8,6 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.*;
 import betamindy.graphics.*;
-import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -16,7 +15,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 import static betamindy.BetaMindy.*;
 import static mindustry.Vars.*;
 
@@ -36,7 +35,7 @@ public class FilterDome extends Block {
     @Override
     public void init(){
         super.init();
-        clipSize = Math.max(clipSize, range * 2f + 16f);
+        updateClipRadius(range);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class FilterDome extends Block {
             if(headless || player.unit() == null) return;
             r = Mathf.lerpDelta(r, realRange(), 0.05f);
             if(heat > 0.05f) heat = Mathf.lerpDelta(heat, 0f, 0.09f);
-            if(consValid() && within(player, r)){
+            if(canConsume() && within(player, r)){
                 BetaMindy.filters.enableFilter(filter);
             }
         }
@@ -135,10 +134,10 @@ public class FilterDome extends Block {
         public void buildConfiguration(Table table){
             //todo better ui
             table.table(Tex.pane, t -> {
-                t.button(Icon.downOpen, Styles.clearTransi, () -> {
+                t.button(Icon.downOpen, Styles.cleari, () -> {
                     configure(filter - 1);
                 }).size(45).disabled(but -> filter <= 0);
-                t.button(Icon.upOpen, Styles.clearTransi, () -> {
+                t.button(Icon.upOpen, Styles.cleari, () -> {
                     configure(filter + 1);
                 }).size(45).disabled(but -> filter >= filters.filters.length - 1);
             });

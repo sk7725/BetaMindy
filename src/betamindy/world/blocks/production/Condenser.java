@@ -29,7 +29,7 @@ public class Condenser extends GenericCrafter {
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("gas", (CondenserBuild entity) -> new Bar(this::gasName, () -> gasColor, () -> Mathf.clamp(entity.gasAmount / gasCapacity)));
+        addBar("gas", (CondenserBuild entity) -> new Bar(this::gasName, () -> gasColor, () -> Mathf.clamp(entity.gasAmount / gasCapacity)));
     }
 
     public String gasName(){
@@ -40,8 +40,8 @@ public class Condenser extends GenericCrafter {
         public float gasAmount = 0f;
 
         @Override
-        public boolean consValid(){
-            return super.consValid() && gasAmount >= gasUse;
+        public boolean canConsume(){
+            return super.canConsume() && gasAmount >= gasUse;
         }
 
         @Override

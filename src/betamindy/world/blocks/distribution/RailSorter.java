@@ -10,7 +10,6 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.graphics.*;
 import mindustry.*;
-import mindustry.content.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -19,8 +18,8 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.payloads.*;
 
-import static arc.Core.atlas;
-import static betamindy.world.blocks.storage.Shop.unitTypeMap;
+import static arc.Core.*;
+import static betamindy.world.blocks.storage.Shop.*;
 
 public class RailSorter extends PayloadRail {
     public final static int customSorts = 5;
@@ -54,8 +53,8 @@ public class RailSorter extends PayloadRail {
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
-        super.drawRequestRegion(req, list);
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
+        super.drawPlanRegion(req, list);
 
         Draw.rect(overRegion, req.drawx(), req.drawy());
     }
@@ -134,7 +133,7 @@ public class RailSorter extends PayloadRail {
             if(type == LAccess.config){
                 rotation = (int)p1;
                 //when manually controlled, routers do not turn automatically for a while, same as turrets
-                controlTime = Building.timeToUncontrol;
+                controlTime = 60f * 8f;
             }
         }
 
@@ -228,7 +227,7 @@ public class RailSorter extends PayloadRail {
         }
 
         public void sortButton(Table cont, ButtonGroup<ImageButton> group, int item){
-            ImageButton button = cont.button(Tex.whiteui, Styles.clearToggleTransi, item < 0 ? 33 : 24, () -> {}).group(group).get(); //why the heck are custom images smaller
+            ImageButton button = cont.button(Tex.whiteui, Styles.clearTogglei, item < 0 ? 33 : 24, () -> {}).group(group).get(); //why the heck are custom images smaller
             button.changed(() -> configure(button.isChecked() ? item : null));
             button.getStyle().imageUp = getSortIcon(item);
             button.update(() -> button.setChecked(sorter == item));

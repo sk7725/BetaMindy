@@ -44,7 +44,7 @@ public class TradingPost extends Block {
     public void setBars() {
         super.setBars();
 
-        bars.add("anucoins", (TradingPostBuild entity) -> new Bar(
+        addBar("anucoins", (TradingPostBuild entity) -> new Bar(
                 () -> Core.bundle.format("bar.anucoin", entity.anucoins),
                 () -> Color.coral,
                 () -> Mathf.clamp(entity.anucoins / 500f)));

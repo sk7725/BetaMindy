@@ -16,7 +16,8 @@ repositories{
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.4.0'
-    implementation "com.github.Anuken.Mindustry:core:$pVer"
+    //TODO: switch to jitpack once private branch is out, this uses a local Mindustry dependency.
+    compileOnly(files("/home/anuke/Projects/Mindustry/desktop/build/libs/Mindustry.jar"))
 }
 
 ext{
@@ -24,14 +25,13 @@ ext{
     sdkVersion = '30'
 }
 
-jar.archiveFileName.set("raw-$pArtifactFilename");
+jar.archiveFileName.set("raw-$pArtifactFilename")
 
-def isWindows = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows");
+def isWindows = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")
 
 task alphableed doFirst{
     exec{
         workingDir "$rootDir"
-
         println "Alpha-bleeding sprites..."
         if(isWindows){
             commandLine("cmd", "/c", "alpha-bleeding-windows.exe", "--replace", "./assets/sprites/")
@@ -46,7 +46,6 @@ task dexify(type: Jar){
 
     final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, "raw-$pArtifactFilename"),
                dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
-
 
     doFirst{
         //collect dependencies needed for desugaring
@@ -86,14 +85,11 @@ task buildMove(dependsOn: build){
 
 tasks.withType(JavaCompile){
     targetCompatibility = 8
-    sourceCompatibility = JavaVersion.VERSION_14
+    sourceCompatibility = JavaVersion.VERSION_17
     options.encoding = "UTF-8"
     options.compilerArgs += ["-Xlint:deprecation"]
     if(JavaVersion.current() != JavaVersion.VERSION_1_8){
-        options.compilerArgs.addAll(['--release', '8', '--enable-preview'])
+        options.compilerArgs.addAll(['--release', '8'])
     }
     compileJava.options.fork = true
-    doFirst{
-        options.compilerArgs = options.compilerArgs.findAll{it != '--enable-preview' }
-    }
 }

@@ -64,13 +64,13 @@ public class Discharger extends Battery {
     @Override
     public void setBars(){
         super.setBars();
-        if(hasPower && consumes.hasPower()){
-            bars.remove("power");
-            ConsumePower cons = consumes.getPower();
+        if(hasPower && consPower != null){
+            removeBar("power");
+            ConsumePower cons = consPower;
             boolean buffered = cons.buffered;
             float capacity = cons.capacity;
 
-            bars.add("power", entity -> new Bar(() -> buffered ? Core.bundle.format("bar.poweramount", Float.isNaN(entity.power.status * capacity) ? "<ERROR>" : (int)(entity.power.status * capacity)) :
+            addBar("power", entity -> new Bar(() -> buffered ? Core.bundle.format("bar.poweramount", Float.isNaN(entity.power.status * capacity) ? "<ERROR>" : (int)(entity.power.status * capacity)) :
                     Core.bundle.get("bar.power"), () -> lightningColor, () -> Mathf.zero(cons.requestedPower(entity)) && entity.power.graph.getPowerProduced() + entity.power.graph.getBatteryStored() > 0f ? 1f : entity.power.status));
         }
     }
@@ -85,9 +85,9 @@ public class Discharger extends Battery {
         public float reload = 0f;
 
         public float useCharge(float a){
-            float use = Math.min(power.status, a / consumes.getPower().capacity);
+            float use = Math.min(power.status, a / consPower.capacity);
             power.status -= use;
-            return Mathf.clamp(use * consumes.getPower().capacity / a);
+            return Mathf.clamp(use * consPower.capacity / a);
         }
 
         public boolean noCharge(){

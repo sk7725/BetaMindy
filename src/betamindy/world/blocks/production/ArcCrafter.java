@@ -48,13 +48,18 @@ public class ArcCrafter extends AttributeCrafter {
     @Override
     public void init(){
         if(boostItem != null){
-            ItemStack[] before = !consumes.has(ConsumeType.item) ? ItemStack.empty : consumes.getItem().items;
+            ConsumeItems items = findConsumer(c -> c instanceof ConsumeItems);
+
+            ItemStack[] before = items == null ? ItemStack.empty : items.items;
             withoutBoost = Arrays.copyOf(before, before.length);
             withBoost = Arrays.copyOf(before, before.length + 1);
             withBoost[before.length] = boostItem;
-            if(consumes.has(ConsumeType.item)) consumes.remove(ConsumeType.item);
 
-            consumes.add(new ConsumeItemDynamic((ArcCrafterBuild e) -> e.useBooster() ? withBoost : withoutBoost));
+            if(items != null){
+                removeConsumer(items);
+            }
+
+            consume(new ConsumeItemDynamic((ArcCrafterBuild e) -> e.useBooster() ? withBoost : withoutBoost));
         }
         super.init();
         clipSize = Math.max(clipSize, (lightRadius + 20f) * size * 2.2f);
@@ -104,7 +109,7 @@ public class ArcCrafter extends AttributeCrafter {
         public void updateTile(){
             super.updateTile();
 
-            if(!nextFlash && heat < 0.001f && Mathf.chance(flashChance * edelta()) && consValid() && efficiency() > 0.0001f){
+            if(!nextFlash && heat < 0.001f && Mathf.chance(flashChance * edelta()) && canConsume() && efficiency() > 0.0001f){
                 nextFlash = true;
                 heat = 1f;
             }
@@ -140,7 +145,7 @@ public class ArcCrafter extends AttributeCrafter {
 
         @Override
         public float efficiencyScale(){
-            return super.efficiencyScale() + (useBooster() && consValid() ? boostAmount : 0f);
+            return super.efficiencyScale() + (useBooster() && canConsume() ? boostAmount : 0f);
         }
 
         @Override
@@ -202,7 +207,7 @@ public class ArcCrafter extends AttributeCrafter {
         @Override
         public void drawLight(){
             setFlameColor(Tmp.c4);
-            Drawf.light(team, x, y, (lightRadius * (1f + Mathf.clamp(heat) * 0.1f) + Mathf.absin(10f, 5f)) * warmup2 * block.size, Tmp.c4, 0.65f);
+            Drawf.light(x, y, (lightRadius * (1f + Mathf.clamp(heat) * 0.1f) + Mathf.absin(10f, 5f)) * warmup2 * block.size, Tmp.c4, 0.65f);
         }
     }
 }

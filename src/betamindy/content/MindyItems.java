@@ -2,27 +2,20 @@ package betamindy.content;
 
 import arc.*;
 import arc.graphics.*;
-import arc.math.*;
-import arc.util.*;
-import betamindy.*;
 import betamindy.graphics.*;
 import betamindy.type.item.*;
 import betamindy.ui.*;
 import mindustry.*;
-import mindustry.content.*;
-import mindustry.ctype.*;
-import mindustry.entities.units.*;
 import mindustry.game.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 
-public class MindyItems implements ContentList {
+public class MindyItems{
     public static Item bittrium, scalarRaw, scalar, vectorRaw, vector, tensorRaw, tensor, source, cryonite, spaceMatter,
     //foreign items
     wood, tungsten, starStone, zinc, pixellium, bedrock;
 
-    public void load(){
+    public static void load(){
         //given from portal invasions
         bittrium = new AnimatedItem("bittrium", Color.valueOf("00ffff")){
             {

@@ -1,14 +1,12 @@
 package betamindy.world.blocks.payloads;
 
 import arc.func.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.*;
 import betamindy.world.blocks.distribution.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -16,9 +14,7 @@ import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.payloads.*;
 
 import static mindustry.Vars.*;
 
@@ -209,7 +205,7 @@ public class RBuild {
         Drawf.shadow(ox + v1.x, oy + v1.y, tilesize * build.block.size * 2f);
         Draw.z(Layer.blockOver + 0.1f);
         if(build instanceof SpinDraw) ((SpinDraw) build).drawSpinning(ox + v1.x, oy + v1.y, rawRotation);
-        else Draw.rect(build.block.icon(Cicon.full), ox + v1.x, oy + v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
+        else Draw.rect(build.block.fullIcon, ox + v1.x, oy + v1.y, (build.block.rotate ? build.rotation : 0) * 90f + rawRotation);
     }
 
     public void kill(float kx, float ky){

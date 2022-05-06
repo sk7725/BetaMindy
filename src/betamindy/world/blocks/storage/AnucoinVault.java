@@ -32,7 +32,7 @@ public class AnucoinVault extends Block {
     public void setBars(){
         super.setBars();
 
-        bars.add("anucoins", (AnucoinVaultBuild entity) -> new Bar(
+        addBar("anucoins", (AnucoinVaultBuild entity) -> new Bar(
                 () -> Core.bundle.format("bar.anucoin", entity.totalCoins()),
                 () -> Color.coral,
                 () -> Mathf.clamp(entity.fract())));

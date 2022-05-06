@@ -79,7 +79,7 @@ public class PenStrokeModule extends Block {
 
         @Override
         public void drawLight(){
-            Drawf.light(team, x, y, lightRadius * 2f, lightColor, 0.9f);
+            Drawf.light(x, y, lightRadius * 2f, lightColor, 0.9f);
         }
 
         @Override

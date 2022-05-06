@@ -10,6 +10,7 @@ import arc.util.io.*;
 import betamindy.*;
 import betamindy.content.*;
 import mindustry.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -17,6 +18,7 @@ import mindustry.logic.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
 import static arc.Core.*;
@@ -52,6 +54,8 @@ public class PayloadTurret extends Turret{
         outputsPayload = true;//needs to be true to accept payloads, is this intended?
         outputFacing = false;
         sync = true;
+        //use last icon for outline
+        outlinedIcon = -1;
     }
 
     @Override
@@ -69,8 +73,9 @@ public class PayloadTurret extends Turret{
 
     @Override
     public TextureRegion[] icons(){
-        if(atlas.isFound(topRegion)) return new TextureRegion[]{baseRegion, inRegion, topRegion, region};
-        return new TextureRegion[]{baseRegion, inRegion, region};
+        TextureRegion base = ((DrawTurret)drawer).base;
+        if(atlas.isFound(topRegion)) return new TextureRegion[]{base, inRegion, topRegion, region};
+        return new TextureRegion[]{base, inRegion, region};
     }
 
     @Override
@@ -184,7 +189,7 @@ public class PayloadTurret extends Turret{
                 moveInPayload(false); //Rotating is done elsewhere
             }
 
-            if(acceptCoolant){
+            if(coolant != null){
                 updateCooling();
             }
         }
@@ -202,8 +207,8 @@ public class PayloadTurret extends Turret{
         }
 
         public void loadPayload(){
-            loadProgress = Mathf.approach(loadProgress, shootLength - recoil, payloadSpeed * delta());
-            loading = !Mathf.equal(loadProgress, shootLength - recoil, 0.01f);
+            loadProgress = Mathf.approach(loadProgress, shootY - recoil, payloadSpeed * delta());
+            loading = !Mathf.equal(loadProgress, shootY - recoil, 0.01f);
         }
 
         public void rotatePayload(){
@@ -221,7 +226,8 @@ public class PayloadTurret extends Turret{
 
         @Override
         public void draw(){
-            Draw.rect(baseRegion, x, y);
+            DrawTurret draw = (DrawTurret)drawer;
+            Draw.rect(draw.base, x, y);
 
             //draw input
             for(int i = 0; i < 4; i++){
@@ -238,14 +244,11 @@ public class PayloadTurret extends Turret{
 
             Draw.z(Layer.turret);
 
-            tr2.trns(rotation, -recoil);
+            recoilOffset.trns(rotation, -recoil);
 
-            Drawf.shadow(region, x + tr2.x - elevation, y + tr2.y - elevation, rotation - 90);
-            drawer.get(this);
-
-            if(heatRegion != Core.atlas.find("error")){
-                heatDrawer.get(this);
-            }
+            Drawf.shadow(region, x + recoilOffset.x - elevation, y + recoilOffset.y - elevation, rotation - 90);
+            //TODO this may be wrong, and you may want to have different drawing for the turret itself -Anuke
+            draw.drawTurret((Turret)block, this);
         }
 
         public void drawPayload(){
@@ -253,7 +256,7 @@ public class PayloadTurret extends Turret{
                 updatePayload();
 
                 if(loaded){
-                    loadProgress = shootLength - recoil;
+                    loadProgress = shootY - recoil;
                     payRotation = rotation + rotationOffset();
                 }
 
@@ -277,9 +280,9 @@ public class PayloadTurret extends Turret{
 
         @Override
         protected void updateShooting(){
-            reload += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
+            reloadCounter += delta() * peekAmmo().reloadMultiplier * baseReloadSpeed();
 
-            if(reload > reloadTime && loaded && !shooting){
+            if(reloadCounter > reload && loaded && !shooting){
                 shooting = true;
             }
         }
@@ -289,7 +292,7 @@ public class PayloadTurret extends Turret{
             loaded = false;
             shoot(peekAmmo());
             shooting = false;
-            reload %= reloadTime;
+            reloadCounter %= reload;
         }
 
         protected void shoot(BulletType type){
@@ -299,12 +302,18 @@ public class PayloadTurret extends Turret{
         }
 
         @Override
-        protected void bullet(BulletType type, float angle){
+        protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover){
             if((payload instanceof BuildPayload) && homingBlocks.contains(((BuildPayload)payload).block())) type = homingShootType;
-            tr.trns(rotation, shootLength, Mathf.range(xRand));
-            float lifeScl = type.scaleVelocity ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / type.range(), minRange / type.range(), range / type.range()) : 1f;
 
-            type.create(this, team, x + tr.x, y + tr.y, angle, -1f, 1f, lifeScl, payload);
+            //TODO this logic (and this class) really needs testing -Anuke
+            float
+            bulletX = x + Angles.trnsx(rotation - 90, shootX + xOffset, shootY + yOffset),
+            bulletY = y + Angles.trnsy(rotation - 90, shootX + xOffset, shootY + yOffset),
+            shootAngle = rotation + angleOffset + Mathf.range(inaccuracy);
+
+            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, targetPos.x, targetPos.y) / type.range, minRange / type.range, range() / type.range) : 1f;
+
+            type.create(this, team, bulletX, bulletY, shootAngle, -1f, 1f, lifeScl, payload);
             payload = null;
         }
 
@@ -396,8 +405,8 @@ public class PayloadTurret extends Turret{
         public void updatePayload(){
             if(payload != null){
                 if(hasArrived()){
-                    tr.trns(rotation, loadProgress);
-                    payload.set(x + tr.x, y + tr.y, payRotation);
+                    Tmp.v1.trns(rotation, loadProgress);
+                    payload.set(x + Tmp.v1.x, y + Tmp.v1.y, payRotation);
                 }else{
                     payload.set(x + payVector.x, y + payVector.y, payRotation);
                 }

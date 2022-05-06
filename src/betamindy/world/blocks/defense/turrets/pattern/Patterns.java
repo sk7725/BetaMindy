@@ -16,7 +16,15 @@ public class Patterns {
     }},
 
     chaosBuster = new ChaosBusterPattern("chaos-buster"){{
-        shootType = Bullets.standardThorium;
+        shootType = new BasicBulletType(8f, 80){{
+            hitSize = 5;
+            width = 16f;
+            height = 23f;
+            shootEffect = Fx.shootBig;
+            pierceCap = 2;
+            pierceBuilding = true;
+            knockback = 0.7f;
+        }};
         chargeType = Bullets.fireball;//TODO: temp
         chargeDuration = 10;
         reloadTime = 90f;

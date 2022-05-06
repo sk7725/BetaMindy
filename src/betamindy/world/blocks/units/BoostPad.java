@@ -1,7 +1,6 @@
 package betamindy.world.blocks.units;
 
 import arc.audio.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 import betamindy.content.*;
@@ -11,8 +10,8 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class BoostPad extends Block {
     public StatusEffect status = MindyStatusEffects.booster;
@@ -75,7 +74,7 @@ public class BoostPad extends Block {
 
         @Override
         public void drawLight(){
-            Drawf.light(team, x, y, lightRadius, lightColor, 0.5f);
+            Drawf.light(x, y, lightRadius, lightColor, 0.5f);
         }
     }
 }

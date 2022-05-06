@@ -48,7 +48,7 @@ public class ResearchCenter extends Block {
 
         @Override
         public void updateTile(){
-            heat = Mathf.lerpDelta(heat, consValid() ? 1f : 0f, 0.05f);
+            heat = Mathf.lerpDelta(heat, canConsume() ? 1f : 0f, 0.05f);
         }
 
         @Override

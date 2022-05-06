@@ -18,16 +18,14 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.ui.*;
-import mindustry.ui.fragments.*;
 import mindustry.world.*;
 
-import static betamindy.BetaMindy.uwu;
+import static betamindy.BetaMindy.*;
 import static betamindy.util.InventoryModule.*;
-import static mindustry.game.EventType.*;
-import static betamindy.BetaMindy.inventoryUI;
 import static mindustry.Vars.*;
+import static mindustry.game.EventType.*;
 
-public class PlacementInvFragment extends Fragment {
+public class PlacementInvFragment {
     final int rowWidth = 6;
     public boolean chest = false;
 
@@ -100,8 +98,8 @@ public class PlacementInvFragment extends Fragment {
     }
 
     public void toggle(){
-        if(chest && (control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild)){
-            control.input.frag.config.getSelectedTile().deselect();
+        if(chest && (control.input.config.getSelected() instanceof Chest.ChestBuild)){
+            control.input.config.getSelected().deselect();
             chest = false; //only happens if F2 is pressed
         }
         if(net.active()) inventoryUI = false; //todo remove after figuring the sync out
@@ -122,12 +120,11 @@ public class PlacementInvFragment extends Fragment {
         if(block == null) return;
         amount = Math.min(amount, teams[player.team().id].amount(block));
         if(amount <= 0) return;
-        if(control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild ch){
+        if(control.input.config.getSelected() instanceof Chest.ChestBuild ch){
             ch.storeChest(block, amount);
         }
     }
 
-    @Override
     public void build(Group parent){
         loadInventory(state.isMenu()? Team.sharded : player.team());
         refreshVanilla();
@@ -256,10 +253,10 @@ public class PlacementInvFragment extends Fragment {
                         Table backB = new Table(backbutt -> {
                             backbutt.image().color(Pal.gray).height(4f).colspan(2).growX();
                             backbutt.row();
-                            var b1 = backbutt.button(Icon.list, Styles.clearTransi, () -> {
+                            var b1 = backbutt.button(Icon.list, Styles.cleari, () -> {
                                 //todo
                             }).size(48f).margin(0);
-                            var b2 = backbutt.button(Icon.undo, Styles.clearTransi, () -> {
+                            var b2 = backbutt.button(Icon.undo, Styles.cleari, () -> {
                                 if(inventoryUI){
                                     toggle();
                                 }
@@ -284,7 +281,7 @@ public class PlacementInvFragment extends Fragment {
                             }
                         });
                         backB.visible(() -> (!chest || control.input.block == null));
-                        chestB.visible(() -> (chest && control.input.block != null && (control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild cb && cb.shouldShowChest())));
+                        chestB.visible(() -> (chest && control.input.block != null && (control.input.config.getSelected() instanceof Chest.ChestBuild cb && cb.shouldShowChest())));
                         bottom.stack(backB, chestB);
                     }).growX();
                 }).fillY().bottom().touchable(Touchable.enabled).width(vanillaWidth);
@@ -300,7 +297,7 @@ public class PlacementInvFragment extends Fragment {
                         refreshInventory();
                         lastTeam = player.team();
                     }
-                    if(chest && !(control.input.frag.config.getSelectedTile() instanceof Chest.ChestBuild)){
+                    if(chest && !(control.input.config.getSelected() instanceof Chest.ChestBuild)){
                         chest = false;
                         inventoryUI = !lastShow; //toggle fixes the !
                         toggle();

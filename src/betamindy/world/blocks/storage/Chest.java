@@ -1,8 +1,6 @@
 package betamindy.world.blocks.storage;
 
 import arc.*;
-import arc.graphics.*;
-import arc.input.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
@@ -24,7 +22,6 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
-import static mindustry.Vars.control;
 
 /** Stores inventory. */
 public class Chest extends Block {
@@ -76,7 +73,7 @@ public class Chest extends Block {
                     }
                 }
 
-                if(rebuildTable != null && control.input.frag.config.getSelectedTile() == build.self()){
+                if(rebuildTable != null && control.input.config.getSelected() == build.self()){
                     rebuildTable.run();
                 }
             }

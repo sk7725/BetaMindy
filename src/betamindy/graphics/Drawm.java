@@ -14,7 +14,7 @@
 
 package betamindy.graphics;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
@@ -23,16 +23,15 @@ import arc.math.geom.*;
 import arc.util.*;
 import betamindy.ui.*;
 import mindustry.*;
-import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 
-import static arc.graphics.g2d.Lines.getStroke;
-import static betamindy.BetaMindy.hardmode;
-import static mindustry.Vars.renderer;
+import static arc.graphics.g2d.Lines.*;
+import static betamindy.BetaMindy.*;
+import static mindustry.Vars.*;
 
 public class Drawm {
     private static final Vec2 vec1 = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), vec4 = new Vec2();
@@ -202,7 +201,7 @@ public class Drawm {
             Draw.rect(edge, Tmp.v1.x, Tmp.v1.y, c, edge.height * scale * Draw.scl, rot);
         }
 
-        if(drawLight) Drawf.light(team, x, y, x2, y2);
+        if(drawLight) Drawf.light(x, y, x2, y2);
     }
 
     public static void border(float x1, float y1, float x2, float y2, Color center){
@@ -418,24 +417,15 @@ public class Drawm {
 
         for(Team team : Team.all){
             if(team.hasPalette){
-                Pixmap out = new Pixmap(teamr.width, teamr.height, teamr.pixmap.getFormat());
-                out.setBlending(Pixmap.Blending.none);
-                Color pixel = new Color();
+                Pixmap out = new Pixmap(teamr.width, teamr.height);
                 for(int x = 0; x < teamr.width; x++){
                     for(int y = 0; y < teamr.height; y++){
-                        int color = teamr.getPixel(x, y);
+                        int color = teamr.getRaw(x, y);
                         int index = color == 0xffffffff ? 0 : color == 0xdcc6c6ff ? 1 : color == 0x9d7f7fff ? 2 : -1;
-                        out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
+                        out.setRaw(x, y, index == -1 ? teamr.getRaw(x, y) : team.palettei[index]);
                     }
                 }
                 packer.add(PageType.main, b.name + "-team-" + team.name, out);
-
-                //for 6.0 compatibility only!
-                /*
-                if(Version.number <= 6){
-                    Core.atlas.addRegion(b.name + "-team-" + team.name, new TextureRegion(new Texture(out)));
-                }
-                */
             }
         }
 
@@ -450,24 +440,15 @@ public class Drawm {
 
         for(Team team : Team.all){
             if(team.hasPalette){
-                Pixmap out = new Pixmap(teamr.width, teamr.height, teamr.pixmap.getFormat());
-                out.setBlending(Pixmap.Blending.none);
-                Color pixel = new Color();
+                Pixmap out = new Pixmap(teamr.width, teamr.height);
                 for(int x = 0; x < teamr.width; x++){
                     for(int y = 0; y < teamr.height; y++){
-                        int color = teamr.getPixel(x, y);
+                        int color = teamr.getRaw(x, y);
                         int index = color == 0xffffffff ? 0 : color == 0xdcc6c6ff ? 1 : color == 0x9d7f7fff ? 2 : -1;
-                        out.draw(x, y, index == -1 ? pixel.set(teamr.getPixel(x, y)) : team.palette[index]);
+                        out.setRaw(x, y, index == -1 ? teamr.getRaw(x, y) : team.palettei[index]);
                     }
                 }
                 packer.add(PageType.main, name + "-team-" + team.name, out);
-
-                //for 6.0 compatibility only!
-                /*
-                if(Version.number <= 6){
-                    Core.atlas.addRegion(name + "-team-" + team.name, new TextureRegion(new Texture(out)));
-                }
-                */
             }
         }
     }
@@ -560,21 +541,22 @@ public class Drawm {
         for(int x = 0; x < region.width; x++){
             for(int y = 0; y < region.height; y++){
 
-                region.getPixel(x, y, color);
-                out.draw(x, y, color);
+                region.get(x, y, color);
+                out.set(x, y, color);
+
                 if(color.a < 1f){
                     boolean found = false;
                     outer:
                     for(int rx = -radius; rx <= radius; rx++){
                         for(int ry = -radius; ry <= radius; ry++){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && color.set(region.getPixel(rx + x, ry + y)).a > 0.01f){
+                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && color.set(region.getRaw(rx + x, ry + y)).a > 0.01f){
                                 found = true;
                                 break outer;
                             }
                         }
                     }
                     if(found){
-                        out.draw(x, y, outlineColor);
+                        out.set(x, y, outlineColor.rgba());
                     }
                 }
             }
@@ -594,17 +576,13 @@ public class Drawm {
         PixmapRegion r1 = Core.atlas.getPixmap(a);
         PixmapRegion r2 = Core.atlas.getPixmap(b);
 
-        Pixmap out = new Pixmap(r1.width, r1.height, r1.pixmap.getFormat());
-        out.setBlending(Pixmap.Blending.none);
+        Pixmap out = new Pixmap(r1.width, r1.height);
         Color color1 = new Color();
         Color color2 = new Color();
 
         for(int x = 0; x < r1.width; x++){
             for(int y = 0; y < r1.height; y++){
-
-                r1.getPixel(x, y, color1);
-                r2.getPixel(x, y, color2);
-                out.draw(x, y, color1.lerp(color2, f));
+                out.setRaw(x, y, color1.set(r1.getRaw(x, y)).lerp(color2.set(r2.getRaw(x, y)), f).rgba());
             }
         }
 

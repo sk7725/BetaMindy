@@ -2,16 +2,14 @@ package betamindy.world.blocks.environment;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
+import arc.math.*;
 import arc.util.*;
-import mindustry.entities.Effect;
-import mindustry.entities.Units;
-import mindustry.game.Team;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.StatusEffect;
+import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.meta.BuildVisibility;
+import mindustry.world.meta.*;
 
 public class GlowPowder extends Block {
     public Color color1, color2;
@@ -98,7 +96,7 @@ public class GlowPowder extends Block {
 
         @Override
         public void drawLight(){
-            Drawf.light(Team.derelict, x, y, range * (Mathf.absin(19f, 0.3f) + 0.7f), color2, 0.6f);
+            Drawf.light(x, y, range * (Mathf.absin(19f, 0.3f) + 0.7f), color2, 0.6f);
         }
     }
 }

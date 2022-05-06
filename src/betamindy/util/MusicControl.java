@@ -33,7 +33,10 @@ public class MusicControl {
         Events.on(EventType.FileTreeInitEvent.class, e -> {
             //load music here
             for(int i = 0; i < musicFiles.length; i++){
-                musics[i] = loadMusic(musicFiles[i]);
+                if(tree.get(musicFiles[i]).exists()){
+                    musics[i] = loadMusic(musicFiles[i]);
+                }
+
             }
         });
     }

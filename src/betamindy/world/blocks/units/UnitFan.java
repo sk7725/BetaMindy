@@ -7,7 +7,6 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import betamindy.content.*;
-import betamindy.entities.*;
 import betamindy.util.*;
 import betamindy.world.blocks.logic.*;
 import mindustry.content.*;
@@ -18,7 +17,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class UnitFan extends LogicSpinBlock {
@@ -59,13 +58,13 @@ public class UnitFan extends LogicSpinBlock {
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("wind", (FanBuild entity) -> new Bar(() -> Core.bundle.get("bar.wind"), () -> Pal.lancerLaser, () -> Mathf.clamp(entity.visualWindStr() / strength)));
+        addBar("wind", (FanBuild entity) -> new Bar(() -> Core.bundle.get("bar.wind"), () -> Pal.lancerLaser, () -> Mathf.clamp(entity.visualWindStr() / strength)));
     }
 
     @Override
     public void init(){
         super.init();
-        clipSize = Math.max(clipSize, range * 2f + 16f);
+        updateClipRadius(range);
     }
 
     @Override
@@ -81,9 +80,9 @@ public class UnitFan extends LogicSpinBlock {
         @Override
         public void draw(){
             super.draw();
-            if(hasLiquids && liquids.total() > 0.001f){
+            if(hasLiquids && liquids.currentAmount() > 0.001f){
                 Draw.z(Layer.block + 0.01f);
-                Drawf.liquid(liquidRegion, x, y, liquids.total() / liquidCapacity, liquids.current().color);
+                Drawf.liquid(liquidRegion, x, y, liquids.currentAmount() / liquidCapacity, liquids.current().color);
             }
             if(heat > 0.1f && windLen > 0f) drawWind(realRotation());
         }
@@ -93,7 +92,7 @@ public class UnitFan extends LogicSpinBlock {
             Tmp.v3.trns(rot, str * 2f);
             windLen = Useful.findPathLength(x, y, rot, range, (Building)this);
             Useful.applyLine(u -> {
-                if(hasLiquids && liquids.total() >= liquidUse && u.tileOn() != null){
+                if(hasLiquids && liquids.currentAmount() >= liquidUse && u.tileOn() != null){
                     Liquid liquid = liquids.current();
                     if(liquid.effect != null) u.apply(liquid.effect, 300f);
                     Puddles.deposit(u.tileOn(), liquid, 6f);
@@ -105,7 +104,7 @@ public class UnitFan extends LogicSpinBlock {
 
         public void drawWind(float rot){
             Draw.z(Layer.bullet - 1f);
-            if(hasLiquids && liquids.total() > 0.001f) Draw.color(Color.white, liquids.current().color, Mathf.clamp(liquids.total()) / 3f);
+            if(hasLiquids && liquids.currentAmount() > 0.001f) Draw.color(Color.white, liquids.current().color, Mathf.clamp(liquids.currentAmount()) / 3f);
             for(int i = 0; i < (int)(windParticles * (windLen / range)); i++){
                 int c = i + (int)(Time.time / (windLen * visualWindStr() / 5f)) + id * windParticles;
                 drawWindLine(rot, (Mathf.randomSeed(c, 0f, windLen) + Time.time * visualWindStr() / 5f - windLineLen * visualWindStr()) % windLen, windLen, Mathf.randomSeedRange(c + windParticles, smokeX * 0.5f));
@@ -140,9 +139,9 @@ public class UnitFan extends LogicSpinBlock {
 
             if(efficiency() > 0.1f){
                 pushUnits(strength * edelta());
-                if(hasLiquids && liquids.total() >= liquidUse * edelta()) liquids.remove(liquids.current(), liquidUse * edelta());
+                if(hasLiquids && liquids.currentAmount() >= liquidUse * edelta()) liquids.remove(liquids.current(), liquidUse * edelta());
 
-                if(hasLiquids && Mathf.chance(smokeChance / 2f * edelta() * Mathf.clamp(liquids.total() / liquidCapacity))){
+                if(hasLiquids && Mathf.chance(smokeChance / 2f * edelta() * Mathf.clamp(liquids.currentAmount() / liquidCapacity))){
                     Tmp.v1.trns(realRotation(), smokeY, Mathf.range(0.5f) * smokeX);
                     Fx.hitLiquid.at(x + Tmp.v1.x, y + Tmp.v1.y, realRotation(), liquids.current().color);
                 }

@@ -1,6 +1,5 @@
 package betamindy.entities.bullet;
 
-import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import betamindy.content.*;
@@ -22,7 +21,7 @@ public class InstantHitBulletType extends BulletType {
     public Effect cFailEffect = Fx.none;
 
     public InstantHitBulletType(float damage){
-        scaleVelocity = true;
+        scaleLife = true;
         lifetime = 100f;
         collides = false;
         keepVelocity = false;

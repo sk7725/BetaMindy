@@ -13,19 +13,18 @@ import static mindustry.content.Blocks.*;
 
 //Credits to younggam
 @SuppressWarnings("unchecked")
-public class OverWriter implements ContentList{
-    public <T extends UnlockableContent> void set(UnlockableContent target, Cons<T> setter){
+public class OverWriter{
+    public static <T extends UnlockableContent> void set(UnlockableContent target, Cons<T> setter){
         setter.get((T)target);
     }
 
-    public <T extends UnlockableContent> void setAll(Cons<T> setter, UnlockableContent... targets){
+    public static <T extends UnlockableContent> void setAll(Cons<T> setter, UnlockableContent... targets){
         for(UnlockableContent target : targets){
             setter.get((T)target);
         }
     }
 
-    @Override
-    public void load(){
+    public static void load(){
         //technically this isnt braindy-ing,as it "adds" not "overrides" vanilla
         setAll((Block b) -> b.attributes.set(MindyAttribute.magnetic, 1f), darkMetal, metalFloor, metalFloor2, metalFloor3, metalFloor4, metalFloor5, metalFloorDamaged);
         setAll((Block b) -> b.attributes.set(MindyAttribute.pushless, 1f), thoriumWall, thoriumWallLarge);
@@ -59,7 +58,7 @@ public class OverWriter implements ContentList{
         set(sporeMoss, (Block b) -> b.attributes.set(Attribute.spores, 0.3f));
     }
 
-    public Seq<Weather> weathers(){
+    public static Seq<Weather> weathers(){
         return Vars.content.getBy(ContentType.weather);
     }
 }

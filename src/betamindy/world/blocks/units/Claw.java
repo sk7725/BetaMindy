@@ -65,7 +65,7 @@ public class Claw extends Block {
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("tension", (ClawBuild entity) -> new Bar(() -> Core.bundle.get("bar.tension"), () -> Pal.ammo, () -> Mathf.clamp(entity.tension / maxTension)));
+        addBar("tension", (ClawBuild entity) -> new Bar(() -> Core.bundle.get("bar.tension"), () -> Pal.ammo, () -> Mathf.clamp(entity.tension / maxTension)));
     }
 
     @Override
@@ -239,7 +239,7 @@ public class Claw extends Block {
                 logicControlTime -= Time.delta;
             }
             boolean con = !isPayload() && !spinning && logicControlled();
-            boolean on = (!spinning && consValid() && efficiency() > 0.9f) || (spinning && notNullified(x, y));
+            boolean on = (!spinning && canConsume() && efficiency() > 0.9f) || (spinning && notNullified(x, y));
             if(!spinning && isPayload()) on = notNearNull(x, y);
 
             if(!con) targetV.trns(r, spinning ? Math.min(spinningRadius, range) : 8f);
@@ -340,7 +340,7 @@ public class Claw extends Block {
         public boolean notNullified(float x, float y){
             Building n = world.buildWorld(x, y);
             if(n == null || !(n.block instanceof Disabler)) return true;
-            return !n.consValid();
+            return !n.canConsume();
         }
 
         public boolean notNearNull(float x, float y){
@@ -349,7 +349,7 @@ public class Claw extends Block {
             if(!notNullified(x, y)) return false;
             for(int i = 0; i < 4; i++){
                 Building n = t.nearbyBuild(i);
-                if(n == null || !(n.block instanceof Disabler) || !n.consValid()) continue;
+                if(n == null || !(n.block instanceof Disabler) || !n.canConsume()) continue;
                 return false;
             }
             return true;

@@ -1,6 +1,6 @@
 package betamindy.world.blocks.storage;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
@@ -14,7 +14,7 @@ import arc.util.*;
 import arc.util.io.*;
 import betamindy.graphics.*;
 import betamindy.ui.*;
-import mindustry.Vars;
+import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -24,7 +24,6 @@ import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
 import static mindustry.Vars.*;
 
 public class AnucoinNode extends Block {
@@ -117,7 +116,7 @@ public class AnucoinNode extends Block {
     public void setBars(){
         super.setBars();
 
-        bars.add("anucoins", (AnucoinNodeBuild entity) -> new Bar(
+        addBar("anucoins", (AnucoinNodeBuild entity) -> new Bar(
                 () -> Core.bundle.format("bar.anucoin", entity.anucoins),
                 () -> Color.coral,
                 () -> Mathf.clamp(entity.anucoins / (float)entity.maxCoins())));
@@ -178,7 +177,7 @@ public class AnucoinNode extends Block {
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(linkValid(this, other)){
                 configure(other.pos());
                 return false;
@@ -335,7 +334,7 @@ public class AnucoinNode extends Block {
                     tt.label(() -> Core.bundle.format("ui.trans.button", cb.coins(), cb.requiredCoin(this), cb.outputCoin())).growX().left();
                 }).fillX();
 
-                t.button(Icon.upload, Styles.clearPartiali, () -> {
+                t.button(Icon.upload, Styles.clearNonei, () -> {
                     //configure [pos, bank receiving amount] as Point2
                     if(build.dead || !links.contains(build.pos())){
                         Vars.ui.showInfoFade("@ui.trans.error");
@@ -379,7 +378,7 @@ public class AnucoinNode extends Block {
                     }
                 });
                 t.label(() -> anucoins + "[lightgray] / " + maxCoins() + "[]").padRight(10f).center();
-                t.button(Icon.refresh, Styles.clearTransi, 25f, this::refresh).size(25f).padRight(10f);
+                t.button(Icon.refresh, Styles.cleari, 25f, this::refresh).size(25f).padRight(10f);
             });
 
             bankDialog.cont.row();
@@ -405,7 +404,7 @@ public class AnucoinNode extends Block {
         public void buildConfiguration(Table table){
             super.buildConfiguration(table);
             rebuild();
-            table.button(Icon.layers, Styles.clearTransi, 40f, () -> {
+            table.button(Icon.layers, Styles.cleari, 40f, () -> {
                 rebuild();
                 bankDialog.show();
             });

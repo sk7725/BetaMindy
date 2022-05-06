@@ -89,7 +89,7 @@ public class PenColorModule extends Block {
 
         @Override
         public void drawLight(){
-            Drawf.light(team, x, y, lightRadius * 2f, Tmp.c1.set(color), 0.5f);
+            Drawf.light(x, y, lightRadius * 2f, Tmp.c1.set(color), 0.5f);
         }
 
         @Override

@@ -1,34 +1,23 @@
 package betamindy.world.blocks.production;
 
-import arc.Core;
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.Mathf;
-import arc.struct.*;
+import arc.math.*;
 import arc.util.*;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import betamindy.content.*;
+import arc.util.io.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
-import mindustry.Vars;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.ItemStack;
-import mindustry.type.UnitType;
+import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.consumers.ConsumeType;
-import mindustry.world.meta.Stat;
 
-import java.util.Arrays;
-
-public class PayloadDeconstructor extends PayloadAcceptor {
+public class PayloadDeconstructor extends PayloadBlock {
     /** The additional refundmultiplier multiplied to the refundmultiplier of the map. Note that the final refund multiplier will not exceed 1, unless the map's refund is already over 1. */
     public float refundMultiplier = 1.5f;
     public float buildSpeed = 0.6f;
@@ -61,7 +50,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
     public void setBars(){
         super.setBars();
 
-        bars.add("progress", (PayloadDeconBuild entity) -> new Bar("bar.progress", Pal.ammo, entity::fraction));
+        addBar("progress", (PayloadDeconBuild entity) -> new Bar("bar.progress", Pal.ammo, entity::fraction));
     }
 
     @Override
@@ -89,7 +78,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
         return defaultStack;
     }
 
-    public class PayloadDeconBuild<T extends Payload> extends PayloadAcceptorBuild<T> {
+    public class PayloadDeconBuild<T extends Payload> extends PayloadBlockBuild<T> {
         public float progress, time, heat;
         //public int lastRot = 0;
 
@@ -106,7 +95,7 @@ public class PayloadDeconstructor extends PayloadAcceptor {
 
         @Override
         public void updateTile(){
-            boolean produce = payload != null && moveInPayload() && consValid() && items.total() < itemCapacity;
+            boolean produce = payload != null && moveInPayload() && canConsume() && items.total() < itemCapacity;
 
             if(produce){
                 progress += buildSpeed * edelta();
@@ -210,10 +199,10 @@ public class PayloadDeconstructor extends PayloadAcceptor {
 
         public TextureRegion payloadIcon(){
             if(payload instanceof BuildPayload){
-                return ((BuildPayload)payload).build.block.icon(Cicon.full);
+                return ((BuildPayload)payload).build.block.fullIcon;
             }
             else if(payload instanceof UnitPayload){
-                return ((UnitPayload)payload).unit.type().icon(Cicon.full);
+                return ((UnitPayload)payload).unit.type().fullIcon;
             }
             return Core.atlas.find("error");
         }

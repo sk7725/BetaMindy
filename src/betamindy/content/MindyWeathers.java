@@ -1,17 +1,14 @@
 package betamindy.content;
 
-import arc.util.Time;
 import betamindy.type.weather.*;
-import mindustry.ctype.ContentList;
-import mindustry.gen.Sounds;
-import mindustry.type.Weather;
-import mindustry.world.meta.Attribute;
+import mindustry.gen.*;
+import mindustry.type.*;
+import mindustry.world.meta.*;
 
-public class MindyWeathers implements ContentList {
+public class MindyWeathers{
     public static Weather routerWeather, blockWeather, ionWind;
 
-    @Override
-    public void load() {
+    public static void load() {
         routerWeather = new BlockWeather("router-rain"){{
             blockChance *= 2.5f;
 
