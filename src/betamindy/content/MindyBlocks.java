@@ -414,7 +414,7 @@ public class MindyBlocks{
             inaccuracy = 1.8f;
             velocityRnd = 0.05f;
             shootSound = Sounds.shootBig;
-            shootShake = 3f;
+            shake = 3f;
             shoot.shots = 15;
             shoot.shotDelay = 1f;
             shootY = 6.5f;
@@ -439,7 +439,7 @@ public class MindyBlocks{
             }};
             inaccuracy = 0f;
             shootEffect = MindyFx.sniperShoot;
-            shootShake = 4f;
+            shake = 4f;
             shootSound = Sounds.shotgun;
         }};
 
@@ -447,10 +447,9 @@ public class MindyBlocks{
             requirements(Category.turret, with(Items.lead, 80, Items.graphite, 65, Items.titanium, 50));
 
             reload = 80f;
-            shootShake = 3f;
+            shake = 3f;
             range = 160f;
-            recoilAmount = 4f;
-            restitution = 0.1f;
+            recoil = 4f;
             size = 2;
             targetAir = false;
 
@@ -481,10 +480,9 @@ public class MindyBlocks{
             requirements(Category.turret, with(Items.lead, 220, Items.graphite, 160, Items.thorium, 105, Items.plastanium, 85));
 
             reload = 40f;
-            shootShake = 3f;
+            shake = 3f;
             range = 230f;
-            recoilAmount = 5f;
-            restitution = 0.1f;
+            recoil = 5f;
             size = 3;
             targetAir = false;
 
@@ -517,10 +515,8 @@ public class MindyBlocks{
 
             reload = 160f;
             range = 240f;
-            recoilAmount = 2f;
-            restitution = 0.1f;
+            recoil = 2f;
             size = 3;
-            cooldown = 0.03f;
             shoot.shots = 3;
             shoot.shotDelay = 10f;
 
@@ -587,7 +583,7 @@ public class MindyBlocks{
             inaccuracy = 5f;
             shootCone = 50f;
             liquidCapacity = 10f;
-            recoilAmount = 0f;
+            recoil = 0f;
             shootSound = Sounds.flame;
             range = 65f;
             health = 300;
@@ -658,10 +654,9 @@ public class MindyBlocks{
             heatColor = Color.valueOf("7474ed");
             range = 400f;
             reload = 600f;
-            recoilAmount = 10f;
-            restitution = 0.03f;
+            recoil = 10f;
             shootCone = 20f;
-            shootShake = 5f;
+            shake = 5f;
             //TODO find a better sound: chargeSound = MindySounds.astroCharge;
             shootSound = MindySounds.astroShoot;
             targetAir = true;
@@ -770,9 +765,9 @@ public class MindyBlocks{
         payCannon = new PayloadTurret("payload-cannon"){{
             health = 2050;
             size = 5;
-            recoilAmount = 7f;
+            recoil = 7f;
             range = 315f;
-            shootShake = 2f;
+            shake = 2f;
             shootSound = Sounds.shootBig;
             shootEffect = MindyFx.cannonShoot;
             smokeEffect = Fx.shootBigSmoke2;
@@ -789,9 +784,9 @@ public class MindyBlocks{
         payCatapult = new PayloadTurret("payload-catapult"){{
             health = 3190;
             size = 7;
-            recoilAmount = 9f;
+            recoil = 9f;
             range = 520f;
-            shootShake = 4f;
+            shake = 4f;
             shootSound = Sounds.plasmaboom;
             shootEffect = MindyFx.cannonShoot2;
             smokeEffect = Fx.shootBigSmoke2;
@@ -1982,10 +1977,9 @@ public class MindyBlocks{
             range = 540f;
 
             shoot.firstShotDelay = 130f;
-            recoilAmount = 9f;
+            recoil = 9f;
             reload = 290f;
-            cooldown = 0.03f;
-            shootShake = 6f;
+            shake = 6f;
             shootEffect = MindyFx.tarnationShoot;
             smokeEffect = Fx.none;
             heatColor = Color.red;

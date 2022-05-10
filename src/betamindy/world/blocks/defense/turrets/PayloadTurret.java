@@ -132,8 +132,8 @@ public class PayloadTurret extends Turret{
 
             wasShooting = false;
 
-            recoil = Mathf.lerpDelta(recoil, 0f, restitution);
-            heat = Mathf.lerpDelta(heat, 0f, cooldown);
+            curRecoil = Math.max(curRecoil - Time.delta / recoilTime , 0);
+            heat = Math.max(heat - Time.delta / cooldownTime, 0);
             if(payheat > 0f) payheat = Mathf.lerpDelta(payheat, 0f, 0.09f);
 
             if(unit != null){
@@ -297,7 +297,7 @@ public class PayloadTurret extends Turret{
 
         protected void shoot(BulletType type){
             super.shoot(type);
-            recoil = recoilAmount;
+            curRecoil = 1f;
             loadProgress = 0f;
         }
 

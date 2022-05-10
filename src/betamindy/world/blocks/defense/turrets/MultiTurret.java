@@ -148,11 +148,12 @@ public class MultiTurret extends Turret {
 
         //helper methods
 
+        //TODO reimplement -Anuke
         public void doRecoil(){
-            recoil = recoilAmount;
+            //recoil = recoilAmount;
         }
 
-        //TODO reimplement -Anuke
+
         public void settr(){
             //tr.trns(rotation, shootLength, Mathf.range(xRand));
         }

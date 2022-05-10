@@ -1,22 +1,19 @@
 package betamindy.content;
 
-import arc.Core;
-import arc.util.*;
+import arc.*;
 import mindustry.*;
-
-import java.lang.reflect.*;
 
 public class SettingAdder {
 
-    public void addGraphicSetting(String key){
+    public static void addGraphicSetting(String key){
         Vars.ui.settings.graphics.checkPref(key, Core.settings.getBool(key));
     }
 
-    public void addGameSetting(String key){
+    public static void addGameSetting(String key){
         Vars.ui.settings.game.checkPref(key, Core.settings.getBool(key));
     }
 
-    public void init(){
+    public static void init(){
         boolean tmp = Core.settings.getBool("uiscalechanged", false);
         Core.settings.put("uiscalechanged", false);
 

@@ -27,7 +27,6 @@ public class BetaMindy extends Mod{
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
     public static final String omegaServer = "yeeth.mindustry.me:4004";
 
-    public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
     public static HardMode hardmode = new HardMode();
@@ -55,7 +54,7 @@ public class BetaMindy extends Mod{
 
         Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false, "touchpadenable", mobile, "touchpadalways", false);
         Events.on(ClientLoadEvent.class, e -> {
-            settingAdder.init();
+            SettingAdder.init();
             Core.app.post(() -> Core.app.post(() -> {
                 if(!Core.settings.getBool("nonmoddedservers")) Vars.defaultServers.clear();
                 Vars.defaultServers.add(new ServerGroup("[white][accent]Modded BetaMindy Server[][]", new String[]{omegaServer}));

@@ -51,7 +51,6 @@ public class HijackTurret extends Turret {
         hasPower = true;
         lightColor = Pal2.source;
         lightRadius = 30f;
-        cooldown = 0.06f;
         liquidCapacity = 30f * size;
 
         config(Integer.class, (HijackTurretBuild entity, Integer value) -> {
