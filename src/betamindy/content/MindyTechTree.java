@@ -258,6 +258,9 @@ public class MindyTechTree{
             nodeProduce(MindyLiquids.coffee);
         });
     }
+
+    //TODO: replace this with the standard TechTree API, it's public now -Anuke
+
     private static void margeNode(UnlockableContent parent, Runnable children){
         context = TechTree.all.find(t -> t.content == parent);
         children.run();
@@ -290,7 +293,7 @@ public class MindyTechTree{
     }
 
     private static void nodeProduce(UnlockableContent content, Seq<Objective> objectives, Runnable children){
-        node(content, content.researchRequirements(), objectives.and(new Produce(content)), children);
+        node(content, content.researchRequirements(), objectives.add(new Produce(content)), children);
     }
 
     private static void nodeProduce(UnlockableContent content, Runnable children){

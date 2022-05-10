@@ -14,19 +14,18 @@ public class SettingAdder {
     }
 
     public static void init(){
-        boolean tmp = Core.settings.getBool("uiscalechanged", false);
-        Core.settings.put("uiscalechanged", false);
-
         addGameSetting("nonmoddedservers");
         addGameSetting("touchpadenable");
         addGameSetting("touchpadalways");
         addGraphicSetting("slimeeffect");
         addGraphicSetting("accelballs");
         addGraphicSetting("correctview");
+        
+        //Vars.ui.settings.addCategory("BetaMindy", "betamindy-icon", table -> {
+
+        //});
 
         Vars.ui.settings.graphics.sliderPref("animlevel", 2, 0, 2, i -> Core.bundle.get("slider.level." + i, "" + i));
         //addGraphicSetting("ifritview"); //merged to status view
-
-        Core.settings.put("uiscalechanged", tmp);
     }
 }
