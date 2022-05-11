@@ -16,8 +16,8 @@ repositories{
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.4.0'
-    //TODO: switch to jitpack once private branch is out, this uses a local Mindustry dependency.
-    compileOnly(files("/home/anuke/Projects/Mindustry/desktop/build/libs/Mindustry.jar"))
+    compileOnly "com.github.Anuken.MindustryJitpack:core:935b478139"
+    compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce564a07d9b36c8aead62fc62531dc05ab"
 }
 
 ext{
