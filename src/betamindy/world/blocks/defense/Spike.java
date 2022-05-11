@@ -52,7 +52,7 @@ public class Spike extends Wall {
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         drawSpike(req.drawx(), req.drawy(), req.rotation);
     }
 

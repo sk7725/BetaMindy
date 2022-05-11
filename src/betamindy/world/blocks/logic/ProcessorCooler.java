@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -29,6 +30,8 @@ public class ProcessorCooler extends Block {
     /** Set by maxCoolantConsided; Again, this is visual only. */
     public int maxBoostBar;
 
+    public @Nullable ConsumeLiquidBase liquidConsumer;
+
     public ProcessorCooler(String name){
         super(name);
 
@@ -39,9 +42,11 @@ public class ProcessorCooler extends Block {
 
     @Override
     public void init(){
-        if(acceptCoolant && !consumes.has(ConsumeType.liquid)){
+        liquidConsumer = findConsumer(c -> c instanceof ConsumeLiquidBase);
+
+        if(acceptCoolant && liquidConsumer != null){
             hasLiquids = true;
-            consumes.add(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 3.5f));
+            consume(new ConsumeLiquidFilter(liquid -> liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 3.5f));
         }
 
         super.init();
@@ -53,7 +58,7 @@ public class ProcessorCooler extends Block {
     public void load(){
         super.load();
         heatRegion = atlas.find(name + "-heat", region);
-        if(consumes.has(ConsumeType.liquid)){
+        if(liquidConsumer != null){
             liquidRegion = atlas.find(name + "-liquid");
         }
         topRegion = atlas.find(name + "-top");
@@ -77,8 +82,8 @@ public class ProcessorCooler extends Block {
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("boost", (ProcessorCoolerBuild entity) -> new Bar(() -> Core.bundle.format("bar.boost", entity.realBoost() * 100), () -> Pal.accent, () -> (float)entity.realBoost() / maxBoostBar));
-        bars.add("links", (ProcessorCoolerBuild entity) -> new Bar(() -> Core.bundle.format("bar.coolprocs", entity.usedLinks, maxProcessors), () -> Pal.ammo, () -> entity.heat));
+        addBar("boost", (ProcessorCoolerBuild entity) -> new Bar(() -> Core.bundle.format("bar.boost", entity.realBoost() * 100), () -> Pal.accent, () -> (float)entity.realBoost() / maxBoostBar));
+        addBar("links", (ProcessorCoolerBuild entity) -> new Bar(() -> Core.bundle.format("bar.coolprocs", entity.usedLinks, maxProcessors), () -> Pal.ammo, () -> entity.heat));
     }
 
     public class ProcessorCoolerBuild extends Building {
@@ -86,7 +91,7 @@ public class ProcessorCooler extends Block {
         public int usedLinks = 0;
 
         public int realBoost(){
-            if(enabled && cons.valid() && efficiency() > 0.8f){
+            if(enabled && canConsume() && efficiency() > 0.8f){
                 if(acceptCoolant){
                     Liquid liquid = liquids.current();
                     return Math.max(1, Mathf.round((1f + liquid.heatCapacity) * boost));
@@ -117,7 +122,7 @@ public class ProcessorCooler extends Block {
         public void draw(){
             super.draw();
             if(liquids != null){
-                if(liquids.total() > 0.01f) Drawf.liquid(liquidRegion, x, y, liquids.currentAmount() / liquidCapacity, liquids.current().color);
+                if(liquids.currentAmount() > 0.01f) Drawf.liquid(liquidRegion, x, y, liquids.currentAmount() / liquidCapacity, liquids.current().color);
             }
             if(useTopRegion) Draw.rect(topRegion, x, y);
             if(heat > 0.01f){

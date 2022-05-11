@@ -185,7 +185,7 @@ public class Barrier extends Block {
                 }
                 if(inside != null){
                     r1.grow(1f);
-                    team.data().buildings.intersect(r1, in -> {
+                    team.data().buildingTree.intersect(r1, in -> {
                         if(kindaContains(area, in.x, in.y, 2f)) inside.get(in);
                     });
                 }
@@ -427,7 +427,7 @@ public class Barrier extends Block {
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(!net.active() && state.isEditor() && linkValid(this, other)){
                 configure(other.pos());
                 return false;

@@ -10,15 +10,14 @@ import betamindy.content.*;
 import betamindy.entities.bullet.*;
 import betamindy.graphics.*;
 import betamindy.world.blocks.logic.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class IonThruster extends LogicSpinBlock {
     public float range = 80f;
@@ -62,7 +61,7 @@ public class IonThruster extends LogicSpinBlock {
     @Override
     public void init(){
         super.init();
-        clipSize = Math.max(clipSize, range * 2f + 16f);
+        updateClipRadius(range);
     }
 
     @Override

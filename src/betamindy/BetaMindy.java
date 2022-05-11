@@ -4,21 +4,18 @@ import arc.*;
 import arc.func.*;
 import arc.struct.*;
 import arc.util.*;
+import betamindy.content.*;
 import betamindy.graphics.*;
-import betamindy.type.PurchaseItem;
 import betamindy.ui.*;
 import betamindy.util.*;
 import betamindy.world.blocks.campaign.*;
 import mindustry.*;
-import mindustry.ctype.*;
 import mindustry.game.EventType.*;
-import mindustry.game.Team;
+import mindustry.game.*;
 import mindustry.mod.*;
 import mindustry.mod.Mods.*;
-import betamindy.content.*;
 import mindustry.net.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 
@@ -30,7 +27,6 @@ public class BetaMindy extends Mod{
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
     public static final String omegaServer = "yeeth.mindustry.me:4004";
 
-    public static SettingAdder settingAdder = new SettingAdder();
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
     public static HardMode hardmode = new HardMode();
@@ -45,26 +41,10 @@ public class BetaMindy extends Mod{
     public static MindyUILoader mui = new MindyUILoader();
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
-    public static boolean uwu = OS.username.equals("sunny") || OS.username.equals("starw");
+    public static boolean uwu = OS.username.equals("sunny") || OS.username.equals("starw") || OS.username.equals("anuke");
     public static boolean inventoryUI = false;
     //public static UnitGravity gravity = new UnitGravity();
     public static MFilters filters = new MFilters();
-
-    private final ContentList[] mindyContent = {
-        new OverWriter(),
-        new MindyStatusEffects(),
-        new MindyLiquids(),
-        new MindyItems(),
-        new MindyBullets(),
-        new MindyUnitTypes(),
-        new ShopItems(),
-        new FireColor(),
-        new MindyBlocks(),
-        new MindyWeathers(),
-        new MindyPlanets(),
-        new MindySectors(),
-        new MindyTechTree()
-    };
 
     public BetaMindy() {
         super();
@@ -74,7 +54,7 @@ public class BetaMindy extends Mod{
 
         Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false, "touchpadenable", mobile, "touchpadalways", false);
         Events.on(ClientLoadEvent.class, e -> {
-            settingAdder.init();
+            SettingAdder.init();
             Core.app.post(() -> Core.app.post(() -> {
                 if(!Core.settings.getBool("nonmoddedservers")) Vars.defaultServers.clear();
                 Vars.defaultServers.add(new ServerGroup("[white][accent]Modded BetaMindy Server[][]", new String[]{omegaServer}));
@@ -185,11 +165,19 @@ public class BetaMindy extends Mod{
 
     @Override
     public void loadContent(){
-        for(ContentList list : mindyContent){
-            list.load();
-
-            //Log.info("@: Loaded content list: @", getClass().getSimpleName(), list.getClass().getSimpleName());
-        }
+        OverWriter.load();
+        MindyStatusEffects.load();
+        MindyLiquids.load();
+        MindyItems.load();
+        MindyBullets.load();
+        ShopItems.load();
+        FireColor.load();
+        MindyBlocks.load();
+        MindyWeathers.load();
+        MindyPlanets.load();
+        MindySectors.load();
+        MindyTechTree.load();
+        
         hardmode.load();
     }
 

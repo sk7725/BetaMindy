@@ -106,7 +106,7 @@ public class Mynamite extends Block {
     public void setBars() {
         super.setBars();
 
-        bars.add("heat", (Mynamite.MynamiteBuild entity) -> new Bar("bar.heat", Pal.lightOrange, () -> Mathf.clamp((fuseTime - entity.heat) / fuseTime)));
+        addBar("heat", (Mynamite.MynamiteBuild entity) -> new Bar("bar.heat", Pal.lightOrange, () -> Mathf.clamp((fuseTime - entity.heat) / fuseTime)));
     }
 
     @Override
@@ -150,7 +150,7 @@ public class Mynamite extends Block {
                 if(fireEffect != Fx.none && Mathf.chance(fireChance)) fireEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
                 if(heat <= 0f) kill();
             }
-            else if(consValid() || tile.floor().attributes.get(Attribute.heat) > 0.01) light();
+            else if(canConsume() || tile.floor().attributes.get(Attribute.heat) > 0.01) light();
         }
 
         public void light(){

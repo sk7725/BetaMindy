@@ -28,7 +28,7 @@ public class CrystalBulletType extends ArtilleryBulletType {
         collidesAir = false;
         collidesGround = false;
         collides = false;
-        scaleVelocity = true;
+        scaleLife = true;
         hittable = false;
         absorbable = false;
         reflectable = false;

@@ -7,13 +7,11 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.ui.fragments.*;
 
-import static betamindy.BetaMindy.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
-public class TouchpadFragment extends Fragment {
+public class TouchpadFragment{
     Touchpad touchpad;
     public final static float size = 160f, thresh = 0.15f, timeout = 60 * 5;
     boolean pw, pa, ps, pd;
@@ -41,7 +39,6 @@ public class TouchpadFragment extends Fragment {
         return settings.getBool(alwaysKey) || (mobile && settings.getBool(keyboardKey));
     }
 
-    @Override
     public void build(Group parent){
         TextureRegionDrawable knobby = new TextureRegionDrawable(atlas.find("check-on-over"));
         knobby.setMinHeight(size * 0.5f);

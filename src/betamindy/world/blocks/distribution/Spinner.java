@@ -8,7 +8,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.BetaMindy;
+import betamindy.*;
 import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.payloads.*;
 import mindustry.content.*;
@@ -16,13 +16,12 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.production.PayloadAcceptor.*;
+import mindustry.world.blocks.payloads.PayloadBlock.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class Spinner extends Block {
@@ -95,7 +94,7 @@ public class Spinner extends Block {
     }
 
     @Override
-    public void drawRequestConfig(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanConfig(BuildPlan req, Eachable<BuildPlan> list){
         if(req.config != null && (boolean)req.config) Draw.rect(altIcon, req.drawx(), req.drawy(), req.rotation * 90f);
     }
 
@@ -142,7 +141,7 @@ public class Spinner extends Block {
         public boolean notNullified(float x, float y){
             Building n = world.buildWorld(x, y);
             if(n == null || !(n.block instanceof Disabler)) return true;
-            return !n.consValid();
+            return !n.canConsume();
         }
 
         public void updateSpinBlocks(float x, float y, float dr, float addrad){
@@ -172,7 +171,7 @@ public class Spinner extends Block {
                 spin += delta();
                 if(spin >= spinTime) looped = true;
                 updateSpinBlocks(x, y, 0f, 0f);
-                if(!consValid()){
+                if(!canConsume()){
                     if(checkDrop()){
                         //it is almost 90 degrees, in its dropping window
                         if(payload == null) spinning = false; //nothing to drop; drop nothing
@@ -184,8 +183,8 @@ public class Spinner extends Block {
                                 if(!multiBuild && t.build != null && t.build.acceptPayload(t.build, payload)){
                                     //payload placing
                                     t.build.handlePayload(t.build, payload);
-                                    if(t.build instanceof PayloadAcceptorBuild){
-                                        ((PayloadAcceptorBuild<?>) t.build).payVector.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle()).add(this).sub(t.build).clamp(-t.build.block.size * tilesize / 2f, -t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f);
+                                    if(t.build instanceof PayloadBlockBuild<?>){
+                                        ((PayloadBlockBuild<?>) t.build).payVector.set(tilesize * (payload.block().size / 2f + 0.5f), offset * tilesize - payload.block().offset).rotate(angle()).add(this).sub(t.build).clamp(-t.build.block.size * tilesize / 2f, -t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f, t.build.block.size * tilesize / 2f);
                                     }
 
                                     payload = null;
@@ -211,7 +210,7 @@ public class Spinner extends Block {
             }
             else{
                 //idle
-                if(consValid()){
+                if(canConsume()){
                     //try grabbing the front block
                     grabPayload();
                     spinning = true;
@@ -335,11 +334,11 @@ public class Spinner extends Block {
             Tmp.v2.trns(angle() + dr, tilesize);
             if(tint){
                 Draw.color(inertiaColor);
-                Drawf.laser(team, laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
+                Drawf.laser(laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
                 Draw.color();
             }
             else{
-                Drawf.laser(team, laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
+                Drawf.laser(laser, laserEnd, x, y, x + Tmp.v2.x, y + Tmp.v2.y, laserWidth);
             }
         }
 

@@ -72,7 +72,7 @@ public class StatusBulletType extends BulletType {
     public void hit(Bullet b, float x, float y){}
 
     @Override
-    public float range(){
+    public float calculateRange(){
         return maxRange;
     }
 }

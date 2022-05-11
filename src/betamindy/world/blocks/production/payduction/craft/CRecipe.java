@@ -3,6 +3,7 @@ package betamindy.world.blocks.production.payduction.craft;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.production.*;
+import mindustry.world.consumers.*;
 
 public class CRecipe {
     public ItemStack[] in;
@@ -20,7 +21,7 @@ public class CRecipe {
     }
 
     public CRecipe(GenericCrafter b, int c){
-        this(b.consumes.getItem().items, b.outputItem, c);
+        this(((ConsumeItems)b.findConsumer(cons -> cons instanceof ConsumeItems)).items, b.outputItem, c);
     }
 
     public CRecipe(Item item, int amount, int c){

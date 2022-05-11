@@ -57,7 +57,7 @@ public class RepairTurret extends Block{
 
     @Override
     public void init(){
-        consumes.powerCond(powerUse, entity -> ((RepairTurretBuild)entity).target != null);
+        consumePowerCond(powerUse, entity -> ((RepairTurretBuild)entity).target != null);
         clipSize = Math.max(clipSize, (phaseRangeBoost + repairRadius + tilesize) * 2);
         super.init();
     }
@@ -124,10 +124,10 @@ public class RepairTurret extends Block{
 
                 Draw.z(Layer.flyingUnit + 1);
                 Draw.alpha(1f);
-                Drawf.laser(team, laser, laserEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), tx, ty, strength * beamWidth);
+                Drawf.laser(laser, laserEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), tx, ty, strength * beamWidth);
                 Draw.z(Layer.flyingUnit + 1.1f);
                 Draw.color(laserTopColor);
-                Drawf.laser(team, laserTop, laserTopEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), tx, ty, strength * beamWidth);
+                Drawf.laser(laserTop, laserTopEnd, x + Angles.trnsx(ang, len), y + Angles.trnsy(ang, len), tx, ty, strength * beamWidth);
                 Draw.color();
             }
         }
@@ -148,8 +148,8 @@ public class RepairTurret extends Block{
             phaseHeat = Mathf.lerpDelta(phaseHeat, Mathf.num(hasItems && !items.empty()), 0.1f);
             float r = repairRadius + phaseRangeBoost * phaseHeat;
 
-            if(cons.optionalValid() && efficiency() > 0){
-                timeUsed += edelta();
+            if(optionalEfficiency > 0){
+                timeUsed += edelta() * optionalEfficiency;
                 if(timeUsed >= useTime){
                     consume();
                     timeUsed = 0f;
@@ -158,7 +158,7 @@ public class RepairTurret extends Block{
 
             if(target != null && (target.dead() || target.dst(tile) - getSize(target)/2f > r || target.health() >= target.maxHealth())){
                 target = null;
-            }else if(target != null && consValid()){
+            }else if(target != null && canConsume()){
                 target.heal((repairSpeed + phaseBoost * phaseHeat) * Time.delta * strength * efficiency());
                 rotation = Mathf.slerpDelta(rotation, angleTo(target), 0.5f);
                 targetIsBeingRepaired = true;
@@ -190,7 +190,7 @@ public class RepairTurret extends Block{
 
         @Override
         public BlockStatus status(){
-            return Mathf.equal(efficiency(), 0f, 0.01f) ? BlockStatus.noInput : cons.status();
+            return Mathf.equal(efficiency(), 0f, 0.01f) ? BlockStatus.noInput : super.status();
         }
 
         @Override

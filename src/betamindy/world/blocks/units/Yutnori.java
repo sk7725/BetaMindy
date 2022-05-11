@@ -137,14 +137,14 @@ public class Yutnori extends Block {
         @Override
         public void drawLight(){
             for(int i = 0; i < 4; i++){
-                Drawf.light(null, sticks[i].x, sticks[i].y, yutLength * 1.5f, Color.white, 0.8f);
+                Drawf.light(sticks[i].x, sticks[i].y, yutLength * 1.5f, Color.white, 0.8f);
             }
         }
 
         @Override
         public void buildConfiguration(Table table){
             super.buildConfiguration(table);
-            table.button(Icon.players, Styles.clearTransi, 40f, () -> {
+            table.button(Icon.players, Styles.cleari, 40f, () -> {
                 configure(Mathf.rand.nextInt());
             });
         }

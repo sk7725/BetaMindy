@@ -3,7 +3,6 @@ package betamindy.world.blocks.logic;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import betamindy.world.blocks.production.payduction.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -11,8 +10,7 @@ import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.world.*;
 
-import static mindustry.Vars.renderer;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class Disabler extends Block {
     public Color zoneColor = Pal.health;
@@ -27,11 +25,11 @@ public class Disabler extends Block {
 
         @Override
         public void updateTile(){
-            heat = Mathf.lerpDelta(heat, consValid() ? 1f : 0f, 0.05f);
+            heat = Mathf.lerpDelta(heat, canConsume() ? 1f : 0f, 0.05f);
             for(Building p : proximity){
-                if(!(p.block instanceof Disabler)) p.control(LAccess.enabled, consValid() ? 0 : 1, 0, 0, 0);
+                if(!(p.block instanceof Disabler)) p.control(LAccess.enabled, canConsume() ? 0 : 1, 0, 0, 0);
             }
-            if(consValid()) Units.nearby(x - size * tilesize / 2f, y - size * tilesize / 2f, size * tilesize, size * tilesize, u -> {
+            if(canConsume()) Units.nearby(x - size * tilesize / 2f, y - size * tilesize / 2f, size * tilesize, size * tilesize, u -> {
                 u.apply(StatusEffects.disarmed, 20f);
             });
         }

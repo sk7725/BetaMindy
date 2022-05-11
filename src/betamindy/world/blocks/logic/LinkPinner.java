@@ -8,7 +8,6 @@ import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -17,9 +16,8 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.logic.LogicBlock.*;
 import mindustry.world.meta.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class LinkPinner extends Block {
     public float range = 8 * 10;
@@ -30,7 +28,6 @@ public class LinkPinner extends Block {
         super(name);
         update = true;
         solid = true;
-        expanded = true;
         rotate = false;
         configurable = true;
         saveConfig = false;
@@ -57,6 +54,13 @@ public class LinkPinner extends Block {
     }
 
     @Override
+    public void init(){
+        super.init();
+
+        clipSize = Math.max(clipSize, range * 2f + size * tilesize * 2f);
+    }
+
+    @Override
     public void load() {
         super.load();
         laser = atlas.find(name + "-laser", "betamindy-linkpin-laser");
@@ -75,12 +79,12 @@ public class LinkPinner extends Block {
         Drawf.circles(x*tilesize + offset, y*tilesize + offset, range);
     }
 
-    protected void drawLaser(Team team, float x1, float y1, float x2, float y2, int size1, int size2){
+    protected void drawLaser(float x1, float y1, float x2, float y2, int size1, int size2){
         float angle1 = Angles.angle(x1, y1, x2, y2),
                 vx = Mathf.cosDeg(angle1), vy = Mathf.sinDeg(angle1),
                 len1 = size1 * tilesize / 2f - 1.5f, len2 = size2 * tilesize / 2f - 1.5f;
 
-        Drawf.laser(team, laser, laserEnd, x1 + vx*len1, y1 + vy*len1, x2 - vx*len2, y2 - vy*len2, 0.25f);
+        Drawf.laser(laser, laserEnd, x1 + vx*len1, y1 + vy*len1, x2 - vx*len2, y2 - vy*len2, 0.25f);
     }
 
     public class LinkPinnerBuild extends Building implements PushReact{
@@ -160,7 +164,7 @@ public class LinkPinner extends Block {
             }
             if(link != null && link.isValid()){
                 Draw.z(Layer.power);
-                drawLaser(team, x, y, link.x, link.y, size, link.block.size);
+                drawLaser(x, y, link.x, link.y, size, link.block.size);
 
                 if(heat > 0.01f){
                     Draw.color(color, Color.white, heat / 30f);
@@ -183,7 +187,7 @@ public class LinkPinner extends Block {
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(this == other){
                 deselect();
                 return false;
@@ -194,7 +198,7 @@ public class LinkPinner extends Block {
                 return false;
             }
 
-            return super.onConfigureTileTapped(other);
+            return super.onConfigureBuildTapped(other);
         }
 
         @Override

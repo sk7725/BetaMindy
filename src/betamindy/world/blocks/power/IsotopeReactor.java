@@ -122,7 +122,7 @@ public class IsotopeReactor extends PowerGenerator {
 
         @Override
         public void drawLight(){
-            if(maxB != null) Drawf.light(team, x, y, heat * (40f + Mathf.absin(10f, 5f)) * Math.min(productionEfficiency, 2f) * size, maxB.mapColor, 0.4f);
+            if(maxB != null) Drawf.light(x, y, heat * (40f + Mathf.absin(10f, 5f)) * Math.min(productionEfficiency, 2f) * size, maxB.mapColor, 0.4f);
         }
 
         @Override

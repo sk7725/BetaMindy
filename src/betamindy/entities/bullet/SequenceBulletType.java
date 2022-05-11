@@ -104,6 +104,6 @@ public class SequenceBulletType extends BulletType {
     @Override
     public void drawLight(Bullet b){
         if(lightOpacity <= 0f || lightRadius <= 0f) return;
-        Drawf.light(b.team, b, lightRadius * (0.5f + 0.5f * b.fin()), realColor(b), lightOpacity);
+        Drawf.light(b, lightRadius * (0.5f + 0.5f * b.fin()), realColor(b), lightOpacity);
     }
 }

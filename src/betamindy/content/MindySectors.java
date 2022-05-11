@@ -1,19 +1,17 @@
 package betamindy.content;
 
 import betamindy.type.*;
-import mindustry.ctype.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 
-import static betamindy.BetaMindy.uwu;
-import static betamindy.content.MindyPlanets.shar;
+import static betamindy.BetaMindy.*;
+import static betamindy.content.MindyPlanets.*;
 
-public class MindySectors implements ContentList {
+public class MindySectors{
     public static SectorPreset
         colonyRuins;
 
-    @Override
-    public void load(){
+    public static void load(){
         //region shar
         if(shar == null) return; //planet failed to load, thanks Anuke
 
@@ -23,7 +21,6 @@ public class MindySectors implements ContentList {
             captureWave = 0;
             difficulty = 0;
             startWaveTimeMultiplier = 0.1f;
-            useAI = false;
             showSectorLandInfo = false;
         }};
     }

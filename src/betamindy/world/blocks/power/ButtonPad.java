@@ -51,8 +51,8 @@ public class ButtonPad extends PowerBlock {
     public void setBars(){
         super.setBars();
 
-        if(hasPower && outputsPower && !consumes.hasPower()){
-            bars.add("power", (ButtonPadBuild entity) -> new Bar(
+        if(hasPower && outputsPower && consPower == null){
+            addBar("power", (ButtonPadBuild entity) -> new Bar(
                 () -> Core.bundle.format("bar.poweroutput", entity.getPowerProduction() * 60 * entity.timeScale()),
                 () -> Pal.powerBar,
                 () -> entity.heat / pushTime

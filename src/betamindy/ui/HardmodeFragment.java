@@ -8,22 +8,18 @@ import arc.scene.*;
 import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import betamindy.*;
 import betamindy.graphics.*;
 import betamindy.util.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
-import mindustry.ui.fragments.*;
 
-import static betamindy.BetaMindy.hardmode;
+import static betamindy.BetaMindy.*;
 
-public class HardmodeFragment extends Fragment {
+public class HardmodeFragment{
     private Table next;
     private SBar mainBar;
     public static Drawable background;
 
-    @Override
     public void build(Group parent){
         next = new Table();
         next.left();

@@ -13,11 +13,10 @@ import static mindustry.content.TechTree.*;
 import static betamindy.content.MindyBlocks.*;
 import static betamindy.content.MindyItems.*;
 
-public class MindyTechTree implements ContentList{
+public class MindyTechTree{
     static TechTree.TechNode context = null;
 
-    @Override
-    public void load(){
+    public static void load(){
         //Shar branch
         margeNode(mechanicalDrill, () -> {
             node(isotopeReactor, () -> {
@@ -175,21 +174,19 @@ public class MindyTechTree implements ContentList{
             });
         });
 
-        margeNode(commandCenter, () -> {
-            node(boostPad, () -> {
-                node(driftPad, () -> {
-                    nodePortal(teleportPad, 9);
-                });
-                node(bumper, () -> {
-                    node(bumperBlue);
-                    node(bumperPlus);
-                });
-                node(claw, () -> {
-                    node(phaseClaw);
-                });
-                node(clearPipe, () -> {
-                    node(clearDuct);
-                });
+        node(boostPad, () -> {
+            node(driftPad, () -> {
+                nodePortal(teleportPad, 9);
+            });
+            node(bumper, () -> {
+                node(bumperBlue);
+                node(bumperPlus);
+            });
+            node(claw, () -> {
+                node(phaseClaw);
+            });
+            node(clearPipe, () -> {
+                node(clearDuct);
             });
         });
 
@@ -261,6 +258,9 @@ public class MindyTechTree implements ContentList{
             nodeProduce(MindyLiquids.coffee);
         });
     }
+
+    //TODO: replace this with the standard TechTree API, it's public now -Anuke
+
     private static void margeNode(UnlockableContent parent, Runnable children){
         context = TechTree.all.find(t -> t.content == parent);
         children.run();
@@ -293,7 +293,7 @@ public class MindyTechTree implements ContentList{
     }
 
     private static void nodeProduce(UnlockableContent content, Seq<Objective> objectives, Runnable children){
-        node(content, content.researchRequirements(), objectives.and(new Produce(content)), children);
+        node(content, content.researchRequirements(), objectives.add(new Produce(content)), children);
     }
 
     private static void nodeProduce(UnlockableContent content, Runnable children){

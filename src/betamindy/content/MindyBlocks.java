@@ -17,15 +17,16 @@ import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.payloads.*;
 import betamindy.world.blocks.power.*;
-import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.production.PayloadDeconstructor;
+import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.production.payduction.*;
 import betamindy.world.blocks.storage.*;
 import betamindy.world.blocks.units.*;
 import betamindy.world.draw.*;
 import mindustry.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
+import mindustry.entities.effect.*;
+import mindustry.entities.pattern.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -38,17 +39,16 @@ import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
-import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
-import static betamindy.BetaMindy.uwu;
+import static betamindy.BetaMindy.*;
 import static betamindy.content.ShopItems.*;
 import static betamindy.util.BlockLib.*;
-import static mindustry.type.ItemStack.with;
+import static mindustry.type.ItemStack.*;
 
 @SuppressWarnings("deprecation")
-public class MindyBlocks implements ContentList {
+public class MindyBlocks{
     //environment
     public static Block radiation, exoticMatter, present, asphalt, blueice, ohno, omegaRune, crystalPyra, crystalCryo, crystalScalar, crystalVector, crystalTensor, crystalBittrium, crystalSpace,
     blackstone, blackstoneWall, redstone, redstoneWall, blackPine, redPine, largeTree, coffee,
@@ -89,8 +89,7 @@ public class MindyBlocks implements ContentList {
     //floorpapers
     floorRemover, metalGoldfloor, copperFloor, gamerSky, gamerGreens, gamerGrass, gamerWood, gamerIron, gamerLeaves, gamerWaterfall, gamerTrees, gamerBricks, routerFloor;
 
-    @Override
-    public void load() {
+    public static void load() {
         radiation = new GlowPowder("radiation", 0){{
             color1 = Pal.lancerLaser;
             color2 = Pal.heal;
@@ -392,7 +391,7 @@ public class MindyBlocks implements ContentList {
         credit = new CoinTurret("credit"){{
             requirements(Category.turret, with(Items.lead, 20, Items.graphite, 20));
 
-            reloadTime = 5f;
+            reload = 5f;
             range = 112f;
             health = 220 * size * size;
             shootType = new CoinBulletType(7f);
@@ -403,9 +402,8 @@ public class MindyBlocks implements ContentList {
             requirements(Category.turret, with(Items.lead, 110, Items.graphite, 95, Items.titanium, 50));
 
             size = 2;
-            reloadTime = 45f;
+            reload = 45f;
             maxAmmo = 120;
-            shots = 15;
             ammoPerShot = 2;
             range = 65f;
             health = 440 * size * size;
@@ -414,12 +412,12 @@ public class MindyBlocks implements ContentList {
                 hitRange = 9f;
             }};
             inaccuracy = 1.8f;
-            velocityInaccuracy = 0.05f;
+            velocityRnd = 0.05f;
             shootSound = Sounds.shootBig;
-            shootShake = 3f;
-            burstSpacing = 1f;
-            shootLength = 6.5f;
-            spread = 0;
+            shake = 3f;
+            shoot.shots = 15;
+            shoot.shotDelay = 1f;
+            shootY = 6.5f;
         }};
 
         brokerage = new CoinTurret("brokerage"){{
@@ -428,7 +426,7 @@ public class MindyBlocks implements ContentList {
             size = 2;
             maxAmmo = 180;
             ammoPerShot = 20;
-            reloadTime = 245f;
+            reload = 245f;
             minRange = 100f;
             hasMinRange = true;
             range = 404f;
@@ -441,18 +439,17 @@ public class MindyBlocks implements ContentList {
             }};
             inaccuracy = 0f;
             shootEffect = MindyFx.sniperShoot;
-            shootShake = 4f;
+            shake = 4f;
             shootSound = Sounds.shotgun;
         }};
 
         anchor = new ItemTurret("anchor"){{
             requirements(Category.turret, with(Items.lead, 80, Items.graphite, 65, Items.titanium, 50));
 
-            reloadTime = 80f;
-            shootShake = 3f;
+            reload = 80f;
+            shake = 3f;
             range = 160f;
-            recoilAmount = 4f;
-            restitution = 0.1f;
+            recoil = 4f;
             size = 2;
             targetAir = false;
 
@@ -482,11 +479,10 @@ public class MindyBlocks implements ContentList {
         bermuda = new ItemTurret("bermuda"){{
             requirements(Category.turret, with(Items.lead, 220, Items.graphite, 160, Items.thorium, 105, Items.plastanium, 85));
 
-            reloadTime = 40f;
-            shootShake = 3f;
+            reload = 40f;
+            shake = 3f;
             range = 230f;
-            recoilAmount = 5f;
-            restitution = 0.1f;
+            recoil = 5f;
             size = 3;
             targetAir = false;
 
@@ -517,26 +513,21 @@ public class MindyBlocks implements ContentList {
         propaganda = new ItemTurret("propaganda"){{
             requirements(Category.turret, with(Items.copper, 500, Items.graphite, 360, Items.metaglass, 65, Items.phaseFabric, 65));
 
-            reloadTime = 160f;
-            shootShake = 3f;
+            reload = 160f;
             range = 240f;
-            recoilAmount = 2f;
-            restitution = 0.1f;
+            recoil = 2f;
             size = 3;
-            cooldown = 0.03f;
-            shootShake = 1f;
-            burstSpacing = 10f;
-            shots = 3;
+            shoot.shots = 3;
+            shoot.shotDelay = 10f;
 
             health = 140 * size * size;
             shootSound = Sounds.plasmadrop;
             heatColor = Pal.lancerLaser;
-            shootShake = 0f;
-            shootLength = 2f;
-            coolantUsage = 1f;
+            shootY = 2f;
+            coolant = consume(consumeCoolant(1f));
             coolantMultiplier = 0.4f;
 
-            consumes.powerCond(18f, TurretBuild::isActive);
+            consumePower(18f);
 
             ammo(
                     Items.metaglass, new SoundwaveBulletType(4.5f, 60f, MindyStatusEffects.dissonance){{
@@ -588,11 +579,11 @@ public class MindyBlocks implements ContentList {
                     MindyLiquids.siloxol, MindyBullets.starFlame
             );
             size = 1;
-            reloadTime = 5f;
+            reload = 5f;
             inaccuracy = 5f;
             shootCone = 50f;
             liquidCapacity = 10f;
-            recoilAmount = 0f;
+            recoil = 0f;
             shootSound = Sounds.flame;
             range = 65f;
             health = 300;
@@ -622,7 +613,7 @@ public class MindyBlocks implements ContentList {
             );
             health = 500;
             size = 1;
-            reloadTime = 15f;
+            reload = 15f;
             inaccuracy = 1.5f;
             shootCone = 30f;
             //shootSound = MindySounds.pewRetro; //this breaks the audio bus for some reason
@@ -634,7 +625,7 @@ public class MindyBlocks implements ContentList {
                     MindyLiquids.siloxol, MindyBullets.sequenceShot
             );
             size = 2;
-            reloadTime = 30f;
+            reload = 30f;
             inaccuracy = 5f;
             shootCone = 50f;
             liquidCapacity = 12f;
@@ -652,40 +643,37 @@ public class MindyBlocks implements ContentList {
             range = 234f;
         }};
 
-        astro = new UnitTurret("astro"){
-            {
-                requirements(Category.turret, with(Items.thorium, 12000, Items.silicon, 25500, Items.titanium, 8250, MindyItems.vector, 1000, MindyItems.tensor, 400));
-                size = 6;
-                chargeTime = 61f;
-                chargeEffect = MindyFx.astroCharge;
-                shootType = MindyBullets.voidStar;
-                powerUse = 65f;
-                rotateSpeed = 0.8f;
-                heatColor = Color.valueOf("7474ed");
-                range = 400f;
-                reloadTime = 600f;
-                recoilAmount = 10f;
-                restitution = 0.03f;
-                shootCone = 20f;
-                shootShake = 5f;
-                //TODO find a better sound: chargeSound = MindySounds.astroCharge;
-                shootSound = MindySounds.astroShoot;
-                targetAir = true;
-                chargeEffects = 1;
-                health = 240 * size * size;
-            }
-        };
+        astro = new UnitTurret("astro"){{
+            requirements(Category.turret, with(Items.thorium, 12000, Items.silicon, 25500, Items.titanium, 8250, MindyItems.vector, 1000, MindyItems.tensor, 400));
+            size = 6;
+            shoot.firstShotDelay = 61f;
+            shootType = MindyBullets.voidStar;
+
+            consumePower(65f);
+            rotateSpeed = 0.8f;
+            heatColor = Color.valueOf("7474ed");
+            range = 400f;
+            reload = 600f;
+            recoil = 10f;
+            shootCone = 20f;
+            shake = 5f;
+            //TODO find a better sound: chargeSound = MindySounds.astroCharge;
+            shootSound = MindySounds.astroShoot;
+            targetAir = true;
+            health = 240 * size * size;
+        }};
 
         phisher = new HijackTurret("phisher"){{
             requirements(Category.turret, with(Items.silicon, 60, Items.titanium, 30, MindyItems.scalarRaw, 24, MindyItems.source, 12));
             size = 1;
             range = 145f;
             health = 120;
-            reloadTime = 10f;
+            reload = 10f;
             maxLinks = 4;
             powerUse = 4f;
             shotsMultiplier = 0.67f;
-            coolantUsage = 0.1f;
+
+            coolant = consumeCoolant(0.1f);
         }};
 
         trojan = new HijackTurret("trojan"){{
@@ -693,10 +681,11 @@ public class MindyBlocks implements ContentList {
             size = 2;
             range = 180f;
             health = 400;
-            reloadTime = 35f;
-            burstSpacing = 8f;
-            shots = 3;
-            spread = 0f;
+            reload = 35f;
+
+            shoot.shots = 3;
+            shoot.shotDelay = 8f;
+
             inaccuracy = 2f;
             maxLinks = 5;
             linkRange = 7;
@@ -704,8 +693,9 @@ public class MindyBlocks implements ContentList {
             reloadMultiplier = 1f;
             shotsMultiplier = 0.3f;
             hijackReload = 0.3f;
-            coolantUsage = 0.1f;
             powerMultiplier = 1.2f;
+
+            coolant = consumeCoolant(0.1f);
         }};
 
         spyware = new HijackTurret("spyware"){{
@@ -713,10 +703,11 @@ public class MindyBlocks implements ContentList {
             size = 3;
             range = 260f;
             health = 905;
-            reloadTime = 20f;
-            burstSpacing = 0f;
-            shots = 5;
-            spread = 9f;
+            reload = 20f;
+            shoot = new ShootSpread(){{
+                shots = 5;
+                spread = 9f;
+            }};
             inaccuracy = 5f;
             maxLinks = 7;
             linkRange = 9;
@@ -725,8 +716,9 @@ public class MindyBlocks implements ContentList {
             shotsMultiplier = 0.25f;
             hijackReload = 0.4f;
             chargeXRand = 0.01f;
-            coolantUsage = 0.1f;
             powerMultiplier = 1.2f;
+
+            coolant = consumeCoolant(0.1f);
         }};
 
         backdoor = new HijackTurret("backdoor"){{
@@ -735,19 +727,19 @@ public class MindyBlocks implements ContentList {
             maxSize = 8;
             range = 390f;
             health = 1300;
-            reloadTime = 15f;
-            burstSpacing = 3f;
+            reload = 15f;
             inaccuracy = 1f;
-            shots = 2;
-            spread = 0f;
+            shoot = new ShootSpread(2, 3f);
+
             maxLinks = 9;
             linkRange = 12;
             powerUse = 80f;
             reloadMultiplier = 1.8f;
             shotsMultiplier = 1f;
             hijackReload = 0.6f;
-            coolantUsage = 0.1f;
             powerMultiplier = 2.5f;
+
+            coolant = consumeCoolant(0.1f);
         }};
 
         masterkey = new HijackTurret("masterkey"){{
@@ -755,12 +747,11 @@ public class MindyBlocks implements ContentList {
             size = 1;
             maxSize = 16;
             ignoreDrawSize = true;
-            burstSpacing = 0f;
-            shots = 5;
-            spread = 5f;
+            shoot = new ShootSpread(5, 5f);
+
             range = 360f;
             health = 2000;
-            reloadTime = 10f;
+            reload = 10f;
             maxLinks = 16;
             linkRange = 16;
             powerUse = 4f;
@@ -774,41 +765,41 @@ public class MindyBlocks implements ContentList {
         payCannon = new PayloadTurret("payload-cannon"){{
             health = 2050;
             size = 5;
-            recoilAmount = 7f;
+            recoil = 7f;
             range = 315f;
-            shootShake = 2f;
+            shake = 2f;
             shootSound = Sounds.shootBig;
             shootEffect = MindyFx.cannonShoot;
             smokeEffect = Fx.shootBigSmoke2;
             safeRange = 140f;
-            reloadTime = 120f;
+            reload = 120f;
             rotateSpeed = 1.8f;
             maxPaySize = 3.5f;
             payloadOffset = 7f;
-            shootLength = 8f;
-            consumes.power(3.75f);
+            shootY = 8f;
+            consumePower(3.75f);
             requirements(Category.turret, with(Items.copper, 1000, Items.titanium, 750, Items.silicon, 450, Items.plastanium, 330));
         }};
 
         payCatapult = new PayloadTurret("payload-catapult"){{
             health = 3190;
             size = 7;
-            recoilAmount = 9f;
+            recoil = 9f;
             range = 520f;
-            shootShake = 4f;
+            shake = 4f;
             shootSound = Sounds.plasmaboom;
             shootEffect = MindyFx.cannonShoot2;
             smokeEffect = Fx.shootBigSmoke2;
             damage = 2.3f;
             maxDamagePercent = 0.75f;
             safeRange = 190f;
-            reloadTime = 250f;
+            reload = 250f;
             rotateSpeed = 1.3f;
             payloadOffset = 7.5f;
-            shootLength = 7f;
+            shootY = 7f;
             payloadScale = 0.85f;
             maxPaySize = 14.5f; //I'm not adding a T3. ...definitely. ...definitely? ...definitely.
-            consumes.power(7.25f);
+            consumePower(7.25f);
             shootType = MindyBullets.payBulletBig;
             homingShootType = MindyBullets.homingPayBig;
             requirements(Category.turret, with(Items.copper, 1500, Items.titanium, 900, Items.silicon, 650, Items.plastanium, 390, Items.phaseFabric, 180, Items.surgeAlloy, 165));
@@ -819,7 +810,7 @@ public class MindyBlocks implements ContentList {
             health = 80;
             size = 3;
             itemCapacity = 400;
-            consumes.power(1f);
+            consumePower(1f);
         }};
 
         payEradicator = new PayloadDeconstructor("payload-eradicator"){{
@@ -830,8 +821,8 @@ public class MindyBlocks implements ContentList {
             buildSpeed = 0.8f;
             itemCapacity = 1500;
             refundMultiplier = 2f;
-            consumes.power(2.35f);
-            consumes.liquid(Liquids.water, 0.8f);
+            consumePower(2.35f);
+            consumeLiquid(Liquids.water, 0.8f);
         }};
 
         grandConstructor = new Constructor("grand-constructor"){{
@@ -842,8 +833,8 @@ public class MindyBlocks implements ContentList {
             maxBlockSize = 6;
             buildSpeed = 0.6f;
             liquidCapacity = 180f;
-            consumes.power(4.75f);
-            consumes.liquid(Liquids.cryofluid, 1.5f);
+            consumePower(4.75f);
+            consumeLiquid(Liquids.cryofluid, 1.5f);
         }};
 
         //deprecated
@@ -855,8 +846,8 @@ public class MindyBlocks implements ContentList {
             maxBlockSize = 4;
             buildSpeed = 0.4f;
             liquidCapacity = 120f;
-            consumes.power(3.25f);
-            consumes.liquid(Liquids.water, 1f);
+            consumePower(3.25f);
+            consumeLiquid(Liquids.water, 1f);
             requirements(Category.crafting, BuildVisibility.hidden, with(Items.thorium, 360, Items.phaseFabric, 120, Items.surgeAlloy, 60));
         }};
 
@@ -869,8 +860,8 @@ public class MindyBlocks implements ContentList {
             maxBlockSize = 6;
             buildSpeed = 0.6f;
             liquidCapacity = 180f;
-            consumes.power(4.75f);
-            consumes.liquid(Liquids.cryofluid, 1.5f);
+            consumePower(4.75f);
+            consumeLiquid(Liquids.cryofluid, 1.5f);
             requirements(Category.crafting, BuildVisibility.hidden, with(Items.thorium, 640, Items.silicon, 120, Items.plastanium, 320, Items.phaseFabric, 460, Items.surgeAlloy, 480));
         }};
 
@@ -879,7 +870,7 @@ public class MindyBlocks implements ContentList {
             health = 1000;
             autoOutputTime = 45 * 60f;
 
-            consumes.power(2f);
+            consumePower(2f);
             crafts(Blocks.siliconSmelter, 2, Blocks.kiln, 1, Blocks.surgeSmelter, 2);
             crafts(MindyItems.scalar, 1, 4).using(with(MindyItems.scalarRaw, 3, Items.graphite, 1, Items.thorium, 1, Items.metaglass, 1));
             requirements(Category.crafting, with(Items.copper, 410, Items.titanium, 230, Items.graphite, 60, Items.silicon, 115, Items.metaglass, 65, Items.plastanium, 30));
@@ -893,7 +884,7 @@ public class MindyBlocks implements ContentList {
             size = 2;
             health = 120;
 
-            consumes.power(0.1f);
+            consumePower(0.1f);
             requirements(Category.crafting, with(Items.copper, 20, Items.graphite, 10, Items.silicon, 10));
         }};
 
@@ -905,7 +896,7 @@ public class MindyBlocks implements ContentList {
             maxBlockSize = 4;
             itemsLoaded = 16;
             liquidsLoaded = 80f;
-            consumes.power(3.25f);
+            consumePower(3.25f);
         }};
 
         payloadUnpacker = new PayloadUnloader("payload-unpacker"){{
@@ -915,7 +906,7 @@ public class MindyBlocks implements ContentList {
             size = 5;
             maxBlockSize = 4;
             offloadSpeed = 8;
-            consumes.power(3.25f);
+            consumePower(3.25f);
         }};
 
         //deprecated
@@ -924,7 +915,7 @@ public class MindyBlocks implements ContentList {
             health = 80;
             size = 5;
             maxBlockSize = 4;
-            consumes.power(3.25f);
+            consumePower(3.25f);
             requirements(Category.distribution, BuildVisibility.hidden, with(Items.thorium, 360, Items.plastanium, 100, Items.phaseFabric, 80));
         }};
 
@@ -934,7 +925,7 @@ public class MindyBlocks implements ContentList {
             health = 80;
             size = 5;
             maxBlockSize = 4;
-            consumes.power(3.25f);
+            consumePower(3.25f);
             requirements(Category.distribution, BuildVisibility.hidden, with(Items.thorium, 360, Items.plastanium, 80, Items.phaseFabric, 100));
         }};
 
@@ -946,7 +937,7 @@ public class MindyBlocks implements ContentList {
             buildSpeed = 0.75f;
             itemCapacity = 800;
             refundMultiplier = 1.75f;
-            consumes.power(1.8f);
+            consumePower(1.8f);
             requirements(Category.crafting, BuildVisibility.hidden, with(Items.copper, 360, Items.titanium, 95, Items.silicon, 65));
         }};
 
@@ -962,8 +953,8 @@ public class MindyBlocks implements ContentList {
             attribute = MindyAttribute.metallic;
             boostScale = 1f;
 
-            consumes.items(with(Items.sand, 3));
-            consumes.power(0.60f);
+            consumeItems(with(Items.sand, 3));
+            consumePower(0.60f);
         }};
 
         lancerKiln = new ArcCrafter("lancer-kiln"){{
@@ -979,8 +970,8 @@ public class MindyBlocks implements ContentList {
             boostScale = 0.45f;
             itemCapacity = 20;
 
-            consumes.items(with(Items.sand, 10));
-            consumes.power(3.8f);
+            consumeItems(with(Items.sand, 10));
+            consumePower(3.8f);
             boostItem = new ItemStack(Items.lead, 4);
             boostAmount = 1f;
 
@@ -1005,9 +996,9 @@ public class MindyBlocks implements ContentList {
                 plantColorLight = Color.royal.cpy().lerp(Color.white, 0.3f);
             }};
 
-            consumes.liquid(MindyLiquids.siloxol, 0.15f);
-            consumes.power(0.4f);
-            consumes.item(Items.sand);
+            consumeLiquid(MindyLiquids.siloxol, 0.15f);
+            consumePower(0.4f);
+            consumeItem(Items.sand);
             gasProduce = 16f;
         }};
 
@@ -1027,9 +1018,9 @@ public class MindyBlocks implements ContentList {
             powerProduction = 8.5f;
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.05f;
-            consumes.power(2.5f);
-            consumes.item(MindyItems.scalarRaw);
-            consumes.liquid(Liquids.water, 0.1f);
+            consumePower(2.5f);
+            consumeItem(MindyItems.scalarRaw);
+            consumeLiquid(Liquids.water, 0.1f);
             outputItem = new ItemStack(Items.graphite, 1);
         }};
 
@@ -1046,13 +1037,13 @@ public class MindyBlocks implements ContentList {
 
             drawer = new DrawCondenser();
             ((LiquidRefiner) electroRefiner).condenser = this;
-            consumes.items(with(Items.graphite, 4));
-            consumes.power(1.05f);
+            consumeItems(with(Items.graphite, 4));
+            consumePower(1.05f);
             gasCapacity = 108f;
             gasUse = 27f;
         }};
 
-        colloidMixer = new LiquidConverter("colloid-mixer"){{
+        colloidMixer = new GenericCrafter("colloid-mixer"){{
             requirements(Category.crafting, with(MindyItems.scalarRaw, 65, Items.silicon, 40, Items.titanium, 60));
             outputLiquid = new LiquidStack(MindyLiquids.colloid, 0.2f);
             craftTime = 120f;
@@ -1063,11 +1054,12 @@ public class MindyBlocks implements ContentList {
             rotate = false;
             solid = true;
             outputsLiquid = true;
-            drawer = new DrawMixer(true);
+            //TODO: test and replace this with new sprites to support the new animated liquid system -Anuke
+            drawer = new DrawMulti(new DrawDefault(), new DrawLiquidTile(MindyLiquids.colloid), new DrawRegion("-top"));
 
-            consumes.power(1.5f);
-            consumes.item(Items.titanium);
-            consumes.liquid(MindyLiquids.siloxol, 0.2f);
+            consumePower(1.5f);
+            consumeItem(Items.titanium);
+            consumeLiquid(MindyLiquids.siloxol, 0.2f);
         }};
 
         scalarFurnace = new NuclearCrafter("scalar-furnace"){{
@@ -1080,10 +1072,10 @@ public class MindyBlocks implements ContentList {
             itemDuration = 120f;
             itemCapacity = 30;
             powerProduction = 17f;
-            consumes.items(with(Items.thorium, 1, Items.graphite, 1, Items.metaglass, 1, MindyItems.scalarRaw, 3));
+            consumeItems(with(Items.thorium, 1, Items.graphite, 1, Items.metaglass, 1, MindyItems.scalarRaw, 3));
             outputItem = new ItemStack(MindyItems.scalar, 1);
             heating = 0.01f;
-            consumes.liquid(MindyLiquids.colloid, heating * 2f / coolantPower).update(false);
+            consumeLiquid(MindyLiquids.colloid, heating * 2f / coolantPower).update(false);
             coolantPower = 0.1f;
 
             explosionRadius = 24;
@@ -1102,20 +1094,20 @@ public class MindyBlocks implements ContentList {
 
         piston = new Piston("piston"){{
             health = 200;
-            consumes.power(0.2f);
+            consumePower(0.2f);
             requirements(Category.distribution, with(Items.graphite, 25, Items.silicon, 10, Items.titanium, 15));
         }};
 
         stickyPiston = new Piston("piston-sticky"){{
             health = 200;
-            consumes.power(0.2f);
+            consumePower(0.2f);
             requirements(Category.distribution, with(Items.sporePod, 10, Items.graphite, 15, Items.silicon, 10, Items.titanium, 15));
             sticky = true;
         }};
 
         pistonInfi = new Piston("piston-infi", "betamindy-piston-arm", "betamindy-pistoninf"){{
             health = 200;
-            consumes.power(0.2f);
+            consumePower(0.2f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
 
             maxBlocks = 512;
@@ -1123,7 +1115,7 @@ public class MindyBlocks implements ContentList {
 
         stickyPistonInfi = new Piston("piston-sticky-infi", "betamindy-piston-sticky-arm", "betamindy-pistoninf"){{
             health = 200;
-            consumes.power(0.2f);
+            consumePower(0.2f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
             sticky = true;
 
@@ -1179,7 +1171,7 @@ public class MindyBlocks implements ContentList {
             drawSpinSprite = false;
             inertia = true;
             health = 45;
-            consumes.power(0.1f);
+            consumePower(0.1f);
         }};
 
         titaniumCog = new Spinner("titanium-cog"){{
@@ -1189,7 +1181,7 @@ public class MindyBlocks implements ContentList {
             drawSpinSprite = false;
             inertia = true;
             health = 65;
-            consumes.power(0.2f);
+            consumePower(0.2f);
         }};
 
         plastaniumCog = new Spinner("plastanium-cog"){{
@@ -1200,7 +1192,7 @@ public class MindyBlocks implements ContentList {
             drawTop = true;
             inertia = true;
             health = 80;
-            consumes.power(0.3f);
+            consumePower(0.3f);
         }};
 
         armoredCog = new Spinner("armored-cog"){{
@@ -1211,7 +1203,7 @@ public class MindyBlocks implements ContentList {
             drawTop = true;
             inertia = false;
             health = 200;
-            consumes.power(0.2f);
+            consumePower(0.2f);
         }};
 
         woodenCog = new Spinner("wooden-cog"){{
@@ -1220,20 +1212,20 @@ public class MindyBlocks implements ContentList {
             maxBlocks = 18;
             drawSpinSprite = false;
             inertia = true;
-            consumes.power(0.1f);
+            consumePower(0.1f);
         }};
 
         cloner = new BlockCloner("cloner"){{
             requirements(Category.distribution, with(Items.titanium, 30, Items.silicon, 35, Items.phaseFabric, 8));
             hasPower = true;
-            consumes.power(0.6f);
+            consumePower(0.6f);
         }};
 
         spinner = new Spinner("spinner"){{
             requirements(Category.distribution, with(Items.thorium, 30, Items.phaseFabric, 35, MindyItems.vector, 4));
             hasPower = true;
             maxBlocks = 16;
-            consumes.power(0.3f);
+            consumePower(0.3f);
         }};
 
         spinnerInert = new Spinner("spinner-inert"){{
@@ -1241,13 +1233,13 @@ public class MindyBlocks implements ContentList {
             hasPower = true;
             inertia = true;
             maxBlocks = 16;
-            consumes.power(0.3f);
+            consumePower(0.3f);
         }};
 
         spinnerInfi = new Spinner("spinner-infi"){{
             hasPower = true;
             maxBlocks = 120;
-            consumes.power(0.3f);
+            consumePower(0.3f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
         }};
 
@@ -1255,7 +1247,7 @@ public class MindyBlocks implements ContentList {
             hasPower = true;
             inertia = true;
             maxBlocks = 120;
-            consumes.power(0.3f);
+            consumePower(0.3f);
             requirements(Category.distribution, BuildVisibility.sandboxOnly, with());
         }};
 
@@ -1338,7 +1330,7 @@ public class MindyBlocks implements ContentList {
             health = 600;
             smokeX = 9.5f;
             smokeY = 4f;
-            consumes.power(3f);
+            consumePower(3f);
         }};
 
         ionThruster = new IonThruster("ion-thruster"){{
@@ -1350,7 +1342,7 @@ public class MindyBlocks implements ContentList {
             smokeX = 13.2f;
             smokeY = 6f;
             affectPayloads = true;
-            consumes.power(6f);
+            consumePower(6f);
         }};
 
         corruptedJet = new IonThruster("corrupted-jet"){{
@@ -1364,7 +1356,7 @@ public class MindyBlocks implements ContentList {
             smokeX = 5f;
             smokeY = 1.73f;
             lightColor = Pal.accent;
-            consumes.power(1f);
+            consumePower(1f);
         }};
 
         chest = new Chest("chest"){{
@@ -1508,7 +1500,7 @@ public class MindyBlocks implements ContentList {
             range = 50f;
             itemCapacity = 25;
             hasPower = true;
-            consumes.power(1f);
+            consumePower(1f);
             requirements(Category.production, with(Items.copper, 30, Items.graphite, 25, Items.titanium, 10, Items.silicon, 15));
         }};
 
@@ -1522,7 +1514,7 @@ public class MindyBlocks implements ContentList {
             hasPower = true;
             laserWidth = 1.1f;
             laserOffset = 11f;
-            consumes.power(5.6f);
+            consumePower(5.6f);
             requirements(Category.production, with(Items.copper, 135, Items.titanium, 90, Items.silicon, 90, Items.plastanium, 45, MindyItems.vector, 15));
         }};
 
@@ -1531,7 +1523,7 @@ public class MindyBlocks implements ContentList {
             size = 3;
             powerUse = 16f;
             repairRadius = 170f;
-            consumes.item(MindyItems.scalar).boost();
+            consumeItem(MindyItems.scalar).boost();
         }};
 
         boostPad = new BoostPad("boostpad"){{
@@ -1559,7 +1551,7 @@ public class MindyBlocks implements ContentList {
         teleportPad = new TeleportPad("teleport-pad"){{
             requirements(Category.units, with( Items.copper, 320, Items.silicon, 150, Items.phaseFabric, 50, MindyItems.tensor, 30));
             size = 3;
-            consumes.power(10f);
+            consumePower(10f);
         }};
 
         portalPad = new TeleportPortal("teleport-portal"){{
@@ -1592,7 +1584,7 @@ public class MindyBlocks implements ContentList {
             size = 3;
             boost = 3;
             maxProcessors = 5;
-            consumes.power(4f);
+            consumePower(4f);
             requirements(Category.logic, with( Items.titanium, 90, Items.silicon, 50, Items.plastanium, 50, Items.phaseFabric, 25));
         }};
 
@@ -1602,28 +1594,28 @@ public class MindyBlocks implements ContentList {
             maxProcessors = 6;
             liquidCapacity = 640;
             acceptCoolant = true;
-            //consumes.liquid(Liquids.water, 3f);
+            //consumeLiquid(Liquids.water, 3f);
             requirements(Category.logic, with( Items.titanium, 110, Items.silicon, 50, Items.metaglass, 40, Items.plastanium, 30, Items.surgeAlloy, 15));
         }};
 
         nullifier = new Disabler("nullifier"){{
-            consumes.power(0.5f);
+            consumePower(0.5f);
             requirements(Category.logic, with(Items.copper, 40, Items.lead, 20, Items.silicon, 10));
         }};
 
         noteBlock = new NotePlayer("note-block"){{
-            consumes.power(0.5f);
+            consumePower(0.5f);
             requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.graphite, 10));
         }};
 
         starNoteBlock = new NotePlayer("star-note-block"){{
             global = true;
-            consumes.power(0.8f);
+            consumePower(0.8f);
             requirements(Category.logic, with(Items.copper, 20, Items.silicon, 5, Items.graphite, 10, MindyItems.starStone, 1));
         }};
 
         sfxBlock = new NotePlayer("sfx-block"){{
-            consumes.power(0.5f);
+            consumePower(0.5f);
             requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.plastanium, 10));
             soundEffect = Fx.mine;
 
@@ -1652,7 +1644,7 @@ public class MindyBlocks implements ContentList {
         filterDome = new FilterDome("filter-dome"){{
             requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.plastanium, 10));
             size = 2;
-            consumes.power(0.5f);
+            consumePower(0.5f);
         }};
 
         pen = new Pen("pen"){{
@@ -1720,7 +1712,7 @@ public class MindyBlocks implements ContentList {
             mineRadius = 2;
             tier = 2;
 
-            consumes.power(0.1f);
+            consumePower(0.1f);
             requirements(Category.production, with(Items.lead, 10, Items.silicon, 20, Items.blastCompound, 25));
         }};
 
@@ -1736,7 +1728,7 @@ public class MindyBlocks implements ContentList {
             smokeChance = 0.15f;
             fireEffect = Fx.burning;
 
-            consumes.power(0.4f);
+            consumePower(0.4f);
             requirements(Category.production, with(Items.thorium, 45, Items.blastCompound, 100));
         }};
 
@@ -1766,7 +1758,7 @@ public class MindyBlocks implements ContentList {
         fan = new UnitFan("fan"){{
             size = 2;
             health = 200;
-            consumes.power(1.5f);
+            consumePower(1.5f);
             requirements(Category.units, with(Items.titanium, 50, Items.silicon, 25, Items.metaglass, 30));
         }};
 
@@ -1779,7 +1771,7 @@ public class MindyBlocks implements ContentList {
             windAlpha = 0.9f;
             smokeX = 22f;
             smokeY = 6f;
-            consumes.power(3f);
+            consumePower(3f);
             hasLiquids = true;
             liquidCapacity = 40f;
             requirements(Category.units, with(Items.titanium, 150, Items.silicon, 50, Items.metaglass, 60, Items.plastanium, 20));
@@ -1823,7 +1815,7 @@ public class MindyBlocks implements ContentList {
         crusher = new Crusher("crusher"){{
             requirements(Category.defense, with(Items.copper, 12, Items.titanium, 18, Items.silicon, 8));
             health = 350;
-            consumes.power(1.9f);
+            consumePower(1.9f);
         }};
 
         crusherPyra = new Crusher("crusher-pyra"){{
@@ -1834,14 +1826,14 @@ public class MindyBlocks implements ContentList {
             rotateSpeed = 8f;
             damageEffect = MindyFx.razorFast;
             effectChance = 0.7f;
-            consumes.power(3.8f);
+            consumePower(3.8f);
         }};
 
         spotlight = new FloodLight("spotlight"){{
             requirements(Category.effect, BuildVisibility.lightingOnly, with(Items.graphite, 10, Items.silicon, 4));
 
             size = 1;
-            consumes.power(0.08f);
+            consumePower(0.08f);
         }};
 
         messageSource = new MessageSource("message-source"){{
@@ -1880,7 +1872,7 @@ public class MindyBlocks implements ContentList {
         discharger = new Discharger("discharger"){{
             health = 80;
             buildCostMultiplier = 3f;
-            consumes.powerBuffered(4000f);
+            consumePowerBuffered(4000f);
             requirements(Category.effect, with(Items.lead, 10, Items.graphite, 10, Items.silicon, 10));
         }};
 
@@ -1895,7 +1887,7 @@ public class MindyBlocks implements ContentList {
             maxBlockSize = 2;
 
             hasPower = true;
-            consumes.power(1f);
+            consumePower(1f);
             requirements(Category.units, with(Items.titanium, 15, Items.thorium, 15, Items.silicon, 12, Items.phaseFabric, 5));
         }};
 
@@ -1914,7 +1906,7 @@ public class MindyBlocks implements ContentList {
             popSound = Sounds.release;
             suckSound = Sounds.respawn;
             hasPower = true;
-            consumes.powerCond(6f, ClearPipeBuild::isGate);
+            consumePowerCond(6f, ClearPipeBuild::isGate);
             requirements(Category.units, with(Items.metaglass, 20, Items.graphite, 8, MindyItems.vector, 2));
         }};
 
@@ -1983,18 +1975,13 @@ public class MindyBlocks implements ContentList {
         tarnation = new PowerTurret("tarnation"){{
             requirements(Category.turret, with(Items.lead, 6000, Items.thorium, 5500, Items.silicon, 3950, Items.plastanium, 1800, Items.surgeAlloy, 1024, MindyItems.bittrium, 128));
             range = 540f;
-            chargeTime = 130f;
-            chargeMaxDelay = 100f;
-            chargeEffects = 8;
-            recoilAmount = 9f;
-            reloadTime = 290f;
-            cooldown = 0.03f;
-            powerUse = 60f;
-            shootShake = 6f;
+
+            shoot.firstShotDelay = 130f;
+            recoil = 9f;
+            reload = 290f;
+            shake = 6f;
             shootEffect = MindyFx.tarnationShoot;
             smokeEffect = Fx.none;
-            chargeEffect = MindyFx.tarnationLines;
-            chargeBeginEffect = MindyFx.tarnationCharge;
             heatColor = Color.red;
             size = 6;
             health = 280 * size * size;
@@ -2003,8 +1990,13 @@ public class MindyBlocks implements ContentList {
             rotateSpeed = 2f;
             unitSort = (u, x, y) -> -u.maxHealth;
 
+            consumePower(60f);
+
             shootType = new ThickLightningBulletType(3048, Pal.lancerLaser){{
                 buildingDamageMultiplier = 0.3f;
+
+                //TODO: this only emits one tarnationLine effect, this should definitely be changed but I am cautious of changing effects without testing. -Anuke
+                chargeEffect = new MultiEffect(MindyFx.tarnationCharge, MindyFx.tarnationLines);
             }};
         }};
 
@@ -2038,9 +2030,9 @@ public class MindyBlocks implements ContentList {
             pumpAmount = 0.5f;
             updateEffect = Fx.pulverize;
             updateEffectChance = 0.08f;
-            consumes.item(Items.scrap, 2);
-            consumes.power(3f);
-            consumes.liquid(Liquids.water, 0.5f);
+            consumeItem(Items.scrap, 2);
+            consumePower(3f);
+            consumeLiquid(Liquids.water, 0.5f);
             placeablePlayer = false;
         }};
 
@@ -2277,7 +2269,7 @@ public class MindyBlocks implements ContentList {
 
         sentryGun = new SentryTurret("sentry-gun"){{
             buildVisibility = uwu ? BuildVisibility.shown : BuildVisibility.editorOnly;
-            reloadTime = 5f;
+            reload = 5f;
             range = 312f;
             health = 4096;
             shootType = new InstantHitBulletType(1f){{

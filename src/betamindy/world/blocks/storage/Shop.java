@@ -3,7 +3,7 @@ package betamindy.world.blocks.storage;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.input.KeyCode;
+import arc.input.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
@@ -20,24 +20,22 @@ import betamindy.type.shop.*;
 import betamindy.ui.*;
 import betamindy.world.blocks.payloads.*;
 import betamindy.world.blocks.storage.AnucoinNode.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.units.*;
-import mindustry.graphics.*;
-import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.production.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 @SuppressWarnings("al")
-public class Shop extends PayloadAcceptor {
+public class Shop extends PayloadBlock {
     public int defaultAnucoins = 0;
     public TextureRegion spinRegion;
     public TextureRegion[] spinTeamRegions;
@@ -163,7 +161,7 @@ public class Shop extends PayloadAcceptor {
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(region, req.drawx(), req.drawy());
         Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
         Draw.rect(topRegion, req.drawx(), req.drawy());
@@ -188,7 +186,7 @@ public class Shop extends PayloadAcceptor {
         return AnucoinTex.emoji;
     }
 
-    public class ShopBuild extends PayloadAcceptor.PayloadAcceptorBuild<Payload> implements CoinBuild, BankLinked{
+    public class ShopBuild extends PayloadBlockBuild<Payload> implements CoinBuild, BankLinked{
         public int anucoins = defaultAnucoins;
         private int anubank = -1; //default is -1
         public UnitType unit;
@@ -488,7 +486,7 @@ public class Shop extends PayloadAcceptor {
 
         @Override
         public void drawLight(){
-            Drawf.light(team, x, y, lightRadius, Pal.accent, 0.65f + Mathf.absin(20f, 0.1f));
+            Drawf.light(x, y, lightRadius, Pal.accent, 0.65f + Mathf.absin(20f, 0.1f));
         }
 
         @Override

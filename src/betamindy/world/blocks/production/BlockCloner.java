@@ -39,7 +39,7 @@ public class BlockCloner extends Block {
         hasItems = true;
         sync = true;
 
-        consumes.add(new ConsumeItemDynamic((ClonerBuild e) -> e.recipe != null ? e.recipe.requirements : ItemStack.empty));
+        consume(new ConsumeItemDynamic((ClonerBuild e) -> e.recipe != null ? e.recipe.requirements : ItemStack.empty));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BlockCloner extends Block {
     public void setBars() {
         super.setBars();
 
-        bars.add("progress", (ClonerBuild entity) -> new Bar("bar.progress", Pal.ammo, () -> entity.recipe == null ? 0f : (entity.progress / entity.constructTime())));
+        addBar("progress", (ClonerBuild entity) -> new Bar("bar.progress", Pal.ammo, () -> entity.recipe == null ? 0f : (entity.progress / entity.constructTime())));
     }
 
     @Override
@@ -161,7 +161,7 @@ public class BlockCloner extends Block {
         public void updateTile(){
             super.updateTile();
             if(parseFront) peekPayload();
-            boolean produce = recipe != null && consValid();
+            boolean produce = recipe != null && canConsume();
             if(produce){
                 progress += edelta();
                 if(progress >= constructTime()){

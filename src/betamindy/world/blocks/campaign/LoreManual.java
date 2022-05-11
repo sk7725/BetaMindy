@@ -112,7 +112,7 @@ public class LoreManual extends Block {
     @Override
     public void setBars(){
         super.setBars();
-        bars.remove("health");
+        removeBar("health");
     }
 
     public boolean linkValid(Building tile, Building link){
@@ -262,7 +262,7 @@ public class LoreManual extends Block {
 
         @Override
         public void drawLight(){
-            Drawf.light(team, x, y, lightRadius, flameColor, 0.65f + Mathf.absin(20f, 0.1f));
+            Drawf.light(x, y, lightRadius, flameColor, 0.65f + Mathf.absin(20f, 0.1f));
         }
 
         public String teamName(Team team){
@@ -391,7 +391,7 @@ public class LoreManual extends Block {
         }
 
         @Override
-        public boolean onConfigureTileTapped(Building other){
+        public boolean onConfigureBuildTapped(Building other){
             if(!net.active() && state.isEditor() && linkValid(this, other)){
                 configure(other.pos());
                 return false;

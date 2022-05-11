@@ -33,7 +33,7 @@ public class GateController extends Block {
 
     public class GateControllerBuild extends Building {
         public boolean open(){
-            return consValid();
+            return canConsume();
         }
 
         public int getMode(){
@@ -94,7 +94,7 @@ public class GateController extends Block {
             if(Time.time % 90 < 30) return;
             int mode = getMode();
             if(mode >= 0){
-                Drawf.light(team, x, y, 40f, statusColor[mode], 0.8f);
+                Drawf.light(x, y, 40f, statusColor[mode], 0.8f);
             }
         }
     }

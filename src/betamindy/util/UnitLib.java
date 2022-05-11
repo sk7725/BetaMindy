@@ -69,8 +69,8 @@ public class UnitLib {
             UnitType[] r = b.upgrades.find(u0 -> u0[1] == u);
             if(r != null){
                 ItemStack[] cost = calcCost(r[0]);
-                if(b.consumes.has(ConsumeType.item)){
-                    cost = mergeArray(cost, b.consumes.getItem().items);
+                if(b.findConsumer(c -> c instanceof ConsumeItems) instanceof ConsumeItems c){
+                    cost = mergeArray(cost, c.items);
                 }
                 costs.put(u, cost);
                 tiers.put(u, tiers.get(r[0]) + 1);

@@ -83,12 +83,12 @@ public class Box extends Block {
             if(items.any() && timer(timerDump, dumpTime)){
                 if(dump()) openBox();
             }
-            if(liquids.total() > 0.01f){
+            if(liquids.currentAmount() > 0.01f){
                 hadLiquid = true;
                 dumpLiquid(liquids.current());
             }
 
-            if((open || hadLiquid) && items.empty() && liquids.total() <= 0.1f){
+            if((open || hadLiquid) && items.empty() && liquids.currentAmount() <= 0.1f){
                 //despawn
                 despawnEffect.at(x, y, 0f, topRegions[sprite()]);
                 tile.remove();
@@ -105,11 +105,11 @@ public class Box extends Block {
                     Draw.rect(icon, x + Mathf.randomSeed(id + i) * 3f * size - 1.5f, y + Mathf.randomSeed(id + i + 10) * 3f * size - 1.5f, 4f, 4f);
                 }
             }
-            if(liquids.total() > 0.001f || hadLiquid){
+            if(liquids.currentAmount() > 0.001f || hadLiquid){
                 int p = Mathf.randomSeed(id, 0, 3);
                 Tmp.v1.trns(45f + 90f * p, 2.121f * size).add(this);
-                if(liquids.total() > 0.01f){
-                    Draw.color(Color.white, liquids.current().color, Mathf.clamp(liquids.total() / liquidCapacity));
+                if(liquids.currentAmount() > 0.01f){
+                    Draw.color(Color.white, liquids.current().color, Mathf.clamp(liquids.currentAmount() / liquidCapacity));
                 }
                 Draw.rect(bottle, Tmp.v1.x, Tmp.v1.y);
                 Draw.color();

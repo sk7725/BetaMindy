@@ -64,7 +64,7 @@ public class Crusher extends Block {
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         float x = req.drawx(), y = req.drawy();
         Draw.rect(region, x, y);
         Draw.rect(sideRegion, x, y, req.rotation * 90f);
@@ -102,7 +102,7 @@ public class Crusher extends Block {
 
         @Override
         public void updateTile(){
-            if(consValid()){
+            if(canConsume()){
                 time += spinSpeed() * edelta() * heat;
                 float l = size * tilesize / 2f;
                 Units.nearby(x + d4x(rotation) * l - l, y + d4y(rotation) * l - l, l * 2, l * 2, u -> {

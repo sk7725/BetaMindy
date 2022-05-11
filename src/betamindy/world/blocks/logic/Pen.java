@@ -1,20 +1,18 @@
 package betamindy.world.blocks.logic;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
-import betamindy.entities.*;
 import betamindy.world.blocks.distribution.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 
-import static arc.Core.atlas;
-import static mindustry.Vars.world;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 public class Pen extends Block {
     public int drawLength = 40;
@@ -26,7 +24,7 @@ public class Pen extends Block {
     public Pen(String name){
         super(name);
         update = solid = true;
-        expanded = true;
+        alwaysUpdateInUnits = true;
         noUpdateDisabled = false;
     }
 
@@ -36,7 +34,14 @@ public class Pen extends Block {
         topRegion = atlas.find(name + "-top", "betamindy-pen-top");
     }
 
-    public class PenBuild extends Building implements SpinDraw, SpinUpdate, GhostHolder {
+    @Override
+    public void init(){
+        super.init();
+
+        updateClipRadius(drawLength * tilesize);
+    }
+
+    public class PenBuild extends Building implements SpinDraw, SpinUpdate {
         public Trail trail = new Trail(drawLength);
         public int color = Color.white.rgba();
         public float stroke = 1f;
@@ -44,33 +49,43 @@ public class Pen extends Block {
 
         public int prev = -1;
         public float px, py;
-        public GhostEntity ghost;
 
         private boolean spinning = false;
         private float lastUpdated;
 
-        private void addGhost(){
-            if(ghost != null && ghost.isAdded()) ghost.remove();
-            ghost = GhostEntity.create();
-            ghost.holder = this;
-            ghost.set(x, y);
-            ghost.add();
-        }
-
         @Override
         public void updateTile(){
-            if(prev != tile.pos()){
-                if(enabled) trail.update(x, y);
-                prev = tile.pos();
-            }
+            if(isPayload()){
 
-            if(enabled){
-                proximity.each(b -> {
-                    if(b instanceof PenModifier pmod) pmod.handlePen(this);
-                });
+                //TODO how does this work what am I supposed to do here? why does the ghost get removed? -Anuke
+                if(spinning){
+                    if(Time.time - lastUpdated > Time.delta + 1f) spinning = false;//this most likely means that the pen was removed with the spinner
+                    return;
+                }
+                float margin = Time.time - lastUpdated - Time.delta - 1f;
+                if(!(Mathf.equal(x, px, 0.1f) && Mathf.equal(y, py, 0.1f)) || margin > 0f) trail.update(x, y);
+                if(margin > despawnStart + 30f){
+                    //TODO why is the ghost supposed to be removed here
+                    return;
+                }
+                px = x;
+                py = y;
+                prev = -1;
+
+            }else{
+                if(prev != tile.pos()){
+                    if(enabled) trail.update(x, y);
+                    prev = tile.pos();
+                }
+
+                if(enabled){
+                    proximity.each(b -> {
+                        if(b instanceof PenModifier pmod) pmod.handlePen(this);
+                    });
+                }
+                carried = false;
+                spinning = false;
             }
-            carried = false;
-            spinning = false;
         }
 
         @Override
@@ -83,28 +98,14 @@ public class Pen extends Block {
         public void onRemoved(){
             super.onRemoved();
             lastUpdated = Time.time;
-            addGhost();
         }
 
         @Override
-        public void updateGhost(){
-            if(spinning){
-                if(Time.time - lastUpdated > Time.delta + 1f) spinning = false;//this most likely means that the pen was removed with the spinner
-                return;
-            }
-            float margin = Time.time - lastUpdated - Time.delta - 1f;
-            if(!(Mathf.equal(x, px, 0.1f) && Mathf.equal(y, py, 0.1f)) || margin > 0f) trail.update(x, y);
-            if(margin > despawnStart + 30f){
-                ghost.remove();
-                return;
-            }
-            px = x;
-            py = y;
-            prev = -1;
-        }
+        public void payloadDraw(){
+            super.draw();
+            //TODO this should call super.draw() but I'm not sure -Anuke
+            //TODO doesn't update unit clip size!
 
-        @Override
-        public void drawGhost(){
             if(spinning) return;
             float lastZ = Draw.z();
             Draw.z(glow ? Layer.effect : Layer.effect + 5f);
@@ -179,14 +180,6 @@ public class Pen extends Block {
             color = read.i();
             stroke = read.f();
             carried = read.bool();
-            if(carried && (ghost == null || !ghost.isAdded())){
-                Core.app.post(() -> {
-                    ghost = GhostEntity.create();
-                    ghost.holder = this;
-                    ghost.set(x, y);
-                    ghost.add();
-                });
-            }
         }
     }
 }

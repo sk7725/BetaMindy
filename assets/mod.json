@@ -3,9 +3,10 @@
   "displayName": "BetaMindy",
   "author": "[royal]sk7725[]",
   "description": "My first Java mod, has the same amount of chaotic energy of sk7725/Commandblocks.",
+  "subtitle": "Demo of Chaos Itself",
   "version": "1.08",
   "main": "betamindy.BetaMindy",
-  "minGameVersion": "134",
+  "minGameVersion": "136",
   "dependencies": [],
   "hidden": false
 }

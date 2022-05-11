@@ -10,12 +10,11 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.production.*;
 
 import static mindustry.Vars.*;
 
 @Deprecated
-public class BlockLoader extends PayloadAcceptor{
+public class BlockLoader extends PayloadBlock{
     public final int timerLoad = timers++;
     public Block replacement = null;
 
@@ -50,18 +49,18 @@ public class BlockLoader extends PayloadAcceptor{
     public void setBars(){
         super.setBars();
 
-        bars.add("progress", (BlockLoaderBuild entity) -> new Bar(() -> Core.bundle.format("bar.items", entity.payload == null ? 0 : entity.payload.build.items.total()), () -> Pal.items, entity::fraction));
+        addBar("progress", (BlockLoaderBuild entity) -> new Bar(() -> Core.bundle.format("bar.items", entity.payload == null ? 0 : entity.payload.build.items.total()), () -> Pal.items, entity::fraction));
     }
 
     @Override
-    public void drawRequestRegion(BuildPlan req, Eachable<BuildPlan> list){
+    public void drawPlanRegion(BuildPlan req, Eachable<BuildPlan> list){
         Draw.rect(region, req.drawx(), req.drawy());
         Draw.rect(inRegion, req.drawx(), req.drawy(), req.rotation * 90);
         Draw.rect(outRegion, req.drawx(), req.drawy(), req.rotation * 90);
         Draw.rect(topRegion, req.drawx(), req.drawy());
     }
 
-    public class BlockLoaderBuild extends PayloadAcceptorBuild<BuildPayload>{
+    public class BlockLoaderBuild extends PayloadBlockBuild<BuildPayload>{
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
@@ -134,7 +133,7 @@ public class BlockLoader extends PayloadAcceptor{
 
                 //load up liquids (disabled)
                 /*
-                if(payload.block().hasLiquids && liquids.total() >= 0.001f){
+                if(payload.block().hasLiquids && liquids.currentAmount() >= 0.001f){
                     Liquid liq = liquids.current();
                     float total = liquids.currentAmount();
                     float flow = Math.min(Math.min(liquidsLoaded * delta(), payload.block().liquidCapacity - payload.entity.liquids.get(liq) - 0.0001f), total);
@@ -152,7 +151,7 @@ public class BlockLoader extends PayloadAcceptor{
 
         public boolean shouldExport(){
             return payload != null &&
-                ((payload.block().hasLiquids && payload.build.liquids.total() >= payload.block().liquidCapacity - 0.001f) ||
+                ((payload.block().hasLiquids && payload.build.liquids.currentAmount() >= payload.block().liquidCapacity - 0.001f) ||
                 (payload.block().hasItems && payload.build.items.total() >= payload.block().itemCapacity));
         }
     }

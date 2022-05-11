@@ -1,6 +1,6 @@
 package betamindy.world.blocks.defense.turrets;
 
-import arc.Core;
+import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -15,7 +15,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
@@ -38,6 +37,7 @@ public class DrillTurret extends BaseTurret {
     public float mineSpeed = 0.75f;
     public float laserOffset = 4f, shootCone = 6f;
 
+    public @Nullable ConsumeLiquidBase consumeCoolant;
 
     public DrillTurret(String name){
         super(name);
@@ -105,9 +105,9 @@ public class DrillTurret extends BaseTurret {
         }
 
         public void reMap(){
-            proxOres = new Seq<Tile>();
-            proxItems = new Seq<Item>();
-            ObjectSet<Item> tempItems = new ObjectSet<Item>();
+            proxOres = new Seq<>();
+            proxItems = new Seq<>();
+            ObjectSet<Item> tempItems = new ObjectSet<>();
 
             Geometry.circle(tile.x, tile.y, (int)(range / tilesize + 0.5f), (x, y) -> {
                 Tile other = world.tile(x, y);
@@ -157,15 +157,15 @@ public class DrillTurret extends BaseTurret {
 
             //target ore
             targetMine(core);
-            if(core == null || mineTile == null || !consValid() || !Angles.within(rotation, angleTo(mineTile), shootCone) || items.get(mineTile.drop()) >= itemCapacity){
+            if(core == null || mineTile == null || !canConsume() || !Angles.within(rotation, angleTo(mineTile), shootCone) || items.get(mineTile.drop()) >= itemCapacity){
                 mineTile = null;
                 mineTimer = 0f;
             }
 
             if(mineTile != null){
                 //consume coolant
-                if(acceptCoolant){
-                    float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount;
+                if(consumeCoolant != null){
+                    float maxUsed = consumeCoolant.amount;
 
                     Liquid liquid = liquids.current();
 
@@ -248,11 +248,11 @@ public class DrillTurret extends BaseTurret {
                 mineTile = null;
             }
             else{
-                if(consValid() && timer.get(timerTarget, 60) && targetItem != null && targetID > -1){
+                if(canConsume() && timer.get(timerTarget, 60) && targetItem != null && targetID > -1){
                     ore = proxOres.get(targetID);
                 }
 
-                if(ore != null && consValid()){
+                if(ore != null && canConsume()){
                     float dest = angleTo(ore);
                     rotation = Angles.moveToward(rotation, dest, rotateSpeed * edelta());
                     if(Angles.within(rotation, dest, shootCone)){
@@ -284,7 +284,7 @@ public class DrillTurret extends BaseTurret {
 
             Draw.color(Color.lightGray, Color.white, 1f - flashScl + Mathf.absin(Time.time, 0.5f, flashScl));
 
-            Drawf.laser(team(), laser, laserEnd, px, py, ex, ey, laserWidth);
+            Drawf.laser(laser, laserEnd, px, py, ex, ey, laserWidth);
 
             Draw.color();
         }

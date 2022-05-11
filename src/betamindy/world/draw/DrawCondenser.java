@@ -5,9 +5,9 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 
 public class DrawCondenser extends DrawBlock {
@@ -20,12 +20,13 @@ public class DrawCondenser extends DrawBlock {
     public float particleLife = 40f, particleRad = 7f, particleLen = 4f;
 
     @Override
-    public void draw(GenericCrafter.GenericCrafterBuild build){
+    public void draw(Building build){
         Draw.rect(build.block.region, build.x, build.y);
-        float si = Mathf.absin(flameAlphaScl, flameAlphaMag) * build.warmup;
+        float warmup = build.warmup();
+        float si = Mathf.absin(flameAlphaScl, flameAlphaMag) * warmup;
 
-        if(build.warmup > 0f && midColor.a > 0.001f){
-            float a = alpha * build.warmup;
+        if(warmup > 0f && midColor.a > 0.001f){
+            float a = alpha * warmup;
 
             float base = (Time.time / particleLife);
             rand.setSeed(build.id);
@@ -43,7 +44,7 @@ public class DrawCondenser extends DrawBlock {
                 float r = rand.random(0.4f, 0.8f) * particleLen * (1f + Mathf.absin(centerRadScl * 1.5f, centerRadMag));
                 float len = rand.random(0.25f, 0.45f) * r * (1f + Mathf.absin(centerRadScl, centerRadMag));
                 float angle = rand.range(20f) + i * 120f + Time.time;
-                Fill.circle(build.x + Angles.trnsx(angle, len), build.y + Angles.trnsy(angle, len), r * build.warmup + 0.01f);
+                Fill.circle(build.x + Angles.trnsx(angle, len), build.y + Angles.trnsy(angle, len), r * warmup + 0.01f);
             }
 
             Draw.reset();

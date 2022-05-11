@@ -55,7 +55,7 @@ public class StatusWall extends Wall {
         @Override
         public void drawLight(){
             super.drawLight();
-            Drawf.light(team, x, y, 16f * size, status.color, 0.2f);
+            Drawf.light(x, y, 16f * size, status.color, 0.2f);
         }
     }
 }

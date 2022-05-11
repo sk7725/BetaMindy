@@ -79,7 +79,7 @@ public class Campfire extends Block {
     @Override
     public void setBars(){
         super.setBars();
-        bars.add("fuel", (CampfireBuild entity) -> new Bar(() -> Core.bundle.get("content.item.name"), entity::barColor, entity::fract));
+        addBar("fuel", (CampfireBuild entity) -> new Bar(() -> Core.bundle.get("content.item.name"), entity::barColor, entity::fract));
     }
 
     public class CampfireBuild extends Building implements PushReact, SpinUpdate, SpinDraw {

@@ -307,7 +307,7 @@ public class Altar extends Block {
                 t.image().color(Pal.gray).fillX().growX().height(4f).padBottom(3f);
                 t.row();
                 t.table(s -> {
-                    s.button(Icon.left, Styles.clearTransi, () -> {
+                    s.button(Icon.left, Styles.cleari, () -> {
                         if(menuPage > 0){
                             menuPage--;
                             buildConfiguration(table);
@@ -320,7 +320,7 @@ public class Altar extends Block {
                         sm.label(() -> pages.get(Mathf.clamp(menuPage, 0, pages.size - 1)).local()).get().setStyle(new Label.LabelStyle(Styles.outlineLabel));
                     }).grow();
 
-                    s.button(Icon.right, Styles.clearTransi, () -> {
+                    s.button(Icon.right, Styles.cleari, () -> {
                         if(menuPage < pages.size - 1){
                             menuPage++;
                             buildConfiguration(table);
@@ -344,10 +344,10 @@ public class Altar extends Block {
                 t.row();
 
                 t.table(but -> {
-                    but.button("Start", new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")).tint(Pal2.portal), Styles.transt, () -> {
+                    but.button("Start", new TextureRegionDrawable(Core.atlas.find("betamindy-hardmode-portal-icon")).tint(Pal2.portal), Styles.cleart, () -> {
                         configure(menuPage + 1);
                     }).height(33f).growX().disabled(b -> !canStart()).get().getLabel().setStyle(new Label.LabelStyle(Styles.techLabel));
-                    but.button(Icon.info, Styles.clearTransi, 27f, () -> {
+                    but.button(Icon.info, Styles.cleari, 27f, () -> {
                         //todo
                     }).size(33f).disabled(b -> isLocked(menuPage));
                 }).fillX().visible(() -> phase > 0);
@@ -521,7 +521,7 @@ public class Altar extends Block {
         public void drawingCircle(float x, float y, float r, float f, float stroke){
             stroke(stroke * f);
             if(f > 0.99f) circle(x, y, r);
-            else polySeg(circleVertices(r) * 2, 0, (int)(circleVertices(r) * 2 * f), x, y, r, 0f);
+            else arc(x, y, r, f, 0f, circleVertices(r) * 2);
         }
 
         @Override

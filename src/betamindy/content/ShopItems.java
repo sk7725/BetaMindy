@@ -12,22 +12,20 @@ import betamindy.type.*;
 import betamindy.type.shop.*;
 import mindustry.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 
 import static java.lang.Float.*;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 
-public class ShopItems implements ContentList {
+public class ShopItems{
     public static ShopItem package1, package2, package3, package4, package5, package6, package7, package8, package9, package10, package11, package12, package13,
     holyRouter;
     public static PurchaseItem firstAid, invincibleCore, milk, coffee, herbTea, flowerTea, pancake, glowstick, sporeJuice, cocktail, bittriumWine, diodeCookie, bossCake, anucoins2000, anucoins4200, anucoins12000;
 
-    @Override
-    public void load(){
+    public static void load(){
         /* packages */
         package1 = new PackageShopItem("entry-package",
                 ItemStack.with(Items.copper, 100, Items.lead, 100)

@@ -8,13 +8,20 @@ import betamindy.util.*;
 import mindustry.graphics.*;
 
 import static betamindy.BetaMindy.hardmode;
+import static mindustry.Vars.*;
 
 public class TeleportPortal extends TeleportPad {
     public float portalRadius = 14f;
+
     public TeleportPortal(String name){
         super(name);
-        expanded = true;
         animateNear = false;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        clipSize = Math.max(clipSize, portalRadius * 2f + size * tilesize * 2f);
     }
 
     public class TeleportPortalBuild extends TeleportPadBuild {
@@ -28,7 +35,7 @@ public class TeleportPortal extends TeleportPad {
 
         @Override
         public void drawLight(){
-            Drawf.light(team, x, y, lightRadius, BetaMindy.hardmode.color(), 0.8f * heat);
+            Drawf.light(x, y, lightRadius, BetaMindy.hardmode.color(), 0.8f * heat);
         }
     }
 }

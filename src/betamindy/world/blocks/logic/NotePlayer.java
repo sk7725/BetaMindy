@@ -167,7 +167,7 @@ public class NotePlayer extends Block {
         //plays a note quietly for note testing
         public void testNote(){
             if(headless || !enabled) return;
-            if(global && consValid()){
+            if(global && canConsume()){
                 playNote();
                 return;
             }
@@ -197,7 +197,7 @@ public class NotePlayer extends Block {
         public void updateTile(){
             if(heat > 0f) heat -= delta() * 0.05f;
 
-            if(consValid()){
+            if(canConsume()){
                 if(!trig){
                     playNote();
                     trig = true;
@@ -275,11 +275,11 @@ public class NotePlayer extends Block {
                 frame.table(Tex.pane, t -> {
                     t.defaults().pad(0);
                     instButton(t, -1, false);
-                    t.button(Icon.left, Styles.accenti, 30, () -> {
+                    t.button(Icon.left, Styles.grayi, 30, () -> {
                         configure(-102 - Mathf.mod(mode - 1, instruments.length));
                     }).size(30).color(Pal.accent);
                     instButton(t, 0 , true);
-                    t.button(Icon.right, Styles.accenti, 30, () -> {
+                    t.button(Icon.right, Styles.grayi, 30, () -> {
                         configure(-102 - Mathf.mod(mode + 1, instruments.length));
                     }).size(30).color(Pal.accent);
                     instButton(t, 1, false);

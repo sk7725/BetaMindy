@@ -1,26 +1,20 @@
 package betamindy.entities.bullet;
 
-import arc.Core;
-import arc.Events;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
-import betamindy.world.blocks.defense.turrets.PayloadTurret;
+import betamindy.world.blocks.defense.turrets.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
-import mindustry.entities.Damage;
-import mindustry.entities.EntityGroup;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.game.EventType.*;
 import mindustry.gen.*;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
-import mindustry.ui.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 
-import static mindustry.Vars.emptyTile;
+import static mindustry.Vars.*;
 
 public class PayloadBullet extends ArtilleryBulletType {
     public float altitude = 40f;
@@ -31,7 +25,7 @@ public class PayloadBullet extends ArtilleryBulletType {
         collidesAir = false;
         collidesGround = false;
         collides = false;
-        scaleVelocity = true;
+        scaleLife = true;
         hittable = false;
         absorbable = false;
         reflectable = false;

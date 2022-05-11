@@ -2,20 +2,17 @@ package betamindy.content;
 
 import arc.graphics.*;
 import arc.util.*;
-import betamindy.graphics.*;
 import betamindy.planets.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.graphics.g3d.*;
 import mindustry.type.*;
 
-public class MindyPlanets implements ContentList {
+public class MindyPlanets{
     public static Planet shar, routercube;
 
-    @Override
-    public void load(){
+    public static void load(){
         try{
-            shar = new Planet("shar", Planets.serpulo, 2, 1f) {{
+            shar = new Planet("shar", Planets.serpulo, 1f, 2) {{
                 atmosphereColor = Color.gray.cpy();
                 landCloudColor = Color.clear.cpy();
                 atmosphereRadOut = 0.5f;
