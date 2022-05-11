@@ -2,7 +2,13 @@ plugins{
     id "java"
 }
 
-group pGroup
+ext{
+    sdkRoot = System.getenv("ANDROID_HOME")
+    sdkVersion = '30'
+    artifactFilename = "BetaMindy.jar"
+}
+
+group "sk7725"
 
 sourceSets.main{
     java.srcDir("src/")
@@ -16,16 +22,11 @@ repositories{
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.4.0'
-    compileOnly "com.github.Anuken.MindustryJitpack:core:935b478139"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:2f8b009dbb"
     compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce56"
 }
 
-ext{
-    sdkRoot = System.getenv("ANDROID_HOME")
-    sdkVersion = '30'
-}
-
-jar.archiveFileName.set("raw-$pArtifactFilename")
+jar.archiveFileName.set("raw-$artifactFilename")
 
 def isWindows = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")
 
@@ -42,9 +43,9 @@ task alphableed doFirst{
 }
 
 task dexify(type: Jar){
-    archiveFileName.set(pArtifactFilename)
+    archiveFileName.set(artifactFilename)
 
-    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, "raw-$pArtifactFilename"),
+    final File jarArtifact = new File(tasks.jar.archiveFile.get().asFile.parent, "raw-$artifactFilename"),
                dexedArtifact = new File(tasks.dexify.getTemporaryDir(), "dexed.jar")
 
     doFirst{
@@ -53,7 +54,7 @@ task dexify(type: Jar){
 
         exec{
             workingDir dexedArtifact.parent
-            def command = ["d8", "--min-api", pMinApi]
+            def command = ["d8", "--min-api", "14"]
             for(def file : files){
                 command += "--classpath"
                 command += file.path
