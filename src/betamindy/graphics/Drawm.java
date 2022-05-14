@@ -534,33 +534,8 @@ public class Drawm {
 
     /** Outlines a given textureRegion. Run in createIcons. */
     public static void outlineRegion(MultiPacker packer, TextureRegion tex, Color outlineColor, String name){
-        final int radius = 4;
-        PixmapRegion region = Core.atlas.getPixmap(tex);
-        Pixmap out = new Pixmap(region.width, region.height);
-        Color color = new Color();
-        for(int x = 0; x < region.width; x++){
-            for(int y = 0; y < region.height; y++){
-
-                region.get(x, y, color);
-                out.set(x, y, color);
-
-                if(color.a < 1f){
-                    boolean found = false;
-                    outer:
-                    for(int rx = -radius; rx <= radius; rx++){
-                        for(int ry = -radius; ry <= radius; ry++){
-                            if(Structs.inBounds(rx + x, ry + y, region.width, region.height) && Mathf.within(rx, ry, radius) && color.set(region.getRaw(rx + x, ry + y)).a > 0.01f){
-                                found = true;
-                                break outer;
-                            }
-                        }
-                    }
-                    if(found){
-                        out.set(x, y, outlineColor.rgba());
-                    }
-                }
-            }
-        }
+        Pixmap out = Pixmaps.outline(Core.atlas.getPixmap(tex), outlineColor, 4);
+        Drawf.checkBleed(out);
         packer.add(MultiPacker.PageType.main, name, out);
     }
 
