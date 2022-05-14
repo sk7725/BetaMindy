@@ -13,12 +13,11 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
-import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.payloads.*;
 
 import java.util.*;
 
-import static arc.Core.atlas;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class PayloadRail extends PayloadConveyor {
@@ -159,7 +158,7 @@ public class PayloadRail extends PayloadConveyor {
             if(!enabled) return false;
 
             if(item != null){
-                item.update(false);
+                item.update(null, this);
             }
 
             lastInterp = curInterp;

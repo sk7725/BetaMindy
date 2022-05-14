@@ -123,7 +123,7 @@ public class PayloadBullet extends ArtilleryBulletType {
         }
         if(b.data instanceof Payload pay){
             pay.set(b.x, b.y, payloadRotation(b));
-            pay.update(false);
+            pay.update(null, null);
         }
     }
 
