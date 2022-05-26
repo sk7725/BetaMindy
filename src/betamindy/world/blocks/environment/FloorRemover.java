@@ -16,8 +16,8 @@ public class FloorRemover extends Block {
     }
 
     @Override
-    public boolean canPlaceOn(Tile tile, Team team){
-        return super.canPlaceOn(tile, team) && tile.overlay() != Blocks.air && tile.overlay() instanceof DecorativeFloor;
+    public boolean canPlaceOn(Tile tile, Team team, int rotation){
+        return super.canPlaceOn(tile, team, rotation) && tile.overlay() != Blocks.air && tile.overlay() instanceof DecorativeFloor;
     }
 
     @Override

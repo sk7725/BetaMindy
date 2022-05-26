@@ -20,7 +20,7 @@ public class MindyHints{
 
     public void load(){
         Core.app.post(() -> {
-            ui.hints.hints.add(MindyHint.values()).as();
+            ui.hints.hints.add(MindyHint.values());
         });
 
         Events.on(BlockBuildBeginEvent.class, event -> {

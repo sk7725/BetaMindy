@@ -22,7 +22,7 @@ repositories{
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.4.0'
-    compileOnly "com.github.Anuken.MindustryJitpack:core:62a21c395b"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:ac6eff8014"
     compileOnly "com.github.Anuken.Arc:arc-core:dfcb21ce56"
 }
 

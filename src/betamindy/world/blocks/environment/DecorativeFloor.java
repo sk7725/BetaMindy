@@ -1,9 +1,6 @@
 package betamindy.world.blocks.environment;
 
 import betamindy.*;
-import betamindy.content.*;
-import betamindy.type.*;
-import betamindy.type.shop.*;
 import betamindy.util.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -14,7 +11,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 
-import static mindustry.type.ItemStack.with;
+import static mindustry.type.ItemStack.*;
 
 public class DecorativeFloor extends OverlayFloor {
     public boolean refund = true;
@@ -27,8 +24,8 @@ public class DecorativeFloor extends OverlayFloor {
     }
 
     @Override
-    public boolean canPlaceOn(Tile tile, Team team){
-        return super.canPlaceOn(tile, team) && (tile.overlay() == Blocks.air || ((tile.overlay() instanceof DecorativeFloor) && tile.overlay().id != id));
+    public boolean canPlaceOn(Tile tile, Team team, int rotation){
+        return super.canPlaceOn(tile, team, rotation) && (tile.overlay() == Blocks.air || ((tile.overlay() instanceof DecorativeFloor) && tile.overlay().id != id));
     }
 
     @Override

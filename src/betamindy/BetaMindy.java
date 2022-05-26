@@ -47,7 +47,6 @@ public class BetaMindy extends Mod{
     public static MFilters filters = new MFilters();
 
     public BetaMindy() {
-        super();
         pushUtil.init();
         musics.init();
         MindySounds.load();
