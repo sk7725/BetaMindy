@@ -102,7 +102,7 @@ public class Altar extends Block {
     }
 
     @Override
-    public boolean canPlaceOn(Tile tile, Team team){
+    public boolean canPlaceOn(Tile tile, Team team, int rotation){
         return super.canBeBuilt() && (team == Team.derelict || currentAltar == null || !currentAltar.isValid());
     }
 

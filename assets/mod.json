@@ -6,7 +6,7 @@
   "subtitle": "Demo of Chaos Itself",
   "version": "1.08",
   "main": "betamindy.BetaMindy",
-  "minGameVersion": "136",
+  "minGameVersion": "22568",
   "dependencies": [],
   "hidden": false
 }
