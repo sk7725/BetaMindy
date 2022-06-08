@@ -80,8 +80,6 @@ public class BetaMindy extends Mod{
 
     @Override
     public void init(){
-        Vars.enableConsole = true;
-
         scoreLib.loadItems();
 
         itemScores = scoreLib.scores();
