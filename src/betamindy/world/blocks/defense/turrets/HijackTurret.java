@@ -82,8 +82,7 @@ public class HijackTurret extends Turret {
 
     @Override
     public void init(){
-        //TODO: uncomment -Anuke
-        //consumePowerDynamic(HijackTurretBuild::powerUsage);
+        consumePowerDynamic(HijackTurretBuild::powerUsage);
         super.init();
         if(chargeShootLength < 0) chargeShootLength = size * tilesize * 0.7f;
         if(chargeXRand < 0) chargeXRand = chargeShootLength * 0.8f;
@@ -217,14 +216,14 @@ public class HijackTurret extends Turret {
                 occupied.set(i, false);
             }
             return false;
-        }
+        }*/
 
 
 
         public float powerUsage(){
             if(isActive() && links.size > 0){
                 Building b = world.build(links.get(current % links.size));
-                if(b != null && b.block instanceof PowerTurret p) return powerUse + p.powerUse;
+                if(b != null && b.block.consumesPower) return powerUse + b.block.consPower.usage;
             }
             return powerUse;
         }
@@ -232,6 +231,7 @@ public class HijackTurret extends Turret {
         public float realReload(float r){
             return r / (efficiency() * reloadMultiplier);
         }
+        /*
 
         public void shoot(BulletType type, TurretBuild build, int n){
             shoot(type, build, n, true, shots == 1 ? 0f : (-(int) (shots / 2f)) * spread);
