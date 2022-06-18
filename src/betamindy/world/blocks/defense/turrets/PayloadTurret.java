@@ -132,7 +132,7 @@ public class PayloadTurret extends Turret{
 
             wasShooting = false;
 
-            curRecoil = Math.max(curRecoil - Time.delta / recoilTime , 0);
+            curRecoil = Mathf.approachDelta(curRecoil, 0, 1 / recoilTime);
             heat = Math.max(heat - Time.delta / cooldownTime, 0);
             if(payheat > 0f) payheat = Mathf.lerpDelta(payheat, 0f, 0.09f);
 
@@ -315,6 +315,16 @@ public class PayloadTurret extends Turret{
 
             type.create(this, team, bulletX, bulletY, shootAngle, -1f, 1f, lifeScl, payload);
             payload = null;
+
+            (shootEffect == null ? type.shootEffect : shootEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
+            (smokeEffect == null ? type.smokeEffect : smokeEffect).at(bulletX, bulletY, rotation + angleOffset, type.hitColor);
+            shootSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
+            if(shake > 0){
+                Effect.shake(shake, shake, this);
+            }
+
+            curRecoil = 1f;
+            heat = 1f;
         }
 
 

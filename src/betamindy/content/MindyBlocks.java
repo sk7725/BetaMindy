@@ -585,6 +585,7 @@ public class MindyBlocks{
             liquidCapacity = 10f;
             recoil = 0f;
             shootSound = Sounds.flame;
+            shootEffect = MindyFx.shootStarFlame;
             range = 65f;
             health = 300;
             extinguish = false;
@@ -1605,13 +1606,13 @@ public class MindyBlocks{
 
         noteBlock = new NotePlayer("note-block"){{
             consumePower(0.5f);
-            requirements(Category.logic, with(Items.copper, 10, Items.silicon, 5, Items.graphite, 10));
+            requirements(Category.logic, with(Items.silicon, 5, Items.graphite, 10));
         }};
 
         starNoteBlock = new NotePlayer("star-note-block"){{
             global = true;
             consumePower(0.8f);
-            requirements(Category.logic, with(Items.copper, 20, Items.silicon, 5, Items.graphite, 10, MindyItems.starStone, 1));
+            requirements(Category.logic, with(Items.silicon, 5, Items.graphite, 10, MindyItems.starStone, 1));
         }};
 
         sfxBlock = new NotePlayer("sfx-block"){{
