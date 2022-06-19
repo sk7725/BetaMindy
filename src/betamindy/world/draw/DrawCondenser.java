@@ -21,7 +21,7 @@ public class DrawCondenser extends DrawBlock {
 
     @Override
     public void draw(Building build){
-        Draw.rect(build.block.region, build.x, build.y);
+        //Draw.rect(build.block.region, build.x, build.y);
         float warmup = build.warmup();
         float si = Mathf.absin(flameAlphaScl, flameAlphaMag) * warmup;
 

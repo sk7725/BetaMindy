@@ -992,10 +992,10 @@ public class MindyBlocks{
             hasPower = hasLiquids = true;
             craftEffect = Fx.formsmoke;
             updateEffect = Fx.none;
-            drawer = new DrawCultivator(){{
+            drawer = new DrawMulti(new DrawDefault(), new DrawCultivator(){{
                 plantColor = Liquids.water.color;
                 plantColorLight = Color.royal.cpy().lerp(Color.white, 0.3f);
-            }};
+            }}, new DrawRegion("-top"));
 
             consumeLiquid(MindyLiquids.siloxol, 0.15f);
             consumePower(0.4f);
@@ -1036,7 +1036,7 @@ public class MindyBlocks{
             craftEffect = MindyFx.releaseSteamSmall;
             squareSprite = false;
 
-            drawer = new DrawCondenser();
+            drawer = new DrawMulti(new DrawDefault(), new DrawCondenser());
             ((LiquidRefiner) electroRefiner).condenser = this;
             consumeItems(with(Items.graphite, 4));
             consumePower(1.05f);
@@ -1055,8 +1055,8 @@ public class MindyBlocks{
             rotate = false;
             solid = true;
             outputsLiquid = true;
-            //TODO: test and replace this with new sprites to support the new animated liquid system -Anuke
-            drawer = new DrawMulti(new DrawDefault(), new DrawLiquidTile(MindyLiquids.colloid), new DrawRegion("-top"));
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(MindyLiquids.colloid), new DrawDefault(), new DrawRegion("-top"));
+            liquidCapacity = 24f;
 
             consumePower(1.5f);
             consumeItem(Items.titanium);

@@ -7,6 +7,7 @@ import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 
+import static mindustry.Vars.renderer;
 import static mindustry.entities.Puddles.maxLiquid;
 
 public class ForceLiquid extends AnimatedLiquid{
@@ -29,8 +30,17 @@ public class ForceLiquid extends AnimatedLiquid{
 
         Draw.z(Layer.shields);
         Draw.color(color, 1f);
-        Fill.poly(x + Mathf.sin(Time.time + id * 532, sscl, smag), y + Mathf.sin(Time.time + id * 53, sscl, smag), 6, f * 8f);
-
+        float vx = x + Mathf.sin(Time.time + id * 532, sscl, smag), vy = y + Mathf.sin(Time.time + id * 53, sscl, smag);
+        if(renderer.animateShields) {
+            Fill.poly(vx, vy, 6, f * 8f);
+        }else{
+            Lines.stroke(1.5f);
+            Draw.alpha(0.09f);
+            Fill.poly(vx, vy, 6, f * 8f);
+            Draw.alpha(1f);
+            Lines.poly(vx, vy, 6, f * 8f);
+            Draw.reset();
+        }
         Draw.color();
         Draw.z(z);
 

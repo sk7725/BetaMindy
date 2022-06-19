@@ -135,13 +135,12 @@ public class PayloadTurret extends Turret{
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1 / recoilTime);
             heat = Math.max(heat - Time.delta / cooldownTime, 0);
             if(payheat > 0f) payheat = Mathf.lerpDelta(payheat, 0f, 0.09f);
+            recoilOffset.trns(rotation, -Mathf.pow(curRecoil, recoilPow) * recoil);
 
-            if(unit != null){
-                unit.health(health);
-                unit.rotation(rotation);
-                unit.team(team);
-                unit.set(x, y);
-            }
+            unit.health(health);
+            unit.rotation(rotation);
+            unit.team(team);
+            unit.set(x, y);
 
             if(logicControlTime > 0){
                 logicControlTime -= Time.delta;
@@ -243,8 +242,6 @@ public class PayloadTurret extends Turret{
             }
 
             Draw.z(Layer.turret);
-
-            recoilOffset.trns(rotation, -recoil);
 
             Drawf.shadow(region, x + recoilOffset.x - elevation, y + recoilOffset.y - elevation, rotation - 90);
             //TODO this may be wrong, and you may want to have different drawing for the turret itself -Anuke
@@ -374,11 +371,11 @@ public class PayloadTurret extends Turret{
             payload = (T)pay;
             this.payVector.set(source).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
             this.payRotation = pay.rotation() + rotationOffset();
+            if(payload instanceof BuildPayload bp && !bp.block().rotate) this.payRotation = 0f;
 
             updatePayload();
         }
 
-        /** */
         public void moveInPayload(boolean rotate){
             if(payload == null) return;
 
@@ -415,7 +412,8 @@ public class PayloadTurret extends Turret{
         public void updatePayload(){
             if(payload != null){
                 if(hasArrived()){
-                    Tmp.v1.trns(rotation, loadProgress);
+                    Tmp.v1.trns(rotation, payloadOffset);
+                    Tmp.v1.add(recoilOffset);
                     payload.set(x + Tmp.v1.x, y + Tmp.v1.y, payRotation);
                 }else{
                     payload.set(x + payVector.x, y + payVector.y, payRotation);
