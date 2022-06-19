@@ -114,16 +114,27 @@ public class RailSorter extends PayloadRail {
             if(item != null && controlTime <= 0f){
                 int rotations = 0;
                 boolean gets = getSort(item, sorter);
-                do{
-                    rotation = (rotation + 1) % 4;
+                if(gets && sorter != 0){
+                    //only push to front
+                    rotation = setRotation;
                     onProximityUpdate();
-                    //force update to transfer if necessary
-                    if(next instanceof PayloadConveyorBuild && !(next instanceof RailSorterBuild)){
+
+                    if (next instanceof PayloadConveyorBuild && !(next instanceof RailSorterBuild)) {
                         next.updateTile();
                     }
-                    //this condition intentionally uses "accept from itself" conditions, because payload conveyors only accept during the start
-                    //"accept from self" conditions are for dropped payloads and are less restrictive
-                }while((blocked || next == null || !next.acceptPayload(next, item) || (sorter != 0 && ((gets && rotation != setRotation) || (!gets && rotation == setRotation)))) && ++rotations < 4);
+                }
+                else{
+                    do {
+                        rotation = (rotation + 1) % 4;
+                        onProximityUpdate();
+                        //force update to transfer if necessary
+                        if (next instanceof PayloadConveyorBuild && !(next instanceof RailSorterBuild)) {
+                            next.updateTile();
+                        }
+                        //this condition intentionally uses "accept from itself" conditions, because payload conveyors only accept during the start
+                        //"accept from self" conditions are for dropped payloads and are less restrictive
+                    } while ((blocked || next == null || !next.acceptPayload(next, item) || (sorter != 0 && ((gets && rotation != setRotation) || (!gets && rotation == setRotation)))) && ++rotations < 4);
+                }
             }
         }
 

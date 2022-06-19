@@ -1566,6 +1566,7 @@ public class MindyBlocks{
             teleportIn = MindyFx.unitInPortal;
             teleportOut = MindyFx.portalWaveSmall;
             teleportUnit = MindyFx.unitOutPortal;
+            hasShadow = false;
         }};
 
         //frostPad = new FrostPad("frostpad"){

@@ -41,7 +41,7 @@ public class BetaMindy extends Mod{
     public static MindyUILoader mui = new MindyUILoader();
 
     public static Seq<Block> visibleBlockList = new Seq<Block>();
-    public static boolean uwu = OS.username.equals("sunny") || OS.username.equals("starw") || OS.username.equals("anuke");
+    public static boolean uwu = OS.username.equals("sunny") || OS.username.equals("anuke") || OS.username.equals("feeli");
     public static boolean inventoryUI = false;
     //public static UnitGravity gravity = new UnitGravity();
     public static MFilters filters = new MFilters();
@@ -50,6 +50,7 @@ public class BetaMindy extends Mod{
         pushUtil.init();
         musics.init();
         MindySounds.load();
+        Log.info(OS.username);
 
         Core.settings.defaults("slimeeffect", true, "correctview", true, "accelballs", true, "nonmoddedservers", false, "animlevel", 2, "ifritview", false, "touchpadenable", mobile, "touchpadalways", false);
         Events.on(ClientLoadEvent.class, e -> {
