@@ -99,7 +99,7 @@ public class Shop extends PayloadBlock {
     }
 
     public int checkUnitType(UnitType unit){
-        if(unit.flying) return 1;
+        if(unit.flying || unit.constructor == null) return 1;
 
         Unit u = unit.constructor.get();
 
