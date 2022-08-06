@@ -25,7 +25,7 @@ import static mindustry.Vars.*;
 public class BetaMindy extends Mod{
     public static final String githubURL = "https://github.com/sk7725/BetaMindy";
     public static final String shortName = "[#b59e72]Demo of Chaos Itself[]"; //do not use bundles unless you want to region-lock the multiplayer experience
-    public static final String omegaServer = "yeeth.mindustry.me:4004";
+    public static final String omegaServer = "n1.yeet.ml:6603";
 
     public static XeloUtil pushUtil = new XeloUtil();
     public static MobileFunctions mobileUtil = new MobileFunctions();
