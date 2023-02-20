@@ -8,5 +8,6 @@
   "main": "betamindy.BetaMindy",
   "minGameVersion": "138",
   "dependencies": [],
-  "hidden": false
+  "hidden": false,
+  "repo": "sk7725/BetaMindy"
 }
