@@ -141,6 +141,11 @@ public class HijackTurret extends Turret {
         public float progress = 0f, warmup = 0f, heatup = 0f;
         private TextureRegion prevTurret = rawRegion, curTurret = rawRegion;
 
+        public BulletType useAmmo() {
+            if(ammo.isEmpty()) return peekAmmo();
+            return super.useAmmo();
+        }
+
         @Override
         public void updateTile(){
             unit.ammo(power.status * unit.type().ammoCapacity);
@@ -223,7 +228,10 @@ public class HijackTurret extends Turret {
         public float powerUsage(){
             if(isActive() && links.size > 0){
                 Building b = world.build(links.get(current % links.size));
-                if(b != null && b.block.consumesPower) return powerUse + b.block.consPower.usage;
+                //checking if link not null, consumes power and cons power not null
+                if(b != null && b.block.consumesPower && b.block.consPower != null) {
+                    return powerUse + b.block.consPower.usage;
+                }
             }
             return powerUse;
         }

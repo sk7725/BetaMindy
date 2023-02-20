@@ -5,6 +5,7 @@ plugins{
 ext{
     sdkRoot = System.getenv("ANDROID_HOME")
     sdkVersion = '30'
+    mindustryVersion = 'v141'
     artifactFilename = "BetaMindy.jar"
 }
 
@@ -22,9 +23,9 @@ repositories{
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.8.0'
-    compileOnly "com.github.Anuken.Mindustry:core:v138"
-    compileOnly "com.github.Anuken.Arc:flabel:v138"
-    compileOnly "com.github.Anuken.Arc:arc-core:v138"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Arc:flabel:$mindustryVersion"
+    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
 }
 
 jar.archiveFileName.set("raw-$artifactFilename")
