@@ -73,7 +73,7 @@ public class PayloadDeconstructor extends PayloadBlock {
             return ((BuildPayload)pay).block().requirements;
         }
         else if(pay instanceof UnitPayload){
-            return UnitLib.costs.get(((UnitPayload)pay).unit.type);
+            return ((UnitPayload)pay).unit.type.getTotalRequirements();
         }
         return defaultStack;
     }

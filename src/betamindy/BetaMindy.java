@@ -132,10 +132,7 @@ public class BetaMindy extends Mod{
 
             hints.load();
             mui.init();
-            UnitLib.init();
         });
-
-        Events.run(ServerLoadEvent.class, UnitLib::init);
 
         Events.run(WorldLoadEvent.class, () -> {
             if(!headless){
