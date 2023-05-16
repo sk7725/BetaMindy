@@ -81,14 +81,12 @@ public class ScoreLib {
         float score = getScoreUnitWeapons(unit);
 
         score += (unit.health * 0.3f + unit.dpsEstimate * 0.2f) * unit.speed * Math.max(unit.mineTier, 1f) * Math.max(unit.abilities.size, 1);
-        score += getStacksCost(UnitLib.calcCost(unit));
+        score += getStacksCost(unit.getTotalRequirements());
 
         return score;
     }
 
     public void itemsLoad(){
-        UnitLib.init();
-
         Seq<Item> tmpItemArray = new Seq<>();
         Seq<Float> tmpItemScores = new Seq<>();
         Seq<Integer> tmpItemTypes = new Seq<>();

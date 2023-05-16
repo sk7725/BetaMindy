@@ -22,9 +22,8 @@ repositories{
 
 dependencies{
     annotationProcessor 'com.github.Anuken:jabel:0.8.0'
-    compileOnly "com.github.Anuken.Mindustry:core:v138"
-    compileOnly "com.github.Anuken.Arc:flabel:v138"
-    compileOnly "com.github.Anuken.Arc:arc-core:v138"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:v144"
+    compileOnly "com.github.Anuken.Arc:arc-core:v144"
 }
 
 jar.archiveFileName.set("raw-$artifactFilename")
