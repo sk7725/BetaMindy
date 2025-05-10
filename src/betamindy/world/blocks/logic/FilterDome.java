@@ -62,7 +62,7 @@ public class FilterDome extends Block {
         public final Color lastColor = Pal2.clearWhite.cpy();
 
         public float realRange(){
-            return efficiency() * range;
+            return efficiency * range;
         }
 
         public void setFilter(int i){

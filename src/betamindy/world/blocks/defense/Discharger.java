@@ -39,7 +39,7 @@ public class Discharger extends Battery {
     public int pushLength = 10;
 
     public Color lightningColor = Pal.lancerLaser;
-    public TextureRegion shieldRegion;
+    public TextureRegion shieldRegion, topRegion;
     public Sound shootSound = Sounds.spark;
 
     public Effect shootEffect = MindyFx.powerDust;
@@ -77,6 +77,7 @@ public class Discharger extends Battery {
 
     @Override
     public TextureRegion[] icons(){
+        topRegion = atlas.find(name + "-top");
         return new TextureRegion[]{region, topRegion};
     }
 

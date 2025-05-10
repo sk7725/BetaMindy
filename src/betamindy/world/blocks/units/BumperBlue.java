@@ -39,7 +39,7 @@ public class BumperBlue extends Bumper {
             open = true;
             deflateEffect.at(this, r);
             progress = 0f;
-            pathfinder.updateTile(tile());
+            pathfinder.updateTile(tile);
         }
 
         @Override
@@ -50,7 +50,7 @@ public class BumperBlue extends Bumper {
                 if(progress >= reflateTime - animTime && Units.anyEntities(tile)) progress = reflateTime - animTime - 10f;
                 if(progress >= reflateTime){
                     open = false;
-                    pathfinder.updateTile(tile());
+                    pathfinder.updateTile(tile);
                     heat = bumpTime;
                 }
             }

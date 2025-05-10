@@ -109,7 +109,7 @@ public class ArcCrafter extends AttributeCrafter {
         public void updateTile(){
             super.updateTile();
 
-            if(!nextFlash && heat < 0.001f && Mathf.chance(flashChance * edelta()) && canConsume() && efficiency() > 0.0001f){
+            if(!nextFlash && heat < 0.001f && Mathf.chance(flashChance * edelta()) && canConsume() && efficiency > 0.0001f){
                 nextFlash = true;
                 heat = 1f;
             }
@@ -118,7 +118,7 @@ public class ArcCrafter extends AttributeCrafter {
                 heat = 1f;
             }
             heat = Mathf.approachDelta(heat, 0f, 0.05f);
-            warmup2 = Mathf.approachDelta(warmup2, efficiency(), 0.04f);
+            warmup2 = Mathf.approachDelta(warmup2, efficiency, 0.04f);
         }
 
         public void setFlameColor(Color tmp){

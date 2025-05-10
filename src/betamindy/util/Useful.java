@@ -176,8 +176,8 @@ public class Useful {
 
     /** -1null 0W 1A 2S 3D */
     public static byte wasd(){
-        float ya = Core.input.axis(Binding.move_y);
-        float xa = Core.input.axis(Binding.move_x);
+        float ya = Core.input.axis(Binding.moveY);
+        float xa = Core.input.axis(Binding.moveX);
         if(BetaMindy.mui.touchpad != null) BetaMindy.mui.touchpad.showStart();
 
         if(Math.abs(ya) > 0.2f){
@@ -193,8 +193,8 @@ public class Useful {
 
     /** -1null 0D 1W 2A 3S */
     public static byte dwas(){
-        float ya = Core.input.axis(Binding.move_y);
-        float xa = Core.input.axis(Binding.move_x);
+        float ya = Core.input.axis(Binding.moveY);
+        float xa = Core.input.axis(Binding.moveY);
         if(BetaMindy.mui.touchpad != null) BetaMindy.mui.touchpad.showStart();
 
         if(Math.abs(ya) > 0.2f){

@@ -120,7 +120,7 @@ public class Spinner extends Block {
 
         /** Below are only valid if multiBuild is true */
         protected boolean multiBuild = false; //has more blocks stuck to this things
-        protected Seq<RBuild> mbuilds = new Seq<RBuild>();
+        protected Seq<RBuild> mbuilds = new Seq<>();
 
         @Override
         public int weight(){
@@ -267,7 +267,7 @@ public class Spinner extends Block {
                     case 2 -> offset = (byte) (tileY() - b.tileY());
                     default -> offset = (byte) (b.tileX() - tileX());
                 }
-                if(b.block.size % 2 == 0) offset -= evenOffsets[rotation][0];
+                if(b.block.size % 2 == 0) offset -= (byte) evenOffsets[rotation][0];
 
                 b.tile.remove();
                 payload = new BuildPayload(b);
@@ -418,7 +418,7 @@ public class Spinner extends Block {
             spinning = read.bool();
             weight = 0;
             if(spinning){
-                spin = (float)read.b();
+                spin = read.b();
                 if(spin >= spinTime) looped = true;
                 offset = read.b();
                 if(mobile) payload = BetaMindy.mobileUtil.readPayload(read);

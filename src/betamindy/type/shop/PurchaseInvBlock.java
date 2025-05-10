@@ -32,7 +32,7 @@ public class PurchaseInvBlock extends PurchaseItem {
         itemPrice = price;
 
         localizedName = "[#" + Pal2.inventory.toString() + "]" + block.localizedName + "[]";
-        unlocked = e -> currencyItem == null || Vars.state.rules.infiniteResources || (e.team.core() != null && e.team.core().items().get(currencyItem) >= itemPrice);
+        unlocked = e -> currencyItem == null || Vars.state.rules.infiniteResources || (e.team.core() != null && e.team.core().items.get(currencyItem) >= itemPrice);
     }
 
     @Override
@@ -53,11 +53,11 @@ public class PurchaseInvBlock extends PurchaseItem {
         if(player == null) return false;
         if(currencyItem != null){
             if(source.team.core() == null) return false;
-            if(!Vars.state.rules.infiniteResources && source.team.core().items().get(currencyItem) < itemPrice) return false;
+            if(!Vars.state.rules.infiniteResources && source.team.core().items.get(currencyItem) < itemPrice) return false;
 
             if(!block.unlockedNow()) block.unlock();
             if(InventoryModule.add(block, amount, player.team)){
-                source.team.core().items().remove(currencyItem, itemPrice);
+                source.team.core().items.remove(currencyItem, itemPrice);
                 return true;
             }
             return false;

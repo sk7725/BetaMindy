@@ -110,13 +110,13 @@ public class BetaMindy extends Mod{
             }
         }
 
-        LoadedMod mod = Vars.mods.locateMod("betamindy");
+        LoadedMod mod = Vars.mods.getMod(BetaMindy.class);
         if(!headless){
             //Partial credits to ProjectUnity
 
             Func<String, String> stringf = value -> Core.bundle.get("mod." + value);
 
-            mod.meta.displayName = stringf.get(mod.meta.name + ".name");
+            mod.meta.displayName = stringf.get("betamindy.name");
             mod.meta.description = Core.bundle.get("mod.betamindy.description") + "\n\n" + Core.bundle.format("mod.betamindy.credits", Core.bundle.get("mod.codev"), Core.bundle.get("mod.contributors"), Core.bundle.get("mod.musics"));
 
             mod.meta.author = "[royal]" + mod.meta.author + "[]";

@@ -137,9 +137,8 @@ public class DrillTurret extends BaseTurret {
             return item.hardness >= minDrillTier && item.hardness <= maxDrillTier && items.get(item) < itemCapacity;
         }
 
-        @Override
         public float efficiency(){
-            return super.efficiency() * coolant;
+            return super.efficiency * coolant;
         }
 
         @Override

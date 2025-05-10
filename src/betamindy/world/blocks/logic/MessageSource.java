@@ -35,12 +35,12 @@ public class MessageSource extends MessageBlock {
             int voids = 0;
             for(int i = 0; i < proximity.size; i++){
                 Building other = proximity.get(i % proximity.size);
-                if(other.block() == MindyBlocks.messageVoid){
+                if(other.block == MindyBlocks.messageVoid){
                     voids += 1;
                 }
             }
-            if(Mathf.chance((float)voids / ((float)block().size * 4))) {
-                if(!(message == null || message.length() == 0) && voids == ((float)block().size * 4)) { // surrounded by voids and not empty
+            if(Mathf.chance((float)voids / ((float)block.size * 4))) {
+                if(!(message == null || message.length() == 0) && voids == ((float)block.size * 4)) { // surrounded by voids and not empty
                     message.setLength(0);
                 } // if there's a void, do nothing
             } else {
@@ -49,7 +49,7 @@ public class MessageSource extends MessageBlock {
                 String q = quote(Mathf.random(1, Math.max(Mathf.random(100, 160) / 7, 2)));
                 message.ensureCapacity(q.length() + 11);
                 message.setLength(0);
-                message.append("[#").append(Tmp.c1.toString()).append("]").append(q);
+                message.append("[#").append(Tmp.c1).append("]").append(q);
             }
         }
     }

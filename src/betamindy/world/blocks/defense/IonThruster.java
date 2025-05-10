@@ -104,9 +104,9 @@ public class IonThruster extends LogicSpinBlock {
         public void updateTile(){
             super.updateTile();
 
-            heat = Mathf.lerpDelta(heat, efficiency(), 0.1f);
+            heat = Mathf.lerpDelta(heat, efficiency, 0.1f);
 
-            if(efficiency() > 0.1f){
+            if(efficiency > 0.1f){
                 pushBullets(strength * edelta());
                 if(Mathf.chance(smokeChance * edelta())){
                     Tmp.v1.trns(realRotation(), smokeY, Mathf.range(0.5f) * smokeX);
@@ -143,7 +143,7 @@ public class IonThruster extends LogicSpinBlock {
 
         @Override
         public boolean shouldAmbientSound(){
-            return efficiency() > 0.1f;
+            return efficiency > 0.1f;
         }
     }
 }

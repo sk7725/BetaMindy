@@ -17,8 +17,7 @@ public class IdeologyBulletType extends SoundwaveBulletType{
 
     @Override
     public void hitEntity(Bullet b, Hitboxc other, float initialHealth){
-        if(other instanceof Unit){
-            Unit unit = (Unit)other;
+        if(other instanceof Unit unit){
             Tmp.v3.set(unit).sub(b.x, b.y).nor().scl(knockback * 80f);
             unit.impulse(Tmp.v3);
             if(unit.hasEffect(StatusEffects.boss) || unit.hasEffect(MindyStatusEffects.portal)) return;

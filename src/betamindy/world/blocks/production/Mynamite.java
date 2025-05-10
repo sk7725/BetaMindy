@@ -160,7 +160,7 @@ public class Mynamite extends Block {
         }
 
         public Building destTile(Item drops, int amount){
-            return Units.findAllyTile(team, x, y, 80, e->(e != null && e.block().hasItems && e.block().itemCapacity > 5 && !(e.block() instanceof Conveyor) && e.acceptStack(drops, amount, e) >= 1));
+            return Units.findAllyTile(team, x, y, 80, e->(e != null && e.block.hasItems && e.block.itemCapacity > 5 && !(e.block instanceof Conveyor) && e.acceptStack(drops, amount, e) >= 1));
         }
 
         public void mineTile(Tile other, float dist){

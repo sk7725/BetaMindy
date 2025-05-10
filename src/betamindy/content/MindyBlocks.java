@@ -17,7 +17,6 @@ import betamindy.world.blocks.environment.*;
 import betamindy.world.blocks.logic.*;
 import betamindy.world.blocks.payloads.*;
 import betamindy.world.blocks.power.*;
-import betamindy.world.blocks.production.PayloadDeconstructor;
 import betamindy.world.blocks.production.*;
 import betamindy.world.blocks.production.payduction.*;
 import betamindy.world.blocks.storage.*;
@@ -37,6 +36,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.payloads.PayloadDeconstructor;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.draw.*;
@@ -818,10 +818,7 @@ public class MindyBlocks{
             requirements(Category.units, with(Items.copper, 610, Items.titanium, 130, Items.silicon, 115, Items.phaseFabric, 35));
             health = 250;
             size = 7;
-            maxPaySize = 10f;
-            buildSpeed = 0.8f;
             itemCapacity = 1500;
-            refundMultiplier = 2f;
             consumePower(2.35f);
             consumeLiquid(Liquids.water, 0.8f);
         }};
@@ -839,8 +836,7 @@ public class MindyBlocks{
         }};
 
         //deprecated
-        blockWorkshop = new BlockForge("block-workshop"){{
-            replacement = Blocks.largeConstructor;
+        blockWorkshop = new Constructor("block-workshop"){{
             health = 80;
             size = 5;
             minBlockSize = 3;
@@ -853,8 +849,7 @@ public class MindyBlocks{
         }};
 
         //deprecated
-        blockFactory = new ConfigBlockForge("block-factory"){{
-            replacement = grandConstructor;
+        blockFactory = new Constructor("block-factory"){{
             health = 240;
             size = 7;
             minBlockSize = 1;
@@ -911,8 +906,7 @@ public class MindyBlocks{
         }};
 
         //deprecated
-        blockPacker = new BlockLoader("block-packer"){{
-            replacement = payloadPacker;
+        blockPacker = new PayloadLoader("block-packer"){{
             health = 80;
             size = 5;
             maxBlockSize = 4;
@@ -921,8 +915,7 @@ public class MindyBlocks{
         }};
 
         //deprecated
-        blockUnpacker = new BlockUnloader("block-unpacker"){{
-            replacement = payloadUnpacker;
+        blockUnpacker = new PayloadUnloader("block-unpacker"){{
             health = 80;
             size = 5;
             maxBlockSize = 4;
@@ -934,10 +927,7 @@ public class MindyBlocks{
         payDestroyer = new PayloadDeconstructor("payload-destroyer"){{
             health = 120;
             size = 5;
-            maxPaySize = 4f;
-            buildSpeed = 0.75f;
             itemCapacity = 800;
-            refundMultiplier = 1.75f;
             consumePower(1.8f);
             requirements(Category.crafting, BuildVisibility.hidden, with(Items.copper, 360, Items.titanium, 95, Items.silicon, 65));
         }};

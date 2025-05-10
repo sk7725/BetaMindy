@@ -159,7 +159,7 @@ public class RepairTurret extends Block{
             if(target != null && (target.dead() || target.dst(tile) - getSize(target)/2f > r || target.health() >= target.maxHealth())){
                 target = null;
             }else if(target != null && canConsume()){
-                target.heal((repairSpeed + phaseBoost * phaseHeat) * Time.delta * strength * efficiency());
+                target.heal((repairSpeed + phaseBoost * phaseHeat) * Time.delta * strength * efficiency);
                 rotation = Mathf.slerpDelta(rotation, angleTo(target), 0.5f);
                 targetIsBeingRepaired = true;
             }
@@ -190,7 +190,7 @@ public class RepairTurret extends Block{
 
         @Override
         public BlockStatus status(){
-            return Mathf.equal(efficiency(), 0f, 0.01f) ? BlockStatus.noInput : super.status();
+            return Mathf.equal(efficiency, 0f, 0.01f) ? BlockStatus.noInput : super.status();
         }
 
         @Override

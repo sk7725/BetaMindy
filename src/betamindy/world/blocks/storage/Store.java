@@ -225,7 +225,7 @@ public class Store extends Block {
                 }).padRight(10f).center();
                 if(displayCurrency != null){
                     t.image(displayCurrency.uiIcon).size(30f).center().padRight(10f).padLeft(20f);
-                    t.label(() -> team.core() == null ? "0" : team.core().items().get(displayCurrency) + "").padRight(10f).center();
+                    t.label(() -> team.core() == null ? "0" : team.core().items.get(displayCurrency) + "").padRight(10f).center();
                 }
             });
 

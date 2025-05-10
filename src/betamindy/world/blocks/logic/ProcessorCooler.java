@@ -90,7 +90,7 @@ public class ProcessorCooler extends Block {
         public int usedLinks = 0;
 
         public int realBoost(){
-            if(enabled && canConsume() && efficiency() > 0.8f){
+            if(enabled && canConsume() && efficiency > 0.8f){
                 if(acceptCoolant){
                     Liquid liquid = liquids.current();
                     return Math.max(1, Mathf.round((1f + liquid.heatCapacity) * boost));

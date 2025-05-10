@@ -202,9 +202,8 @@ public class PayloadFactory extends PayloadBlock {
             if(gate == null || !gate.isValid()) gate = g;
         }
 
-        @Override
         public float efficiency(){
-            return super.efficiency() * heat;
+            return super.efficiency * heat;
         }
 
         @Override
