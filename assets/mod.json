@@ -7,7 +7,6 @@
   "version": "1.2",
   "main": "betamindy.BetaMindy",
   "minGameVersion": "149",
-
   "dependencies": [],
   "hidden": false
 }
