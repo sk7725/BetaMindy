@@ -30,7 +30,7 @@ public class PurchaseCoin extends PurchaseItem {
         itemPrice = bittrium;
 
         localizedName = "[#" + Pal2.coin.toString() + "]" + coins + " " + Core.bundle.get("ui.anucoin.multiple") + "[]";
-        unlocked = e -> Vars.state.rules.infiniteResources || (e.team.core() != null && e.team.core().items().get(currencyItem) >= itemPrice);
+        unlocked = e -> Vars.state.rules.infiniteResources || (e.team.core() != null && e.team.core().items.get(currencyItem) >= itemPrice);
     }
 
     @Override
@@ -49,11 +49,11 @@ public class PurchaseCoin extends PurchaseItem {
     @Override
     public boolean purchase(Building source, Unit player){
         if(source.team.core() == null) return false;
-        if(!Vars.state.rules.infiniteResources && source.team.core().items().get(currencyItem) < itemPrice) return false;
+        if(!Vars.state.rules.infiniteResources && source.team.core().items.get(currencyItem) < itemPrice) return false;
 
         if(source instanceof CoinBuild cb){
             cb.handleCoin(source, coins);
-            source.team.core().items().remove(currencyItem, itemPrice);
+            source.team.core().items.remove(currencyItem, itemPrice);
             return true;
         }
         return false;

@@ -181,7 +181,7 @@ public class BlockCloner extends Block {
         }
 
         public float constructTime(){
-            return (recipe == null) ? 8f * buildSpeed : block.buildCost * buildSpeed;
+            return (recipe == null) ? 8f * buildSpeed : block.buildCostMultiplier * buildSpeed;
         }
 
         public boolean obstructed(Block b){

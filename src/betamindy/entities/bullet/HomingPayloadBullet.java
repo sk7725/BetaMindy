@@ -23,7 +23,7 @@ public class HomingPayloadBullet extends PayloadBullet{
         super.update(b);
 
         if(homingPower > 0.0001f && b.time >= homingDelay){
-            Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, Flyingc::isGrounded, t -> true);
+            Teamc target = Units.closestTarget(b.team, b.x, b.y, homingRange, Unit::isGrounded, t -> true);
             if(target != null){
                 b.vel.setAngle(Mathf.slerpDelta(b.rotation(), b.angleTo(target), homingPower));
             }

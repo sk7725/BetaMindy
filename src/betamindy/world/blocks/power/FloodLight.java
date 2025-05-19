@@ -88,7 +88,7 @@ public class FloodLight extends LogicSpinBlock{
             Draw.rect(topRegion, x, y, r);
             Draw.blend(Blending.additive);
             Draw.color(color, Color.white, 0.4f + Mathf.absin(17f, 0.2f));
-            Draw.alpha(efficiency());
+            Draw.alpha(efficiency);
             Draw.rect(lightRegion, x, y, r);
             Draw.blend();
             Draw.color();
@@ -100,7 +100,7 @@ public class FloodLight extends LogicSpinBlock{
             if(renderer != null){
                 for(int i = -2; i <= 2; i++){
                     //GLENN: not a very good way of doing this    ~DINGUS~
-                    float e = stroke * efficiency();
+                    float e = stroke * efficiency;
 
                     Tmp.v1.trns(realRotation(), radius, i * e / 1.5f);
                     Tmp.v2.trns(realRotation(), stroke / 2f);

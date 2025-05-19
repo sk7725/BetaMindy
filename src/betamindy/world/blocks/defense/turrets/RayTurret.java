@@ -174,9 +174,8 @@ public class RayTurret extends BaseTurret {
             }
         }
 
-        @Override
         public float efficiency(){
-            return super.efficiency() * coolantLevel;
+            return super.efficiency * coolantLevel;
         }
 
         public void drawLaser(float w, float ang){

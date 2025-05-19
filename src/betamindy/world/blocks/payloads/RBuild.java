@@ -170,7 +170,7 @@ public class RBuild {
         absDir = Mathf.mod(absDir, 4);
         Tile t = root.nearby(Geometry.d4x(dir) * x - Geometry.d4y(dir) * y, Geometry.d4x(dir) * y + Geometry.d4y(dir) * x); //don't ask
         if(t == null) return null;
-        if(build.block().size % 2 == 0){
+        if(build.block.size % 2 == 0){
             return t.nearby(evenOffsets[absDir][0], evenOffsets[absDir][1]);
         }
         return t;

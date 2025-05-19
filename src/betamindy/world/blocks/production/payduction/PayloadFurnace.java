@@ -8,7 +8,7 @@ import mindustry.type.*;
 import mindustry.world.blocks.production.*;
 
 public class PayloadFurnace extends PayloadFactory {
-    public Seq<CRecipe> recipe = new Seq<CRecipe>();
+    public Seq<CRecipe> recipe = new Seq<>();
 
     public PayloadFurnace(String name){
         super(name);

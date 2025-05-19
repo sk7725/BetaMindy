@@ -229,7 +229,7 @@ public class HijackTurret extends Turret {
         }
 
         public float realReload(float r){
-            return r / (efficiency() * reloadMultiplier);
+            return r / (efficiency * reloadMultiplier);
         }
         /*
 

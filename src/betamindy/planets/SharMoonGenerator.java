@@ -628,8 +628,8 @@ public class SharMoonGenerator extends PlanetGenerator {
         });
 
         float difficulty = sector.threat;
-        ints.clear();
-        ints.ensureCapacity(width * height / 4);
+        //ints.clear();
+        //ints.ensureCapacity(width * height / 4);
 
         int ruinCount = rand.random(-2, -1); //disabled ruins
         /*

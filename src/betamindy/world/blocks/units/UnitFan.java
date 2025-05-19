@@ -128,16 +128,16 @@ public class UnitFan extends LogicSpinBlock {
 
         /** Accounts for timeScale, but not deltaTime. */
         public float visualWindStr(){
-            return efficiency() * timeScale() * strength;
+            return efficiency * timeScale() * strength;
         }
 
         @Override
         public void updateTile(){
             super.updateTile();
 
-            heat = Mathf.lerpDelta(heat, efficiency(), 0.1f);
+            heat = Mathf.lerpDelta(heat, efficiency, 0.1f);
 
-            if(efficiency() > 0.1f){
+            if(efficiency > 0.1f){
                 pushUnits(strength * edelta());
                 if(hasLiquids && liquids.currentAmount() >= liquidUse * edelta()) liquids.remove(liquids.current(), liquidUse * edelta());
 
@@ -160,7 +160,7 @@ public class UnitFan extends LogicSpinBlock {
 
         @Override
         public boolean shouldAmbientSound(){
-            return efficiency() > 0.1f;
+            return efficiency > 0.1f;
         }
 
         @Override

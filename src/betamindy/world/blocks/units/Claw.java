@@ -239,7 +239,7 @@ public class Claw extends Block {
                 logicControlTime -= Time.delta;
             }
             boolean con = !isPayload() && !spinning && logicControlled();
-            boolean on = (!spinning && canConsume() && efficiency() > 0.9f) || (spinning && notNullified(x, y));
+            boolean on = (!spinning && canConsume() && efficiency > 0.9f) || (spinning && notNullified(x, y));
             if(!spinning && isPayload()) on = notNearNull(x, y);
 
             if(!con) targetV.trns(r, spinning ? Math.min(spinningRadius, range) : 8f);
