@@ -1,24 +1,31 @@
 package betamindy.world.blocks.defense.turrets;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import betamindy.content.*;
 import betamindy.graphics.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.logic.*;
+import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
@@ -135,6 +142,8 @@ public class HijackTurret extends Turret {
     public class HijackTurretBuild extends TurretBuild {
         public IntSeq links = new IntSeq();
         public BoolSeq occupied = new BoolSeq();
+        private Seq<AmmoEntry> entries = new Seq<>();
+        private final Vec2 tr = new Vec2();
         //public boolean[] occupied; //if the current turret is charging, this is true
 
         public int current = 0;
@@ -147,6 +156,14 @@ public class HijackTurret extends Turret {
             warmup = Mathf.lerpDelta(warmup, power.status, 0.08f);
             heatup = Mathf.lerpDelta(heatup, wasShooting ? power.status : 0f, 0.03f);
 
+            links.each(e -> {
+                Building b = world.tile(e).build;
+
+                if(b instanceof TurretBuild tb && !tb.ammo.isEmpty()) ammo.add(tb.ammo.peek());
+            });
+
+            if(links.size != ammo.size) ammo.clear();
+
             super.updateTile();
 
             if(!headless && !wasShooting && curTurret != rawRegion && heatup < 0.2f){
@@ -157,29 +174,46 @@ public class HijackTurret extends Turret {
             }
         }
 
+        @Nullable
+        public TurretBuild current(){
+            links.each(e -> {
+                Building b = world.tile(e).build;
+
+                if(!(b instanceof TurretBuild)) links.removeValue(e);
+            });
+
+            return links.isEmpty() ? null : (TurretBuild) world.build(links.get(current % links.size));
+        }
+
         @Override
         public boolean hasAmmo(){
-            return links.size > 0;
+            if(!links.isEmpty() && current() != null) return current().hasAmmo();
+            return links.isEmpty();
+        }
+
+        @Override
+        public BulletType useAmmo(){
+            return current() != null ? current().useAmmo() : Bullets.placeholder;
         }
 
         @Override
         public BulletType peekAmmo(){
-            return Bullets.placeholder; //nothing, actually
+            return current() != null ? current().peekAmmo() : Bullets.placeholder;
         }
 
-        /*TODO: re-implement this -Anuke
 
         @Override
         protected void updateShooting(){
+            if(links.isEmpty()) return;
             reloadCounter += delta() * baseReloadSpeed();
 
-            if(reloadCounter >= reload && !charging){
+            if(reloadCounter >= reload){
                 sanitize();
 
                 if(tryShoot(current)){
                     reloadCounter %= reload;
                     if(!headless){
-                        Block b = links.size == 0 ? block : world.tile(links.get(current % links.size)).block();
+                        Block b = links.size == 0 ? block : current().block;
                         prevTurret = curTurret;
                         curTurret = b.region.found() ? b.region : region;
                         heat = 1f;
@@ -190,25 +224,25 @@ public class HijackTurret extends Turret {
             }
 
             for(int i = 0; i < links.size; i++){
-                Building b = world.build(links.get(i));
+                Building b = current();
                 if(b instanceof TurretBuild tb && !b.dead){
                     //b.control(LAccess.enabled, 0,0,0,0);
-                    tb.reloadCounter = Math.max(0f, tb.reloadCounter - tb.delta() * tb.efficiency() * hijackReload);
+                    tb.reloadCounter = Math.max(0f, tb.reloadCounter - tb.delta() * tb.efficiency * hijackReload);
                 }
             }
         }
 
         //return true to use up reload
         public boolean tryShoot(int i){
-            if(links.size <= 0) return true;
+            if(links.isEmpty()) return true;
             //if(occupied == null) occupied = new boolean[maxLinks];
             i %= links.size;
 
-            Building b = world.build(links.get(i));
+            Building b = current();
             if(b instanceof TurretBuild tb && tb.isValid() && !tb.dead){
                 if(tb.hasAmmo() && !occupied.get(i)){
                     //try shooting
-                    shoot(tb.peekAmmo(), tb, i);
+                    shoot(tb.peekAmmo(), tb);
                     return true;
                 }
             }
@@ -216,129 +250,52 @@ public class HijackTurret extends Turret {
                 occupied.set(i, false);
             }
             return false;
-        }*/
+        }
 
+        protected void shoot(BulletType type, TurretBuild tb){
+            float
+                    bulletX = x + Angles.trnsx(rotation - 90, shootX, shootY),
+                    bulletY = y + Angles.trnsy(rotation - 90, shootX, shootY);
 
+            Turret b = (Turret) tb.block;
+
+            if(shoot.firstShotDelay > 0){
+                b.chargeSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
+                type.chargeEffect.at(bulletX, bulletY, rotation);
+            }
+
+            b.shoot.shoot(tb.barrelCounter, (xOffset, yOffset, angle, delay, mover) -> {
+                tb.queuedBullets++;
+                int barrel = tb.barrelCounter;
+
+                if(delay > 0f){
+                    Time.run(delay, () -> {
+                        //hack: make sure the barrel is the same as what it was when the bullet was queued to fire
+                        int prev = tb.barrelCounter;
+                        tb.barrelCounter = barrel;
+                        bullet(type, xOffset, yOffset, angle, mover);
+                        tb.barrelCounter = prev;
+                    });
+                }else{
+                    bullet(type, xOffset, yOffset, angle, mover);
+                }
+            }, () -> tb.barrelCounter++);
+
+            if(b.consumeAmmoOnce){
+                current().useAmmo();
+            }
+        }
 
         public float powerUsage(){
             if(isActive() && links.size > 0){
                 Building b = world.build(links.get(current % links.size));
-                if(b != null && b.block.consumesPower) return powerUse + b.block.consPower.usage;
+                if(b != null && b.block.consumesPower && b.block.consPower != null) return powerUse + b.block.consPower.usage;
             }
             return powerUse;
         }
 
         public float realReload(float r){
             return r / (efficiency * reloadMultiplier);
-        }
-        /*
-
-        public void shoot(BulletType type, TurretBuild build, int n){
-            shoot(type, build, n, true, shots == 1 ? 0f : (-(int) (shots / 2f)) * spread);
-
-            if(burstSpacing > 0.0001f){
-                for(int i = 1; i < shots; i++){
-                    final int ii = i;
-                    Time.run(burstSpacing * i, () -> {
-                        if(dead || !build.hasAmmo()) return;
-                        shoot(type, build, n, false, (ii - (int)(shots / 2f)) * spread);
-                    });
-                }
-            }
-            else if(shots > 1){
-                for(int i = 1; i < shots; i++){
-                    if(dead || !build.hasAmmo()) return;
-                    shoot(type, build, n, false, (i - (int)(shots / 2f)) * spread);
-                }
-            }
-        }
-
-        public void shoot(BulletType type, TurretBuild build, int n, boolean setOccupied, float rotOffset){
-            Turret b = (Turret) build.block;
-            //float xoff = (n - (links.size-1) / 2f) * ((tilesize * size) / (float)links.size);
-            //consume coolant
-            float coolant = 1f;
-            if(setOccupied){
-                float maxUsed = consumes.<ConsumeLiquidBase>get(ConsumeType.liquid).amount * realReload(b.reload);
-                Liquid liquid = liquids.current();
-
-                float used = Math.min(liquids.get(liquid), maxUsed) * baseReloadSpeed();
-                coolant += (used/maxUsed) * liquid.heatCapacity * coolantMultiplier;
-                liquids.remove(liquid, used);
-
-                if(Mathf.chance(0.06 * used)){
-                    coolEffect.at(x + Mathf.range(size * tilesize / 2f), y + Mathf.range(size * tilesize / 2f));
-                }
-            }
-
-            //when charging is enabled and is visible, use the charge shoot pattern
-            if(b.chargeTime > 0 && ((b.chargeEffects > 0 && b.chargeEffect != Fx.none) || b.chargeBeginEffect != Fx.none)){
-                float xoff = Mathf.range(chargeXRand);
-                float rotation = this.rotation + rotOffset;
-                build.useAmmo();
-
-                tr.trns(rotation, b.shootLength, xoff);
-                b.chargeBeginEffect.at(x + tr.x, y + tr.y, rotation);
-                b.chargeSound.at(x + tr.x, y + tr.y, 1);
-
-                for(int i = 0; i < b.chargeEffects; i++){
-                    Time.run(Mathf.random(b.chargeMaxDelay), () -> {
-                        if(dead) return;
-                        tr.trns(rotation, b.shootLength, xoff);
-                        b.chargeEffect.at(x + tr.x, y + tr.y, rotation);
-                    });
-                }
-
-                //charging = true;
-                if(setOccupied) occupied.set(n, true);
-                float rl = Math.max(b.chargeTime, realReload(b.reload) / coolant);
-
-                Time.run(b.chargeTime, () -> {
-                    if(dead) return;
-                    tr.trns(rotation, b.shootLength, xoff);
-                    build.heat = 1f;
-                    bullet(type, rotation + Mathf.range(inaccuracy + type.inaccuracy));
-                    effects(type, build, b);
-                    heat = 1f;
-                    recoil = recoilAmount;
-                });
-                Time.run(rl, () -> {
-                    if(setOccupied && occupied.size > n) occupied.set(n, false);
-                });
-            }else{
-                //otherwise, use the normal shot pattern(s)
-                if(setOccupied) occupied.set(n, true);
-
-                if(b.alternate && b.burstSpacing <= 0.0001f){
-                    float i = (shotCounter % b.shots) - (b.shots-1)/2f;
-
-                    tr.trns(rotation - 90 + rotOffset, b.spread * i + Mathf.range(b.xRand), b.shootLength);
-                    bullet(type, rotation + Mathf.range(inaccuracy + type.inaccuracy) + rotOffset);
-                }else{
-                    tr.trns(rotation + rotOffset, b.shootLength, Mathf.range(b.xRand));
-                    int sh = Mathf.ceilPositive(b.shots * shotsMultiplier);
-                    //if(b.burstSpacing > 0.0001f) sh = 1;
-                    float inac = inaccuracy;
-                    if(b.burstSpacing > 0.0001f) inac += b.shots;
-
-                    for(int i = 0; i < sh; i++){
-                        bullet(type, rotation + Mathf.range(inac + type.inaccuracy) + (i - (int)(sh / 2f)) * b.spread + rotOffset);
-                    }
-                }
-
-                float rl = realReload(b.reload + b.chargeTime) / coolant;
-                //if(b.burstSpacing > 0.0001f) rl /= b.shots;
-                Time.run(rl, () -> {
-                    if(setOccupied && occupied.size > n) occupied.set(n, false);
-                });
-
-                shotCounter++;
-
-                recoil = recoilAmount;
-                build.heat = 1f;
-                effects(type, build, b);
-                build.useAmmo();
-            }
         }
 
         public void effects(BulletType type, TurretBuild build, Turret b){
@@ -352,14 +309,6 @@ public class HijackTurret extends Turret {
             hijackEffect.at(build.x + Mathf.range(b.size * tilesize / 3f), build.y + Mathf.range(b.size * tilesize / 3f));
             //build.reload = 0f;
         }
-
-        @Override
-        protected void bullet(BulletType type, float angle){
-            float rangem = Math.min((powerMultiplier - 1f) * 0.5f + 1f, 1.5f);
-            float lifeScl = type.scaleLife ? Mathf.clamp(Mathf.dst(x + tr.x, y + tr.y, targetPos.x, targetPos.y) / (type.range() * rangem), minRange / type.range(), range / type.range()) : 1f;
-
-            type.create(this, team, x + tr.x, y + tr.y, angle, powerMultiplier * type.damage, rangem + Mathf.range(velocityInaccuracy), lifeScl, null);
-        }*/
 
         public void sanitize(){
             for(int i = 0; i < links.size; i++){

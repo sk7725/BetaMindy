@@ -10,7 +10,7 @@ import mindustry.type.*;
 
 import static mindustry.entities.Puddles.*;
 
-public class ColloidLiquid extends AnimatedLiquid {
+public class ColloidLiquid extends Liquid {
     public float spotDuration = 90f;
     public Color inColor;
     public ColloidLiquid(String name, Color color, Color inColor){

@@ -59,11 +59,11 @@ public class MindyStatusEffects{
         radiation = new StatusEffect("radiated"){
             //credits to EyeofDarkness
             @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
-                if(Mathf.chanceDelta(0.008f * Mathf.clamp(time / 120f))) unit.damage(unit.maxHealth * 0.125f);
+            public void update(Unit unit, StatusEntry entry){
+                super.update(unit, entry);
+                if(Mathf.chanceDelta(0.008f * Mathf.clamp(entry.time / 120f))) unit.damage(unit.maxHealth * 0.125f);
                 for(int i = 0; i < unit.mounts.length; i++){
-                    float strength = Mathf.clamp(time / 120f);
+                    float strength = Mathf.clamp(entry.time / 120f);
                     WeaponMount temp = unit.mounts[i];
                     if(temp == null) continue;
                     if(Mathf.chanceDelta(0.12f)) temp.reload = Math.min(temp.reload + Time.delta * 1.5f * strength, temp.weapon.reload);
@@ -87,7 +87,7 @@ public class MindyStatusEffects{
 
         drift = new StatusEffect("drift"){
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 MindyFx.unitShinyTrail.at(unit.x, unit.y, unit.rotation, color, unit.type);
                 unit.vel.setAngle(Angles.moveToward(unit.vel.angle(), unit.rotation, 5.5f * Time.delta));
                 if(unit.type.canBoost) unit.elevation = 1f;
@@ -103,7 +103,7 @@ public class MindyStatusEffects{
 
         booster = new StatusEffect("booster"){
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 boolean drifting = unit.hasEffect(drift);
 
                 if(Mathf.chanceDelta(effectChance)){
@@ -164,9 +164,9 @@ public class MindyStatusEffects{
 
         amnesia = new StatusEffect("amnesia"){
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 if(Mathf.chanceDelta(effectChance)){
-                    Tmp.v1.rnd(unit.type.hitSize /2f);
+                    Tmp.v1.rnd(unit.type.hitSize / 2f);
                     effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, 0f, unit.team.color);
                 }
                 if(unit.abilities.length > 0) unit.abilities = new Ability[0];
@@ -182,8 +182,8 @@ public class MindyStatusEffects{
 
         creativeShock = new StatusEffect("creative-shock"){
             @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
+            public void update(Unit unit, StatusEntry entry){
+                super.update(unit, entry);
                 if(unit.isBuilding()){
                     unit.clearBuilding();
                     MindyFx.forbidden.at(unit.x, unit.y, 0f, color);
@@ -250,8 +250,8 @@ public class MindyStatusEffects{
 
         bittriumBane = new StatusEffect("bittbane"){
             @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
+            public void update(Unit unit, StatusEntry entry){
+                super.update(unit, entry);
                 if(Useful.interval(3f, 0f)) MindyFx.unitBittTrail.at(unit.x, unit.y, unit.rotation, unit.type);
             }
 
@@ -338,8 +338,8 @@ public class MindyStatusEffects{
                 Draw.reset();
             }
             @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
+            public void update(Unit unit, StatusEntry entry){
+                super.update(unit, entry);
                 if(unit.type.flying && !unit.type.lowAltitude){
                     MindyFx.sparkTrailHigh.at(unit.x, unit.y, unit.hitSize, color);
                 }
@@ -347,7 +347,7 @@ public class MindyStatusEffects{
                     MindyFx.sparkTrail.at(unit.x, unit.y, unit.hitSize, color);
                 }
 
-                if(time <= 3f * Time.delta){
+                if(entry.time <= 3f * Time.delta){
                     //get ready for it to fade
                     MindyFx.lightFade.at(unit.x, unit.y, 80f + unit.type.lightRadius, color, unit);
                 }
@@ -368,7 +368,7 @@ public class MindyStatusEffects{
 
         reverseBiased = new StatusEffect("reverse-biased"){
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 if(Mathf.chanceDelta(effectChance)){
                     Useful.lightningCircle(unit.x, unit.y, Math.max(unit.hitSize / 2f + 4f, 8f), Math.max(4, (int) unit.hitSize / 9 + 2), color);
                 }
@@ -388,8 +388,8 @@ public class MindyStatusEffects{
 
         forwardBiased = new InflictStatusEffect("forward-biased", reverseBiased){
             @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
+            public void update(Unit unit, StatusEntry entry){
+                super.update(unit, entry);
                 if(Mathf.chanceDelta(effectChance)){
                     Useful.lightningCircle(unit.x, unit.y, Math.max(unit.hitSize / 2f + 4f, 8f), Math.max(4, (int) unit.hitSize / 9 + 2), color);
                 }
@@ -458,8 +458,8 @@ public class MindyStatusEffects{
             }
 
             @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
+            public void update(Unit unit, StatusEntry entry){
+                super.update(unit, entry);
 
                 if(unit.mining()){
                     unit.mineTimer(unit.mineTimer() + Time.delta * unit.type.mineSpeed);

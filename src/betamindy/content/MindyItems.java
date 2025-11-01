@@ -17,15 +17,15 @@ public class MindyItems{
 
     public static void load(){
         //given from portal invasions
-        bittrium = new AnimatedItem("bittrium", Color.valueOf("00ffff")){
+        bittrium = new Item("bittrium", Color.valueOf("00ffff")){
             {
                 charge = 10.24f;
                 radioactivity = 10.24f;
                 cost = 0.1f;
                 hardness = 15;
 
-                transition = 5;
-                animDelay = 4f;
+                transitionFrames = 5;
+                frameTime = 4f;
             }
 
             @Override
@@ -65,13 +65,12 @@ public class MindyItems{
             cost = 2;
         }};
 
-        tensor = new AnimatedItem("tensor",Color.valueOf("00bfa2")){{
+        tensor = new Item("tensor",Color.valueOf("00bfa2")){{
             hardness = 8;
             cost = 3;
 
-            animDelay = 5f;
-            sprites = 5;
-            transition = 30; //I hope this doesn't kill devices
+            frameTime = 5f;
+            transitionFrames = 30; //I hope this doesn't kill devices
         }};
 
         source = new RandomAnimatedItem("source", Color.valueOf("0ddd33")){{
@@ -80,8 +79,8 @@ public class MindyItems{
             cost = 4;
             hardness = 8;
 
-            animDelay = 4f;
-            sprites = 10;
+            frameTime = 4f;
+            frames = 10;
         }};
 
         spaceMatter = new Item("space-matter", Color.valueOf("7c067c")){{
@@ -113,14 +112,14 @@ public class MindyItems{
         }};
         //used for glowing / decorative high-tier blocks
         //no longer foreign
-        starStone = new AnimatedItem("star-stone", Color.yellow){
+        starStone = new Item("star-stone", Color.yellow){
             {
                 cost = 5;
                 hardness = 4;
                 radioactivity = 0.628f;
-                sprites = 4;
-                animDelay = 5f;
-                transition = 10;
+                frames = 4;
+                frameTime = 5f;
+                transitionFrames = 10;
             }
         };
         //starStone.details = starStone.details == null ? Core.bundle.get("item.foreign") : Core.bundle.get("item.foreign") + "\n" + starStone.details;
@@ -141,13 +140,5 @@ public class MindyItems{
             hardness = 64;
             charge = 10.24f;
         }};
-
-        if(!Vars.headless){
-            for(Item i : Vars.content.items()){
-                if(i instanceof AnimatedItem){
-                    Events.run(EventType.Trigger.update, ((AnimatedItem) i)::update);
-                }
-            }
-        }
     }
 }

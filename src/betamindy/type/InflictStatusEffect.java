@@ -7,6 +7,7 @@ import arc.util.*;
 import betamindy.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -35,8 +36,8 @@ public class InflictStatusEffect extends StatusEffect {
     }
 
     @Override
-    public void update(Unit unit, float time){
-        super.update(unit, time);
+    public void update(Unit unit, StatusEntry entry){
+        super.update(unit, entry);
         if(ally){
             Units.nearby(unit.team, unit.x, unit.y, range, u -> {
                 if(u != unit && !u.hasEffect(this)){

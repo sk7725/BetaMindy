@@ -134,7 +134,7 @@ public class Terraformer extends Block {
 
         public void terraform(Tile t){
             if(terraFloors.containsKey(t.floor())){
-                t.setFloorUnder((Floor) terraFloors.get(t.floor()));
+                t.setFloor((Floor) terraFloors.get(t.floor()));
             }
             if(terraBlocks.containsKey(t.block())){
                 t.setBlock(terraBlocks.get(t.block()));

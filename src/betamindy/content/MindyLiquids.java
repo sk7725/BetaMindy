@@ -41,9 +41,9 @@ public class MindyLiquids{
             boilPoint = 5f;
             lightColor = Color.valueOf("ff96df").a(0.8f);
 
-            animDelay = 4f;
-            sprites = 6;
-            transition = 4;
+//            animDelay = 4f;
+//            sprites = 6;
+//            transition = 4;
         }};
 
         condensedForce = new ForceLiquid("condensed-force", Pal.accent){{
@@ -54,17 +54,9 @@ public class MindyLiquids{
             heatCapacity = 0f;
             lightColor = Pal.accent.cpy().a(0.8f);
 
-            animDelay = 4f;
-            sprites = 5;
-            transition = 4;
+//            animDelay = 4f;
+//            sprites = 5;
+//            transition = 4;
         }};
-
-        if(!Vars.headless){
-            for(Liquid i : Vars.content.liquids()){
-                if(i instanceof AnimatedLiquid al){
-                    Events.run(EventType.Trigger.update, al::update);
-                }
-            }
-        }
     }
 }

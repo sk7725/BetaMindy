@@ -25,7 +25,6 @@ public class InstantHitBulletType extends BulletType {
         lifetime = 100f;
         collides = false;
         keepVelocity = false;
-        backMove = false;
         this.damage = damage;
         pierceDamage = damage;
         hitEffect = despawnEffect = Fx.none;

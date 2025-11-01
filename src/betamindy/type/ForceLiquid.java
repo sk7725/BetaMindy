@@ -6,11 +6,12 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 
 import static mindustry.Vars.renderer;
 import static mindustry.entities.Puddles.maxLiquid;
 
-public class ForceLiquid extends AnimatedLiquid{
+public class ForceLiquid extends Liquid{
     public ForceLiquid(String name, Color color){
         super(name, color);
     }
