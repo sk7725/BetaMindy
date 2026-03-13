@@ -8,5 +8,6 @@
   "main": "betamindy.BetaMindy",
   "minGameVersion": "144",
   "dependencies": [],
-  "hidden": false
+  "hidden": false,
+  "legacyCompatible": true
 }
