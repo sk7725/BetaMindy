@@ -72,7 +72,7 @@ public class PortalLightningBulletType extends BulletType {
         ThickLightning.create(b.team, color1, damage, b.x, b.y, b.rotation(), lightningLength + Mathf.random(lightningLengthRand));
         if(!headless){
             despawnEffect.at(b.x, b.y, orbRadius, color1, color2);
-            Sounds.plasmadrop.at(b);
+            Sounds.shootQuad.at(b);
         }
     }
 }

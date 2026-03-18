@@ -29,7 +29,7 @@ public class DrillTurret extends BaseTurret {
 
     public TextureRegion baseRegion, laser, laserEnd;
     public float laserWidth = 0.75f;
-    public Sound shootSound = Sounds.minebeam;
+    public Sound shootSound = Sounds.loopMineBeam;
     public float shootSoundVolume = 0.9f;
 
     /** Drill tiers, inclusive */

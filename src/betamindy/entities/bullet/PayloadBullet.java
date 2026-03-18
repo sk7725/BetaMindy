@@ -128,6 +128,23 @@ public class PayloadBullet extends ArtilleryBulletType {
     }
 
     @Override
+    public void despawned(Bullet b){
+        Tile on = Vars.world.tileWorld(b.x, b.y);
+
+        if(b.data instanceof Payload payload){
+            if(on != null && on.build != null && on.build.acceptPayload(on.build, payload)){
+                Fx.unitDrop.at(on.build);
+                on.build.handlePayload(on.build, payload);
+            }
+            else{
+                if(payload instanceof BuildPayload) dropBuild((BuildPayload)payload, b, b.x, b.y);
+                else if(payload instanceof UnitPayload) dropUnit((UnitPayload)payload, b, b.x, b.y, on);
+            }
+        }
+        super.despawned(b);
+    }
+
+    @Override
     public void hit(Bullet b, float x, float y){
         Tile on = Vars.world.tileWorld(x, y);
 

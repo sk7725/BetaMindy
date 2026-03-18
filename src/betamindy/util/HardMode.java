@@ -100,7 +100,7 @@ public class HardMode {
                 }
                 if(coreDamage > maxCoreDamage && portal.state != 2){
                     if(!headless){
-                        Sounds.corexplode.at(core);
+                        Sounds.explosionCore.at(core);
                     }
                     stop(false);
                 }
@@ -429,7 +429,7 @@ public class HardMode {
                 runWave(Vars.state.rules.spawns, wave + offset);
             }
             MindyFx.portalShockwave.at(x, y, 0f, color());
-            Sounds.wave.play();
+            Sounds.waveSpawn.play();
             //much more benevolent version of shockwave; only damage whats inside the visual portal
             Damage.damage(Vars.state.rules.waveTeam, x, y, radius + 20f, 99999999f, true);
         }

@@ -45,7 +45,7 @@ public class RayTurret extends BaseTurret {
 
     public Effect levelUpEffect = MindyFx.ionBurst;
     public float effectRadius = 10f;
-    public Sound shootSound = Sounds.tractorbeam;
+    public Sound shootSound = Sounds.beamParallax;
     public Sound levelUpSound = MindySounds.easterEgg1;
     public float[] edgeSounds = {0, 4, 7, 12};
     public float shootSoundVolume = 0.9f;

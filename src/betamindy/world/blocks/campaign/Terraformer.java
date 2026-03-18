@@ -427,7 +427,7 @@ public class Terraformer extends Block {
         public void onDestroyed(){
             super.onDestroyed();
 
-            Sounds.explosionbig.at(tile);
+            Sounds.explosionArtillery.at(tile);
 
             if((heat < 0.5f) || !state.rules.reactorExplosions) return;
 

@@ -40,7 +40,7 @@ public class Discharger extends Battery {
 
     public Color lightningColor = Pal.lancerLaser;
     public TextureRegion shieldRegion, topRegion;
-    public Sound shootSound = Sounds.spark;
+    public Sound shootSound = Sounds.shootArc;
 
     public Effect shootEffect = MindyFx.powerDust;
     public float effectChance = 0.02f;
