@@ -39,8 +39,8 @@ public class TeleportPad extends Block {
     public Effect teleportIn = MindyFx.teleportUnit;
     public Effect teleportOut = Fx.teleportActivate;
     public Effect teleportUnit = Fx.none;
-    public Sound inSound = Sounds.plasmadrop;
-    public Sound outSound = Sounds.lasercharge2;
+    public Sound inSound = Sounds.shootQuad;
+    public Sound outSound = Sounds.chargeLancer;
 
     public TeleportPad(String name){
         super(name);

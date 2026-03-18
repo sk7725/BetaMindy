@@ -84,7 +84,7 @@ public class ButtonPad extends PowerBlock {
             if(!enabled) return;
             powerProduction = Mathf.clamp(basicPowerProduction * (unit.hitSize * 1.2f - 8) * 0.3f, 0.01f, 1f); //TODO: figure out how to deal with multiple units on one pad
 
-            if(heat < 0.001f) Sounds.place.at(x, y, 1.2f / size);
+            if(heat < 0.001f) Sounds.blockPlace1.at(x, y, 1.2f / size);
             heat = pushTime;
         }
 

@@ -92,7 +92,7 @@ public class Campfire extends Block {
             }
             if(Mathf.chanceDelta(smokeChance)) smokeEffect.at(x + Mathf.range(size / 3f), y + Mathf.range(size / 3f));
 
-            if(!headless) control.sound.loop(Sounds.fire, Tmp.v1.set(x, y), 0.1f);
+            if(!headless) control.sound.loop(Sounds.loopFire, Tmp.v1.set(x, y), 0.1f);
         }
 
         public void torchEffects(){
@@ -101,7 +101,7 @@ public class Campfire extends Block {
             }
             if(Mathf.chanceDelta(smokeChance)) smokeEffect.at(x + Mathf.range(size / 3f), y + Mathf.range(size / 3f));
 
-            if(!headless) control.sound.loop(Sounds.fire, this, 0.1f);
+            if(!headless) control.sound.loop(Sounds.loopFire, this, 0.1f);
         }
 
         public void fire(float x, float y, float r, float vel){

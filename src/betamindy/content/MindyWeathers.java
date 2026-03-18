@@ -17,7 +17,7 @@ public class MindyWeathers{
             density = 1200f;
             attrs.set(Attribute.light, -0.15f);
 
-            sound = Sounds.windhowl;
+            sound = Sounds.windHowl;
             soundVol = 0f;
             soundVolOscMag = 1.5f;
             soundVolOscScl = 1100f;
@@ -32,7 +32,7 @@ public class MindyWeathers{
             attrs.set(Attribute.light, -0.3f);
 
             baseSpeed = 5.4f;
-            sound = Sounds.windhowl;
+            sound = Sounds.windHowl;
             soundVol = 0f;
             soundVolOscMag = 1.5f;
             soundVolOscScl = 1100f;

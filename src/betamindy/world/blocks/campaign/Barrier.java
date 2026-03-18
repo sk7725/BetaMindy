@@ -39,7 +39,7 @@ public class Barrier extends Block {
     public StatusEffect status = MindyStatusEffects.drift;
     public Effect unitHitEffect = MindyFx.ionBurst;
     public Sound captureSound = MindySounds.easterEgg1;
-    public Sound unitHitSound = Sounds.flame2;
+    public Sound unitHitSound = Sounds.shootFlamePlasma;
     public float chainScale = 1f;
 
     public Barrier(String name){

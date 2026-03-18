@@ -7,10 +7,11 @@ import arc.util.*;
 import betamindy.graphics.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 
 import static mindustry.entities.Puddles.maxLiquid;
 
-public class StarryLiquid extends AnimatedLiquid {
+public class StarryLiquid extends Liquid{
     public Color starColor;
     public float starDuration = 60f;
 

@@ -171,7 +171,7 @@ public class LinkPinner extends Block {
                     Draw.alpha(heat / 30f);
                     Lines.stroke(0.8f);
                     link.links.each(l -> {
-                        if(l.active) Lines.square(l.x * tilesize, l.y * tilesize, 6f, 45f);
+                        /*if(l.active)*/ Lines.square(l.x * tilesize, l.y * tilesize, 6f, 45f);
                     });
                 }
                 Draw.reset();
@@ -230,8 +230,8 @@ public class LinkPinner extends Block {
 
         public void drawLink(LogicLink l){
             Building build = world.build(l.x, l.y);
-            if(build != null) Drawf.square(build.x, build.y, build.block.size * tilesize / 2f + 1f, l.active ? Pal.place : Pal.darkerGray);
-            else Drawf.square(l.x * tilesize, l.y * tilesize, tilesize / 2f + 1f, l.active ? Pal.place : Pal.darkerGray);
+            if(build != null) Drawf.square(build.x, build.y, build.block.size * tilesize / 2f + 1f, Pal.place/*l.active ? Pal.place : Pal.darkerGray*/);
+            else Drawf.square(l.x * tilesize, l.y * tilesize, tilesize / 2f + 1f, Pal.place/*l.active ? Pal.place : Pal.darkerGray*/);
         }
         public void drawLinkText(LogicLink l){
             Building build = world.build(l.x, l.y);

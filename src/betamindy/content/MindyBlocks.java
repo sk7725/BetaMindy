@@ -1,5 +1,6 @@
 package betamindy.content;
 
+import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
@@ -413,7 +414,7 @@ public class MindyBlocks{
             }};
             inaccuracy = 1.8f;
             velocityRnd = 0.05f;
-            shootSound = Sounds.shootBig;
+            shootSound = Sounds.shootAlpha;
             shake = 3f;
             shoot.shots = 15;
             shoot.shotDelay = 1f;
@@ -440,7 +441,7 @@ public class MindyBlocks{
             inaccuracy = 0f;
             shootEffect = MindyFx.sniperShoot;
             shake = 4f;
-            shootSound = Sounds.shotgun;
+            shootSound = Sounds.shootFuse;
         }};
 
         anchor = new ItemTurret("anchor"){{
@@ -454,7 +455,7 @@ public class MindyBlocks{
             targetAir = false;
 
             health = 220 * size * size;
-            shootSound = Sounds.shotgun;
+            shootSound = Sounds.shootFuse;
             placeableLiquid = true;
 
             ammo(
@@ -487,7 +488,7 @@ public class MindyBlocks{
             targetAir = false;
 
             health = 240 * size * size;
-            shootSound = Sounds.shotgun;
+            shootSound = Sounds.shootFuse;
             placeableLiquid = true;
 
             ammo(
@@ -521,7 +522,7 @@ public class MindyBlocks{
             shoot.shotDelay = 10f;
 
             health = 140 * size * size;
-            shootSound = Sounds.plasmadrop;
+            shootSound = Sounds.shootBeamPlasmaSmall;
             heatColor = Pal.lancerLaser;
             shootY = 2f;
             coolant = consume(consumeCoolant(1f));
@@ -584,7 +585,7 @@ public class MindyBlocks{
             shootCone = 50f;
             liquidCapacity = 10f;
             recoil = 0f;
-            shootSound = Sounds.flame;
+            shootSound = Sounds.shootFlame;
             shootEffect = MindyFx.shootStarFlame;
             range = 65f;
             health = 300;
@@ -769,7 +770,7 @@ public class MindyBlocks{
             recoil = 7f;
             range = 315f;
             shake = 2f;
-            shootSound = Sounds.shootBig;
+            shootSound = Sounds.shootArtillery;
             shootEffect = MindyFx.cannonShoot;
             smokeEffect = Fx.shootBigSmoke2;
             safeRange = 140f;
@@ -788,7 +789,7 @@ public class MindyBlocks{
             recoil = 9f;
             range = 520f;
             shake = 4f;
-            shootSound = Sounds.plasmaboom;
+            shootSound = Sounds.explosionPlasmaSmall;
             shootEffect = MindyFx.cannonShoot2;
             smokeEffect = Fx.shootBigSmoke2;
             damage = 2.3f;
@@ -938,7 +939,7 @@ public class MindyBlocks{
             craftTime = 130f;
             size = 2;
             hasPower = hasItems = true;
-            ambientSound = Sounds.smelter;
+            ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.07f;
             baseEfficiency = 0f;
             attribute = MindyAttribute.metallic;
@@ -954,7 +955,7 @@ public class MindyBlocks{
             craftTime = 185f;
             size = 3;
             hasPower = hasItems = true;
-            ambientSound = Sounds.smelter;
+            ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.07f;
             baseEfficiency = 0f;
             attribute = MindyAttribute.metallic;
@@ -1007,7 +1008,7 @@ public class MindyBlocks{
             size = 2;
             health = 300;
             powerProduction = 8.5f;
-            ambientSound = Sounds.pulse;
+            ambientSound = Sounds.loopPulse;
             ambientSoundVolume = 0.05f;
             consumePower(2.5f);
             consumeItem(MindyItems.scalarRaw);
@@ -1021,7 +1022,7 @@ public class MindyBlocks{
             craftTime = 175f;
             size = 3;
             hasPower = hasItems = true;
-            ambientSound = Sounds.respawning;
+            ambientSound = Sounds.loopRegen;
             ambientSoundVolume = 0.07f;
             craftEffect = MindyFx.releaseSteamSmall;
             squareSprite = false;
@@ -1055,7 +1056,7 @@ public class MindyBlocks{
 
         scalarFurnace = new NuclearCrafter("scalar-furnace"){{
             requirements(Category.crafting, with(Items.copper, 400, Items.silicon, 100, Items.graphite, 100, Items.thorium, 150, MindyItems.scalarRaw, 450));
-            ambientSound = Sounds.hum;
+            ambientSound = Sounds.loopHum;
             ambientSoundVolume = 0.24f;
             explodeEffect = MindyFx.scalarReactorExplosion;
             size = 4;
@@ -1535,7 +1536,7 @@ public class MindyBlocks{
             status = MindyStatusEffects.drift;
             duration = cooldown = 14f;
             boostEffect = MindyFx.driftBlock;
-            boostSound = Sounds.flame2;
+            boostSound = Sounds.shootFlame;
             impulseAmount = 9f;
         }};
 
@@ -1612,20 +1613,20 @@ public class MindyBlocks{
             soundEffect = Fx.mine;
 
             instruments = new Instrument[]{
-                    new Instrument("Place", Sounds.place),
-                    new Instrument("Break", Sounds.breaks),
+                    new Instrument("Place", new RandomSound(Sounds.blockPlace1, Sounds.blockPlace2, Sounds.blockPlace3)),
+                    new Instrument("Break", new RandomSound(Sounds.blockBreak1, Sounds.blockBreak2, Sounds.blockBreak3)),
                     new Instrument("Click", Sounds.click),
-                    new Instrument("Boom", Sounds.boom),
+                    new Instrument("Boom", Sounds.explosion),
                     new Instrument("Shoot", Sounds.shoot),
-                    new Instrument("Sap", Sounds.sap),
-                    new Instrument("[[[[Big Shot]]", Sounds.bigshot),
-                    new Instrument("Laser", Sounds.laser),
-                    new Instrument("LaserB", Sounds.laserblast),
-                    new Instrument("Unlock", Sounds.unlock),
-                    new Instrument("Wave", Sounds.wave),
-                    new Instrument("Flame", Sounds.flame),
-                    new Instrument("PDrop", Sounds.plasmadrop),
-                    new Instrument("PBoom", Sounds.plasmaboom),
+                    new Instrument("Sap", Sounds.shootSap),
+                    new Instrument("[[[[Big Shot]]", Sounds.shootArtillery),
+                    new Instrument("Laser", Sounds.shootLaser),
+                    new Instrument("LaserB", Sounds.shootMeltdown),
+                    new Instrument("Unlock", Sounds.uiUnlock),
+                    new Instrument("Wave", Sounds.loopSpray),
+                    new Instrument("Flame", Sounds.shootFlame),
+                    new Instrument("PDrop", Sounds.shootQuad),
+                    new Instrument("PBoom", Sounds.explosionQuad),
                     new Instrument("CBells", MindySounds.presentBells),
                     new Instrument("Push", MindySounds.pistonPush),
                     new Instrument("Shatter", MindySounds.shatter),
@@ -1895,8 +1896,8 @@ public class MindyBlocks{
             conditional = true;
             speed = 1f / 3.5f;
             ejectStrength = 8f;
-            popSound = Sounds.release;
-            suckSound = Sounds.respawn;
+            popSound = Sounds.shoot;
+            suckSound = Sounds.loopRegen;
             hasPower = true;
             consumePowerCond(6f, ClearPipeBuild::isGate);
             requirements(Category.units, with(Items.metaglass, 20, Items.graphite, 8, MindyItems.vector, 2));
@@ -1978,7 +1979,7 @@ public class MindyBlocks{
             size = 6;
             health = 280 * size * size;
             targetAir = true;
-            shootSound = Sounds.plasmadrop;
+            shootSound = Sounds.shootBeamPlasmaSmall;
             rotateSpeed = 2f;
             unitSort = (u, x, y) -> -u.maxHealth;
 
@@ -2017,7 +2018,7 @@ public class MindyBlocks{
             result = MindyLiquids.coffee;
             liquidCapacity = 120f;
             itemCapacity = 30;
-            ambientSound = Sounds.respawn;
+            ambientSound = Sounds.loopRegen;
             ambientSoundVolume = 0.5f;
             pumpAmount = 0.5f;
             updateEffect = Fx.pulverize;

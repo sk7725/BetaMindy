@@ -42,8 +42,8 @@ public class PayloadFactory extends PayloadBlock {
     public Effect smokeEffect = Fx.fuelburn;
     public float smokeChance = 0.01f;
     public Effect releaseEffect = Fx.none; //TODO heated effect
-    public Sound catalystSound = Sounds.combustion;
-    public Sound releaseSound = Sounds.steam;
+    public Sound catalystSound = Sounds.loopCombustion;
+    public Sound releaseSound = Sounds.loopSteam;
 
     public Color heatColor = Pal.lightPyraFlame;
     public TextureRegion shadowRegion, heatRegion, doorRegion;
@@ -66,7 +66,7 @@ public class PayloadFactory extends PayloadBlock {
         outputsPayload = true;
         rotate = true;
         sync = true;
-        ambientSound = Sounds.smelter;
+        ambientSound = Sounds.loopSmelter;
 
         setDefaults();
     }

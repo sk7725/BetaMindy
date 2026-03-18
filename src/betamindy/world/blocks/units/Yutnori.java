@@ -252,7 +252,7 @@ public class Yutnori extends Block {
                 }
 
                 if(headless) return;
-                Sounds.artillery.at(x, y,10f);
+                Sounds.shootArtillery.at(x, y,10f);
                 Floor floor = Vars.world.floorWorld(x, y);
                 if(floor.isLiquid){
                     Tmp.v1.trns(rotation, Mathf.random(yutLength));

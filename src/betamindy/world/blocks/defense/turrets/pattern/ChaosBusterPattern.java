@@ -14,8 +14,8 @@ public class ChaosBusterPattern extends TurretPattern{
     public float spread = 15f, chargeTime = 70f, burstSpacing = 7f;
 
     public Effect chargeEffect = Fx.greenLaserCharge;//TODO
-    public Sound chargeSound = Sounds.lasercharge;
-    public Sound chargeShootSound = Sounds.laserblast;
+    public Sound chargeSound = Sounds.chargeLancer;
+    public Sound chargeShootSound = Sounds.shootMeltdown;
 
     protected boolean charging;
 

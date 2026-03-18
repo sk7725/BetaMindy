@@ -32,7 +32,7 @@ public class PresentBox extends Block {
     public Item naughtyItem = coal;
     public TextureRegion baseRegion, boxRegion, ribbonRegion, ribbonRegionBack, ribbonRegionBase, topRegion;
     public Effect openEffect = Fx.none, naughtyEffect = Fx.explosion;
-    public Sound openSound = MindySounds.presentBells, naughtySound = Sounds.bang;
+    public Sound openSound = MindySounds.presentBells, naughtySound = Sounds.explosionDull;
 
     //private final CustomBlockInventoryFragment invFrag = new CustomBlockInventoryFragment();
 

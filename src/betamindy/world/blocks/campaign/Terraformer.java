@@ -134,7 +134,7 @@ public class Terraformer extends Block {
 
         public void terraform(Tile t){
             if(terraFloors.containsKey(t.floor())){
-                t.setFloorUnder((Floor) terraFloors.get(t.floor()));
+                t.setFloor((Floor) terraFloors.get(t.floor()));
             }
             if(terraBlocks.containsKey(t.block())){
                 t.setBlock(terraBlocks.get(t.block()));
@@ -427,7 +427,7 @@ public class Terraformer extends Block {
         public void onDestroyed(){
             super.onDestroyed();
 
-            Sounds.explosionbig.at(tile);
+            Sounds.explosionArtillery.at(tile);
 
             if((heat < 0.5f) || !state.rules.reactorExplosions) return;
 

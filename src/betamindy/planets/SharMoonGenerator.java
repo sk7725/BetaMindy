@@ -151,14 +151,17 @@ public class SharMoonGenerator extends PlanetGenerator {
     }
 
     @Override
-    public Color getColor(Vec3 position){
+    public void getColor(Vec3 position, Color out){
         Block block = getBlock(position);
         float tnoise = 1f;
         //float tnoise = Simplex.noise3d(seed, 8, 0.56, 1f/16f, position.x, position.y + 9999f, position.z);
         //tnoise = (1f - Mathf.clamp(tnoise)) * 0.3f + 0.7f;
 
-        if(block == mossyBorudalite) return Tmp.c1.set(borudaMidColor.set(borudalite.mapColor).lerp(twilightMoss.mapColor, 0.5f)).mul(tnoise).a(1f);
-        return Tmp.c1.set(block.mapColor).mul(tnoise).a(1f - block.albedo);
+        if(block == mossyBorudalite){
+            out.set(borudaMidColor.set(borudalite.mapColor).lerp(twilightMoss.mapColor, 0.5f)).mul(tnoise).a(1f);
+            return;
+        }
+        out.set(block.mapColor).mul(tnoise).a(1f - block.albedo);
     }
 
     //@Override

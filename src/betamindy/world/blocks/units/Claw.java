@@ -53,7 +53,7 @@ public class Claw extends Block {
 
     public Effect grabEffect = Fx.pickup;
     public Sound grabSound = Sounds.door;
-    public Sound detachSound = Sounds.place;
+    public Sound detachSound = Sounds.blockPlace1;
 
     public Claw(String name){
         super(name);
