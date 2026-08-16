@@ -71,7 +71,7 @@ allprojects {
     }
 
     dependencies {
-        annotationProcessor(entity(":downgrader"))
+        //annotationProcessor(entity(":downgrader"))
 
         compileOnly(mindustry(":core"))
         compileOnly(arc(":arc-core"))
@@ -91,7 +91,7 @@ allprojects {
         // Use Java 17+ syntax, but target Java 8 bytecode version.
         sourceCompatibility = "17"
         options.apply{
-            release = 8
+            release = 17
             compilerArgs.add("-Xlint:-options")
             //compilerArgs.add("-Xlint:unchecked")
 
